@@ -100,6 +100,29 @@ const categoryTokenMap: Record<string, string> = {
 };
 const catToken = categoryTokenMap[landingPage.category || ''] || 'relationships';
 
+// SEO metadata
+const metaTitle = landingPage.metaTitle || `${landingPage.title} | Tailor Education`;
+const metaDescription = landingPage.metaDescription || `Explore ${landingPage.title} — questions, key terms, and teaching resources for RSE from Tailor Education.`;
+const canonicalPath = `/topics/${landingPage.slug}/`;
+
+// JSON-LD — WebPage with educationalLevel
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: landingPage.title,
+  description: metaDescription,
+  about: {
+    '@type': 'Thing',
+    name: landingPage.title,
+  },
+  educationalLevel: 'Secondary',
+  provider: {
+    '@type': 'Organization',
+    name: 'Tailor Education',
+    url: 'https://tailoreducation.org.uk',
+  },
+};
+
 // Map OtA category on questions to badge class
 function otaCategoryClass(cat: string | null): string {
   const map: Record<string, string> = {
@@ -115,8 +138,13 @@ function otaCategoryClass(cat: string | null): string {
 }
 ---
 
-<BaseLayout title={`${landingPage.title} — Tailor Education`}>
-  <div class="landing-page">
+<BaseLayout
+  title={metaTitle}
+  description={metaDescription}
+  canonicalPath={canonicalPath}
+  jsonLd={jsonLd}
+>
+  <div class="landing-page" data-pagefind-body>
     <!-- 1. Page title + category label -->
     <section class="landing-hero">
       <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
@@ -124,6 +152,11 @@ function otaCategoryClass(cat: string | null): string {
           {landingPage.category}
         </span>
         <h1 class="landing-hero__title">{landingPage.title}</h1>
+
+        {/* Topic search aliases — indexed by Pagefind but hidden from view */}
+        <div data-pagefind-meta="aliases" style="display:none">
+          {/* Gareth: add comma-separated search aliases for this topic here */}
+        </div>
       </div>
     </section>
 

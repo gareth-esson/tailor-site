@@ -1,8 +1,213 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-// Search — Pagefind integration coming in Stage 6
+
+const query = Astro.url.searchParams.get('q') || '';
 ---
 
-<BaseLayout title="Search — Tailor Education">
-  <h1>Search</h1>
+<BaseLayout
+  title={query ? `Search results for "${query}" — Tailor Education` : 'Search — Tailor Education'}
+  description="Search questions, glossary terms, topics, blog posts and services across Tailor Education and Okay to Ask."
+  noIndex
+>
+  <section class="mx-auto max-w-4xl" style={`padding: var(--space-global-xl) var(--space-global-gutter);`}>
+    <h1
+      class="search-page__title"
+      style={`font-family: var(--font-tailor-heading-stack); font-size: var(--text-display-size-h2); font-weight: var(--heading-weight-h2); color: var(--text-heading); margin-bottom: var(--space-global-md);`}
+    >
+      Search
+    </h1>
+
+    <!-- Search input -->
+    <div
+      class="search-page__input-wrap"
+      style={`display: flex; align-items: center; gap: var(--space-global-xs); background: var(--bg-surface-alt); border: var(--border-width-sm) solid var(--border-subtle); border-radius: var(--radius-base); padding: var(--space-global-sm) var(--space-global-md); margin-bottom: var(--space-global-lg);`}
+    >
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" style={`flex-shrink: 0; color: var(--text-body-muted);`}>
+        <circle cx="8.5" cy="8.5" r="5.75" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M13 13L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <input
+        type="search"
+        id="search-page-input"
+        value={query}
+        placeholder="Search questions, topics, glossary..."
+        autocomplete="off"
+        aria-label="Search"
+        style={`flex: 1; border: none; background: transparent; font-family: var(--font-shell-body-stack); font-size: var(--text-prose-size-body); color: var(--text-body); outline: none; padding: 0;`}
+      />
+    </div>
+
+    <!-- Results container -->
+    <div id="search-page-results"></div>
+
+    <!-- No results template -->
+    <div id="search-page-empty" hidden>
+      <p style={`font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); color: var(--text-body-muted); text-align: center; padding: var(--space-global-xl) 0;`}>
+        No results for &ldquo;<span id="search-page-empty-query"></span>&rdquo;. Try a different search, or
+        <a href="/topics/" style={`color: var(--link-action-color);`}>browse by topic &rarr;</a>
+      </p>
+    </div>
+  </section>
+
+  <script is:inline>
+    async function initSearchPage() {
+      var input = document.getElementById('search-page-input');
+      var resultsContainer = document.getElementById('search-page-results');
+      var emptyState = document.getElementById('search-page-empty');
+      var emptyQuery = document.getElementById('search-page-empty-query');
+      if (!input || !resultsContainer) return;
+
+      var pagefind = null;
+
+      async function loadPagefind() {
+        if (pagefind) return pagefind;
+        try {
+          pagefind = await import('/pagefind/pagefind.js');
+          await pagefind.init();
+        } catch (e) {
+          pagefind = null;
+        }
+        return pagefind;
+      }
+
+      var typeLabels = {
+        'anonymous_question': 'Questions',
+        'glossary': 'Glossary',
+        'topics': 'Topics',
+        'blog': 'Blog',
+        'services': 'Services',
+      };
+
+      var typeOrder = ['anonymous_question', 'glossary', 'topics', 'blog', 'services', 'other'];
+
+      function getContentType(url) {
+        if (url.includes('/anonymous_question/')) return 'anonymous_question';
+        if (url.includes('/glossary/')) return 'glossary';
+        if (url.includes('/topics/')) return 'topics';
+        if (url.includes('/blog/')) return 'blog';
+        if (url.includes('/services/') || url.includes('/training')) return 'services';
+        return 'other';
+      }
+
+      async function doSearch(query) {
+        if (!query || query.length < 1) {
+          resultsContainer.innerHTML = '';
+          if (emptyState) emptyState.setAttribute('hidden', '');
+          return;
+        }
+
+        var pf = await loadPagefind();
+        if (!pf) {
+          resultsContainer.innerHTML = '<p style="color: var(--text-body-muted); font-family: var(--font-tailor-body-stack);">Search is not available in development mode. Build the site to generate the search index.</p>';
+          return;
+        }
+
+        var search = await pf.search(query);
+        var results = await Promise.all(
+          search.results.map(function(r) { return r.data(); })
+        );
+
+        if (typeof window.trackEvent === 'function') {
+          window.trackEvent('site_search_query', {
+            query: query,
+            result_count: search.results.length,
+            source_page: window.location.pathname,
+          });
+        }
+
+        if (results.length === 0) {
+          resultsContainer.innerHTML = '';
+          if (emptyQuery) emptyQuery.textContent = query;
+          if (emptyState) emptyState.removeAttribute('hidden');
+          return;
+        }
+
+        if (emptyState) emptyState.setAttribute('hidden', '');
+
+        var grouped = {};
+        for (var i = 0; i < results.length; i++) {
+          var r = results[i];
+          var type = getContentType(r.url);
+          if (!grouped[type]) grouped[type] = [];
+          grouped[type].push(r);
+        }
+
+        var html = '';
+        var sortedTypes = typeOrder.filter(function(t) { return grouped[t]; });
+
+        for (var si = 0; si < sortedTypes.length; si++) {
+          var type = sortedTypes[si];
+          var items = grouped[type];
+          var label = typeLabels[type] || 'Other';
+          var showLimit = 5;
+          var hasMore = items.length > showLimit;
+          var groupId = 'group-' + type;
+
+          html += '<div style="margin-bottom: var(--space-global-lg);">';
+          html += '<h2 style="font-family: var(--font-tailor-heading-stack); font-size: var(--text-prose-size-h3); font-weight: var(--heading-weight-h3); color: var(--text-heading); margin-bottom: var(--space-global-sm); padding-bottom: var(--space-global-xs); border-bottom: var(--border-width-xs) solid var(--border-subtle);">' + label + ' <span style="font-weight: 400; color: var(--text-body-muted); font-size: var(--text-card-size-body);">(' + items.length + ')</span></h2>';
+
+          for (var j = 0; j < items.length; j++) {
+            var item = items[j];
+            var hiddenAttr = j >= showLimit ? 'style="display:none;" data-group="' + groupId + '"' : '';
+            html += '<a href="' + item.url + '" class="search-page__result" ' + hiddenAttr
+              + ' data-query="' + query + '" data-type="' + type + '" data-position="' + (j + 1) + '"'
+              + ' style="display: block; padding: var(--space-global-sm) 0; border-bottom: var(--border-width-xs) solid var(--border-subtle); text-decoration: none; color: var(--text-body);">'
+              + '<span style="display: block; font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); font-weight: 500; color: var(--text-heading);">' + ((item.meta && item.meta.title) || item.url) + '</span>'
+              + '<span style="display: block; font-size: var(--text-card-size-body); color: var(--text-body-muted); margin-top: 0.25rem;">' + (item.excerpt || '') + '</span>'
+              + '</a>';
+          }
+
+          if (hasMore) {
+            html += '<button type="button" data-toggle="' + groupId + '" style="margin-top: var(--space-global-sm); font-family: var(--font-shell-body-stack); font-size: var(--text-card-size-body); font-weight: 500; color: var(--link-action-color); background: none; border: none; cursor: pointer; padding: 0;">Show all ' + items.length + ' results</button>';
+          }
+
+          html += '</div>';
+        }
+
+        resultsContainer.innerHTML = html;
+
+        resultsContainer.querySelectorAll('[data-toggle]').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var gid = btn.getAttribute('data-toggle');
+            resultsContainer.querySelectorAll('[data-group="' + gid + '"]').forEach(function(el) {
+              el.style.display = '';
+            });
+            btn.remove();
+          });
+        });
+
+        resultsContainer.querySelectorAll('.search-page__result').forEach(function(el) {
+          el.addEventListener('click', function() {
+            if (typeof window.trackEvent === 'function') {
+              window.trackEvent('site_search_result_click', {
+                query: el.getAttribute('data-query'),
+                result_slug: el.getAttribute('href'),
+                result_type: el.getAttribute('data-type'),
+                position: Number(el.getAttribute('data-position')),
+              });
+            }
+          }, { once: true });
+        });
+
+        var url = new URL(window.location.href);
+        url.searchParams.set('q', query);
+        history.replaceState(null, '', url.toString());
+      }
+
+      var timer;
+      input.addEventListener('input', function() {
+        clearTimeout(timer);
+        timer = setTimeout(function() { doSearch(input.value.trim()); }, 300);
+      });
+
+      if (input.value.trim()) {
+        doSearch(input.value.trim());
+      }
+
+      input.focus();
+    }
+
+    initSearchPage();
+    document.addEventListener('astro:after-swap', initSearchPage);
+  </script>
 </BaseLayout>

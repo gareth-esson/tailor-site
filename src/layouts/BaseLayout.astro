@@ -3,13 +3,34 @@ import '../styles/tailwind.css';
 import '../styles/tailor-site-v2.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import Analytics from '../components/Analytics.astro';
 
 interface Props {
   title: string;
+  description?: string;
+  canonicalPath?: string;
+  ogImage?: string;
+  ogType?: string;
   layer?: 'tailor' | 'ota';
+  jsonLd?: Record<string, unknown>;
+  noIndex?: boolean;
 }
 
-const { title, layer = 'tailor' } = Astro.props;
+const {
+  title,
+  description = 'Expert RSE resources, training and support for schools — from Tailor Education and Okay to Ask.',
+  canonicalPath,
+  ogImage = '/assets/tailor-og-default.png',
+  ogType = 'website',
+  layer = 'tailor',
+  jsonLd,
+  noIndex = false,
+} = Astro.props;
+
+const siteUrl = 'https://tailoreducation.org.uk';
+const canonical = canonicalPath ? `${siteUrl}${canonicalPath}` : `${siteUrl}${Astro.url.pathname}`;
+const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`;
+const ga4Id = import.meta.env.GA4_MEASUREMENT_ID || '';
 ---
 
 <html lang="en">
@@ -17,6 +38,29 @@ const { title, layer = 'tailor' } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    {noIndex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={fullOgImage} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="Tailor Education" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={fullOgImage} />
+
+    <!-- JSON-LD structured data -->
+    {jsonLd && (
+      <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    )}
 
     <!-- Simple Mode: check preference before first paint to prevent flash of wrong content -->
     <script is:inline>
@@ -31,6 +75,21 @@ const { title, layer = 'tailor' } = Astro.props;
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,100..900,0..100,0..1;1,9..144,100..900,0..100,0..1&display=swap" rel="stylesheet" />
+
+
+    <!-- GA4 -->
+    {ga4Id && (
+      <Fragment>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`}></script>
+        <script is:inline define:vars={{ ga4Id }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', ga4Id);
+          window.gtag = gtag;
+        </script>
+      </Fragment>
+    )}
   </head>
   <body>
     <SiteHeader />
@@ -40,5 +99,15 @@ const { title, layer = 'tailor' } = Astro.props;
     </main>
 
     <SiteFooter />
+    <Analytics />
+
+    <!-- Analytics helper -->
+    <script is:inline>
+      window.trackEvent = function(eventName, params) {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', eventName, params);
+        }
+      };
+    </script>
   </body>
 </html>

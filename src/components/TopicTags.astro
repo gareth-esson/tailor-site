@@ -33,6 +33,8 @@ const badgeSuffix = topic.category ? categoryBadgeMap[topic.category] : null;
       href={`/topics/${topic.slug}`}
       class:list={['badge', 'badge--pill', badgeSuffix && `badge--${badgeSuffix}`]}
       style="text-decoration: none;"
+      data-analytics-event="question_to_topic_click"
+      data-analytics-topic-slug={topic.slug}
     >
       {topic.name}
     </a>

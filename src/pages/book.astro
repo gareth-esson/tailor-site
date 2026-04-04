@@ -6,6 +6,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getQuestions } from '../lib/content';
 
+export const prerender = true;
+
 const allQuestions = await getQuestions();
 // Sample 3 questions with post-it scans for the preview section
 const sampleQuestions = allQuestions
@@ -13,7 +15,12 @@ const sampleQuestions = allQuestions
   .slice(0, 3);
 ---
 
-<BaseLayout title="The Okay to Ask Book — Tailor Education" layer="ota">
+<BaseLayout
+  title="The Okay to Ask Book — Tailor Education"
+  description="The Okay to Ask book — honest answers to real questions about relationships, sex, and growing up."
+  canonicalPath="/book"
+  layer="ota"
+>
   <article class="book-page">
     <!-- 1. Hero -->
     <section class="book-hero surface--ota">

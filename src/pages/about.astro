@@ -4,9 +4,15 @@
  * Mission, team, Okay to Ask project, framework alignment. Tailor layer.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+export const prerender = true;
 ---
 
-<BaseLayout title="About — Tailor Education">
+<BaseLayout
+  title="About — Tailor Education"
+  description="Tailor Education creates expert RSE resources, training and support for schools. Meet the team and learn about Okay to Ask."
+  canonicalPath="/about"
+>
   <article class="about-page">
     <!-- 1. Tailor Education -->
     <section class="about-hero">

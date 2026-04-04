@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://tailoreducation.org.uk/sitemap.xml

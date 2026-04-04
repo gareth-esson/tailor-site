@@ -4,15 +4,18 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && npx pagefind --site dist/client --output-path dist/client/pagefind",
+    "build:index": "npx pagefind --site dist/client --output-path dist/client/pagefind",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.2",
     "@astrojs/vercel": "^10.0.4",
     "@notionhq/client": "^5.16.0",
     "@tailwindcss/vite": "^4.2.2",
     "astro": "^6.1.3",
+    "pagefind": "^1.4.0",
     "tailwindcss": "^4.2.2"
   }
 }

@@ -5,6 +5,8 @@
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 
+export const prerender = true;
+
 const testimonials = [
   { quote: 'The sessions were exactly what our students needed. Delivered with sensitivity, honesty, and real expertise.', name: 'Head of PSHE', school: 'Secondary school, West Midlands', service: 'Direct RSE delivery' },
   { quote: 'Gareth helped us develop an RSE policy that our governors, staff, and parents all felt confident about.', name: 'Headteacher', school: 'Primary school, London', service: 'RSE policy & curriculum planning' },
@@ -15,7 +17,11 @@ const testimonials = [
 ];
 ---
 
-<BaseLayout title="Testimonials — Tailor Education">
+<BaseLayout
+  title="Testimonials �� Tailor Education"
+  description="What schools say about working with Tailor Education — testimonials from teachers and school leaders."
+  canonicalPath="/testimonials"
+>
   <section class="testimonials-page">
     <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
       <h1 class="testimonials-page__title">What schools say</h1>

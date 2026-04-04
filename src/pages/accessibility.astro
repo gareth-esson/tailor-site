@@ -4,9 +4,15 @@
  * Statement page. Simple Mode feature, inclusive language, WCAG, safeguarding. Tailor layer.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+export const prerender = true;
 ---
 
-<BaseLayout title="Accessibility & Inclusivity — Tailor Education">
+<BaseLayout
+  title="Accessibility & Inclusivity — Tailor Education"
+  description="Tailor Education's accessibility statement — Simple Mode, inclusive language, WCAG compliance and safeguarding."
+  canonicalPath="/accessibility"
+>
   <article class="text-page">
     <div class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
       <h1 class="text-page__title">Accessibility & inclusivity</h1>

@@ -5,6 +5,8 @@
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
+export const prerender = true;
+
 const services = [
   {
     title: 'Direct RSE delivery',
@@ -29,7 +31,18 @@ const services = [
 ];
 ---
 
-<BaseLayout title="RSE Services for Schools — Tailor Education">
+<BaseLayout
+  title="RSE Services for Schools — Tailor Education"
+  description="Expert RSE delivery, training, drop days and curriculum planning for schools. Explore Tailor Education's full range of services."
+  canonicalPath="/services/"
+  jsonLd={{
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: 'RSE Services for Schools',
+    description: 'Expert RSE delivery, training, drop days and curriculum planning for schools.',
+    provider: { '@type': 'Organization', name: 'Tailor Education', url: 'https://tailoreducation.org.uk' },
+  }}
+>
   <section class="services-hub">
     <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
       <h1 class="services-hub__title">RSE services for schools</h1>

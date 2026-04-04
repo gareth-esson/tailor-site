@@ -6,11 +6,17 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import EnquiryForm from '../components/EnquiryForm.astro';
 
+export const prerender = true;
+
 // Pre-fill from URL param (handled client-side in EnquiryForm)
 const serviceParam = Astro.url.searchParams.get('service') || undefined;
 ---
 
-<BaseLayout title="Contact — Tailor Education">
+<BaseLayout
+  title="Contact — Tailor Education"
+  description="Get in touch with Tailor Education to discuss RSE training, delivery, and support for your school."
+  canonicalPath="/contact"
+>
   <section class="contact-page">
     <div class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
       <h1 class="contact-page__title">Get in touch</h1>

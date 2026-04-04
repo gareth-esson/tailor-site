@@ -1,0 +1,46 @@
+{
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "oktoask.co.uk" }],
+      "destination": "https://tailoreducation.org.uk/questions/",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "oktoask.org.uk" }],
+      "destination": "https://tailoreducation.org.uk/questions/",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "okaytoask.co.uk" }],
+      "destination": "https://tailoreducation.org.uk/questions/",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "okaytoask.org.uk" }],
+      "destination": "https://tailoreducation.org.uk/questions/",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "nosillyquestions.co.uk" }],
+      "destination": "https://tailoreducation.org.uk/questions/",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "nosillyquestions.org.uk" }],
+      "destination": "https://tailoreducation.org.uk/questions/",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "tailor-rse.co.uk" }],
+      "destination": "https://tailoreducation.org.uk/$1",
+      "permanent": true
+    }
+  ]
+}

@@ -36,7 +36,13 @@ if (!service) return;
             {' — '}
           </>
         )}
-        <a href={service.url} target="_blank" rel="noopener noreferrer">{service.urlLabel}</a>
+        <a
+          href={service.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-analytics-event="crisis_support_click"
+          data-analytics-service-name={service.name}
+        >{service.urlLabel}</a>
       </p>
     </div>
   </div>

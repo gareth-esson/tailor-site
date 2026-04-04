@@ -7,6 +7,8 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getBlogPosts } from '../../lib/content';
 
+export const prerender = true;
+
 const posts = await getBlogPosts();
 
 // Sort by title for now (dates not yet in Notion schema)
@@ -16,7 +18,11 @@ const sortedPosts = [...posts].sort((a, b) => a.title.localeCompare(b.title));
 const audiences = [...new Set(posts.map((p) => p.targetAudience).filter(Boolean))] as string[];
 ---
 
-<BaseLayout title="Blog — Tailor Education">
+<BaseLayout
+  title="Blog — Tailor Education"
+  description="Expert RSE articles, guides, and insights for teachers — from Tailor Education."
+  canonicalPath="/blog/"
+>
   <section class="blog-index">
     <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
       <h1 class="blog-index__title">Blog</h1>

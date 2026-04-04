@@ -31,6 +31,19 @@ interface Props {
 
 const { term, glossaryIndex } = Astro.props;
 
+// SEO metadata
+const metaTitle = term.metaTitle || `What is ${term.term}? | Tailor Education`;
+const metaDescription = term.metaDescription || term.shortDefinition || `Learn the meaning of ${term.term} — clear, age-appropriate RSE glossary from Tailor Education.`;
+const canonicalPath = `/glossary/${term.slug}/`;
+
+// JSON-LD — DefinedTerm
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'DefinedTerm',
+  name: term.term,
+  description: term.shortDefinition,
+};
+
 // --- Data preparation ---
 
 // Render standard explainer body with glossary tooltips
@@ -56,8 +69,14 @@ const topicName = term.topic?.name || '';
 const topicSlug = term.topic?.slug || '';
 ---
 
-<BaseLayout title={`${term.term} — Glossary — Tailor Education`} layer="ota">
-  <article class="surface--ota">
+<BaseLayout
+  title={metaTitle}
+  description={metaDescription}
+  canonicalPath={canonicalPath}
+  layer="ota"
+  jsonLd={jsonLd}
+>
+  <article class="surface--ota" data-pagefind-body>
     <div class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
       {/* Term heading */}
       <h1>{term.term}</h1>

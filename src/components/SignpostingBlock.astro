@@ -36,7 +36,13 @@ if (resolvedServices.length === 0) return;
           {svc.phone && (
             <> Call free: <a href={`tel:${svc.phone.replace(/\s/g, '')}`}>{svc.phone}</a>.</>
           )}
-          {' '}<a href={svc.url} target="_blank" rel="noopener noreferrer">{svc.urlLabel}</a>
+          {' '}<a
+            href={svc.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-analytics-event="signposting_click"
+            data-analytics-service-name={svc.name}
+          >{svc.urlLabel}</a>
         </p>
       ))}
     </div>

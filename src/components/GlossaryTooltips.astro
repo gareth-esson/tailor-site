@@ -28,7 +28,9 @@
       tooltip.innerHTML = `
         <div class="glossary-tooltip__content">
           <p>${definition}</p>
-          <a href="/glossary/${slug}" class="glossary-tooltip__link">Read more &rarr;</a>
+          <a href="/glossary/${slug}" class="glossary-tooltip__link"
+             data-analytics-event="glossary_tooltip_click"
+             data-analytics-term-slug="${slug}">Read more &rarr;</a>
         </div>
       `;
 

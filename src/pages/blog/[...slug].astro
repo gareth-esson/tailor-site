@@ -53,13 +53,38 @@ interface Props {
 
 const { post, relatedPosts, primaryTopic, glossaryIndex } = Astro.props;
 
+// SEO metadata
+const metaTitle = post.metaTitle || `${post.title} | Tailor Education`;
+const metaDescription = post.metaDescription || `${post.title} — expert RSE guidance for teachers from Tailor Education.`;
+const canonicalPath = `/blog/${post.slug}/`;
+
+// JSON-LD — Article
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: post.title,
+  author: post.author ? { '@type': 'Person', name: post.author } : undefined,
+  publisher: {
+    '@type': 'Organization',
+    name: 'Tailor Education',
+    url: 'https://tailoreducation.org.uk',
+  },
+  articleSection: post.topics.map((t) => t.title).join(', ') || undefined,
+};
+
 // Render body content with glossary tooltips
 const bodyHtml = renderBlocks(post.body);
 const bodyWithTooltips = injectGlossaryTooltips(bodyHtml, glossaryIndex, undefined);
 ---
 
-<BaseLayout title={`${post.title} — Blog — Tailor Education`}>
-  <article class="blog-post">
+<BaseLayout
+  title={metaTitle}
+  description={metaDescription}
+  canonicalPath={canonicalPath}
+  ogType="article"
+  jsonLd={jsonLd}
+>
+  <article class="blog-post" data-pagefind-body>
     <!-- 1. Title -->
     <header class="blog-post__header">
       <div class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
@@ -77,12 +102,24 @@ const bodyWithTooltips = injectGlossaryTooltips(bodyHtml, glossaryIndex, undefin
         {post.topics.length > 0 && (
           <div class="blog-post__tags">
             {post.topics.map((t) => (
-              <a href={`/topics/${t.slug}`} class="blog-post__tag">
+              <a
+                href={`/topics/${t.slug}`}
+                class="blog-post__tag"
+                data-analytics-event="blog_to_topic_click"
+                data-analytics-blog-slug={post.slug}
+                data-analytics-topic-slug={t.slug}
+              >
                 {t.title}
               </a>
             ))}
             {post.secondaryTopics.map((t) => (
-              <a href={`/topics/${t.slug}`} class="blog-post__tag blog-post__tag--secondary">
+              <a
+                href={`/topics/${t.slug}`}
+                class="blog-post__tag blog-post__tag--secondary"
+                data-analytics-event="blog_to_topic_click"
+                data-analytics-blog-slug={post.slug}
+                data-analytics-topic-slug={t.slug}
+              >
                 {t.title}
               </a>
             ))}

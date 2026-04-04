@@ -26,7 +26,16 @@ const appUrl = `https://app.tailoreducation.org.uk/library?topics=${filterParam}
           Browse expert-written RSE lessons in the Tailor library, ready to use with your students.
         </p>
       </div>
-      <a href={appUrl} class="btn btn--std btn--primary has-icon-hover" target="_blank" rel="noopener noreferrer">
+      <a
+        href={appUrl}
+        class="btn btn--std btn--primary has-icon-hover"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-analytics-event="cta_click,topic_to_app_click"
+        data-analytics-cta-type="explore_lessons"
+        data-analytics-topic-slug={topicSlugs[0] || ''}
+        data-analytics-target={appUrl}
+      >
         Explore lessons
       </a>
     </div>

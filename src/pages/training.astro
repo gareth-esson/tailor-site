@@ -5,10 +5,23 @@
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../components/CtaServiceEnquiry.astro';
+
+export const prerender = true;
 ---
 
-<BaseLayout title="RSE Training — Tailor Education">
-  <article class="training-page">
+<BaseLayout
+  title="RSE Training for Teachers — Tailor Education"
+  description="Practical, evidence-based RSE training for teachers. CPD-accredited workshops, INSET days, and bespoke training from Tailor Education."
+  canonicalPath="/training"
+  jsonLd={{
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: 'RSE Training for Teachers',
+    description: 'Practical, evidence-based RSE training for teachers.',
+    provider: { '@type': 'Organization', name: 'Tailor Education', url: 'https://tailoreducation.org.uk' },
+  }}
+>
+  <article class="training-page" data-pagefind-body>
     <header class="training-hero">
       <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
         <h1 class="training-hero__title">RSE training for teachers</h1>

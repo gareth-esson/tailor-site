@@ -87,9 +87,37 @@ const categoryBadgeMap: Record<string, string> = {
 const categoryBadge = question.okayToAskCategory
   ? categoryBadgeMap[question.okayToAskCategory]
   : null;
+
+// SEO metadata
+const metaTitle = question.metaTitle || `${question.question} | Okay to Ask`;
+const metaDescription = question.metaDescription
+  || question.simpleAnswer?.slice(0, 155)
+  || `Find the answer to "${question.question}" — honest, age-appropriate RSE from Okay to Ask.`;
+const canonicalPath = `/anonymous_question/${question.slug}/`;
+
+// JSON-LD — FAQPage structured data
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [{
+    '@type': 'Question',
+    name: question.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: question.simpleAnswer || metaDescription,
+    },
+  }],
+};
 ---
 
-<BaseLayout title={`${question.question} — Okay to Ask`} layer="ota">
+<BaseLayout
+  title={metaTitle}
+  description={metaDescription}
+  canonicalPath={canonicalPath}
+  ogType="article"
+  layer="ota"
+  jsonLd={jsonLd}
+>
   {/* Crisis support [A9] — above everything */}
   {showCrisis && <CrisisSupport crisisService={crisisService} />}
 
@@ -98,7 +126,14 @@ const categoryBadge = question.okayToAskCategory
     <AgeFlag topicLabel={question.topic.name} topicSlug={question.topic.slug} />
   )}
 
-  <article class="surface--ota">
+  <article
+    class="surface--ota"
+    data-pagefind-body
+    data-page-type="question"
+    data-slug={question.slug}
+    data-topic={topicName}
+    data-age-tier={question.ageTier || ''}
+  >
     <div class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
       {/* Category badge */}
       {question.okayToAskCategory && (

@@ -159,6 +159,19 @@ const serviceOptions = [
       }
     }
 
+    // Track form focus (enquiry started)
+    let startedTracked = false;
+    form.addEventListener('focusin', () => {
+      if (!startedTracked && typeof window.trackEvent === 'function') {
+        const serviceVal = (form.querySelector('#enquiry-service') as HTMLSelectElement)?.value || '';
+        window.trackEvent('service_enquiry_started', {
+          service_type: serviceVal,
+          source_page: window.location.pathname,
+        });
+        startedTracked = true;
+      }
+    });
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       errorEl.hidden = true;
@@ -221,6 +234,12 @@ const serviceOptions = [
         if (response.ok) {
           form.hidden = true;
           successEl.hidden = false;
+          if (typeof window.trackEvent === 'function') {
+            window.trackEvent('service_enquiry_submitted', {
+              service_type: data.get('service') as string,
+              source_page: window.location.pathname,
+            });
+          }
         } else {
           throw new Error('Failed');
         }

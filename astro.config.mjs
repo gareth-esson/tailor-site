@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
+import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
   output: 'server',
@@ -8,5 +9,95 @@ export default defineConfig({
   site: 'https://tailoreducation.org.uk',
   vite: {
     plugins: [tailwindcss()],
+  },
+  integrations: [
+    sitemap({
+      filter: (page) =>
+        !page.includes('/test-') &&
+        !page.includes('/api/'),
+    }),
+  ],
+  redirects: {
+    // WordPress migration — /topic/ → /topics/
+    '/topic/[...slug]': {
+      status: 301,
+      destination: '/topics/[...slug]',
+    },
+    // WordPress category pages → topics index
+    '/category/relationships': {
+      status: 301,
+      destination: '/topics/',
+    },
+    '/category/puberty-the-body': {
+      status: 301,
+      destination: '/topics/',
+    },
+    '/category/sex-sexual-health': {
+      status: 301,
+      destination: '/topics/',
+    },
+    '/category/identity-diversity': {
+      status: 301,
+      destination: '/topics/',
+    },
+    '/category/online-safety-media': {
+      status: 301,
+      destination: '/topics/',
+    },
+    '/category/safety-safeguarding': {
+      status: 301,
+      destination: '/topics/',
+    },
+    '/category/health-wellbeing': {
+      status: 301,
+      destination: '/topics/',
+    },
+    '/category/[...slug]': {
+      status: 301,
+      destination: '/topics/',
+    },
+    // Common WordPress pages
+    '/about-us': {
+      status: 301,
+      destination: '/about',
+    },
+    '/contact-us': {
+      status: 301,
+      destination: '/contact',
+    },
+    '/rse-training': {
+      status: 301,
+      destination: '/training',
+    },
+    '/our-services': {
+      status: 301,
+      destination: '/services/',
+    },
+    '/glossary': {
+      status: 301,
+      destination: '/topics/',
+    },
+    '/blog/page/[...num]': {
+      status: 301,
+      destination: '/blog/',
+    },
+    // WordPress feed URLs
+    '/feed': {
+      status: 301,
+      destination: '/',
+    },
+    '/feed/[...rest]': {
+      status: 301,
+      destination: '/',
+    },
+    // WordPress author/tag archives
+    '/author/[...slug]': {
+      status: 301,
+      destination: '/about',
+    },
+    '/tag/[...slug]': {
+      status: 301,
+      destination: '/topics/',
+    },
   },
 });

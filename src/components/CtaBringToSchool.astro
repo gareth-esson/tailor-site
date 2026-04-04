@@ -30,7 +30,14 @@ const target = targetMap[serviceTarget || ''] || targetMap['training'];
       <p class="cta-school__text">
         Expert-led RSE sessions delivered directly to your students, or training for your staff to deliver with confidence.
       </p>
-      <a href={target.href} class="btn btn--std btn--primary has-icon-hover">
+      <a
+        href={target.href}
+        class="btn btn--std btn--primary has-icon-hover"
+        data-analytics-event="cta_click,topic_to_service_click"
+        data-analytics-cta-type="bring_to_school"
+        data-analytics-service-type={serviceTarget || 'training'}
+        data-analytics-target={target.href}
+      >
         {target.label}
       </a>
     </div>

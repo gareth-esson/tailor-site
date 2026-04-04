@@ -8,12 +8,25 @@ import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
 import TopicsOverviewGrid from '../../components/TopicsOverviewGrid.astro';
 import { getBlogPosts } from '../../lib/content';
 
+export const prerender = true;
+
 const allPosts = await getBlogPosts();
 const relatedPosts = allPosts.filter((p) => p.serviceLink === 'delivery');
 ---
 
-<BaseLayout title="Direct RSE Delivery — Tailor Education">
-  <article class="service-page">
+<BaseLayout
+  title="Direct RSE Delivery — RSE for Schools | Tailor Education"
+  description="A specialist RSE educator delivers lessons directly to your students, tailored to your school's needs and curriculum."
+  canonicalPath="/services/delivery"
+  jsonLd={{
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: 'Direct RSE Delivery',
+    description: 'A specialist RSE educator delivers lessons directly to your students.',
+    provider: { '@type': 'Organization', name: 'Tailor Education', url: 'https://tailoreducation.org.uk' },
+  }}
+>
+  <article class="service-page" data-pagefind-body>
     <!-- 1. Service name + headline -->
     <header class="service-page__header">
       <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">

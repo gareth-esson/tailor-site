@@ -35,6 +35,10 @@ const service = hasService ? serviceMap[serviceLink!] : null;
         <a
           href={`/contact?service=${encodeURIComponent(service.param)}`}
           class="btn btn--std btn--primary has-icon-hover"
+          data-analytics-event="cta_click"
+          data-analytics-cta-type="blog_to_service"
+          data-analytics-service-type={serviceLink}
+          data-analytics-target={`/contact?service=${encodeURIComponent(service.param)}`}
         >
           Get in touch
         </a>
@@ -47,7 +51,13 @@ const service = hasService ? serviceMap[serviceLink!] : null;
       <div class="cta-blog-bottom__card">
         <h2 class="cta-blog-bottom__title">Explore lessons on {primaryTopic.title}</h2>
         <p class="cta-blog-bottom__text">Browse expert-written RSE lessons in the Tailor library.</p>
-        <a href={`/topics/${primaryTopic.slug}`} class="btn btn--std btn--primary has-icon-hover">
+        <a
+          href={`/topics/${primaryTopic.slug}`}
+          class="btn btn--std btn--primary has-icon-hover"
+          data-analytics-event="cta_click"
+          data-analytics-cta-type="blog_to_app"
+          data-analytics-target={`/topics/${primaryTopic.slug}`}
+        >
           Explore topic
         </a>
       </div>

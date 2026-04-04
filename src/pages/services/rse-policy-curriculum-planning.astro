@@ -8,12 +8,25 @@ import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
 import TopicsOverviewGrid from '../../components/TopicsOverviewGrid.astro';
 import { getBlogPosts } from '../../lib/content';
 
+export const prerender = true;
+
 const allPosts = await getBlogPosts();
 const relatedPosts = allPosts.filter((p) => p.serviceLink === 'rse-policy-curriculum-planning');
 ---
 
-<BaseLayout title="RSE Policy & Curriculum Planning — Tailor Education">
-  <article class="service-page">
+<BaseLayout
+  title="RSE Policy & Curriculum Planning — RSE for Schools | Tailor Education"
+  description="Expert guidance to develop your RSE policy, plan your curriculum, and communicate your approach to parents."
+  canonicalPath="/services/rse-policy-curriculum-planning"
+  jsonLd={{
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: 'RSE Policy & Curriculum Planning',
+    description: 'Expert guidance to develop your RSE policy, plan your curriculum, and communicate your approach to parents.',
+    provider: { '@type': 'Organization', name: 'Tailor Education', url: 'https://tailoreducation.org.uk' },
+  }}
+>
+  <article class="service-page" data-pagefind-body>
     <header class="service-page__header">
       <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
         <span class="service-page__eyebrow">Services</span>

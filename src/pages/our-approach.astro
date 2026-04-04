@@ -4,9 +4,15 @@
  * Trust page: content methodology, framework alignment, safeguarding, inclusivity. Tailor layer.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+export const prerender = true;
 ---
 
-<BaseLayout title="Our Approach — Tailor Education">
+<BaseLayout
+  title="Our Approach — Tailor Education"
+  description="How Tailor Education creates RSE content — our methodology, framework alignment, safeguarding practices and inclusive approach."
+  canonicalPath="/our-approach"
+>
   <article class="approach-page">
     <section class="approach-hero">
       <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">

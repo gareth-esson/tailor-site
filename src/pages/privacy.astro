@@ -4,9 +4,15 @@
  * Standard text page. Required for GA4 and localStorage. Tailor layer.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+export const prerender = true;
 ---
 
-<BaseLayout title="Privacy Policy — Tailor Education">
+<BaseLayout
+  title="Privacy Policy — Tailor Education"
+  description="Tailor Education's privacy policy — how we use cookies, analytics, and handle your data."
+  canonicalPath="/privacy"
+>
   <article class="text-page">
     <div class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
       <h1 class="text-page__title">Privacy policy</h1>

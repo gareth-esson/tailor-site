@@ -1,0 +1,67 @@
+---
+/**
+ * GA4 analytics event bindings.
+ * Attaches event listeners to interactive elements across the site.
+ * Reads data-analytics-* attributes to fire appropriate events.
+ *
+ * Usage: Add data attributes to elements:
+ *   data-analytics-event="cta_click"
+ *   data-analytics-cta-type="explore_lessons"
+ *   data-analytics-source-page="/topics/puberty"
+ *   data-analytics-target="/app"
+ */
+---
+
+<script>
+  function initAnalytics() {
+    // Skip if gtag not loaded
+    if (typeof window.trackEvent !== 'function') return;
+
+    const page = window.location.pathname;
+
+    // --- Question page view ---
+    const questionPage = document.querySelector('[data-page-type="question"]');
+    if (questionPage) {
+      window.trackEvent('question_page_view', {
+        slug: questionPage.getAttribute('data-slug'),
+        topic: questionPage.getAttribute('data-topic'),
+        age_tier: questionPage.getAttribute('data-age-tier'),
+        source: document.referrer ? new URL(document.referrer).hostname : 'direct',
+      });
+    }
+
+    // --- Delegated click tracking ---
+    document.addEventListener('click', (e) => {
+      const target = (e.target as HTMLElement).closest('[data-analytics-event]') as HTMLElement | null;
+      if (!target) return;
+
+      const eventNames = target.getAttribute('data-analytics-event');
+      if (!eventNames) return;
+
+      const params: Record<string, string> = {};
+
+      // Collect all data-analytics-* attributes as params
+      for (const attr of target.attributes) {
+        if (attr.name.startsWith('data-analytics-') && attr.name !== 'data-analytics-event') {
+          const key = attr.name
+            .replace('data-analytics-', '')
+            .replace(/-/g, '_');
+          params[key] = attr.value;
+        }
+      }
+
+      // Add source page if not set
+      if (!params.source_page && !params.source_page_slug) {
+        params.source_page_slug = page;
+      }
+
+      // Support comma-separated event names to fire multiple events from one element
+      for (const eventName of eventNames.split(',')) {
+        window.trackEvent(eventName.trim(), params);
+      }
+    });
+  }
+
+  initAnalytics();
+  document.addEventListener('astro:after-swap', initAnalytics);
+</script>

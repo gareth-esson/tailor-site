@@ -26,7 +26,14 @@ const enquiryUrl = `/contact?service=${encodeURIComponent(serviceParam)}`;
           Get in touch to discuss how we can support your school.
         </p>
       </div>
-      <a href={enquiryUrl} class="btn btn--std btn--primary has-icon-hover">
+      <a
+        href={enquiryUrl}
+        class="btn btn--std btn--primary has-icon-hover"
+        data-analytics-event="cta_click"
+        data-analytics-cta-type="enquire_service"
+        data-analytics-service-type={serviceParam}
+        data-analytics-target={enquiryUrl}
+      >
         Get in touch
       </a>
     </div>

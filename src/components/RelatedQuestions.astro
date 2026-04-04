@@ -23,6 +23,8 @@ if (questions.length === 0) return;
           href={`/anonymous_question/${q.slug}`}
           class="link-action"
           style={`display: block; padding: var(--space-global-sm); background: var(--bg-surface); border-radius: var(--radius-md); border: var(--border-width-xs) solid var(--border-subtle); text-decoration: none;`}
+          data-analytics-event="related_question_click"
+          data-analytics-target-slug={q.slug}
         >
           {q.question}
         </a>

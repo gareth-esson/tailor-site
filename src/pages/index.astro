@@ -8,6 +8,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import TopicsOverviewGrid from '../components/TopicsOverviewGrid.astro';
 import { getQuestions } from '../lib/content';
 
+export const prerender = true;
+
 const allQuestions = await getQuestions();
 
 // Featured questions: pick 5 answered questions with post-it scans, spread across categories
@@ -15,7 +17,11 @@ const answered = allQuestions.filter((q) => q.body.length > 0 && q.hasPostItScan
 const featured = answered.slice(0, 5);
 ---
 
-<BaseLayout title="Tailor Education — Expert RSE for schools">
+<BaseLayout
+  title="Tailor Education — Expert RSE for schools"
+  description="Expert RSE resources, training and support for schools. Explore topics, questions from young people, and professional development — from Tailor Education."
+  canonicalPath="/"
+>
   <!-- 1. Teacher pathway hero -->
   <section class="hero-teacher">
     <div class="mx-auto max-w-5xl px-[var(--space-global-gutter)] py-[var(--space-global-2xl)]">

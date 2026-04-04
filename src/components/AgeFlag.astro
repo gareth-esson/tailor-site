@@ -16,6 +16,11 @@ const { topicLabel, topicSlug } = Astro.props;
 ---
 
 <div class="alert alert--ageflag" id="age-flag">
+  <script is:inline>
+    if (typeof window.trackEvent === 'function') {
+      window.trackEvent('age_flag_shown', { question_slug: window.location.pathname.split('/').filter(Boolean).pop() || '' });
+    }
+  </script>
   <div class="alert__icon">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <circle cx="12" cy="12" r="10"></circle>
@@ -30,9 +35,24 @@ const { topicLabel, topicSlug } = Astro.props;
         This answer covers <strong>{topicLabel}</strong> in a way that's suitable for students in Year 9 and above.
         If you're looking for foundational content, try <a href={`/topics/${topicSlug}`}>exploring the {topicLabel} topic page</a>.
       </p>
-      <button type="button" class="btn btn--sm btn--outline" onclick="document.getElementById('age-flag')?.remove()">
-        Continue to answer
-      </button>
+      <div class="flex gap-[var(--space-global-sm)] flex-wrap">
+        <button
+          type="button"
+          class="btn btn--sm btn--outline"
+          data-analytics-event="age_flag_continue"
+          onclick="document.getElementById('age-flag')?.remove()"
+        >
+          Continue to answer
+        </button>
+        <a
+          href={`/topics/${topicSlug}`}
+          class="btn btn--sm btn--tint"
+          data-analytics-event="age_flag_redirect"
+          data-analytics-redirect-slug={topicSlug}
+        >
+          Explore {topicLabel} instead
+        </a>
+      </div>
     </div>
   </div>
 </div>
