@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C6 — Legal / Statement Page Template Wireframe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding: 40px 20px; }
+
+  .wireframe-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #999; margin-bottom: 6px; }
+  .wireframe-title { font-size: 22px; font-weight: 700; color: #222; margin-bottom: 4px; }
+  .wireframe-desc { font-size: 13px; color: #777; margin-bottom: 32px; max-width: 600px; line-height: 1.5; }
+
+  .frame { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; max-width: 720px; margin: 0 auto 48px; }
+  .frame-label { background: #f0f0f0; padding: 8px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ddd; }
+
+  .page-section { padding: 24px; border-bottom: 1px solid #eee; }
+  .page-section:last-of-type { border-bottom: none; }
+
+  .section-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #fff; display: inline-block; padding: 2px 8px; border-radius: 3px; margin-bottom: 12px;
+  }
+  .section-label.core { background: #3a6a8a; }
+  .section-label.component { background: #666; }
+
+  h2.wf { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 6px; }
+  h3.wf { font-size: 15px; font-weight: 600; color: #444; margin-bottom: 6px; }
+  p.wf { font-size: 13px; color: #777; line-height: 1.5; margin-bottom: 10px; }
+  .wf-small { font-size: 11px; color: #999; line-height: 1.5; }
+
+  /* ---- BODY SECTIONS ---- */
+  .body-section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #f0f0f0; }
+  .body-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .body-section h3 { font-size: 14px; font-weight: 700; color: #333; margin-bottom: 6px; }
+  .body-text { font-size: 13px; color: #666; line-height: 1.7; }
+  .body-text.placeholder { color: #aaa; font-style: italic; }
+
+  /* ---- TOC ---- */
+  .toc { background: #fafafa; border: 1px solid #eee; border-radius: 6px; padding: 16px; margin-bottom: 12px; }
+  .toc-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 8px; }
+  .toc-item { font-size: 12px; color: #3a6a8a; margin-bottom: 4px; padding-left: 12px; }
+
+  /* ---- LAST UPDATED ---- */
+  .last-updated { font-size: 11px; color: #aaa; margin-bottom: 16px; }
+
+  /* ---- CONTACT BLOCK ---- */
+  .contact-block {
+    background: #f8f8f8; border: 1px solid #eee; border-radius: 6px; padding: 16px;
+  }
+  .contact-block h3 { font-size: 13px; font-weight: 700; color: #333; margin-bottom: 6px; }
+  .contact-block p { font-size: 12px; color: #666; line-height: 1.6; }
+
+  /* ---- INSTANCE TABS ---- */
+  .instance-tabs { display: flex; gap: 0; margin-bottom: 0; }
+  .instance-tab {
+    padding: 10px 20px; font-size: 12px; font-weight: 600; color: #888;
+    background: #f0f0f0; border: 1px solid #ddd; border-bottom: none;
+    border-radius: 6px 6px 0 0; cursor: pointer;
+  }
+  .instance-tab.active { background: #fff; color: #333; border-bottom: 1px solid #fff; margin-bottom: -1px; }
+
+  /* ---- ANNOTATIONS ---- */
+  .annotations { padding: 16px 24px 20px; background: #fafafa; border-top: 1px solid #eee; }
+  .annotation { display: flex; gap: 8px; margin-bottom: 8px; font-size: 12px; line-height: 1.5; }
+  .annotation-code { font-weight: 700; color: #888; white-space: nowrap; min-width: 30px; }
+  .annotation-text { color: #666; }
+
+  .behaviour-notes {
+    max-width: 720px; margin: 0 auto;
+    background: #fffff0; border: 1px solid #e8e8d0; border-radius: 8px; padding: 16px 20px; margin-bottom: 48px;
+  }
+  .behaviour-notes h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 10px; }
+  .behaviour-notes p { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; }
+
+  .instance-ref {
+    max-width: 720px; margin: 0 auto 48px;
+    background: #f0f4f8; border: 1px solid #d0dce8; border-radius: 8px; padding: 16px 20px;
+  }
+  .instance-ref h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #3a6a8a; margin-bottom: 10px; }
+  .instance-ref table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .instance-ref th { text-align: left; padding: 6px 8px; border-bottom: 2px solid #d0dce8; color: #3a6a8a; font-weight: 600; }
+  .instance-ref td { padding: 6px 8px; border-bottom: 1px solid #e0e8f0; color: #555; vertical-align: top; }
+  .instance-ref td:first-child { font-weight: 600; color: #333; white-space: nowrap; }
+</style>
+</head>
+<body>
+
+<div style="max-width:720px; margin:0 auto 32px;">
+  <div class="wireframe-label">C6 — Wireframe</div>
+  <div class="wireframe-title">Legal / Statement page template</div>
+  <div class="wireframe-desc">
+    Shared template for text-heavy policy and statement pages. Currently two instances: B12 (Privacy policy) and B13 (Accessibility & inclusivity). Simple, readable structure — heading, optional table of contents, sectioned body text, contact block.
+  </div>
+</div>
+
+<!-- ==================== TEMPLATE STRUCTURE ==================== -->
+
+<div class="frame">
+  <div class="frame-label">C6 template — Content hierarchy (single column)</div>
+
+  <!-- HEADER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A1 — Site Header ]</div>
+  </div>
+
+  <!-- 1. PAGE TITLE + LAST UPDATED -->
+  <div class="page-section">
+    <span class="section-label core">1 — Page title</span>
+    <h2 class="wf">[Page title]</h2>
+    <div class="last-updated">Last updated: [date]</div>
+    <div class="wf-small">Clean heading. "Last updated" date is important for legal pages — shows the policy is maintained, not abandoned. Also useful for accessibility statements where compliance evolves.</div>
+  </div>
+
+  <!-- 2. TABLE OF CONTENTS (optional) -->
+  <div class="page-section">
+    <span class="section-label core">2 — Table of contents (optional)</span>
+    <div class="toc">
+      <div class="toc-label">On this page</div>
+      <div class="toc-item">→ [Section heading 1]</div>
+      <div class="toc-item">→ [Section heading 2]</div>
+      <div class="toc-item">→ [Section heading 3]</div>
+      <div class="toc-item">→ [Section heading 4]</div>
+      <div class="toc-item">→ [Contact / feedback]</div>
+    </div>
+    <div class="wf-small">Anchor links to each section below. Optional — use for pages with 4+ sections. Helps users jump to what they need without reading the whole page (nobody reads a privacy policy top to bottom).</div>
+  </div>
+
+  <!-- 3. BODY SECTIONS -->
+  <div class="page-section">
+    <span class="section-label core">3 — Body sections</span>
+
+    <div class="body-section">
+      <h3>[Section heading 1]</h3>
+      <div class="body-text placeholder">Section body text. Plain prose — no bullet points unless genuinely needed (e.g. listing specific data collected). Each section covers one topic and has its own anchor ID for the TOC links above.</div>
+    </div>
+
+    <div class="body-section">
+      <h3>[Section heading 2]</h3>
+      <div class="body-text placeholder">Section body text. Written in clear, plain English — not legalese. These pages should feel like Tailor Education explaining something, not a lawyer covering liability.</div>
+    </div>
+
+    <div class="body-section">
+      <h3>[Section heading 3]</h3>
+      <div class="body-text placeholder">Section body text. Sections are as long or short as needed. Some may be a single paragraph, others several. The template doesn't constrain length — it just provides the heading + body pattern.</div>
+    </div>
+
+    <div class="body-section">
+      <h3>[Section heading 4]</h3>
+      <div class="body-text placeholder">Section body text. More sections can be added as needed — the template is just a repeating heading + body pattern with optional TOC links.</div>
+    </div>
+
+    <div class="wf-small">Each section has an H3 heading and body text. The number of sections varies per instance. The headings act as both visual structure and anchor targets for the TOC.</div>
+  </div>
+
+  <!-- 4. CONTACT / FEEDBACK -->
+  <div class="page-section">
+    <span class="section-label core">4 — Contact / feedback</span>
+    <div class="contact-block">
+      <h3>[Contact heading]</h3>
+      <p>[Contact copy — email link, explanation of what to get in touch about.]</p>
+    </div>
+    <div class="wf-small" style="margin-top:10px;">Every legal/statement page ends with a way to get in touch. For privacy: "request data deletion or ask questions." For accessibility: "tell us if something isn't accessible to you." Always links to email or the contact page (B7).</div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A2 — Site Footer ]</div>
+  </div>
+</div>
+
+<!-- ANNOTATIONS -->
+<div class="frame" style="max-width:720px; margin:-24px auto 48px;">
+  <div class="frame-label">Annotations</div>
+  <div class="annotations" style="border-top:none;">
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Minimal template, maximum readability:</strong> These pages are text-first. No hero images, no cards, no complex layouts. The structure is: title → TOC → sections → contact. That's it. Readability is the only goal.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Plain English:</strong> Both instances should be written in Tailor Education's voice — warm, clear, human. The privacy policy should explain what data is collected and why, not hide behind legal boilerplate. The accessibility statement should feel like a commitment, not a checkbox.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>"Last updated" date:</strong> Essential for legal pages. Shows the content is maintained. For privacy, it signals GDPR compliance. For accessibility, it shows the statement reflects the current site, not a launch-day draft that was never revisited.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>TOC is optional:</strong> Short pages (2–3 sections) don't need a TOC — the content is visible in a single scroll. Longer pages (4+ sections) benefit from it. Both B12 and B13 have 5 sections, so both should use it.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>No Simple Mode:</strong> These pages don't carry Simple Mode. They're not educational content — they're organisational statements. The language should still be clear and accessible, but there's no dual-version requirement.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== INSTANCE REFERENCE ==================== -->
+
+<div class="instance-ref">
+  <h4>Instance reference — How B12 and B13 use this template</h4>
+  <table>
+    <tr>
+      <th>Element</th>
+      <th>B12 — Privacy policy (/privacy)</th>
+      <th>B13 — Accessibility & inclusivity (/accessibility)</th>
+    </tr>
+    <tr>
+      <td>Page title</td>
+      <td>Privacy policy</td>
+      <td>Accessibility & inclusivity</td>
+    </tr>
+    <tr>
+      <td>Section 1</td>
+      <td>What data we collect — GA4 analytics (anonymised), localStorage (Simple Mode only). No user accounts.</td>
+      <td>Simple Mode — what it is, how to use it, who it's for. Headline feature. Framed as reading level choice, not disability accommodation.</td>
+    </tr>
+    <tr>
+      <td>Section 2</td>
+      <td>Enquiry form data — what happens to name, email, school name from E1. Sent to email, not stored in DB, not shared.</td>
+      <td>Inclusive language — no assumption of heterosexuality or cisgender identity, correct terminology, age-appropriate honesty.</td>
+    </tr>
+    <tr>
+      <td>Section 3</td>
+      <td>Cookies and localStorage — what's stored, why, how to clear.</td>
+      <td>Technical accessibility — WCAG target level, keyboard nav, screen readers, colour contrast, alt text.</td>
+    </tr>
+    <tr>
+      <td>Section 4</td>
+      <td>Third-party services — GA4, form provider, any embedded content.</td>
+      <td>Signposting & safeguarding — support services on question pages, crisis component on safeguarding topics.</td>
+    </tr>
+    <tr>
+      <td>Contact block</td>
+      <td>"Request data deletion or ask questions about privacy" — email link.</td>
+      <td>"If something on this site isn't accessible to you, tell us" — email link or → B7.</td>
+    </tr>
+    <tr>
+      <td>Linked from</td>
+      <td>Footer (A2)</td>
+      <td>Footer (A2)</td>
+    </tr>
+    <tr>
+      <td>SEO value</td>
+      <td>Required for GA4 / GDPR compliance.</td>
+      <td>Positive signal for Google — demonstrates site quality and commitment.</td>
+    </tr>
+  </table>
+</div>
+
+<!-- BEHAVIOUR NOTES -->
+<div class="behaviour-notes">
+  <h4>Design decisions flagged</h4>
+  <p><strong>Max reading width:</strong> Body text should be constrained to a comfortable reading width (~65–75 characters per line). These are the most text-heavy pages on the site — long lines will kill readability.</p>
+  <p><strong>Anchor link behaviour:</strong> TOC links should smooth-scroll to the target section and offset for the sticky header height. Standard behaviour, but worth noting for the developer.</p>
+  <p><strong>Future instances:</strong> If Tailor Education adds a terms of service, cookie policy, or similar page, this same template handles it without any new wireframing. Just new content slotted into the same heading + body pattern.</p>
+  <p><strong>Mobile:</strong> Everything stacks naturally. TOC may benefit from slightly smaller type or a collapsible "On this page" disclosure so it doesn't push the actual content too far down on small screens.</p>
+</div>
+
+</body>
+</html>

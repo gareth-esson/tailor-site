@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A3 — Navigation Wireframe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding: 40px 20px; }
+
+  .wireframe-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #999; margin-bottom: 6px; }
+  .wireframe-title { font-size: 22px; font-weight: 700; color: #222; margin-bottom: 4px; }
+  .wireframe-desc { font-size: 13px; color: #777; margin-bottom: 32px; max-width: 600px; line-height: 1.5; }
+
+  .frame { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; max-width: 960px; margin: 0 auto 48px; }
+  .frame-label { background: #f0f0f0; padding: 8px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ddd; }
+
+  /* ---- DESKTOP NAV ---- */
+  .nav-desktop {
+    padding: 16px 24px;
+    border-bottom: 2px solid #e0e0e0;
+  }
+  .nav-row {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .nav-item {
+    font-size: 13px; font-weight: 500; color: #555;
+    padding: 8px 14px; border: 1px dashed #ccc; border-radius: 4px;
+    position: relative;
+  }
+  .nav-item.primary {
+    border: 2px solid #999; font-weight: 600; color: #333;
+  }
+  .nav-item .priority-badge {
+    position: absolute; top: -7px; right: -7px;
+    font-size: 8px; font-weight: 700; background: #333; color: #fff;
+    padding: 1px 4px; border-radius: 3px; text-transform: uppercase;
+  }
+  .nav-item .dropdown-indicator {
+    font-size: 10px; color: #999; margin-left: 4px;
+  }
+  .nav-divider {
+    width: 1px; height: 20px; background: #ddd; margin: 0 4px;
+  }
+
+  /* ---- TOPICS DROPDOWN ---- */
+  .dropdown-panel {
+    margin: 16px 24px 0; padding: 20px; background: #fafafa; border: 1px dashed #ccc; border-radius: 6px;
+  }
+  .dropdown-panel-label {
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 14px;
+  }
+  .category-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  }
+  .category-block h5 {
+    font-size: 12px; font-weight: 600; color: #555; margin-bottom: 6px;
+    padding-bottom: 4px; border-bottom: 1px solid #ddd;
+  }
+  .category-block ul {
+    list-style: none;
+  }
+  .category-block ul li {
+    font-size: 11px; color: #888; padding: 3px 0;
+  }
+  .browse-all {
+    margin-top: 14px; font-size: 12px; font-weight: 600; color: #666;
+    padding-top: 10px; border-top: 1px solid #ddd;
+  }
+
+  /* ---- MOBILE NAV (D3 preview) ---- */
+  .nav-mobile {
+    max-width: 375px; margin: 0 auto;
+    background: #fff;
+  }
+  .mobile-header-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; border-bottom: 2px solid #e0e0e0;
+  }
+  .hamburger { display: flex; flex-direction: column; gap: 3px; }
+  .hamburger span { display: block; width: 20px; height: 2px; background: #666; border-radius: 1px; }
+  .mobile-logo { font-size: 13px; font-weight: 700; color: #444; }
+
+  .mobile-overlay {
+    background: #fff; border-top: 1px solid #eee;
+  }
+  .mobile-nav-section {
+    border-bottom: 1px solid #eee;
+  }
+  .mobile-nav-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 18px; font-size: 14px; font-weight: 500; color: #333;
+  }
+  .mobile-nav-item.highlighted {
+    font-weight: 600; background: #fafafa;
+  }
+  .mobile-nav-item .chevron {
+    font-size: 12px; color: #999;
+  }
+  .mobile-sub-items {
+    padding: 0 18px 12px 32px;
+  }
+  .mobile-sub-items .sub-item {
+    font-size: 13px; color: #777; padding: 6px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .mobile-sub-items .sub-item:last-child { border-bottom: none; }
+
+  .mobile-nav-footer {
+    padding: 14px 18px; background: #fafafa;
+  }
+  .mobile-nav-footer .search-prompt {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px; border: 1px solid #ddd; border-radius: 6px;
+    font-size: 13px; color: #999; background: #fff;
+  }
+  .mobile-search-dot {
+    width: 12px; height: 12px; background: #ccc; border-radius: 50%;
+  }
+
+  /* ---- ACTIVE STATES ---- */
+  .states-row {
+    display: flex; gap: 12px; padding: 20px 24px; flex-wrap: wrap;
+  }
+  .state-example {
+    padding: 8px 14px; border-radius: 4px; font-size: 13px; font-weight: 500;
+  }
+  .state-default { border: 1px dashed #ccc; color: #555; }
+  .state-active { border: 2px solid #333; color: #222; font-weight: 600; background: #f8f8f8; }
+  .state-hover { border: 1px solid #999; color: #333; background: #fafafa; }
+  .state-label { font-size: 10px; color: #999; display: block; margin-top: 3px; text-align: center; }
+
+  /* ---- ANNOTATIONS ---- */
+  .annotations { padding: 16px 24px 20px; background: #fafafa; border-top: 1px solid #eee; }
+  .annotation { display: flex; gap: 8px; margin-bottom: 8px; font-size: 12px; line-height: 1.5; }
+  .annotation-code { font-weight: 700; color: #888; white-space: nowrap; min-width: 24px; }
+  .annotation-text { color: #666; }
+
+  .behaviour-notes {
+    max-width: 960px; margin: 0 auto;
+    background: #fffff0; border: 1px solid #e8e8d0; border-radius: 8px; padding: 16px 20px;
+  }
+  .behaviour-notes h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 10px; }
+  .behaviour-notes p { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<div style="max-width:960px; margin:0 auto 32px;">
+  <div class="wireframe-label">A3 — Wireframe</div>
+  <div class="wireframe-title">Navigation</div>
+  <div class="wireframe-desc">
+    The primary navigation structure. Seven items serving two audiences — teachers/school leaders and young people/parents. "Topics" and "Okay to Ask" are the highest-traffic sections and need visual prominence.
+  </div>
+</div>
+
+<!-- DESKTOP: NAV BAR -->
+<div class="frame">
+  <div class="frame-label">Desktop — Navigation bar (sits inside A1 header)</div>
+  <div class="nav-desktop">
+    <div class="nav-row">
+      <div class="nav-item primary">
+        Topics
+        <span class="dropdown-indicator">▾</span>
+        <span class="priority-badge">High</span>
+      </div>
+      <div class="nav-item primary">
+        Okay to Ask
+        <span class="priority-badge">High</span>
+      </div>
+      <div class="nav-divider"></div>
+      <div class="nav-item">Training</div>
+      <div class="nav-item">Services</div>
+      <div class="nav-item">Blog</div>
+      <div class="nav-divider"></div>
+      <div class="nav-item">About</div>
+      <div class="nav-item">Contact</div>
+    </div>
+  </div>
+  <div class="annotations">
+    <div class="annotation">
+      <span class="annotation-code">1</span>
+      <span class="annotation-text"><strong>Priority items:</strong> "Topics" and "Okay to Ask" are marked as high-priority — they're the two highest-traffic entry points. They should have more visual weight than the others (bolder type, first position, or visual distinction — design decision).</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">2</span>
+      <span class="annotation-text"><strong>Logical grouping:</strong> The dividers suggest a natural grouping — browse content (Topics, Okay to Ask) | professional services (Training, Services, Blog) | about the organisation (About, Contact). Whether these are visually separated is a design decision.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">3</span>
+      <span class="annotation-text"><strong>Topics dropdown:</strong> "Topics" has a dropdown indicator. Could open a mega-menu showing categories and topics (see below), or could link directly to a <code>/topics/</code> browse page. Design decision.</span>
+    </div>
+  </div>
+</div>
+
+<!-- DESKTOP: TOPICS DROPDOWN OPTION -->
+<div class="frame">
+  <div class="frame-label">Desktop — Topics dropdown (if mega-menu approach)</div>
+  <div class="nav-desktop" style="padding-bottom:0;">
+    <div class="nav-row">
+      <div class="nav-item primary" style="background:#f8f8f8;">
+        Topics
+        <span class="dropdown-indicator">▴</span>
+      </div>
+      <div class="nav-item primary">Okay to Ask</div>
+      <div class="nav-divider"></div>
+      <div class="nav-item">Training</div>
+      <div class="nav-item">Services</div>
+      <div class="nav-item">Blog</div>
+      <div class="nav-divider"></div>
+      <div class="nav-item">About</div>
+      <div class="nav-item">Contact</div>
+    </div>
+  </div>
+  <div class="dropdown-panel">
+    <div class="dropdown-panel-label">Browse by category — 22 landing pages</div>
+    <div class="category-grid">
+      <div class="category-block">
+        <h5>Relationships</h5>
+        <ul>
+          <li>Consent</li>
+          <li>Healthy relationships</li>
+          <li>Friendships</li>
+          <li>Families</li>
+          <li>Positive sexuality and intimacy</li>
+        </ul>
+      </div>
+      <div class="category-block">
+        <h5>Sex & Sexual Health</h5>
+        <ul>
+          <li>Contraception</li>
+          <li>STIs and sexual health</li>
+          <li>Pregnancy</li>
+        </ul>
+      </div>
+      <div class="category-block">
+        <h5>Bodies</h5>
+        <ul>
+          <li>Puberty</li>
+          <li>Anatomy and body parts</li>
+          <li>Periods and menstruation</li>
+        </ul>
+      </div>
+      <div class="category-block">
+        <h5>Identity & Diversity</h5>
+        <ul>
+          <li>Gender identity</li>
+          <li>Sexual orientation</li>
+          <li>LGBTQ+ inclusion</li>
+        </ul>
+      </div>
+      <div class="category-block">
+        <h5>Safety & Safeguarding</h5>
+        <ul>
+          <li>Online safety</li>
+          <li>Abuse and exploitation</li>
+          <li>Pornography</li>
+          <li>FGM</li>
+        </ul>
+      </div>
+      <div class="category-block">
+        <h5>Rights & Wellbeing</h5>
+        <ul>
+          <li>The law and young people</li>
+          <li>Mental health and wellbeing</li>
+          <li>Body image and self-esteem</li>
+          <li>Communication and assertiveness</li>
+        </ul>
+      </div>
+    </div>
+    <div class="browse-all">Browse all 22 topics →</div>
+  </div>
+  <div class="annotations">
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Mega-menu option:</strong> Shows all 22 landing pages grouped by the 7 app categories. Every page is visible — no "more" overflow needed. "Browse all" links to <code>/topics/</code>. Teachers can jump straight to a specific topic like "Consent" or "Online safety" in one click.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Alternative:</strong> Skip the mega-menu entirely — "Topics" just links to <code>/topics/</code> as a browse page. Simpler to build, relies on the browse page doing the work. Trade-off: one extra click to reach a specific topic.</span>
+    </div>
+  </div>
+</div>
+
+<!-- NAV ITEM STATES -->
+<div class="frame">
+  <div class="frame-label">Navigation item states</div>
+  <div class="states-row">
+    <div>
+      <div class="state-example state-default">Topics</div>
+      <span class="state-label">Default</span>
+    </div>
+    <div>
+      <div class="state-example state-hover">Topics</div>
+      <span class="state-label">Hover</span>
+    </div>
+    <div>
+      <div class="state-example state-active">Topics</div>
+      <span class="state-label">Active / current page</span>
+    </div>
+  </div>
+  <div class="annotations">
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Active state:</strong> When the visitor is on a page within a section, the corresponding nav item shows as active. E.g., viewing <code>/topics/consent</code> highlights "Topics". Viewing <code>/anonymous_question/…</code> highlights "Okay to Ask".</span>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE: EXPANDED NAV -->
+<div class="frame">
+  <div class="frame-label">Mobile — Expanded navigation (D3 preview)</div>
+  <div class="nav-mobile">
+    <div class="mobile-header-bar">
+      <div class="hamburger">
+        <span style="transform:rotate(45deg) translate(3px,3px);"></span>
+        <span style="opacity:0;"></span>
+        <span style="transform:rotate(-45deg) translate(3px,-3px);"></span>
+      </div>
+      <span class="mobile-logo">Tailor Education</span>
+      <span style="width:20px;"></span>
+    </div>
+    <div class="mobile-overlay">
+      <div class="mobile-nav-section">
+        <div class="mobile-nav-item highlighted">
+          Topics
+          <span class="chevron">▾</span>
+        </div>
+        <div class="mobile-sub-items">
+          <div class="sub-item" style="font-weight:600; color:#555; border-bottom:none; padding-bottom:2px;">Relationships</div>
+          <div class="sub-item" style="padding-left:10px;">Consent · Healthy relationships · Friendships · Families · Positive sexuality</div>
+          <div class="sub-item" style="font-weight:600; color:#555; border-bottom:none; padding-bottom:2px;">Sex & Sexual Health</div>
+          <div class="sub-item" style="padding-left:10px;">Contraception · STIs · Pregnancy</div>
+          <div class="sub-item" style="font-weight:600; color:#555; border-bottom:none; padding-bottom:2px;">Bodies</div>
+          <div class="sub-item" style="padding-left:10px;">Puberty · Anatomy · Periods</div>
+          <div class="sub-item" style="font-weight:600; color:#555; border-bottom:none; padding-bottom:2px;">Identity & Diversity</div>
+          <div class="sub-item" style="padding-left:10px;">Gender identity · Sexual orientation · LGBTQ+ inclusion</div>
+          <div class="sub-item" style="font-weight:600; color:#555; border-bottom:none; padding-bottom:2px;">Safety & Safeguarding</div>
+          <div class="sub-item" style="padding-left:10px;">Online safety · Abuse · Pornography · FGM</div>
+          <div class="sub-item" style="font-weight:600; color:#555; border-bottom:none; padding-bottom:2px;">Rights & Wellbeing</div>
+          <div class="sub-item" style="padding-left:10px;">The law · Mental health · Body image · Communication</div>
+          <div class="sub-item" style="font-weight:600; color:#555; margin-top:6px;">Browse all 22 topics →</div>
+        </div>
+      </div>
+      <div class="mobile-nav-section">
+        <div class="mobile-nav-item highlighted">Okay to Ask</div>
+      </div>
+      <div class="mobile-nav-section">
+        <div class="mobile-nav-item">Training</div>
+      </div>
+      <div class="mobile-nav-section">
+        <div class="mobile-nav-item">Services</div>
+      </div>
+      <div class="mobile-nav-section">
+        <div class="mobile-nav-item">Blog</div>
+      </div>
+      <div class="mobile-nav-section">
+        <div class="mobile-nav-item">About</div>
+      </div>
+      <div class="mobile-nav-section">
+        <div class="mobile-nav-item">Contact</div>
+      </div>
+      <div class="mobile-nav-footer">
+        <div class="search-prompt">
+          <div class="mobile-search-dot"></div>
+          Search questions, topics, glossary…
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="annotations">
+    <div class="annotation">
+      <span class="annotation-code">1</span>
+      <span class="annotation-text"><strong>Close icon:</strong> Hamburger transforms to an X. Standard pattern.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">2</span>
+      <span class="annotation-text"><strong>Topics:</strong> Expandable on mobile — tapping reveals the 7 categories (not all 83 topics). Each category links to a filtered browse. "Browse all" at the bottom.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">3</span>
+      <span class="annotation-text"><strong>Priority items:</strong> "Topics" and "Okay to Ask" get highlighted treatment — bolder weight, subtle background, or other emphasis (design decision).</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">4</span>
+      <span class="annotation-text"><strong>Search access:</strong> A search bar at the bottom of the mobile nav panel, in case the visitor didn't spot the header search icon. Optional — could also just rely on the header icon.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">5</span>
+      <span class="annotation-text"><strong>Overlay behaviour:</strong> Full-screen or slide-out panel (design decision). Closes on X tap, outside tap, or nav item selection. The full D3 wireframe will cover this in more detail.</span>
+    </div>
+  </div>
+</div>
+
+<!-- BEHAVIOUR NOTES -->
+<div class="behaviour-notes">
+  <h4>Design decisions flagged</h4>
+  <p><strong>Topics: mega-menu vs link?</strong> With only 22 landing pages, the mega-menu can show every page without overflow — it becomes a complete directory rather than a preview. A simple link to <code>/topics/</code> is lighter to build but adds an extra click. The mega-menu is better for teachers who know what they're looking for; the browse page is better for exploration.</p>
+  <p><strong>Grouping and dividers:</strong> The three logical groups (content / services / about) could be visually separated, or the nav could be a flat row with priority items distinguished by weight alone.</p>
+  <p><strong>Mobile: full-screen vs slide-out?</strong> Full-screen overlay is simpler and gives more room for the Topics expansion. Slide-out (from left or right) is more standard on mobile. Either works — depends on how much content needs to be visible.</p>
+  <p><strong>Audience sensitivity:</strong> A young person arriving at <code>/questions/</code> sees "Okay to Ask" highlighted as their current section. A teacher at <code>/training</code> sees that highlighted instead. The nav serves both without switching — same items, same structure, just a clear "you are here" signal.</p>
+</div>
+
+</body>
+</html>

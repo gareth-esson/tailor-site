@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C3 — Landing Page Wireframe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding: 40px 20px; }
+
+  .wireframe-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #999; margin-bottom: 6px; }
+  .wireframe-title { font-size: 22px; font-weight: 700; color: #222; margin-bottom: 4px; }
+  .wireframe-desc { font-size: 13px; color: #777; margin-bottom: 32px; max-width: 600px; line-height: 1.5; }
+
+  .frame { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; max-width: 720px; margin: 0 auto 48px; }
+  .frame-label { background: #f0f0f0; padding: 8px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ddd; }
+
+  .page-section { padding: 24px; border-bottom: 1px solid #eee; }
+  .page-section:last-of-type { border-bottom: none; }
+
+  .section-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #fff; display: inline-block; padding: 2px 8px; border-radius: 3px; margin-bottom: 12px;
+  }
+  .section-label.core { background: #2e7d4f; }
+  .section-label.component { background: #666; }
+  .section-label.conditional { background: #c0392b; }
+
+  .conditional-badge {
+    font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    color: #c0392b; background: #fde8e8; padding: 2px 6px; border-radius: 3px; margin-left: 6px;
+  }
+
+  h2.wf { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 6px; }
+  h3.wf { font-size: 15px; font-weight: 600; color: #444; margin-bottom: 6px; }
+  p.wf { font-size: 13px; color: #777; line-height: 1.5; margin-bottom: 10px; }
+  .wf-small { font-size: 11px; color: #999; line-height: 1.5; }
+
+  /* ---- TOPIC HEADER ---- */
+  .topic-header {
+    display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px;
+  }
+  .topic-name { font-size: 26px; font-weight: 800; color: #222; }
+  .category-label {
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+    color: #666; background: #f0f0f0; padding: 3px 10px; border-radius: 12px;
+  }
+
+  /* ---- OVERVIEW ---- */
+  .overview-body {
+    font-size: 14px; color: #444; line-height: 1.7;
+  }
+  .overview-body p { margin-bottom: 12px; }
+
+  /* ---- CURRICULUM MAPPING ---- */
+  .curriculum-block {
+    background: #f8f8f8; border: 1px solid #e0e0e0; border-radius: 6px; padding: 16px;
+  }
+  .curriculum-row {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding: 10px 0; border-bottom: 1px solid #eee;
+  }
+  .curriculum-row:last-child { border-bottom: none; }
+  .curriculum-framework { font-size: 12px; font-weight: 600; color: #333; min-width: 140px; }
+  .curriculum-ref { font-size: 12px; color: #777; flex: 1; }
+
+  /* ---- LEARNING OBJECTIVES ---- */
+  .objectives-block {
+    background: #f0f7ff; border-left: 4px solid #5b7fa5; border-radius: 0 6px 6px 0; padding: 16px 20px;
+  }
+  .objective-item {
+    font-size: 13px; color: #444; line-height: 1.5; padding: 6px 0;
+    border-bottom: 1px solid #e8f0f8;
+  }
+  .objective-item:last-child { border-bottom: none; }
+  .ks-label {
+    font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+    color: #5b7fa5; display: inline-block; margin-right: 6px;
+  }
+
+  /* ---- CTA BLOCKS ---- */
+  .cta-mid {
+    background: #f0fff0; border: 2px solid #c0e0c0; border-radius: 6px;
+    padding: 20px; text-align: center;
+  }
+  .cta-mid h3 { font-size: 15px; font-weight: 600; color: #2a6a2a; margin-bottom: 6px; }
+  .cta-mid .cta-link { font-size: 13px; font-weight: 600; color: #2a6a2a; }
+
+  .cta-bottom {
+    background: #2a2a2a; border-radius: 6px; padding: 24px; text-align: center;
+  }
+  .cta-bottom h3 { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  .cta-bottom p { font-size: 13px; color: #aaa; margin-bottom: 12px; }
+  .cta-bottom .cta-button {
+    display: inline-block; padding: 8px 20px; background: #fff; color: #333;
+    border-radius: 5px; font-size: 13px; font-weight: 600;
+  }
+
+  /* ---- QUESTION LIST ---- */
+  .question-list { margin-top: 12px; }
+  .question-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 0; border-bottom: 1px solid #f0f0f0;
+  }
+  .question-item:last-child { border-bottom: none; }
+  .question-postit {
+    width: 40px; height: 40px; background: #f0e4c4; border: 1px solid #e0d4b4;
+    border-radius: 3px; flex-shrink: 0;
+  }
+  .question-content { flex: 1; }
+  .question-content h4 { font-size: 13px; font-weight: 600; color: #333; line-height: 1.4; }
+  .question-tag {
+    font-size: 10px; font-weight: 500; color: #888; background: #f5f5f5;
+    padding: 2px 8px; border-radius: 10px; display: inline-block; margin-top: 3px;
+  }
+
+  /* ---- GLOSSARY TERMS ---- */
+  .term-list { margin-top: 12px; }
+  .term-item {
+    padding: 10px 0; border-bottom: 1px solid #f0f0f0;
+  }
+  .term-item:last-child { border-bottom: none; }
+  .term-item h4 { font-size: 13px; font-weight: 600; color: #333; margin-bottom: 2px; }
+  .term-item p { font-size: 12px; color: #888; line-height: 1.4; }
+
+  /* ---- BLOG POSTS ---- */
+  .blog-list { margin-top: 12px; }
+  .blog-item {
+    padding: 10px 0; border-bottom: 1px solid #f0f0f0;
+  }
+  .blog-item:last-child { border-bottom: none; }
+  .blog-item h4 { font-size: 13px; font-weight: 600; color: #333; margin-bottom: 2px; }
+  .blog-meta { font-size: 11px; color: #999; }
+
+  /* ---- RELATED TOPICS ---- */
+  .related-topics { display: flex; gap: 10px; flex-wrap: wrap; }
+  .related-topic-card {
+    flex: 1; min-width: 140px; background: #fafafa; border: 1px dashed #ccc;
+    border-radius: 6px; padding: 14px; text-align: center;
+  }
+  .related-topic-card h4 { font-size: 12px; font-weight: 600; color: #444; margin-bottom: 2px; }
+  .related-topic-card span { font-size: 10px; color: #999; }
+
+  /* ---- ANNOTATIONS ---- */
+  .annotations { padding: 16px 24px 20px; background: #fafafa; border-top: 1px solid #eee; }
+  .annotation { display: flex; gap: 8px; margin-bottom: 8px; font-size: 12px; line-height: 1.5; }
+  .annotation-code { font-weight: 700; color: #888; white-space: nowrap; min-width: 30px; }
+  .annotation-text { color: #666; }
+
+  .behaviour-notes {
+    max-width: 720px; margin: 0 auto;
+    background: #fffff0; border: 1px solid #e8e8d0; border-radius: 8px; padding: 16px 20px;
+  }
+  .behaviour-notes h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 10px; }
+  .behaviour-notes p { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<div style="max-width:720px; margin:0 auto 32px;">
+  <div class="wireframe-label">C3 — Wireframe</div>
+  <div class="wireframe-title">Landing Page Template</div>
+  <div class="wireframe-desc">
+    Applied to 22 teacher-facing topic landing pages. Each aggregates the relevant granular topics from the app's 83-topic taxonomy. These are the bridge between content and services — the page a teacher lands on from the mega-menu, from search, or from a question page's topic tag.
+  </div>
+</div>
+
+<div class="frame">
+  <div class="frame-label">Landing page — Content hierarchy (single column) — example: "Consent"</div>
+
+  <!-- HEADER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A1 — Site Header ]</div>
+  </div>
+
+  <!-- 1. TOPIC NAME + CATEGORY -->
+  <div class="page-section">
+    <span class="section-label core">1 — Topic name + category</span>
+    <div class="topic-header">
+      <span class="topic-name">Consent</span>
+      <span class="category-label">Relationships</span>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Page H1 is the landing page title. Category label links to /topics/ filtered by this category, or is purely informational (design decision).</div>
+  </div>
+
+  <!-- 2. TOPIC OVERVIEW -->
+  <div class="page-section">
+    <span class="section-label core">2 — Topic overview</span>
+    <div class="overview-body">
+      <p>What this topic covers and why it matters. Written for both audiences — a teacher checking curriculum alignment and a parent looking for reassurance should both find this useful.</p>
+      <p>This landing page aggregates several granular app topics (e.g. "consent", "consent and the law", "consent in relationships") into a single, comprehensive page. The overview explains the full scope.</p>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Content source TBD — Notion page body or Astro-authored. Needs to work for teachers, parents, and school leaders.</div>
+  </div>
+
+  <!-- 3. CURRICULUM MAPPING -->
+  <div class="page-section">
+    <span class="section-label core">3 — Curriculum mapping</span>
+    <div class="wf-small" style="margin-bottom:10px;">For teachers checking alignment. Brief and scannable — not the full framework text, just the references.</div>
+    <div class="curriculum-block">
+      <div class="curriculum-row">
+        <span class="curriculum-framework">DfE 2026</span>
+        <span class="curriculum-ref">Relationships Education: "Pupils should know that in school and in wider society they can expect to be treated with respect…"</span>
+      </div>
+      <div class="curriculum-row">
+        <span class="curriculum-framework">PSHE Association</span>
+        <span class="curriculum-ref">KS3/4 H&W Core Theme 2: "…how to recognise and manage consent in relationships"</span>
+      </div>
+      <div class="curriculum-row">
+        <span class="curriculum-framework">UNESCO ITGSE</span>
+        <span class="curriculum-ref">Key Concept 5: Skills for Health and Well-Being — consent and bodily autonomy</span>
+      </div>
+      <div class="curriculum-row">
+        <span class="curriculum-framework">WHO Standards</span>
+        <span class="curriculum-ref">Standard 6: Sexuality and relationships — rights-based approach to consent</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. LEARNING OBJECTIVES -->
+  <div class="page-section">
+    <span class="section-label core">4 — Learning objectives</span>
+    <div class="wf-small" style="margin-bottom:10px;">What students should understand about this topic by key stage.</div>
+    <div class="objectives-block">
+      <div class="objective-item">
+        <span class="ks-label">KS2</span>
+        Understand that everyone has the right to say no and that their body belongs to them.
+      </div>
+      <div class="objective-item">
+        <span class="ks-label">KS3</span>
+        Explain what consent means in different types of relationships, including online.
+      </div>
+      <div class="objective-item">
+        <span class="ks-label">KS4</span>
+        Analyse scenarios involving consent, recognise coercion and pressure, and understand the legal framework around consent.
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. CTA: EXPLORE LESSONS (A11) -->
+  <div class="page-section">
+    <span class="section-label component">5 — CTA: Explore lessons (A11)</span>
+    <div class="cta-mid">
+      <h3>Explore ready-made lessons on Consent</h3>
+      <p class="wf" style="color:#4a8a4a;">Curriculum-aligned activities, ready to teach. Filtered for this topic.</p>
+      <span class="cta-link">Open in Tailor →</span>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Mid-page CTA. Links to the app library filtered by this topic's slug. This is the primary conversion for teachers who want resources.</div>
+  </div>
+
+  <!-- 6. QUESTIONS YOUNG PEOPLE ASK -->
+  <div class="page-section">
+    <span class="section-label core">6 — Questions young people ask</span>
+    <h3 class="wf">Questions young people ask about consent</h3>
+    <p class="wf">Auto-populated from Questions DB. Serves both audiences — young people can click through, teachers can see what students actually ask.</p>
+    <div class="question-list">
+      <div class="question-item">
+        <div class="question-postit"></div>
+        <div class="question-content">
+          <h4>"What does consent actually mean?"</h4>
+          <span class="question-tag">Consent</span>
+        </div>
+      </div>
+      <div class="question-item">
+        <div class="question-postit"></div>
+        <div class="question-content">
+          <h4>"Can you change your mind after saying yes?"</h4>
+          <span class="question-tag">Consent</span>
+        </div>
+      </div>
+      <div class="question-item">
+        <div class="question-postit"></div>
+        <div class="question-content">
+          <h4>"How do you know if someone is okay with it?"</h4>
+          <span class="question-tag">Consent</span>
+        </div>
+      </div>
+      <div class="question-item">
+        <div class="question-postit"></div>
+        <div class="question-content">
+          <h4>"Is it still consent if someone was drunk?"</h4>
+          <span class="question-tag">Consent</span>
+        </div>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Links to /anonymous_question/{slug} (C1). Shows post-it thumbnail, question title, topic tag. Automatically populated from questions tagged to the granular app topics this landing page aggregates.</div>
+  </div>
+
+  <!-- 7. KEY TERMS -->
+  <div class="page-section">
+    <span class="section-label core">7 — Key terms</span>
+    <h3 class="wf">Key terms</h3>
+    <p class="wf">Auto-populated from Glossary DB. Term name + short definition, linking to glossary pages.</p>
+    <div class="term-list">
+      <div class="term-item">
+        <h4>Consent</h4>
+        <p>Giving permission for something to happen, freely and willingly. → /glossary/consent</p>
+      </div>
+      <div class="term-item">
+        <h4>Boundaries</h4>
+        <p>The limits a person sets about what they are comfortable with. → /glossary/boundaries</p>
+      </div>
+      <div class="term-item">
+        <h4>Coercion</h4>
+        <p>When someone pressures or forces another person into doing something. → /glossary/coercion</p>
+      </div>
+      <div class="term-item">
+        <h4>Autonomy</h4>
+        <p>The right to make decisions about your own body and life. → /glossary/autonomy</p>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Uses A15 (glossary variant). Each links to /glossary/{slug} (C2).</div>
+  </div>
+
+  <!-- 8. FOR TEACHERS: FURTHER READING (CONDITIONAL) -->
+  <div class="page-section">
+    <span class="section-label component">8 — For teachers: further reading</span>
+    <span class="conditional-badge">Conditional</span>
+    <h3 class="wf">For teachers</h3>
+    <p class="wf">Auto-populated from Blog DB. Only renders if blog posts exist tagged to this topic.</p>
+    <div class="blog-list">
+      <div class="blog-item">
+        <h4>Teaching consent without making it awkward</h4>
+        <div class="blog-meta">12 Mar 2026 · For teachers · Gareth Esson</div>
+      </div>
+      <div class="blog-item">
+        <h4>Why "no means no" isn't enough: moving beyond refusal-based consent education</h4>
+        <div class="blog-meta">28 Feb 2026 · For teachers · Gareth Esson</div>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Uses A15 (blog variant). Post title, date, audience label. Links to /blog/{slug} (C4). Only appears if tagged posts exist — some landing pages may have no blog content at launch.</div>
+  </div>
+
+  <!-- 9. RELATED TOPICS -->
+  <div class="page-section">
+    <span class="section-label core">9 — Related topics</span>
+    <h3 class="wf">Related topics</h3>
+    <div class="related-topics" style="margin-top:12px;">
+      <div class="related-topic-card">
+        <h4>Healthy relationships</h4>
+        <span>Relationships</span>
+      </div>
+      <div class="related-topic-card">
+        <h4>Online safety</h4>
+        <span>Safety & Safeguarding</span>
+      </div>
+      <div class="related-topic-card">
+        <h4>The law and young people</h4>
+        <span>Rights & Wellbeing</span>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Links to other landing pages in the same category, or closely related pages in other categories. 2–4 cards.</div>
+  </div>
+
+  <!-- 10. CTA: BRING THIS INTO YOUR SCHOOL (A12) -->
+  <div class="page-section">
+    <span class="section-label component">10 — CTA: Bring this into your school (A12)</span>
+    <div class="cta-bottom">
+      <h3>Bring Consent into your school</h3>
+      <p>Expert-led RSE delivery, CPD training, and consultancy from a specialist provider.</p>
+      <span class="cta-button">Talk to us →</span>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Bottom-page CTA. Target varies by topic — driven by the "Service CTA Target" field on the Topics DB. Could link to /services/delivery, /training, /services/drop-days, or /services/consultancy depending on what's most relevant for this topic.</div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A2 — Site Footer ]</div>
+  </div>
+</div>
+
+<!-- ANNOTATIONS -->
+<div class="frame" style="max-width:720px; margin:-24px auto 48px;">
+  <div class="frame-label">Annotations</div>
+  <div class="annotations" style="border-top:none;">
+    <div class="annotation">
+      <span class="annotation-code">C3</span>
+      <span class="annotation-text"><strong>Aggregation model:</strong> Each landing page maps to multiple granular app topics. "Consent" the landing page might aggregate "consent", "consent and the law", "consent in relationships" from the app's 83-topic taxonomy. Questions, glossary terms, and blog posts are pulled from all the granular topics this page covers.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">A11</span>
+      <span class="annotation-text"><strong>Explore lessons CTA:</strong> Mid-page. Links to the app library filtered by this landing page's topic slug. The primary conversion for teachers looking for resources.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">A12</span>
+      <span class="annotation-text"><strong>Bring to school CTA:</strong> Bottom of page. Target varies per topic — some topics naturally map to delivery, others to training or consultancy. The "Service CTA Target" field on the Topics DB drives this.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">A15</span>
+      <span class="annotation-text"><strong>Related content cards:</strong> Three variants used here — question cards (Section 6), glossary term list (Section 7), and blog post list (Section 8). Same A15 component family, different content types.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>No Simple Mode:</strong> Landing pages don't have a Standard/Simple toggle. They're teacher-facing reference pages. Simple Mode is for question pages (C1) and glossary pages (C2) only.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Dual audience:</strong> Despite being teacher-facing, the questions list (Section 6) serves young people too. A student who lands here from a topic tag sees questions they can click into. The page doesn't exclude them — it just leads with the teacher lens.</span>
+    </div>
+  </div>
+</div>
+
+<!-- BEHAVIOUR NOTES -->
+<div class="behaviour-notes">
+  <h4>Design decisions flagged</h4>
+  <p><strong>Content depth:</strong> The overview (Section 2) and curriculum mapping (Section 3) are the teacher-trust content. They need to be thorough enough to be useful but not so long they push the questions and CTAs below the fold. The overview should be 2–3 paragraphs max.</p>
+  <p><strong>Questions list length:</strong> Some landing pages may aggregate dozens of questions. Consider a "Show more" toggle after 5–8, or a horizontal scroll on mobile. The full list shouldn't overwhelm the page.</p>
+  <p><strong>Empty states:</strong> Some landing pages may launch without blog posts (Section 8) or with very few questions. The template needs to handle these gracefully — conditional sections that simply don't render when empty.</p>
+  <p><strong>Category label:</strong> The category shown next to the topic name (Section 1) groups this page within the 7 app categories. Whether the label is clickable (filtering /topics/ by category) or purely informational is a design decision.</p>
+  <p><strong>22 pages, one template:</strong> All 22 landing pages use this exact template. The content varies (topic name, overview, curriculum refs, questions, terms, blog posts, CTA targets) but the structure is identical. Build once, populate 22 times.</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B4 — Training Wireframe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding: 40px 20px; }
+
+  .wireframe-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #999; margin-bottom: 6px; }
+  .wireframe-title { font-size: 22px; font-weight: 700; color: #222; margin-bottom: 4px; }
+  .wireframe-desc { font-size: 13px; color: #777; margin-bottom: 32px; max-width: 600px; line-height: 1.5; }
+
+  .frame { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; max-width: 720px; margin: 0 auto 48px; }
+  .frame-label { background: #f0f0f0; padding: 8px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ddd; }
+
+  .page-section { padding: 24px; border-bottom: 1px solid #eee; }
+  .page-section:last-of-type { border-bottom: none; }
+
+  .section-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #fff; display: inline-block; padding: 2px 8px; border-radius: 3px; margin-bottom: 12px;
+  }
+  .section-label.core { background: #8a5a2a; }
+  .section-label.component { background: #666; }
+
+  h2.wf { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 6px; }
+  h3.wf { font-size: 15px; font-weight: 600; color: #444; margin-bottom: 6px; }
+  p.wf { font-size: 13px; color: #777; line-height: 1.5; margin-bottom: 10px; }
+  .wf-small { font-size: 11px; color: #999; line-height: 1.5; }
+
+  /* ---- HERO ---- */
+  .training-hero {
+    background: #f8f0e4; border: 1px dashed #e0d0b4; border-radius: 6px;
+    padding: 32px 24px; text-align: center;
+  }
+  .training-hero h2 { font-size: 22px; font-weight: 800; color: #4a3a1a; margin-bottom: 8px; }
+  .training-hero p { font-size: 14px; color: #7a6a4a; line-height: 1.6; }
+
+  /* ---- OUTCOMES ---- */
+  .outcome-list { margin-top: 12px; }
+  .outcome-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 14px 0; border-bottom: 1px solid #f0f0f0;
+  }
+  .outcome-item:last-child { border-bottom: none; }
+  .outcome-icon {
+    width: 24px; height: 24px; background: #e8d8b8; border-radius: 50%; flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .outcome-item .text { font-size: 14px; color: #444; line-height: 1.5; }
+  .outcome-item .detail { font-size: 12px; color: #999; margin-top: 3px; }
+
+  /* ---- APP CONNECTION ---- */
+  .app-block {
+    background: #f0fff0; border: 2px solid #c0e0c0; border-radius: 6px; padding: 20px;
+  }
+  .app-block h3 { font-size: 15px; font-weight: 700; color: #2a6a2a; margin-bottom: 8px; }
+  .app-block p { font-size: 13px; color: #4a7a4a; line-height: 1.6; margin-bottom: 8px; }
+  .app-flow {
+    display: flex; align-items: center; gap: 8px; margin-top: 14px; flex-wrap: wrap;
+  }
+  .app-flow-step {
+    background: #fff; border: 1px solid #c0e0c0; border-radius: 6px;
+    padding: 10px 14px; font-size: 12px; color: #333; text-align: center;
+    flex: 1; min-width: 120px;
+  }
+  .app-flow-step .step-num {
+    font-size: 10px; font-weight: 700; color: #2a6a2a; display: block; margin-bottom: 3px;
+  }
+  .app-flow-arrow { font-size: 16px; color: #c0e0c0; flex-shrink: 0; }
+
+  /* ---- LOGISTICS ---- */
+  .logistics-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;
+  }
+  .logistics-card {
+    background: #fafafa; border: 1px solid #e8e8e8; border-radius: 6px; padding: 14px;
+  }
+  .logistics-card h4 { font-size: 12px; font-weight: 600; color: #555; margin-bottom: 4px; }
+  .logistics-card p { font-size: 12px; color: #888; line-height: 1.4; }
+
+  /* ---- TESTIMONIAL ---- */
+  .testimonial-block {
+    background: #fafafa; border-left: 4px solid #d0c0a0; border-radius: 0 6px 6px 0;
+    padding: 18px 20px;
+  }
+  .testimonial-block .quote {
+    font-size: 15px; color: #444; font-style: italic; line-height: 1.6; margin-bottom: 10px;
+  }
+  .testimonial-block .attribution { font-size: 12px; color: #888; font-style: normal; }
+
+  /* ---- CTA ---- */
+  .cta-enquiry {
+    background: #8a5a2a; border-radius: 6px; padding: 24px; text-align: center;
+  }
+  .cta-enquiry h3 { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  .cta-enquiry p { font-size: 13px; color: #c8a878; margin-bottom: 14px; }
+  .cta-enquiry .cta-button {
+    display: inline-block; padding: 10px 24px; background: #fff; color: #8a5a2a;
+    border-radius: 5px; font-size: 13px; font-weight: 600;
+  }
+
+  /* ---- ANNOTATIONS ---- */
+  .annotations { padding: 16px 24px 20px; background: #fafafa; border-top: 1px solid #eee; }
+  .annotation { display: flex; gap: 8px; margin-bottom: 8px; font-size: 12px; line-height: 1.5; }
+  .annotation-code { font-weight: 700; color: #888; white-space: nowrap; min-width: 30px; }
+  .annotation-text { color: #666; }
+
+  .behaviour-notes {
+    max-width: 720px; margin: 0 auto;
+    background: #fffff0; border: 1px solid #e8e8d0; border-radius: 8px; padding: 16px 20px;
+  }
+  .behaviour-notes h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 10px; }
+  .behaviour-notes p { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<div style="max-width:720px; margin:0 auto 32px;">
+  <div class="wireframe-label">B4 — Wireframe</div>
+  <div class="wireframe-title">Training</div>
+  <div class="wireframe-desc">
+    The highest-traffic service page — the app funnels teachers here after completing content. This is a standalone showcase page (not the C5 template) because the app connection is a unique value proposition that needs its own section. Six sections in hierarchy order.
+  </div>
+</div>
+
+<div class="frame">
+  <div class="frame-label">Training page — Content hierarchy (single column)</div>
+
+  <!-- HEADER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A1 — Site Header ]</div>
+  </div>
+
+  <!-- 1. WHAT THE TRAINING IS -->
+  <div class="page-section">
+    <span class="section-label core">1 — What the training is</span>
+    <div class="training-hero">
+      <h2>CPD Training for RSE</h2>
+      <p>Tailor Education CPD gives your teachers the confidence and skills to deliver RSE on the topics that matter most.</p>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Hero-level headline and value proposition. Brief — the detail comes in Sections 2–4. This is what shows in search results and social shares.</div>
+  </div>
+
+  <!-- 2. WHAT TEACHERS LEARN -->
+  <div class="page-section">
+    <span class="section-label core">2 — What teachers learn</span>
+    <h3 class="wf">What changes for your teachers</h3>
+    <p class="wf">Framed as outcomes, not a module list. What's different about a teacher after the training compared to before.</p>
+    <div class="outcome-list">
+      <div class="outcome-item">
+        <div class="outcome-icon"></div>
+        <div>
+          <div class="text">Confidence to deliver RSE on sensitive topics without avoidance or embarrassment</div>
+        </div>
+      </div>
+      <div class="outcome-item">
+        <div class="outcome-icon"></div>
+        <div>
+          <div class="text">A clear understanding of statutory requirements and how to meet them</div>
+          <div class="detail">DfE 2026 guidance, PSHE Association framework</div>
+        </div>
+      </div>
+      <div class="outcome-item">
+        <div class="outcome-icon"></div>
+        <div>
+          <div class="text">Practical strategies for handling difficult questions and managing disclosures</div>
+        </div>
+      </div>
+      <div class="outcome-item">
+        <div class="outcome-icon"></div>
+        <div>
+          <div class="text">Access to training-recommended content in the Tailor app (see below)</div>
+        </div>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Not a bullet list of modules — frame as what changes for the teacher after the training. This is the "why should I care" section.</div>
+  </div>
+
+  <!-- 3. HOW IT CONNECTS TO THE APP -->
+  <div class="page-section">
+    <span class="section-label core">3 — How it connects to the app</span>
+    <div class="app-block">
+      <h3>Training unlocks resources</h3>
+      <p>Completing Tailor CPD training doesn't just build confidence — it unlocks training-recommended content in the Tailor app. Your training isn't a one-off day. It's the start of an ongoing resource.</p>
+      <div class="app-flow">
+        <div class="app-flow-step">
+          <span class="step-num">1</span>
+          Complete CPD training
+        </div>
+        <span class="app-flow-arrow">→</span>
+        <div class="app-flow-step">
+          <span class="step-num">2</span>
+          Training-recommended content unlocks in the app
+        </div>
+        <span class="app-flow-arrow">→</span>
+        <div class="app-flow-step">
+          <span class="step-num">3</span>
+          Teach with confidence, supported by expert resources
+        </div>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">This is the unique value proposition — training isn't just a day, it's a gateway to ongoing resources. This section is why B4 needs its own layout rather than using the C5 template.</div>
+  </div>
+
+  <!-- 4. FORMAT AND LOGISTICS -->
+  <div class="page-section">
+    <span class="section-label core">4 — Format and logistics</span>
+    <h3 class="wf">How it works</h3>
+    <div class="logistics-grid">
+      <div class="logistics-card">
+        <h4>Duration</h4>
+        <p>Half-day or full-day sessions, tailored to your school's needs.</p>
+      </div>
+      <div class="logistics-card">
+        <h4>Format</h4>
+        <p>In-person, online, or blended — whatever works for your team.</p>
+      </div>
+      <div class="logistics-card">
+        <h4>Delivered by</h4>
+        <p>Gareth Esson — specialist RSE consultant with [X] years' experience.</p>
+      </div>
+      <div class="logistics-card">
+        <h4>What you provide</h4>
+        <p>A room, your teaching staff, and any specific topics you'd like covered.</p>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Practical details a school leader needs to assess feasibility. Duration, format, who delivers, what the school provides. Quick to scan.</div>
+  </div>
+
+  <!-- 5. TESTIMONIAL -->
+  <div class="page-section">
+    <span class="section-label core">5 — Testimonial</span>
+    <div class="testimonial-block">
+      <div class="quote">"Before Gareth's training, most of our staff avoided RSE entirely. Now they actually volunteer to teach it. The difference is remarkable."</div>
+      <div class="attribution">— Deputy Headteacher, [School Name]</div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">From a teacher or school leader about the training specifically. This should be the strongest training testimonial available — it's doing conversion work.</div>
+  </div>
+
+  <!-- 6. CTA -->
+  <div class="page-section">
+    <span class="section-label component">6 — CTA</span>
+    <div class="cta-enquiry">
+      <h3>Book CPD training for your school</h3>
+      <p>Tell us about your school and what you'd like to cover. Gareth will be in touch within 2 working days.</p>
+      <span class="cta-button">Start an enquiry →</span>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">→ Enquiry form (E1) pre-tagged "CPD training". Could be inline on this page or a link to /contact. If inline, this section becomes the form itself (E1 rendered directly here).</div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A2 — Site Footer ]</div>
+  </div>
+</div>
+
+<!-- ANNOTATIONS -->
+<div class="frame" style="max-width:720px; margin:-24px auto 48px;">
+  <div class="frame-label">Annotations</div>
+  <div class="annotations" style="border-top:none;">
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Why not C5?</strong> The training page has a unique structure because of Section 3 (app connection). The three C5 service pages (delivery, drop-days, consultancy) don't have this — they're straightforward "what / who / included / enquire" pages. Training is the only service with a product tie-in.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>App funnel:</strong> This is the highest-traffic service page because the Tailor app sends teachers here after they've used content. The page needs to convert visitors who already know the product into training enquiries.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Outcomes not modules:</strong> Section 2 deliberately frames learning as outcomes ("what changes for the teacher") rather than a curriculum of modules. Teachers don't care about module names — they care about whether this will help them.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">E1</span>
+      <span class="annotation-text"><strong>Enquiry form:</strong> Pre-tagged "CPD training". Could be rendered inline at the bottom of this page (replacing the CTA block with the actual form), or could link to /contact with the service pre-selected. Inline is higher-converting but adds page length.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>No related blog posts or topics:</strong> Unlike C5, this page doesn't include related content sections. It's focused — training value prop → enquiry. Blog posts and topics are reachable from the nav. Adding them here would dilute the conversion funnel.</span>
+    </div>
+  </div>
+</div>
+
+<!-- BEHAVIOUR NOTES -->
+<div class="behaviour-notes">
+  <h4>Design decisions flagged</h4>
+  <p><strong>Inline form vs link:</strong> Rendering E1 directly at the bottom of this page removes a click from the conversion path. But it adds length and may feel transactional. A compromise: show a condensed "express enquiry" (name, email, school, message) inline, with a link to the full form for those who want to specify key stage/timing.</p>
+  <p><strong>App connection visual:</strong> Section 3 could be a simple text explanation or a more visual step-by-step flow (as wireframed). The flow diagram makes the relationship concrete — "training → unlocked content → ongoing teaching" — but needs to be simple enough to scan in 3 seconds.</p>
+  <p><strong>Pricing:</strong> Not in the brief. If Gareth wants to show indicative pricing ("from £X"), it would sit in Section 4 (logistics) as a fifth card. If pricing is bespoke, the current approach works — everything drives to a conversation.</p>
+  <p><strong>Mobile:</strong> The logistics grid (Section 4) stacks to a single column. The app flow steps (Section 3) stack vertically with downward arrows.</p>
+</div>
+
+</body>
+</html>

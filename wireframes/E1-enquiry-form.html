@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E1 — Enquiry Form Wireframe (+ D6 States)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding: 40px 20px; }
+
+  .wireframe-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #999; margin-bottom: 6px; }
+  .wireframe-title { font-size: 22px; font-weight: 700; color: #222; margin-bottom: 4px; }
+  .wireframe-desc { font-size: 13px; color: #777; margin-bottom: 32px; max-width: 600px; line-height: 1.5; }
+
+  .frame { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; max-width: 720px; margin: 0 auto 48px; }
+  .frame-label { background: #f0f0f0; padding: 8px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ddd; }
+
+  .page-section { padding: 24px; border-bottom: 1px solid #eee; }
+  .page-section:last-of-type { border-bottom: none; }
+
+  .section-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #fff; display: inline-block; padding: 2px 8px; border-radius: 3px; margin-bottom: 12px;
+  }
+  .section-label.state { background: #2a6a8a; }
+  .section-label.error { background: #c0392b; }
+  .section-label.success { background: #2a6a2a; }
+
+  h2.wf { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 6px; }
+  h3.wf { font-size: 15px; font-weight: 600; color: #444; margin-bottom: 6px; }
+  p.wf { font-size: 13px; color: #777; line-height: 1.5; margin-bottom: 10px; }
+  .wf-small { font-size: 11px; color: #999; line-height: 1.5; }
+
+  /* ---- FORM FIELDS ---- */
+  .form-group { margin-bottom: 18px; }
+  .form-label {
+    font-size: 12px; font-weight: 600; color: #333; display: block; margin-bottom: 5px;
+  }
+  .form-label .required { color: #c0392b; margin-left: 2px; }
+  .form-label .optional { font-weight: 400; color: #999; font-size: 11px; margin-left: 4px; }
+  .form-input {
+    width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 5px;
+    font-size: 13px; color: #333; background: #fff;
+  }
+  .form-input:focus { border-color: #2a6a8a; outline: none; box-shadow: 0 0 0 2px rgba(42,106,138,0.15); }
+  .form-input::placeholder { color: #bbb; }
+  .form-select {
+    width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 5px;
+    font-size: 13px; color: #333; background: #fff; appearance: auto;
+  }
+  .form-textarea {
+    width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 5px;
+    font-size: 13px; color: #333; background: #fff; min-height: 90px; resize: vertical;
+    font-family: inherit;
+  }
+  .form-hint { font-size: 11px; color: #999; margin-top: 3px; }
+
+  /* ---- PRE-FILL INDICATOR ---- */
+  .prefill-badge {
+    font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+    color: #2a6a8a; background: #e0f0f8; padding: 2px 6px; border-radius: 3px;
+    margin-left: 6px;
+  }
+
+  /* ---- SUBMIT ---- */
+  .submit-button {
+    display: inline-block; padding: 12px 28px; background: #333; color: #fff;
+    border: none; border-radius: 6px; font-size: 14px; font-weight: 600;
+    cursor: pointer;
+  }
+  .submit-button:hover { background: #222; }
+  .submit-button.loading {
+    background: #888; cursor: wait;
+  }
+
+  /* ---- ERROR STATES ---- */
+  .form-input.error { border-color: #c0392b; background: #fef8f8; }
+  .form-select.error { border-color: #c0392b; background: #fef8f8; }
+  .field-error {
+    font-size: 11px; color: #c0392b; margin-top: 4px; font-weight: 500;
+  }
+  .form-error-summary {
+    background: #fde8e8; border: 1px solid #e0b0b0; border-radius: 6px;
+    padding: 14px 16px; margin-bottom: 18px;
+  }
+  .form-error-summary h4 { font-size: 13px; font-weight: 600; color: #c0392b; margin-bottom: 6px; }
+  .form-error-summary p { font-size: 12px; color: #8a3030; line-height: 1.5; }
+
+  /* ---- SUCCESS STATE ---- */
+  .success-block {
+    background: #f0fff0; border: 2px solid #c0e0c0; border-radius: 8px;
+    padding: 32px 24px; text-align: center;
+  }
+  .success-icon {
+    width: 48px; height: 48px; background: #c0e0c0; border-radius: 50%;
+    margin: 0 auto 14px; display: flex; align-items: center; justify-content: center;
+    font-size: 22px; color: #2a6a2a;
+  }
+  .success-block h3 { font-size: 18px; font-weight: 700; color: #2a6a2a; margin-bottom: 8px; }
+  .success-block p { font-size: 13px; color: #4a7a4a; line-height: 1.6; margin-bottom: 6px; }
+  .success-block .next-link { font-size: 13px; color: #2a6a8a; font-weight: 600; margin-top: 14px; display: block; }
+
+  /* ---- ANNOTATIONS ---- */
+  .annotations { padding: 16px 24px 20px; background: #fafafa; border-top: 1px solid #eee; }
+  .annotation { display: flex; gap: 8px; margin-bottom: 8px; font-size: 12px; line-height: 1.5; }
+  .annotation-code { font-weight: 700; color: #888; white-space: nowrap; min-width: 30px; }
+  .annotation-text { color: #666; }
+
+  .behaviour-notes {
+    max-width: 720px; margin: 0 auto;
+    background: #fffff0; border: 1px solid #e8e8d0; border-radius: 8px; padding: 16px 20px;
+  }
+  .behaviour-notes h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 10px; }
+  .behaviour-notes p { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<div style="max-width:720px; margin:0 auto 32px;">
+  <div class="wireframe-label">E1 + D6 — Wireframe</div>
+  <div class="wireframe-title">Service Enquiry Form</div>
+  <div class="wireframe-desc">
+    The single conversion form for all services. Lives on /contact (B7) and/or inline on service pages (B4, C5). Seven fields — three required, four optional. The "service interested in" field pre-fills when arriving from a specific service page. Four states wireframed: empty (default), validation errors, submitting, and success.
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- STATE 1: EMPTY (DEFAULT)       -->
+<!-- ============================== -->
+<div class="frame">
+  <div class="frame-label">D6 State 1 — Empty (default)</div>
+
+  <div class="page-section">
+    <span class="section-label state">Default state</span>
+    <h2 class="wf">Get in touch</h2>
+    <p class="wf">Tell us about your school and what you're looking for. Gareth will be in touch within 2 working days.</p>
+  </div>
+
+  <div class="page-section">
+    <div class="form-group">
+      <label class="form-label">Name <span class="required">*</span></label>
+      <input type="text" class="form-input" placeholder="Your full name">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Email <span class="required">*</span></label>
+      <input type="email" class="form-input" placeholder="you@school.ac.uk">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">School name <span class="required">*</span></label>
+      <input type="text" class="form-input" placeholder="Your school or organisation">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Service interested in <span class="required">*</span> <span class="prefill-badge">Pre-fills from source page</span></label>
+      <select class="form-select">
+        <option value="" disabled selected>Please select…</option>
+        <option>Direct RSE delivery</option>
+        <option>CPD training</option>
+        <option>Drop day delivery</option>
+        <option>RSE consultancy</option>
+        <option>Other</option>
+      </select>
+      <div class="form-hint">If you arrived from a service page, this is pre-selected for you.</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Key stage or year group <span class="optional">(optional)</span></label>
+      <input type="text" class="form-input" placeholder="e.g. Year 8, KS3, Whole school">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Preferred timing <span class="optional">(optional)</span></label>
+      <input type="text" class="form-input" placeholder="e.g. Summer term, September 2026, Flexible">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Message <span class="optional">(optional)</span></label>
+      <textarea class="form-textarea" placeholder="Anything else you'd like us to know — specific topics, number of students, questions you have…"></textarea>
+    </div>
+
+    <div style="margin-top:4px;">
+      <span class="submit-button">Send enquiry</span>
+    </div>
+
+    <div class="wf-small" style="margin-top:12px;">Fields marked * are required. All others are optional. The form should feel lightweight — 3 required fields is the minimum viable enquiry. The optional fields help Gareth prepare but shouldn't discourage submission.</div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- STATE 1B: PRE-FILLED           -->
+<!-- ============================== -->
+<div class="frame">
+  <div class="frame-label">D6 State 1b — Pre-filled (arrived from /training)</div>
+
+  <div class="page-section">
+    <span class="section-label state">Pre-filled variant</span>
+    <h2 class="wf">Enquire about CPD Training</h2>
+    <p class="wf">Tell us about your school and we'll get back to you within 2 working days.</p>
+
+    <div class="wf-small" style="margin-top:10px;">
+      <strong>Changes when pre-filled:</strong><br>
+      — Headline updates to include the service name ("Enquire about CPD Training" instead of "Get in touch")<br>
+      — The service select field is pre-set to "CPD training" and visually confirmed<br>
+      — Everything else is the same
+    </div>
+  </div>
+
+  <div class="page-section">
+    <div class="form-group">
+      <label class="form-label">Service interested in <span class="required">*</span></label>
+      <select class="form-select" style="border-color: #2a6a8a; background: #f0f8ff;">
+        <option selected>CPD training</option>
+      </select>
+      <div class="form-hint">Pre-selected because you came from the training page. You can change this.</div>
+    </div>
+    <div class="wf-small">[ Remaining fields same as default state ]</div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- STATE 2: VALIDATION ERRORS     -->
+<!-- ============================== -->
+<div class="frame">
+  <div class="frame-label">D6 State 2 — Validation errors</div>
+
+  <div class="page-section">
+    <span class="section-label error">Validation errors</span>
+
+    <div class="form-error-summary">
+      <h4>There's a problem with your enquiry</h4>
+      <p>Please check the fields highlighted below and try again.</p>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Name <span class="required">*</span></label>
+      <input type="text" class="form-input" value="Sarah">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Email <span class="required">*</span></label>
+      <input type="email" class="form-input error" value="sarah@school">
+      <div class="field-error">Please enter a valid email address</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">School name <span class="required">*</span></label>
+      <input type="text" class="form-input error" value="">
+      <div class="field-error">School name is required</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Service interested in <span class="required">*</span></label>
+      <select class="form-select error">
+        <option value="" disabled selected>Please select…</option>
+      </select>
+      <div class="field-error">Please select a service</div>
+    </div>
+
+    <div class="wf-small" style="margin-top:10px;">
+      <strong>Error handling:</strong><br>
+      — Error summary at the top of the form (scrolled into view if necessary)<br>
+      — Individual field errors inline below each problem field<br>
+      — Red border on error fields<br>
+      — Valid fields retain their values — don't clear the form on error<br>
+      — Focus jumps to the first error field
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- STATE 3: SUBMITTING            -->
+<!-- ============================== -->
+<div class="frame">
+  <div class="frame-label">D6 State 3 — Submitting (loading)</div>
+
+  <div class="page-section" style="text-align:center; padding:40px 24px;">
+    <span class="section-label state">Loading state</span>
+    <div style="margin-top:16px;">
+      <span class="submit-button loading">Sending…</span>
+    </div>
+    <div class="wf-small" style="margin-top:14px;">
+      Button text changes to "Sending…" and enters disabled/loading state.<br>
+      Form fields are disabled during submission to prevent double-send.<br>
+      This state should be brief — if the submission takes more than a few seconds, add a spinner or progress indicator.
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- STATE 4: SUCCESS               -->
+<!-- ============================== -->
+<div class="frame">
+  <div class="frame-label">D6 State 4 — Success confirmation</div>
+
+  <div class="page-section">
+    <span class="section-label success">Success state</span>
+    <div class="success-block">
+      <div class="success-icon">✓</div>
+      <h3>Thanks — your enquiry has been sent</h3>
+      <p>Gareth will be in touch within 2 working days.</p>
+      <p style="font-size:12px; color:#6a9a6a;">If you don't hear back, check your spam folder or email gareth@tailoreducation.co.uk directly.</p>
+      <span class="next-link">Browse topics while you wait →</span>
+    </div>
+    <div class="wf-small" style="margin-top:12px;">
+      <strong>Success behaviour:</strong><br>
+      — Replaces the form entirely (don't show the form alongside the success message)<br>
+      — Includes a fallback contact method in case the submission fails silently<br>
+      — Offers a next action ("Browse topics", "Explore the blog") so the visitor stays on-site<br>
+      — The response timeframe ("2 working days") should match what Gareth can actually deliver
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- FIELD REFERENCE TABLE          -->
+<!-- ============================== -->
+<div class="frame">
+  <div class="frame-label">Field reference</div>
+  <div class="page-section">
+    <table style="width:100%; font-size:12px; border-collapse:collapse;">
+      <tr style="border-bottom:1px solid #eee;">
+        <th style="text-align:left; padding:8px 6px; font-weight:600; color:#555;">Field</th>
+        <th style="text-align:left; padding:8px 6px; font-weight:600; color:#555;">Type</th>
+        <th style="text-align:left; padding:8px 6px; font-weight:600; color:#555;">Required</th>
+        <th style="text-align:left; padding:8px 6px; font-weight:600; color:#555;">Pre-fill logic</th>
+      </tr>
+      <tr style="border-bottom:1px solid #f0f0f0;">
+        <td style="padding:8px 6px; color:#333;">Name</td>
+        <td style="padding:8px 6px; color:#888;">text</td>
+        <td style="padding:8px 6px; color:#c0392b; font-weight:600;">Yes</td>
+        <td style="padding:8px 6px; color:#888;">—</td>
+      </tr>
+      <tr style="border-bottom:1px solid #f0f0f0;">
+        <td style="padding:8px 6px; color:#333;">Email</td>
+        <td style="padding:8px 6px; color:#888;">email</td>
+        <td style="padding:8px 6px; color:#c0392b; font-weight:600;">Yes</td>
+        <td style="padding:8px 6px; color:#888;">—</td>
+      </tr>
+      <tr style="border-bottom:1px solid #f0f0f0;">
+        <td style="padding:8px 6px; color:#333;">School name</td>
+        <td style="padding:8px 6px; color:#888;">text</td>
+        <td style="padding:8px 6px; color:#c0392b; font-weight:600;">Yes</td>
+        <td style="padding:8px 6px; color:#888;">—</td>
+      </tr>
+      <tr style="border-bottom:1px solid #f0f0f0;">
+        <td style="padding:8px 6px; color:#333;">Service interested in</td>
+        <td style="padding:8px 6px; color:#888;">select</td>
+        <td style="padding:8px 6px; color:#c0392b; font-weight:600;">Yes</td>
+        <td style="padding:8px 6px; color:#2a6a8a; font-weight:500;">Pre-selected from source page URL param or referrer</td>
+      </tr>
+      <tr style="border-bottom:1px solid #f0f0f0;">
+        <td style="padding:8px 6px; color:#333;">Key stage / year group</td>
+        <td style="padding:8px 6px; color:#888;">text</td>
+        <td style="padding:8px 6px; color:#999;">No</td>
+        <td style="padding:8px 6px; color:#888;">—</td>
+      </tr>
+      <tr style="border-bottom:1px solid #f0f0f0;">
+        <td style="padding:8px 6px; color:#333;">Preferred timing</td>
+        <td style="padding:8px 6px; color:#888;">text</td>
+        <td style="padding:8px 6px; color:#999;">No</td>
+        <td style="padding:8px 6px; color:#888;">—</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 6px; color:#333;">Message</td>
+        <td style="padding:8px 6px; color:#888;">textarea</td>
+        <td style="padding:8px 6px; color:#999;">No</td>
+        <td style="padding:8px 6px; color:#888;">—</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- ANNOTATIONS -->
+<div class="frame" style="max-width:720px; margin:0 auto 48px;">
+  <div class="frame-label">Annotations</div>
+  <div class="annotations" style="border-top:none;">
+    <div class="annotation">
+      <span class="annotation-code">E1</span>
+      <span class="annotation-text"><strong>Single form, multiple entry points:</strong> This form appears on /contact (B7), and is linked from every service CTA (A13) on B4, C5, and C4. The service select pre-fills via URL parameter (?service=training) or referrer detection.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">D6</span>
+      <span class="annotation-text"><strong>Four states:</strong> Empty (default), validation errors, submitting (loading), success confirmation. All four need designing. The pre-filled variant (State 1b) is a sub-state of empty.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Submit action:</strong> Sends to Gareth's email. No database storage on the content site. The form provider (Astro form action, Netlify Forms, Formspree, etc.) handles delivery. The privacy policy (B12) covers what happens to submitted data.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Spam protection:</strong> Needs a honeypot field or invisible reCAPTCHA. Not wireframed (invisible by design) but must be implemented. No visible CAPTCHA — it would undermine the lightweight feel.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Service options:</strong> 5 choices — Direct RSE delivery, CPD training, Drop day delivery, RSE consultancy, Other. "Other" is a catch-all for enquiries that don't fit a service line (e.g. "I want to buy the book in bulk").</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Accessibility:</strong> All fields must have associated labels (not just placeholders). Error messages linked to fields via aria-describedby. Focus management on error — jump to first problem field. Keyboard navigable throughout.</span>
+    </div>
+  </div>
+</div>
+
+<!-- BEHAVIOUR NOTES -->
+<div class="behaviour-notes">
+  <h4>Design decisions flagged</h4>
+  <p><strong>Inline vs dedicated page:</strong> The form could live inline at the bottom of B4 and C5 pages (higher converting — no extra click), or on a dedicated /contact page (cleaner pages, single form location). A hybrid is possible: short "express enquiry" inline (name, email, school, service) with a "full form" link for those who want to add detail.</p>
+  <p><strong>Response timeframe:</strong> "2 working days" appears in both the intro text and the success message. This is a promise — it needs to be one Gareth can keep. If the real timeframe is longer, adjust both instances.</p>
+  <p><strong>Optional field order:</strong> Key stage → timing → message. This mirrors the decision sequence: "who are the students?" → "when do you want this?" → "anything else?" Could reorder if Gareth finds timing is the most useful optional field.</p>
+  <p><strong>Mobile:</strong> The form stacks naturally as a single column. No changes needed. The select dropdown uses the native mobile picker. The textarea should be tall enough to see what you're typing (minimum 3 lines visible).</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C4 — Blog Post Wireframe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding: 40px 20px; }
+
+  .wireframe-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #999; margin-bottom: 6px; }
+  .wireframe-title { font-size: 22px; font-weight: 700; color: #222; margin-bottom: 4px; }
+  .wireframe-desc { font-size: 13px; color: #777; margin-bottom: 32px; max-width: 600px; line-height: 1.5; }
+
+  .frame { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; max-width: 720px; margin: 0 auto 48px; }
+  .frame-label { background: #f0f0f0; padding: 8px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ddd; }
+
+  .page-section { padding: 24px; border-bottom: 1px solid #eee; }
+  .page-section:last-of-type { border-bottom: none; }
+
+  .section-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #fff; display: inline-block; padding: 2px 8px; border-radius: 3px; margin-bottom: 12px;
+  }
+  .section-label.core { background: #6b5b8a; }
+  .section-label.component { background: #666; }
+
+  h2.wf { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 6px; }
+  h3.wf { font-size: 15px; font-weight: 600; color: #444; margin-bottom: 6px; }
+  p.wf { font-size: 13px; color: #777; line-height: 1.5; margin-bottom: 10px; }
+  .wf-small { font-size: 11px; color: #999; line-height: 1.5; }
+
+  /* ---- TITLE ---- */
+  .post-title { font-size: 26px; font-weight: 800; color: #222; line-height: 1.3; letter-spacing: -0.5px; }
+
+  /* ---- META ---- */
+  .meta-line {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 10px;
+  }
+  .meta-item { font-size: 12px; color: #888; }
+  .meta-divider { width: 1px; height: 14px; background: #ddd; }
+  .audience-label {
+    font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+    color: #6b5b8a; background: #f0ecf5; padding: 3px 8px; border-radius: 10px;
+  }
+  .share-button {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 600; color: #888; background: #f5f5f5;
+    border: 1px solid #ddd; border-radius: 4px; padding: 4px 10px; cursor: pointer;
+  }
+  .share-icon {
+    width: 12px; height: 12px; background: #bbb; border-radius: 2px;
+  }
+
+  /* ---- TOPIC TAGS ---- */
+  .topic-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .topic-chip {
+    font-size: 11px; font-weight: 500; color: #555; background: #f0f0f0;
+    border: 1px solid #ddd; border-radius: 14px; padding: 4px 12px;
+  }
+
+  /* ---- BODY ---- */
+  .post-body { font-size: 14px; color: #444; line-height: 1.7; }
+  .post-body p { margin-bottom: 14px; }
+  .post-body h3 { font-size: 16px; font-weight: 700; color: #333; margin: 20px 0 8px; }
+  .glossary-term {
+    color: #333; font-weight: 500; border-bottom: 1px dashed #b89a3a; cursor: help;
+  }
+  .inline-cta {
+    display: inline; color: #6b5b8a; font-weight: 500; text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .body-placeholder {
+    background: #fafafa; border: 1px dashed #ddd; border-radius: 4px;
+    padding: 12px; text-align: center; margin: 14px 0;
+  }
+  .body-placeholder span { font-size: 12px; color: #bbb; }
+
+  /* ---- RELATED POSTS ---- */
+  .related-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .related-card {
+    flex: 1; min-width: 180px; background: #fafafa; border: 1px dashed #ccc;
+    border-radius: 6px; padding: 14px;
+  }
+  .related-card h4 { font-size: 13px; font-weight: 600; color: #333; line-height: 1.4; margin-bottom: 4px; }
+  .related-card .meta { font-size: 11px; color: #999; margin-bottom: 4px; }
+  .related-card .audience { font-size: 10px; color: #6b5b8a; font-weight: 500; }
+
+  /* ---- CTA ---- */
+  .cta-service {
+    background: #f0f7ff; border: 2px solid #d0e0f0; border-radius: 6px;
+    padding: 20px; text-align: center;
+  }
+  .cta-service h3 { font-size: 15px; font-weight: 600; color: #2a5a8a; margin-bottom: 6px; }
+  .cta-service .cta-link { font-size: 13px; font-weight: 600; color: #2a5a8a; }
+
+  .cta-app {
+    background: #f0fff0; border: 2px solid #c0e0c0; border-radius: 6px;
+    padding: 20px; text-align: center;
+  }
+  .cta-app h3 { font-size: 15px; font-weight: 600; color: #2a6a2a; margin-bottom: 6px; }
+  .cta-app .cta-link { font-size: 13px; font-weight: 600; color: #2a6a2a; }
+
+  /* ---- ANNOTATIONS ---- */
+  .annotations { padding: 16px 24px 20px; background: #fafafa; border-top: 1px solid #eee; }
+  .annotation { display: flex; gap: 8px; margin-bottom: 8px; font-size: 12px; line-height: 1.5; }
+  .annotation-code { font-weight: 700; color: #888; white-space: nowrap; min-width: 30px; }
+  .annotation-text { color: #666; }
+
+  .behaviour-notes {
+    max-width: 720px; margin: 0 auto;
+    background: #fffff0; border: 1px solid #e8e8d0; border-radius: 8px; padding: 16px 20px;
+  }
+  .behaviour-notes h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 10px; }
+  .behaviour-notes p { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<div style="max-width:720px; margin:0 auto 32px;">
+  <div class="wireframe-label">C4 — Wireframe</div>
+  <div class="wireframe-title">Blog Post Template</div>
+  <div class="wireframe-desc">
+    Applied to ~20 posts at launch. Primarily for teachers and school leaders but some posts may target parents. Each post has an audience label, topic tags, glossary tooltips in the body, and a bottom CTA that varies based on the post's Service Link field.
+  </div>
+</div>
+
+<div class="frame">
+  <div class="frame-label">Blog post — Content hierarchy (single column)</div>
+
+  <!-- HEADER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A1 — Site Header ]</div>
+  </div>
+
+  <!-- 1. TITLE -->
+  <div class="page-section">
+    <span class="section-label core">1 — Title</span>
+    <div class="post-title">Teaching consent without making it awkward</div>
+    <div class="wf-small" style="margin-top:8px;">Page H1. Should work as both a page heading and a search result / blog index listing.</div>
+  </div>
+
+  <!-- 2. META LINE -->
+  <div class="page-section">
+    <span class="section-label core">2 — Meta line</span>
+    <div class="meta-line">
+      <span class="meta-item">Gareth Esson</span>
+      <div class="meta-divider"></div>
+      <span class="meta-item">12 March 2026</span>
+      <div class="meta-divider"></div>
+      <span class="audience-label">For teachers</span>
+      <div class="meta-divider"></div>
+      <span class="share-button"><span class="share-icon"></span> Share</span>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Author, date, target audience label, and share button. Audience options: teachers, school leaders, parents. Share opens native share sheet (mobile) or copy-link / social options (desktop).</div>
+  </div>
+
+  <!-- 3. TOPIC TAGS -->
+  <div class="page-section">
+    <span class="section-label component">3 — Topic tags (A16)</span>
+    <div class="topic-chips">
+      <div class="topic-chip">Consent</div>
+      <div class="topic-chip">Healthy relationships</div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Which landing page(s) this post relates to. Links to /topics/{slug}. Positioned near the top so the reader sees context before reading.</div>
+  </div>
+
+  <!-- 4. BODY CONTENT -->
+  <div class="page-section">
+    <span class="section-label core">4 — Body content</span>
+    <div class="post-body">
+      <p>This is the main body of the blog post, authored in Notion. The content is aimed at teachers and written in Gareth's professional but accessible voice.</p>
+
+      <h3>Why "no means no" isn't enough</h3>
+
+      <p>The body includes inline <span class="glossary-term">glossary tooltips</span> (A7) for any RSE terms that appear in the text. These work exactly as they do on question pages — hover on desktop, tap on mobile.</p>
+
+      <p>Gareth may also include natural inline CTAs written into the text itself — for example, "If you'd like structured lessons on this, <span class="inline-cta">explore our consent resources in the app</span>." These aren't templated components — they're authored links placed where they make sense in the narrative.</p>
+
+      <div class="body-placeholder">
+        <span>[ Further body content — may include subheadings, paragraphs, lists, embedded images ]</span>
+      </div>
+
+      <h3>Practical strategies for the classroom</h3>
+
+      <p>The post continues with practical teaching advice. Blog posts are Gareth's opportunity to demonstrate expertise and build trust with teachers before they commit to training or services.</p>
+
+      <p>Some posts may reference specific <span class="glossary-term">framework requirements</span> (DfE, PSHE Association) to help teachers connect the advice to their statutory obligations.</p>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Content from Notion page body. Supports headings, paragraphs, images, lists. Glossary tooltips (A7) active throughout. Inline author-placed CTAs are hand-written into the text, not templated.</div>
+  </div>
+
+  <!-- 5. RELATED BLOG POSTS -->
+  <div class="page-section">
+    <span class="section-label component">5 — Related blog posts (A15, blog variant)</span>
+    <h3 class="wf">More for teachers</h3>
+    <div class="related-row" style="margin-top:12px;">
+      <div class="related-card">
+        <h4>Why "no means no" isn't enough: moving beyond refusal-based consent education</h4>
+        <div class="meta">28 Feb 2026</div>
+        <span class="audience">For teachers</span>
+      </div>
+      <div class="related-card">
+        <h4>Handling disclosures during RSE lessons: what every teacher needs to know</h4>
+        <div class="meta">15 Jan 2026</div>
+        <span class="audience">For teachers</span>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">2–3 related posts. Uses A15 (blog variant). Shows title, date, audience label. Links to /blog/{slug}.</div>
+  </div>
+
+  <!-- 6. CTA (A13) — SERVICE VARIANT -->
+  <div class="page-section">
+    <span class="section-label component">6 — CTA (A13) — Service variant</span>
+    <div class="wf-small" style="margin-bottom:10px;">When Service Link is set (e.g. "CPD training"):</div>
+    <div class="cta-service">
+      <h3>Want help with CPD training? Talk to us</h3>
+      <p class="wf" style="color:#4a6a8a;">Expert-led training that gives your teachers confidence to deliver RSE.</p>
+      <span class="cta-link">Enquire about training →</span>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">→ Enquiry form (E1) pre-tagged with the service type from the post's Service Link field.</div>
+
+    <div style="margin-top:20px;">
+      <div class="wf-small" style="margin-bottom:10px;">When Service Link = "none" (alternative):</div>
+      <div class="cta-app">
+        <h3>Explore lessons on Consent</h3>
+        <p class="wf" style="color:#4a8a4a;">Curriculum-aligned activities, ready to teach. Filtered for this topic.</p>
+        <span class="cta-link">Open in Tailor →</span>
+      </div>
+      <div class="wf-small" style="margin-top:8px;">→ App library filtered by this post's primary topic. Fallback when no service is linked.</div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A2 — Site Footer ]</div>
+  </div>
+</div>
+
+<!-- ANNOTATIONS -->
+<div class="frame" style="max-width:720px; margin:-24px auto 48px;">
+  <div class="frame-label">Annotations</div>
+  <div class="annotations" style="border-top:none;">
+    <div class="annotation">
+      <span class="annotation-code">A7</span>
+      <span class="annotation-text"><strong>Glossary tooltips:</strong> Active throughout the body content. Same behaviour as C1 and C2 — first occurrence only, hover on desktop, tap on mobile.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">A13</span>
+      <span class="annotation-text"><strong>CTA block:</strong> Two variants. When Service Link is set: "Want help with [service]? Talk to us" → enquiry form pre-tagged. When Service Link = "none": "Explore lessons on [topic]" → app library. The variant is driven by a property in the Blog DB.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">A15</span>
+      <span class="annotation-text"><strong>Related posts:</strong> 2–3 related blog posts, shown as cards. Matching is by topic tag or manual curation. Uses the blog variant of the A15 card component.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">A16</span>
+      <span class="annotation-text"><strong>Topic tags:</strong> Positioned near the top (Section 3) so the reader sees topic context before reading. Links to the relevant C3 landing page(s).</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>No Simple Mode:</strong> Blog posts don't have Standard/Simple variants. They're written for a professional audience (teachers, school leaders, parents). Simple Mode only applies to C1 (questions) and C2 (glossary).</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Inline CTAs:</strong> Gareth may write natural links into the body text pointing to service pages, the app, or training. These are hand-authored, not templated — the template only provides the bottom CTA (A13).</span>
+    </div>
+  </div>
+</div>
+
+<!-- BEHAVIOUR NOTES -->
+<div class="behaviour-notes">
+  <h4>Design decisions flagged</h4>
+  <p><strong>Audience label placement:</strong> The label ("For teachers") appears in the meta line. It could also appear more prominently — as a banner or badge at the top. The current placement is subtle; Gareth may want it louder if the blog serves multiple distinct audiences.</p>
+  <p><strong>Topic tags position:</strong> Shown here near the top (Section 3) for context. Could alternatively sit at the bottom alongside related posts. Top placement helps teachers immediately see whether the post is relevant to their needs.</p>
+  <p><strong>Related posts logic:</strong> Auto-matched by topic tag, or manually curated per post? Auto-matching is easier to maintain but may surface less relevant results. A "related posts" relation field in Notion gives Gareth manual control.</p>
+  <p><strong>Reading time:</strong> Not in the brief, but could be a useful addition to the meta line. "5 min read" helps busy teachers decide whether to commit.</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C1 — Question Page Wireframe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding: 40px 20px; }
+
+  .wireframe-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #999; margin-bottom: 6px; }
+  .wireframe-title { font-size: 22px; font-weight: 700; color: #222; margin-bottom: 4px; }
+  .wireframe-desc { font-size: 13px; color: #777; margin-bottom: 32px; max-width: 600px; line-height: 1.5; }
+
+  .frame { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; max-width: 720px; margin: 0 auto 48px; }
+  .frame-label { background: #f0f0f0; padding: 8px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ddd; }
+
+  .page-section { padding: 24px; border-bottom: 1px solid #eee; }
+  .page-section:last-of-type { border-bottom: none; }
+
+  .section-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #fff; display: inline-block; padding: 2px 8px; border-radius: 3px; margin-bottom: 12px;
+  }
+  .section-label.core { background: #b89a3a; }
+  .section-label.conditional { background: #c0392b; }
+  .section-label.component { background: #666; }
+
+  .conditional-badge {
+    font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    color: #c0392b; background: #fde8e8; padding: 2px 6px; border-radius: 3px;
+    margin-left: 6px;
+  }
+
+  h2.wf { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 6px; }
+  h3.wf { font-size: 15px; font-weight: 600; color: #444; margin-bottom: 6px; }
+  p.wf { font-size: 13px; color: #777; line-height: 1.5; margin-bottom: 10px; }
+  .wf-small { font-size: 11px; color: #999; line-height: 1.5; }
+
+  /* ---- CRISIS SUPPORT ---- */
+  .crisis-block {
+    background: #fde8e8; border: 2px solid #e74c3c; border-radius: 6px; padding: 18px;
+  }
+  .crisis-block h3 { font-size: 15px; font-weight: 700; color: #c0392b; margin-bottom: 6px; }
+  .crisis-block p { font-size: 13px; color: #7a2a2a; line-height: 1.5; margin-bottom: 6px; }
+  .crisis-service {
+    background: #fff; border: 1px solid #e0b0b0; border-radius: 4px; padding: 10px 14px; margin-top: 10px;
+  }
+  .crisis-service strong { font-size: 13px; color: #333; }
+  .crisis-service span { font-size: 12px; color: #666; display: block; margin-top: 2px; }
+
+  /* ---- AGE FLAG ---- */
+  .age-flag-block {
+    background: #fff8e6; border: 2px solid #f0c040; border-radius: 6px; padding: 18px;
+  }
+  .age-flag-block h3 { font-size: 14px; font-weight: 600; color: #8a6a10; margin-bottom: 6px; }
+  .age-flag-block p { font-size: 13px; color: #6a5a20; line-height: 1.5; margin-bottom: 8px; }
+  .age-flag-actions { display: flex; gap: 10px; margin-top: 10px; }
+  .age-flag-link {
+    font-size: 12px; color: #8a6a10; text-decoration: underline; padding: 6px 0;
+  }
+  .age-flag-continue {
+    font-size: 12px; font-weight: 600; color: #333; background: #f0c040; border: none;
+    padding: 6px 14px; border-radius: 4px;
+  }
+
+  /* ---- POST-IT ---- */
+  .postit-image {
+    background: #f0e4c4; border: 1px solid #e0d4b4; border-radius: 4px;
+    height: 200px; display: flex; align-items: center; justify-content: center;
+  }
+  .postit-image span { font-size: 12px; color: #b89a3a; font-style: italic; }
+
+  /* ---- SIMPLE MODE TOGGLE ---- */
+  .simple-toggle {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #f5f5f5; border: 1px solid #ddd; border-radius: 20px; padding: 6px 14px;
+  }
+  .toggle-option { font-size: 12px; font-weight: 500; color: #999; }
+  .toggle-option.active { color: #333; font-weight: 600; }
+  .toggle-track {
+    width: 32px; height: 16px; background: #ccc; border-radius: 8px; position: relative;
+  }
+  .toggle-knob {
+    width: 12px; height: 12px; background: #fff; border-radius: 50%; position: absolute;
+    top: 2px; left: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  }
+
+  /* ---- ANSWER BODY ---- */
+  .answer-body {
+    font-size: 14px; color: #444; line-height: 1.7; padding: 16px 0;
+  }
+  .answer-body p { margin-bottom: 12px; }
+  .glossary-term {
+    color: #333; font-weight: 500; border-bottom: 1px dashed #b89a3a;
+    cursor: help;
+  }
+  .tooltip-preview {
+    background: #333; color: #fff; font-size: 11px; padding: 8px 12px;
+    border-radius: 6px; max-width: 240px; margin-top: 6px; margin-bottom: 8px;
+    position: relative;
+  }
+  .tooltip-preview::before {
+    content: ''; position: absolute; top: -5px; left: 20px;
+    border-left: 5px solid transparent; border-right: 5px solid transparent;
+    border-bottom: 5px solid #333;
+  }
+  .tooltip-preview a { color: #8ac; font-size: 10px; }
+
+  /* ---- AUTHOR ---- */
+  .author-block {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px; background: #fafafa; border-radius: 6px; border: 1px solid #eee;
+  }
+  .author-avatar {
+    width: 36px; height: 36px; background: #ddd; border-radius: 50%; flex-shrink: 0;
+  }
+  .author-block span { font-size: 13px; color: #555; }
+  .author-block strong { color: #333; }
+
+  /* ---- END-OF-ANSWER PANEL (A17) ---- */
+  .eoa-panel { display: flex; gap: 12px; }
+  .eoa-card {
+    flex: 1; padding: 16px; border-radius: 6px; border: 1px dashed #ccc;
+    text-align: center;
+  }
+  .eoa-card h4 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .eoa-card p { font-size: 11px; color: #888; line-height: 1.4; margin-bottom: 8px; }
+  .eoa-card .eoa-cta { font-size: 11px; font-weight: 600; color: #555; }
+  .eoa-book { background: #fdf6e8; border-color: #e8d9b8; }
+  .eoa-book h4 { color: #4a3f2a; }
+  .eoa-book .eoa-cta { color: #8a6a10; }
+  .eoa-teach { background: #f0f7ff; border-color: #d0e0f0; }
+  .eoa-teach h4 { color: #2a5a8a; }
+  .eoa-teach .eoa-cta { color: #2a5a8a; }
+  .eoa-school { background: #f0fff0; border-color: #c0e0c0; }
+  .eoa-school h4 { color: #2a6a2a; }
+  .eoa-school .eoa-cta { color: #2a6a2a; }
+  .eoa-cover-placeholder {
+    width: 48px; height: 64px; background: #f0e4c4; border: 1px solid #e0d4b4;
+    border-radius: 3px; margin: 0 auto 8px;
+  }
+
+  /* ---- SIGNPOSTING ---- */
+  .signpost-block {
+    background: #f0f7ff; border: 1px solid #d0e0f0; border-radius: 6px; padding: 18px;
+  }
+  .signpost-block h3 { font-size: 14px; font-weight: 600; color: #2a5a8a; margin-bottom: 10px; }
+  .signpost-service {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid #e0ecf5;
+  }
+  .signpost-service:last-child { border-bottom: none; }
+  .signpost-service .svc-name { font-size: 13px; font-weight: 600; color: #333; }
+  .signpost-service .svc-desc { font-size: 11px; color: #777; }
+  .signpost-service .svc-contact { font-size: 11px; color: #2a5a8a; font-weight: 500; text-align: right; }
+
+  /* ---- RELATED QUESTIONS ---- */
+  .related-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .related-card {
+    flex: 1; min-width: 140px; background: #fdf6e8; border: 1px solid #e8d9b8;
+    border-radius: 6px; padding: 14px;
+  }
+  .related-postit {
+    width: 100%; height: 40px; background: #f0e4c4; border: 1px solid #e0d4b4;
+    border-radius: 3px; margin-bottom: 8px;
+  }
+  .related-card h4 { font-size: 12px; font-weight: 600; color: #333; line-height: 1.4; margin-bottom: 4px; }
+  .related-card .tag { font-size: 10px; color: #888; background: #f5f5f5; padding: 2px 6px; border-radius: 8px; }
+
+  /* ---- TOPIC TAGS ---- */
+  .topic-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .topic-chip {
+    font-size: 11px; font-weight: 500; color: #555; background: #f0f0f0;
+    border: 1px solid #ddd; border-radius: 14px; padding: 4px 12px;
+  }
+
+  /* ---- ANNOTATIONS ---- */
+  .annotations { padding: 16px 24px 20px; background: #fafafa; border-top: 1px solid #eee; }
+  .annotation { display: flex; gap: 8px; margin-bottom: 8px; font-size: 12px; line-height: 1.5; }
+  .annotation-code { font-weight: 700; color: #888; white-space: nowrap; min-width: 30px; }
+  .annotation-text { color: #666; }
+
+  .behaviour-notes {
+    max-width: 720px; margin: 0 auto;
+    background: #fffff0; border: 1px solid #e8e8d0; border-radius: 8px; padding: 16px 20px;
+  }
+  .behaviour-notes h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 10px; }
+  .behaviour-notes p { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; }
+
+  /* ---- DUAL ANSWER VARIANT ---- */
+  .dual-answer-wrapper {
+    border: 1px dashed #ccc; border-radius: 6px; overflow: hidden;
+  }
+  .dual-answer-label {
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+    color: #555; background: #f0f0f0; padding: 8px 16px; border-bottom: 1px solid #ddd;
+  }
+  .dual-answer-content { padding: 16px; }
+  .dual-divider {
+    height: 1px; background: #ddd; margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<div style="max-width:720px; margin:0 auto 32px;">
+  <div class="wireframe-label">C1 — Wireframe</div>
+  <div class="wireframe-title">Question Page Template</div>
+  <div class="wireframe-desc">
+    The most complex template on the site. Applied to ~152 question pages. Shows content hierarchy for the standard case, with conditional elements (crisis support, age flag, dual answer) marked. Includes components A6, A7, A8, A9, A15, A16, A17, D1, and D7.
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- STANDARD QUESTION PAGE         -->
+<!-- ============================== -->
+<div class="frame">
+  <div class="frame-label">Question page — Standard layout (single column)</div>
+
+  <!-- HEADER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A1 — Site Header ]</div>
+  </div>
+
+  <!-- 1. CRISIS SUPPORT (CONDITIONAL) -->
+  <div class="page-section">
+    <span class="section-label conditional">1 — Crisis support (A9)</span>
+    <span class="conditional-badge">Conditional</span>
+    <div class="wf-small" style="margin-bottom:10px;">Only appears on safeguarding-related questions (Safety & Safeguarding category, or content sensitivity = "specialist" / "mandatory_reporting").</div>
+    <div class="crisis-block">
+      <h3>If this is happening to you, help is here</h3>
+      <p>You don't have to deal with this alone. These people can help, and everything you tell them is confidential.</p>
+      <div class="crisis-service">
+        <strong>Childline</strong>
+        <span>Free, confidential support for under 19s — call 0800 1111 or chat online at childline.org.uk</span>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Visually distinct from the answer. Not dismissable. Same in Standard and Simple modes. The most relevant crisis service is shown — selected per question from the signposting pool.</div>
+  </div>
+
+  <!-- 2. AGE FLAG INTERSTITIAL (CONDITIONAL) -->
+  <div class="page-section">
+    <span class="section-label conditional">2 — Age flag interstitial (D1)</span>
+    <span class="conditional-badge">Conditional</span>
+    <div class="wf-small" style="margin-bottom:10px;">Only appears on age-flagged questions (Age Tier = "Age-flagged Year 9+"). Shows between the post-it image and the answer.</div>
+    <div class="age-flag-block">
+      <h3>This answer talks about [topic] in detail</h3>
+      <p>It's written for young people in Year 9 and above. If you'd like to start with the basics, there's a good place to begin below.</p>
+      <div class="age-flag-actions">
+        <span class="age-flag-link">Start with the basics →</span>
+        <span class="age-flag-continue">Continue to answer</span>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Not a hard gate — an honest signpost. The answer is always accessible. "Start with the basics" links to a foundational question or glossary entry.</div>
+  </div>
+
+  <!-- 3. POST-IT IMAGE -->
+  <div class="page-section">
+    <span class="section-label core">3 — Post-it image</span>
+    <div class="postit-image">
+      <span>[ Scanned handwritten question on a post-it note ]</span>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">The visual hook. The scanned, handwritten question. Prominent placement — this is what makes Okay to Ask feel real and human.</div>
+  </div>
+
+  <!-- 4. SIMPLE MODE TOGGLE -->
+  <div class="page-section">
+    <span class="section-label component">4 — Simple Mode toggle (A6)</span>
+    <div style="display:flex; align-items:center; gap:16px;">
+      <div class="simple-toggle">
+        <span class="toggle-option active">Standard</span>
+        <div class="toggle-track"><div class="toggle-knob"></div></div>
+        <span class="toggle-option">Simple</span>
+      </div>
+      <span class="wf-small">Reading level preference. Persists via localStorage.</span>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Positioned near the answer, before the text begins. Should remain accessible as the reader scrolls — sticky/fixed or positioned so it doesn't scroll out of view. Feels like an accessibility feature, not a children's mode.</div>
+  </div>
+
+  <!-- 5. ANSWER -->
+  <div class="page-section">
+    <span class="section-label core">5 — Answer</span>
+    <div class="answer-body">
+      <p>This is the core answer content. In <strong>Standard mode</strong>, this is the full Notion page body. In <strong>Simple mode</strong>, this swaps to the Simple Answer property field.</p>
+
+      <p>Inline <span class="glossary-term">glossary terms</span> are highlighted throughout the text. Only the first occurrence of each term per page is tooltipped.</p>
+
+      <div class="tooltip-preview">
+        <strong style="font-size:11px;">Glossary term</strong><br>
+        Short definition text in Standard mode, or Simple Definition in Simple mode.<br>
+        <a href="#">Read more →</a>
+      </div>
+
+      <p>The answer may include multiple paragraphs. The tone is honest, age-appropriate, and written in Gareth's editorial voice. No hedging, no moralising — just clear information.</p>
+
+      <p>This section also handles the <span class="glossary-term">consent</span> and other linked terms that appear naturally in the text, providing contextual definitions without breaking the reading flow.</p>
+    </div>
+    <div class="wf-small">Glossary tooltip (A7) shown inline. Desktop: hover to reveal, click to open full page. Mobile: tap to reveal, tap elsewhere to close. See D4 for expanded tooltip state.</div>
+  </div>
+
+<!-- 6. SIGNPOSTING -->
+  <div class="page-section">
+    <span class="section-label component">6 — Signposting block (A8)</span>
+    <div class="wf-small" style="margin-bottom:10px;">Support services relevant to this question. Contextually populated from the question's Signposting field. Not dismissable. Same in both modes.</div>
+    <div class="signpost-block">
+      <h3>Support services</h3>
+      <div class="signpost-service">
+        <div>
+          <div class="svc-name">Childline</div>
+          <div class="svc-desc">Free, confidential support for under 19s</div>
+        </div>
+        <div class="svc-contact">0800 1111<br>childline.org.uk</div>
+      </div>
+      <div class="signpost-service">
+        <div>
+          <div class="svc-name">Brook</div>
+          <div class="svc-desc">Sexual health and wellbeing for under 25s</div>
+        </div>
+        <div class="svc-contact">brook.org.uk</div>
+      </div>
+      <div class="signpost-service">
+        <div>
+          <div class="svc-name">The Mix</div>
+          <div class="svc-desc">Support for under 25s on any issue</div>
+        </div>
+        <div class="svc-contact">themix.org.uk</div>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Always the last content element before related content. Services pool: Childline, Brook, The Mix, NSPCC, Women's Aid, NHS Sexual Health, Galop.</div>
+  </div>
+
+  <!-- 7. END-OF-ANSWER PANEL -->
+  <div class="page-section">
+    <span class="section-label component">7 — End-of-answer panel (A17)</span>
+    <div class="wf-small" style="margin-bottom:12px;">Three-panel CTA block. Serves all three audiences. Helpful tone, not salesy. Mobile: panels stack vertically. Positioned after the signposting block (A8).</div>
+    <div class="eoa-panel">
+      <div class="eoa-card eoa-book">
+        <div class="eoa-cover-placeholder"></div>
+        <h4>Get the book</h4>
+        <p>The Okay to Ask book — real questions, answered honestly. In print.</p>
+        <span class="eoa-cta">Buy the book →</span>
+        <div class="wf-small" style="margin-top:6px;">→ B11 or external</div>
+      </div>
+      <div class="eoa-card eoa-teach">
+        <h4>Explore how to teach this topic</h4>
+        <p>Lessons, key terms, and curriculum mapping for [Primary Topic Name].</p>
+        <span class="eoa-cta">View topic →</span>
+        <div class="wf-small" style="margin-top:6px;">→ /topics/{primary_topic_slug}</div>
+      </div>
+      <div class="eoa-card eoa-school">
+        <h4>Bring RSE into your school</h4>
+        <p>Training, delivery, and consultancy from a specialist RSE provider.</p>
+        <span class="eoa-cta">See services →</span>
+        <div class="wf-small" style="margin-top:6px;">→ /services or /training</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. RELATED QUESTIONS -->
+  <div class="page-section">
+    <span class="section-label component">8 — Related questions (A15)</span>
+    <h3 class="wf">Related questions</h3>
+    <div class="related-row" style="margin-top:12px;">
+      <div class="related-card">
+        <div class="related-postit"></div>
+        <h4>"Is it okay to not know who you like?"</h4>
+        <span class="tag">Identity</span>
+      </div>
+      <div class="related-card">
+        <div class="related-postit"></div>
+        <h4>"What if I don't want to kiss anyone?"</h4>
+        <span class="tag">Relationships</span>
+      </div>
+      <div class="related-card">
+        <div class="related-postit"></div>
+        <h4>"How do I know if I'm in love?"</h4>
+        <span class="tag">Relationships</span>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">3–5 related question cards. Each shows post-it thumbnail, question title (link), topic tag. Links to /anonymous_question/{slug}.</div>
+  </div>
+
+  <!-- 9. TOPIC TAGS -->
+  <div class="page-section">
+    <span class="section-label component">9 — Topic tags (A16)</span>
+    <div class="topic-chips">
+      <div class="topic-chip">Relationships</div>
+      <div class="topic-chip">Feelings & emotions</div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Links to parent topic hub page(s) at /topics/{slug}. Possibly colour-coded by category (design decision).</div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A2 — Site Footer ]</div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- DUAL-ANSWER VARIANT (D7)       -->
+<!-- ============================== -->
+<div class="frame">
+  <div class="frame-label">Variant — Dual-answer layout (D7) — replaces Section 5 on ~10–15% of questions</div>
+
+  <div class="page-section">
+    <span class="section-label conditional">Dual-answer variant (D7)</span>
+    <span class="conditional-badge">~10–15% of questions</span>
+    <div class="wf-small" style="margin-bottom:12px;">For questions where the best answer genuinely differs by age/experience. Two answers on the same page — both visible, not tabbed. Each may have its own Simple variant (so potentially 4 text variants: standard younger, standard older, simple younger, simple older).</div>
+
+    <div class="dual-answer-wrapper" style="margin-bottom:16px;">
+      <div class="dual-answer-label">For younger readers</div>
+      <div class="dual-answer-content">
+        <div class="answer-body" style="padding:8px 0;">
+          <p>This is the younger-reader answer. Simpler framing, foundational concepts. Still honest and clear — not dumbed down.</p>
+          <p>Includes <span class="glossary-term">glossary terms</span> as normal.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="dual-answer-wrapper">
+      <div class="dual-answer-label">For older readers</div>
+      <div class="dual-answer-content">
+        <div class="answer-body" style="padding:8px 0;">
+          <p>This is the older-reader answer. More detailed, assumes some prior knowledge. Addresses nuance and complexity that the younger answer doesn't.</p>
+          <p>Also includes <span class="glossary-term">glossary terms</span> and may reference more advanced concepts.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="wf-small" style="margin-top:12px;">
+      <strong>Simple Mode interaction:</strong> When Simple mode is active, both answers swap to their Simple variants. The age split remains — Simple doesn't collapse the two answers into one.<br>
+      <strong>Layout decision:</strong> Stacked (as shown) is the safest for mobile. Side-by-side on desktop is possible but may cause reading confusion. The reader should see that both exist without having to click or toggle.
+    </div>
+  </div>
+</div>
+
+<!-- ============================== -->
+<!-- ANNOTATIONS                     -->
+<!-- ============================== -->
+<div class="frame" style="max-width:720px; margin: -24px auto 48px;">
+  <div class="frame-label">Annotations</div>
+  <div class="annotations" style="border-top:none;">
+    <div class="annotation">
+      <span class="annotation-code">A9</span>
+      <span class="annotation-text"><strong>Crisis support:</strong> Above everything. Only on safeguarding questions. Visually distinct — must be noticeable without being alarming. Not dismissable.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">D1</span>
+      <span class="annotation-text"><strong>Age flag:</strong> Between post-it and answer. Not a gate — just an honest signpost. "Continue to answer" reveals content. Answer is always accessible.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">A6</span>
+      <span class="annotation-text"><strong>Simple Mode toggle:</strong> Near the answer, before text begins. Should stay accessible as reader scrolls (sticky/fixed — design decision). Persists across site via localStorage. Must check localStorage before first paint — no flash of wrong content.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">A7</span>
+      <span class="annotation-text"><strong>Glossary tooltips:</strong> Inline in the answer text. First occurrence only per page. Desktop: hover. Mobile: tap. Shows Short Definition (standard) or Simple Definition (simple mode). "Read more →" links to /glossary/{slug}.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">A8</span>
+      <span class="annotation-text"><strong>Signposting:</strong> Always present. Contextual per question. Comes before the end-of-answer panel (A17). Not dismissable. Services from: Childline, Brook, The Mix, NSPCC, Women's Aid, NHS Sexual Health, Galop.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">A17</span>
+      <span class="annotation-text"><strong>End-of-answer panel:</strong> Three panels — book / teach this topic / bring to school. Serves all three audiences. Helpful tone, not an ad strip. Positioned after the signposting block (A8). Mobile: stack vertically. Book panel needs placeholder state until sales URL is finalised.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">A15</span>
+      <span class="annotation-text"><strong>Related questions:</strong> 3–5 cards with post-it thumbnails. Links to other question pages. Draws the reader deeper into the Okay to Ask content.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">A16</span>
+      <span class="annotation-text"><strong>Topic tags:</strong> Links to parent landing page(s). Possibly colour-coded by category.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">D7</span>
+      <span class="annotation-text"><strong>Dual-answer variant:</strong> ~10–15% of questions. Two answers stacked, both visible. Each has its own Simple variant. Labels TBD by Gareth ("For younger readers" / "For older readers" or similar).</span>
+    </div>
+  </div>
+</div>
+
+<!-- BEHAVIOUR NOTES -->
+<div class="behaviour-notes">
+  <h4>Design decisions flagged</h4>
+  <p><strong>Simple Mode toggle placement:</strong> Should it be sticky/fixed as the reader scrolls, or positioned at the top of the answer only? If the answer is long, the reader may want to switch mid-read. Sticky is better for usability but adds visual complexity.</p>
+  <p><strong>Simple Mode transition (D5):</strong> When toggled, the content swaps between Standard and Simple. Both versions exist in the HTML — the toggle shows/hides. Should the swap be instant, fade, or slide? Must check localStorage before first paint to render the correct version immediately — no flash.</p>
+  <p><strong>Crisis support vs signposting:</strong> A9 (crisis) appears above the answer on safeguarding questions. A8 (signposting) appears below the answer on all questions. They may show the same service (e.g. Childline) — that's intentional. The crisis block is urgent; the signposting block is a reference.</p>
+  <p><strong>Dual-answer framing:</strong> Gareth to decide the labels — "For younger readers" / "For older readers", or "The short answer" / "The full answer", or something else. The framing matters — it should feel like two valid perspectives, not a dumbed-down version and a real one.</p>
+  <p><strong>Mobile:</strong> All sections stack naturally. The end-of-answer panel (A17) stacks to three full-width cards. Related questions may become a horizontal scroll or a 2-column grid.</p>
+</div>
+
+</body>
+</html>

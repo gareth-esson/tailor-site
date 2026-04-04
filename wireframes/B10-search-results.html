@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B10 — Search Results Page Wireframe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding: 40px 20px; }
+
+  .wireframe-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #999; margin-bottom: 6px; }
+  .wireframe-title { font-size: 22px; font-weight: 700; color: #222; margin-bottom: 4px; }
+  .wireframe-desc { font-size: 13px; color: #777; margin-bottom: 32px; max-width: 600px; line-height: 1.5; }
+
+  .frame { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; max-width: 720px; margin: 0 auto 48px; }
+  .frame-label { background: #f0f0f0; padding: 8px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ddd; }
+
+  .page-section { padding: 24px; border-bottom: 1px solid #eee; }
+  .page-section:last-of-type { border-bottom: none; }
+
+  .section-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #fff; display: inline-block; padding: 2px 8px; border-radius: 3px; margin-bottom: 12px;
+  }
+  .section-label.core { background: #3a6a8a; }
+  .section-label.state { background: #8a5a3a; }
+
+  h2.wf { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 6px; }
+  h3.wf { font-size: 15px; font-weight: 600; color: #444; margin-bottom: 6px; }
+  p.wf { font-size: 13px; color: #777; line-height: 1.5; margin-bottom: 10px; }
+  .wf-small { font-size: 11px; color: #999; line-height: 1.5; }
+
+  /* ---- SEARCH BAR (prominent) ---- */
+  .search-bar-large {
+    display: flex; align-items: center; border: 2px solid #3a6a8a; border-radius: 8px;
+    padding: 12px 16px; background: #fff; gap: 10px; margin-bottom: 12px;
+  }
+  .search-icon-lg { width: 20px; height: 20px; background: #ccc; border-radius: 3px; flex-shrink: 0; }
+  .search-input-lg { font-size: 16px; color: #333; font-weight: 500; flex: 1; }
+  .search-clear-lg { font-size: 12px; font-weight: 600; color: #999; }
+
+  /* ---- RESULT COUNT ---- */
+  .result-count { font-size: 13px; color: #888; margin-bottom: 16px; }
+  .result-count strong { color: #333; }
+
+  /* ---- RESULT GROUPS ---- */
+  .result-group { margin-bottom: 20px; }
+  .result-group-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid #eee;
+  }
+  .result-group-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #3a6a8a; }
+  .result-group-count { font-size: 11px; color: #aaa; }
+
+  .result-item { padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
+  .result-item:last-child { border-bottom: none; }
+  .result-item-title { font-size: 14px; font-weight: 600; color: #333; margin-bottom: 3px; }
+  .result-item-title a { color: #333; text-decoration: none; }
+  .result-item-meta { font-size: 11px; color: #aaa; margin-bottom: 3px; }
+  .result-item-excerpt { font-size: 12px; color: #777; line-height: 1.5; }
+  .result-item-tag {
+    display: inline-block; padding: 1px 6px; font-size: 10px; font-weight: 600;
+    background: #eee; color: #888; border-radius: 3px; margin-left: 6px;
+  }
+
+  .show-all-toggle { font-size: 12px; font-weight: 600; color: #3a6a8a; margin-top: 8px; display: inline-block; }
+
+  /* ---- NO RESULTS ---- */
+  .no-results { text-align: center; padding: 40px 20px; }
+  .no-results h2 { font-size: 16px; font-weight: 600; color: #555; margin-bottom: 8px; }
+  .no-results p { font-size: 13px; color: #888; line-height: 1.6; }
+  .no-results a { color: #3a6a8a; font-weight: 600; text-decoration: none; }
+
+  /* ---- ANNOTATIONS ---- */
+  .annotations { padding: 16px 24px 20px; background: #fafafa; border-top: 1px solid #eee; }
+  .annotation { display: flex; gap: 8px; margin-bottom: 8px; font-size: 12px; line-height: 1.5; }
+  .annotation-code { font-weight: 700; color: #888; white-space: nowrap; min-width: 30px; }
+  .annotation-text { color: #666; }
+
+  .behaviour-notes {
+    max-width: 720px; margin: 0 auto;
+    background: #fffff0; border: 1px solid #e8e8d0; border-radius: 8px; padding: 16px 20px;
+  }
+  .behaviour-notes h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 10px; }
+  .behaviour-notes p { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<div style="max-width:720px; margin:0 auto 32px;">
+  <div class="wireframe-label">B10 — Wireframe</div>
+  <div class="wireframe-title">Search results page</div>
+  <div class="wireframe-desc">
+    Full search results at /search?q={query}. Reached by pressing Enter in the search bar or clicking "See all results" from the A5 dropdown. Shows all matching content grouped by type.
+  </div>
+</div>
+
+<!-- ========== RESULTS FOUND STATE ========== -->
+
+<div class="frame">
+  <div class="frame-label">B10 — State: Results found</div>
+
+  <!-- HEADER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A1 — Site Header ]</div>
+  </div>
+
+  <!-- 1. SEARCH INPUT -->
+  <div class="page-section">
+    <span class="section-label core">1 — Search input</span>
+    <div class="search-bar-large">
+      <div class="search-icon-lg"></div>
+      <span class="search-input-lg">consent</span>
+      <span class="search-clear-lg">✕</span>
+    </div>
+    <div class="wf-small">Same search bar as A4 but larger and more prominent. Query pre-filled and editable. Typing here re-triggers the A5 dropdown for quick refinement, or press Enter to re-search.</div>
+  </div>
+
+  <!-- 2. RESULT COUNT -->
+  <div class="page-section">
+    <span class="section-label core">2 — Result count</span>
+    <div class="result-count"><strong>14 results</strong> for "consent"</div>
+  </div>
+
+  <!-- 3. RESULTS GROUPED BY TYPE -->
+  <div class="page-section">
+    <span class="section-label core">3 — Results by content type</span>
+
+    <!-- Questions group -->
+    <div class="result-group">
+      <div class="result-group-header">
+        <span class="result-group-title">Questions</span>
+        <span class="result-group-count">7 results</span>
+      </div>
+
+      <div class="result-item">
+        <div class="result-item-title"><a href="#">What does consent actually mean?</a> <span class="result-item-tag">Relationships</span></div>
+        <div class="result-item-excerpt">Consent means freely giving your agreement to something happening. It's not just about sex — consent is…</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-title"><a href="#">Can you change your mind after saying yes?</a> <span class="result-item-tag">Rights & Wellbeing</span></div>
+        <div class="result-item-excerpt">Yes. You can change your mind at any point. Consent isn't a one-time thing — it's ongoing…</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-title"><a href="#">How do you know if someone is consenting?</a> <span class="result-item-tag">Relationships</span></div>
+        <div class="result-item-excerpt">You know someone is consenting when they've clearly and freely said yes, without pressure or…</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-title"><a href="#">What happens if someone doesn't give consent?</a> <span class="result-item-tag">Safety</span></div>
+        <div class="result-item-excerpt">If someone doesn't give consent and something happens anyway, that's a crime. The law is clear…</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-title"><a href="#">Is silence the same as consent?</a> <span class="result-item-tag">Relationships</span></div>
+        <div class="result-item-excerpt">No. Silence is not consent. Consent has to be actively given — not assumed from the absence of…</div>
+      </div>
+      <span class="show-all-toggle">Show all 7 questions →</span>
+    </div>
+
+    <!-- Glossary group -->
+    <div class="result-group">
+      <div class="result-group-header">
+        <span class="result-group-title">Glossary</span>
+        <span class="result-group-count">2 results</span>
+      </div>
+
+      <div class="result-item">
+        <div class="result-item-title"><a href="#">Consent</a></div>
+        <div class="result-item-excerpt">Freely given, informed agreement to something happening. Can be withdrawn at any time.</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-title"><a href="#">Age of consent</a></div>
+        <div class="result-item-excerpt">The legal age at which a person is considered able to consent to sexual activity. In the UK this is 16.</div>
+      </div>
+    </div>
+
+    <!-- Topics group -->
+    <div class="result-group">
+      <div class="result-group-header">
+        <span class="result-group-title">Topics</span>
+        <span class="result-group-count">2 results</span>
+      </div>
+
+      <div class="result-item">
+        <div class="result-item-title"><a href="#">Consent & boundaries</a> <span class="result-item-tag">Relationships</span></div>
+        <div class="result-item-excerpt">Understanding what consent means, how to give and recognise it, and why boundaries matter in all relationships.</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-title"><a href="#">The law & sex</a> <span class="result-item-tag">Sex and the Law</span></div>
+        <div class="result-item-excerpt">What the law says about age of consent, sexting, image sharing, and sexual offences.</div>
+      </div>
+    </div>
+
+    <!-- Blog group -->
+    <div class="result-group">
+      <div class="result-group-header">
+        <span class="result-group-title">Blog</span>
+        <span class="result-group-count">3 results</span>
+      </div>
+
+      <div class="result-item">
+        <div class="result-item-title"><a href="#">Teaching consent at Key Stage 3: what works</a></div>
+        <div class="result-item-meta">12 Mar 2026 · For teachers</div>
+        <div class="result-item-excerpt">Practical approaches to teaching consent that go beyond the "tea" analogy and actually resonate with…</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-title"><a href="#">Why consent education starts before secondary school</a></div>
+        <div class="result-item-meta">28 Jan 2026 · For teachers</div>
+        <div class="result-item-excerpt">The building blocks of consent — bodily autonomy, boundaries, asking permission — are primary school concepts…</div>
+      </div>
+      <span class="show-all-toggle">Show all 3 posts →</span>
+    </div>
+
+    <div class="wf-small" style="margin-top:12px;">Each group shows up to 5 results. "Show all [type]" expands the group inline to reveal the rest. Groups with no results don't appear at all — no empty "Services (0 results)" section.</div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A2 — Site Footer ]</div>
+  </div>
+</div>
+
+
+<!-- ========== NO RESULTS STATE ========== -->
+
+<div class="frame">
+  <div class="frame-label">B10 — State: No results</div>
+
+  <!-- HEADER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A1 — Site Header ]</div>
+  </div>
+
+  <!-- Search input -->
+  <div class="page-section">
+    <div class="search-bar-large">
+      <div class="search-icon-lg"></div>
+      <span class="search-input-lg">xylophone</span>
+      <span class="search-clear-lg">✕</span>
+    </div>
+  </div>
+
+  <!-- No results -->
+  <div class="page-section">
+    <div class="no-results">
+      <h2>No results for "xylophone"</h2>
+      <p>Try a different search term, or <a href="#">browse questions by topic →</a></p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A2 — Site Footer ]</div>
+  </div>
+</div>
+
+
+<!-- ANNOTATIONS -->
+<div class="frame" style="max-width:720px; margin:-24px auto 48px;">
+  <div class="frame-label">Annotations</div>
+  <div class="annotations" style="border-top:none;">
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Grouped, not flat:</strong> Results are grouped by content type rather than shown as a single flat list. This helps users find the kind of content they want — a teacher looking for a topic hub won't have to scroll past 7 question results to find it.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>5-result cap per group:</strong> Each group shows a maximum of 5 results initially. "Show all" expands the group inline. This keeps the page scannable when a query matches many items across multiple types.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Excerpts:</strong> Each result shows a snippet of the matching content. Where possible, highlight the matching term in the excerpt (bold or background colour). This helps the user judge relevance without clicking through.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Topic tags on questions:</strong> Question results show their topic tag so the user can see context at a glance — "What does consent mean?" tagged "Relationships" vs tagged "Sex and the Law" tells you the angle.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>No results escape hatch:</strong> The empty state links to the Okay to Ask landing (B8) or topic hubs as a fallback. Never a dead end — always a next step.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>URL structure:</strong> /search?q={query} — bookmarkable, shareable. The query is in the URL so back/forward navigation works naturally.</span>
+    </div>
+  </div>
+</div>
+
+<!-- BEHAVIOUR NOTES -->
+<div class="behaviour-notes">
+  <h4>Design decisions flagged</h4>
+  <p><strong>Group order:</strong> Same as the dropdown: Questions → Glossary → Topics → Blog → Services. This could be made dynamic (show the group with the most results first), but consistent ordering is simpler for users to learn.</p>
+  <p><strong>Search term highlighting:</strong> Matching terms in titles and excerpts should be visually highlighted (bold, underline, or background colour). This is standard in search UIs and helps users scan quickly.</p>
+  <p><strong>"Okay to Ask" label on questions:</strong> The brief says question results should carry an "Okay to Ask" label. This differentiates them from other content types for users who arrived via the teacher-facing side of the site and may not be familiar with the sub-brand.</p>
+  <p><strong>Refine in place:</strong> The search bar at the top of B10 is fully functional — editing the query and pressing Enter re-searches without leaving the page. The A5 dropdown can also appear here for quick refinement.</p>
+  <p><strong>Mobile:</strong> Everything stacks. Groups are full-width. The search bar remains at the top, prominent and editable. No horizontal layout changes needed.</p>
+</div>
+
+</body>
+</html>

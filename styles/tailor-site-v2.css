@@ -1,0 +1,2519 @@
+/*
+ Design System: Tailor Education
+ Author: Gareth Esson
+ Version: 2.0.0
+ Updated: 3 April 2026
+
+ This design system serves both the Tailor Education website
+ and the Okay to Ask content layer. It expresses two emotional
+ registers through one structural shell.
+
+ Origin: Guess Design House token system (v1.0.0)
+ Changes in v2: art direction alignment — text/dark anchor,
+ page ground, surface hierarchy, typography split, OtA category
+ colours, safeguarding tones, Simple Mode toggle tokens.
+*/
+/* ====================================
+   1. COLOUR SYSTEM
+   ==================================== */
+:root {
+  /* ====================================
+     BRAND PRIMARY – BASE (CHANGE PER CLIENT)
+     ==================================== */
+  /* Main "brand" colour, often used for big areas, heroes, etc. */
+  --brand-primary: #1A9E8A;        /* change this hex per brand */
+  /* Same primary expressed as HSL components */
+  --brand-primary-h: 168;
+  --brand-primary-s: 71%;
+  --brand-primary-l: 36%;
+  /* Relational variants derived from brand primary */
+  --brand-primary-soft: hsl(
+    var(--brand-primary-h),
+    calc(var(--brand-primary-s) - 33%),
+    calc(var(--brand-primary-l) + 25%)
+  );
+  /* ====================================
+     BRAND SECONDARY – BASE (CHANGE PER CLIENT)
+     ==================================== */
+  /* Secondary brand tone, dark anchor — Okay to Ask wordmark blue-grey */
+  --brand-secondary: #1E2A3A;
+  /* Same secondary expressed as HSL components */
+  --brand-secondary-h: 213;
+  --brand-secondary-s: 33%;
+  --brand-secondary-l: 17%;
+  /* Relational variants derived from brand secondary */
+  /* Notion rule: H same, S −4, L +40 */
+  --brand-secondary-soft: hsl(
+    var(--brand-secondary-h),
+    calc(var(--brand-secondary-s) - 4%),
+    calc(var(--brand-secondary-l) + 40%)
+  );
+  /* Notion rule: H same, S +5, L −10 */
+  --brand-secondary-strong: hsl(
+    var(--brand-secondary-h),
+    calc(var(--brand-secondary-s) + 5%),
+    calc(var(--brand-secondary-l) - 10%)
+  );
+  /* ====================================
+     BRAND ACCENT – BASE (CHANGE PER CLIENT)
+     ==================================== */
+  /* Accent = action / highlight colour for links, buttons, chips */
+  --brand-accent: #1A9E8A;         /* change this hex per brand */
+  /* Accent as HSL */
+  --brand-accent-h: 168;
+  --brand-accent-s: 71%;
+  --brand-accent-l: 36%;
+  /* Accent variants */
+--brand-accent-soft-h: var(--brand-accent-h);
+--brand-accent-soft-s: calc(var(--brand-accent-s) - 33%);
+--brand-accent-soft-l: calc(var(--brand-accent-l) + 25%);
+/* 2. Re-define the main color using those new variables */
+--brand-accent-soft: hsl(
+  var(--brand-accent-soft-h),
+  var(--brand-accent-soft-s),
+  var(--brand-accent-soft-l)
+);
+  --brand-accent-strong: hsl(
+    var(--brand-accent-h),
+    calc(var(--brand-accent-s) + 4%),
+    calc(var(--brand-accent-l) - 20%)
+  );
+  /* Guaranteed-readable accent for text on light backgrounds.
+     Clamps lightness to max 29% — ensures WCAG AA (4.5:1) on all
+     page grounds including --bg-ota-surface (#F7F5F0). */
+  --brand-accent-text: hsl(
+    var(--brand-accent-h),
+    var(--brand-accent-s),
+    min(var(--brand-accent-l), 29%)
+  );
+  /* ====================================
+     TEXT – BASE + RELATIONAL
+     ==================================== */
+  /* Body text base colour — dark blue-grey from Okay to Ask wordmark */
+  --text-body: #1E2A3A;
+  /* Same body text as HSL components */
+  --text-body-h: 213;
+  --text-body-s: 33%;
+  --text-body-l: 17%;
+  /* Muted/meta text relative to body */
+  --text-body-muted: hsl(213, 10%, 43%);
+  /* Headings on light backgrounds */
+  --text-heading: #1E2A3A;
+  --text-heading-muted: hsl(213, 15%, 40%);
+  /* Text on dark backgrounds */
+  --text-on-dark: #f4f3ef;
+  --text-heading-on-dark: #ffffff;
+  /* Text on dark — muted */
+  --text-muted-on-dark: rgba(255, 255, 255, 0.6);
+  /* Optional aliases */
+  --text-main: var(--text-body);
+  --text-muted: var(--text-body-muted);
+  /* ====================================
+     LINKS & FOCUS (DERIVED FROM ACCENT)
+     ==================================== */
+  --link-default: var(--brand-accent-text);
+  --link-hover: var(--brand-accent-strong);
+  /* Visited tweak: H +23, S -9, L +6 relative to ACCENT */
+  --link-visited: hsl(
+    calc(var(--brand-accent-h) + 23),
+    calc(var(--brand-accent-s) - 9%),
+    calc(var(--brand-accent-l) + 6%)
+  );
+  --focus-ring: var(--brand-accent);
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --focus-ring-on-dark: var(--brand-accent-soft);
+  /* ====================================
+     BUTTONS (TIED TO ACCENT)
+     ==================================== */
+  /* 1. PRIMARY (Source Mapping) */
+  /* Button bg is darker than brand-accent to ensure white text contrast (AA).
+     Brand-accent stays at 36% L for tints, focus rings, and spot icons.
+     Button bg uses 27% L for 5.6:1 white-on-teal contrast. */
+  --btn-primary-bg: hsl(var(--brand-accent-h), var(--brand-accent-s), 27%);
+  --btn-primary-bg-h: var(--brand-accent-h);
+  --btn-primary-bg-s: var(--brand-accent-s);
+  --btn-primary-bg-l: 27%;
+
+  --btn-primary-bg-hover: var(--brand-accent-strong);
+  --btn-primary-text: #ffffff;
+  /* Structural border: invisible (matches bg) but keeps box-model parity with secondary */
+  --btn-primary-border: var(--btn-primary-bg);
+  --btn-primary-border-hover: var(--btn-primary-bg-hover);
+  /* 2. SECONDARY — TINT
+     Logic: Exact Primary Brand colour at 20% opacity. No visible border.
+     Usage: Works on both light and dark backgrounds.
+  */
+  --btn-tint-bg: hsla(var(--btn-primary-bg-h), var(--btn-primary-bg-s), var(--btn-primary-bg-l), 0.2);
+  --btn-tint-bg-h: var(--btn-primary-bg-h);
+  --btn-tint-bg-s: var(--btn-primary-bg-s);
+  --btn-tint-bg-l: var(--btn-primary-bg-l);
+  --btn-tint-bg-a: 0.2;
+  /* Hover: Decreases opacity to 10% (lighter / more subtle) */
+  --btn-tint-bg-hover: hsla(var(--btn-primary-bg-h), var(--btn-primary-bg-s), var(--btn-primary-bg-l), 0.1);
+  --btn-tint-bg-hover-a: 0.1;
+  --btn-tint-text: var(--brand-accent-text);
+  --btn-tint-border: transparent;
+  --btn-tint-border-hover: transparent;
+
+  /* Tint on Dark */
+  --btn-tint-bg-on-dark: hsla(var(--brand-accent-soft-h), var(--brand-accent-soft-s), var(--brand-accent-soft-l), 0.2);
+  --btn-tint-bg-on-dark-h: var(--brand-accent-soft-h);
+  --btn-tint-bg-on-dark-s: var(--brand-accent-soft-s);
+  --btn-tint-bg-on-dark-l: var(--brand-accent-soft-l);
+  --btn-tint-bg-on-dark-a: 0.3;
+  --btn-tint-bg-on-dark-hover: hsla(var(--brand-accent-soft-h), var(--brand-accent-soft-s), var(--brand-accent-soft-l), 0.1);
+  --btn-tint-bg-on-dark-hover-a: 0.2;
+  --btn-tint-text-on-dark: var(--brand-accent-soft);
+
+  /* 3. SECONDARY — OUTLINE
+     Logic: Transparent background with a visible accent-coloured border.
+     Usage: Clean, minimal look — pick this OR tint per design.
+  */
+  --btn-outline-bg: transparent;
+  --btn-outline-bg-hover: hsla(var(--btn-primary-bg-h), var(--btn-primary-bg-s), var(--btn-primary-bg-l), 0.08);
+  --btn-outline-text: var(--brand-accent-text);
+  --btn-outline-border: hsla(var(--brand-accent-h), var(--brand-accent-s), var(--brand-accent-l), 0.35);
+  --btn-outline-border-hover: var(--brand-accent);
+  --btn-outline-border-width: var(--border-width-xs);
+
+  /* Outline on Dark */
+  --btn-outline-bg-on-dark: transparent;
+  --btn-outline-bg-on-dark-hover: hsla(var(--brand-accent-soft-h), var(--brand-accent-soft-s), var(--brand-accent-soft-l), 0.1);
+  --btn-outline-text-on-dark: var(--brand-accent-soft);
+  --btn-outline-border-on-dark: hsla(var(--brand-accent-soft-h), var(--brand-accent-soft-s), var(--brand-accent-soft-l), 0.4);
+  --btn-outline-border-on-dark-hover: var(--brand-accent-soft);
+
+  /* 4. WHITE VARIANTS (FOR BRAND BACKGROUNDS)
+     Usage: Use these when the section background is --brand-accent or bright.
+  */
+  /* White Primary (Solid) */
+  --btn-white-primary-bg: #ffffff;
+  --btn-white-primary-bg-hover: hsla(0, 0%, 100%, 0.9);
+  --btn-white-primary-text: var(--brand-accent-strong);
+
+  /* White Tint */
+  --btn-white-tint-bg: hsla(0, 0%, 100%, 0.4);
+  --btn-white-tint-bg-hover: hsla(0, 0%, 100%, 0.2);
+  --btn-white-tint-text: #ffffff;
+
+  /* White Outline */
+  --btn-white-outline-bg: transparent;
+  --btn-white-outline-bg-hover: hsla(0, 0%, 100%, 0.1);
+  --btn-white-outline-text: #ffffff;
+  --btn-white-outline-border: hsla(0, 0%, 100%, 0.6);
+  --btn-white-outline-border-hover: #ffffff;
+
+  /* 5. TEXT (minimal — no bg, no border) */
+  --btn-text-color: var(--brand-accent-text);
+  --btn-text-color-hover: var(--brand-accent-strong);
+
+  /* 6. DISABLED STATE */
+  --btn-disabled-bg: #e5e4de;          /* warm neutral */
+  --btn-disabled-text: #a5a29a;        /* warm neutral */
+  /* ====================================
+     NEUTRALS & BACKGROUNDS (SHARED ACROSS SITES)
+     ==================================== */
+  --neutral-100: #f4f3ef;
+  --neutral-200: #e5e4de;
+  --neutral-300: #d6d4ce;
+  --neutral-400: #a5a29a;
+  --neutral-500: #7a7771;
+  --neutral-700: #46443e;
+  --neutral-900: #1E2A3A;
+  --bg-page: #FAFAF7;
+  --bg-surface: #FFFFFF;
+  --bg-surface-alt: #f0efeb;
+  --bg-subtle: #e5e4de;                /* warm neutral */
+  --bg-canvas: #FAFAF7;
+  --bg-tinted: hsla(var(--brand-accent-h), var(--brand-accent-s), var(--brand-accent-l), 0.04);
+  --bg-emphasis: var(--brand-secondary);
+  --border-subtle: #e5e4de;            /* warm neutral */
+  --border-strong: #a5a29a;            /* warm neutral */
+  --border-subtle-on-dark: #4a4844;    /* warm dark */
+  --border-strong-on-dark: #e5e4de;    /* warm neutral */
+  /* ====================================
+     STATES / FEEDBACK (STATIC SYSTEM)
+     ==================================== */
+  --state-success: #2d8a5e;
+  --state-success-soft: #edf7f1;
+  --state-success-text: #1a5c3a;
+  --state-warning: #c08a1e;
+  --state-warning-soft: #fdf6e8;
+  --state-warning-text: #7a5610;
+  --state-error: #c53434;
+  --state-error-soft: #fdf0f0;
+  --state-error-text: #7a1d1d;
+  --state-info: #2a6db5;
+  --state-info-soft: #eef4fb;
+  --state-info-text: #1a4270;
+
+  /* ── CONTENT TYPE COLOURS ── */
+  --content-programme: #5B61D6;
+  --content-programme-soft: #ECEDF8;
+  --content-lesson: #5A7DA8;
+  --content-lesson-soft: #EDF1F5;
+  --content-activity: #C27080;
+  --content-activity-soft: #F8ECED;
+
+  /* ── RSHE CATEGORY COLOURS ── */
+  --cat-relationships: #4F78C7;
+  --cat-relationships-soft: #E8EEF8;
+  --cat-safety: #4E7C74;
+  --cat-safety-soft: #E6F0EE;
+  --cat-identity: #8B62C6;
+  --cat-identity-soft: #F0EAF8;
+  --cat-sexual-health: #C35C74;
+  --cat-sexual-health-soft: #F8E8EC;
+  --cat-wellbeing: #1D9B8A;
+  --cat-wellbeing-soft: #E2F5F2;
+  --cat-online-safety: #5D6BB3;
+  --cat-online-safety-soft: #ECEEF8;
+  --cat-puberty: #C97A4A;
+  --cat-puberty-soft: #F8EDE4;
+
+  /* ── SUPPLEMENTARY ACCENTS ── */
+  --accent-indigo: #5B61D6;
+  --accent-plum: #7B5AA6;
+  --accent-rose: #C96A7B;
+  --accent-ochre: #C88A1A;
+  --accent-moss: #5F8C65;
+
+  /* ── OKAY TO ASK CATEGORY COLOURS ──
+     The 7 browsing/book categories for the Okay to Ask content layer.
+     These are distinct from the app's 7 RSHE categories above.
+     Used on: question page tags, /questions/ landing filters,
+     category bars, section dividers, book references.
+     ──────────────────────────────────── */
+  --ota-cat-anatomy: #3B6DB5;
+  --ota-cat-anatomy-h: 214;
+  --ota-cat-anatomy-s: 52%;
+  --ota-cat-anatomy-l: 47%;
+  --ota-cat-anatomy-soft: hsl(214, 40%, 92%);
+
+  --ota-cat-puberty: #4DBD6E;
+  --ota-cat-puberty-h: 139;
+  --ota-cat-puberty-s: 44%;
+  --ota-cat-puberty-l: 52%;
+  --ota-cat-puberty-soft: hsl(139, 35%, 92%);
+
+  --ota-cat-relationships: #E8725A;
+  --ota-cat-relationships-h: 11;
+  --ota-cat-relationships-s: 76%;
+  --ota-cat-relationships-l: 63%;
+  --ota-cat-relationships-soft: hsl(11, 60%, 93%);
+
+  --ota-cat-sex: #1E9B8C;
+  --ota-cat-sex-h: 171;
+  --ota-cat-sex-s: 67%;
+  --ota-cat-sex-l: 36%;
+  --ota-cat-sex-soft: hsl(171, 45%, 91%);
+
+  --ota-cat-sexual-health: #E84D8A;
+  --ota-cat-sexual-health-h: 336;
+  --ota-cat-sexual-health-s: 77%;
+  --ota-cat-sexual-health-l: 60%;
+  --ota-cat-sexual-health-soft: hsl(336, 60%, 93%);
+
+  --ota-cat-law: #F0C24E;
+  --ota-cat-law-h: 42;
+  --ota-cat-law-s: 85%;
+  --ota-cat-law-l: 62%;
+  --ota-cat-law-soft: hsl(42, 65%, 93%);
+
+  --ota-cat-contraception: #7B61C4;
+  --ota-cat-contraception-h: 258;
+  --ota-cat-contraception-s: 44%;
+  --ota-cat-contraception-l: 57%;
+  --ota-cat-contraception-soft: hsl(258, 35%, 93%);
+
+  /* ── SAFEGUARDING TONES ──
+     Content-specific emotional registers for support,
+     age flags, and crisis components. These are NOT
+     the UI state colours above — they serve a different
+     tonal purpose and must not be confused with
+     form validation or system feedback states.
+     ──────────────────────────────────── */
+
+  /* Support (A8 signposting) — calm, steady, trustworthy */
+  --safeguarding-support-bg: #EEF3F7;
+  --safeguarding-support-border: #B8CDD9;
+  --safeguarding-support-text: #2A4A5C;
+  --safeguarding-support-icon: #3D7A9E;
+
+  /* Age flag (D1) — serious, honest, not warm */
+  --safeguarding-ageflag-bg: #F5F0E6;
+  --safeguarding-ageflag-border: #D4C5A0;
+  --safeguarding-ageflag-text: #5C4E2E;
+  --safeguarding-ageflag-icon: #8A7440;
+
+  /* Crisis (A9) — prominent, clear, not panicked */
+  --safeguarding-crisis-bg: #FDF0EC;
+  --safeguarding-crisis-border: #E8A090;
+  --safeguarding-crisis-text: #7A2E1E;
+  --safeguarding-crisis-icon: #B14C33;
+  --safeguarding-crisis-accent: #B14C33;
+
+  /* ── OKAY TO ASK SURFACES ── */
+  --bg-ota-surface: #F7F5F0;
+  --bg-ota-surface-alt: #F0EDE5;
+
+  /* ── OKAY TO ASK POST-IT MOTIF ── */
+  --surface-ota-postit: #F5E58A;
+  --surface-ota-postit-soft: #FBF4C7;
+
+  /* ── OKAY TO ASK TEXT ALIASES ──
+     Insurance tokens — resolve to base values now,
+     give a clean override seam for tuning the OtA
+     reading tone later without disturbing the Tailor shell.
+     ──────────────────────────────────── */
+  --text-ota-body: var(--text-body);
+  --text-ota-heading: var(--text-heading);
+  --text-ota-muted: #5B6675;
+  --text-ota-on-paper: #243444;
+
+  /* ── OtA CONTEXTUAL LINK COLOUR ──
+     Optional override for links within Okay to Ask content
+     that should reference the current category colour rather
+     than the brand accent. Set on the page wrapper per question.
+     Default falls back to brand accent.
+     ──────────────────────────────────── */
+  --link-ota-contextual: var(--brand-accent-text);
+}
+/* ====================================
+   2. NUMBER BASED VALUES (TOKENS)
+   ==================================== */
+:root {
+  /* ── LAYER FONT TOKENS ── */
+
+  /* Tailor layer — explicit aliases */
+  --font-tailor-heading-stack: 'Lexend', sans-serif;
+  --font-tailor-body-stack: 'Lexend', sans-serif;
+
+  /* Okay to Ask layer */
+  --font-ota-heading-stack: 'Fraunces', Georgia, serif;
+  --font-ota-body-stack: 'Atkinson Hyperlegible', sans-serif;
+
+  /* Shell (header, footer, nav) — always Tailor, never overridden */
+  --font-shell-heading-stack: var(--font-tailor-heading-stack);
+  --font-shell-body-stack: var(--font-tailor-body-stack);
+
+  /* Globals — mapped to Tailor as default */
+  --font-heading-stack: var(--font-tailor-heading-stack);
+  --font-body-stack: var(--font-tailor-body-stack);
+  --font-body: var(--font-tailor-body-stack);
+
+  /* Fraunces variable font axes */
+  --font-ota-heading-opsz: 36;
+  --font-ota-heading-wonk: 1;
+
+  /* ------------------------------
+     TYPOGRAPHY: COMPONENTS & AUX
+     ------------------------------ */
+  --btn-font-size: 14px;
+  --btn-font-weight: 600;
+  --btn-ls: 0.01em;
+  --btn-lh: 1;
+
+  --text-aux-size-micro: 0.85em;
+  --text-aux-size-signpost: 0.875em;
+  --text-aux-size-prehead: 0.875em;
+
+  --text-subhead-size-sub: clamp(1.2rem, 1.1rem + 0.5vw, 1.5rem);
+  --text-subhead-size-hero: clamp(1.25rem, 1.0833rem + 0.8333vw, 1.75rem);
+
+  /* ------------------------------
+     TYPOGRAPHY: DISPLAY SCALE
+     Usage: Landing Pages, Heroes, Marketing
+     ------------------------------ */
+  --text-display-size-quote: clamp(1.25rem, 1.0833rem + 0.8333vw, 1.75rem);
+  --text-display-size-h6: 1rem;
+  --text-display-size-h5: clamp(1.125rem, 1.0833rem + 0.2083vw, 1.25rem);
+  --text-display-size-h4: clamp(1.25rem, 1.1667rem + 0.4167vw, 1.5rem);
+  --text-display-size-h3: clamp(1.5rem, 1.3333rem + 0.8333vw, 2rem);
+  --text-display-size-h2: clamp(1.75rem, 1.4167rem + 1.6667vw, 2.75rem);
+  --text-display-size-h1: clamp(2.25rem, 1.75rem + 2.5vw, 3.75rem);
+  --text-display-size-body: clamp(1.125rem, 1.0417rem + 0.4167vw, 1.375rem);
+
+  /* ------------------------------
+     TYPOGRAPHY: PROSE SCALE
+     Usage: Long-form content, Blog Posts
+     ------------------------------ */
+  --text-prose-size-h6: 1rem;
+  --text-prose-size-h5: clamp(1.05rem, 1.0167rem + 0.1667vw, 1.15rem);
+  --text-prose-size-h4: clamp(1.15rem, 1.1rem + 0.25vw, 1.3rem);
+  --text-prose-size-h3: clamp(1.25rem, 1.1667rem + 0.4167vw, 1.5rem);
+  --text-prose-size-h2: clamp(1.5rem, 1.3333rem + 0.8333vw, 2rem);
+  --text-prose-size-h1: clamp(1.75rem, 1.4167rem + 1.6667vw, 2.75rem);
+  --text-prose-size-quote: clamp(1.15rem, 1.0333rem + 0.5833vw, 1.5rem);
+  --text-prose-size-lede: 1.1em;
+  --text-prose-size-body: clamp(1.0625rem, 1rem + 0.3125vw, 1.25rem);
+
+  /* --------------------------------------------------------------------------
+     CARD TYPOGRAPHY SCALE
+     Math: Shifted down one semantic step from the Prose scale for denser UI.
+     -------------------------------------------------------------------------- */
+  --text-card-size-h1: clamp(1.5rem, 1.3333rem + 0.8333vw, 2rem);
+  --text-card-size-h2: clamp(1.25rem, 1.1667rem + 0.4167vw, 1.5rem);
+  --text-card-size-h3: clamp(1.15rem, 1.1rem + 0.25vw, 1.3rem);
+  --text-card-size-h4: clamp(1.05rem, 1.0167rem + 0.1667vw, 1.15rem);
+  --text-card-size-h5: 15px;
+  --text-card-size-h6: 13px;
+  --text-card-size-body: 14px;
+  /* ------------------------------
+     SPACING: BUTTONS
+     Usage: Internal button padding (em based)
+     ------------------------------ */
+  --btn-padding-bal: 1.2em;
+  --btn-padding-icon: 2.5em;
+  --btn-padding-x: 20px;
+  --btn-padding-y: 10px;
+
+  /* Small Action Buttons */
+  --btn-padding-bal-sm: 1em;
+  --btn-padding-icon-sm: 2.2em;
+  --btn-padding-x-sm: 12px;
+  --btn-padding-y-sm: 6px;
+
+  /* ------------------------------
+     SPACING: STRUCTURE
+     Usage: Section Padding (Fluid)
+     ------------------------------ */
+  --space-struct-x: clamp(1rem, 5vw, 15vw);
+  --space-struct-y-hero: clamp(6rem, 8vw + 3rem, 10rem);
+  --space-struct-y-base: clamp(4rem, 5vw + 2rem, 6rem);
+
+  /* ------------------------------
+     SPACING: GLOBAL GRID
+     Usage: Gaps, Margins, Component Padding (rem based)
+     ------------------------------ */
+  --space-global-2xl: 5rem;
+  --space-global-xl: 3rem;
+  --space-global-lg: 2rem;
+  --space-global-md: 1.5rem;
+  --space-global-sm: 1rem;
+  --space-global-xs: 0.5rem;
+
+  --space-global-gutter: clamp(0.75rem, 2vw, 2rem);
+  /* ------------------------------
+     BORDERS & RADIUS
+     ------------------------------ */
+  --radius-none: 0px;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-base: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 32px;
+  --radius-pill: 9999px;
+  --radius-circle: 50%;
+
+  --border-width-none: 0px;
+  --border-width-xs: 1px;
+  --border-width-sm: 2px;
+  --border-width-md: 4px;
+
+  /* ------------------------------
+     ELEVATION / SHADOWS
+     Usage: Cards, modals, popovers, buttons
+     ------------------------------ */
+  /* Component scale */
+  --shadow-none: none;
+  --shadow-xs: 0 1px 2px rgba(27, 26, 23, 0.05);
+  --shadow-sm: 0 1px 3px rgba(27, 26, 23, 0.07), 0 1px 2px rgba(27, 26, 23, 0.04);
+  --shadow-md: 0 4px 12px rgba(27, 26, 23, 0.07), 0 1px 3px rgba(27, 26, 23, 0.05);
+  --shadow-lg: 0 12px 32px rgba(27, 26, 23, 0.08), 0 4px 12px rgba(27, 26, 23, 0.05);
+  --shadow-xl: 0 20px 48px rgba(27, 26, 23, 0.10), 0 8px 20px rgba(27, 26, 23, 0.05);
+
+  /* Button scale (tighter spread) */
+  --btn-shadow-sm: 0 1px 2px rgba(0,0,0,0.06), 0 1px 1px rgba(0,0,0,0.04);
+  --btn-shadow-md: 0 2px 6px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --btn-shadow-lg: 0 4px 10px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.04);
+
+  /* ------------------------------
+     INTERACTION BEHAVIOUR
+     Usage: Shared timing for all interactive elements
+     ------------------------------ */
+  --transition-duration: 0.25s;
+  --transition-easing: ease;
+
+  /* ------------------------------
+     LINK BEHAVIOUR
+     Usage: Inline text links and action links (card links, surface links)
+     ------------------------------ */
+  /* Inline links (within paragraphs) */
+  --link-underline-rest: hsla(var(--brand-accent-h), var(--brand-accent-s), var(--brand-accent-l), 0.3);
+  --link-underline-hover: var(--link-hover);
+
+  /* Action links ("Read more →", "Learn more →" in cards/surfaces) */
+  --link-action-color: var(--brand-accent-text);
+  --link-action-color-hover: var(--brand-accent-strong);
+  --link-action-color-on-dark: hsl(var(--brand-accent-h), var(--brand-accent-s), 75%);
+  --link-action-color-on-dark-hover: #ffffff;
+  --link-action-arrow-nudge: 0.25em;
+  --link-action-tracking-hover: 0.04em;
+  --link-action-tracking-rest: normal;
+  --link-action-gap: 0.3em;
+
+  /* ── CARD INTERACTION ── */
+  --card-lift-distance: -2px;
+
+  /* ── SELECT ARROW ── */
+  --form-select-arrow-offset: 0.75rem;
+  --form-select-arrow-size: 1rem;
+  --form-select-padding-right: 2.5rem;
+
+  /* ── TABLE COMPACT ── */
+  --table-compact-padding-y: 0.4rem;
+  --table-compact-padding-x: 0.75rem;
+
+  /* ── ON-DARK TABLE TINTS ── */
+  --table-header-bg-on-dark: rgba(255, 255, 255, 0.05);
+  --table-stripe-bg-on-dark: rgba(255, 255, 255, 0.03);
+  --table-hover-bg-on-dark: rgba(255, 255, 255, 0.06);
+
+  /* ── UTILITY TEXT (preheader/signpost, subheads, lede, micro) ── */
+  --text-util-preheader-size: 0.875em;
+  --text-util-preheader-weight: 400;
+  --text-util-preheader-lh: 1.4;
+  --text-util-preheader-ls: 0.15em;
+  --text-util-hero-subhead-size: var(--text-subhead-size-hero);
+  --text-util-hero-subhead-weight: 400;
+  --text-util-hero-subhead-lh: 1.4;
+  --text-util-hero-subhead-ls: normal;
+  --text-util-subheading-size: var(--text-subhead-size-sub);
+  --text-util-subheading-weight: 400;
+  --text-util-subheading-lh: 1.55;
+  --text-util-subheading-ls: normal;
+  --text-util-lede-size: 1.1em;
+  --text-util-lede-weight: 400;
+  --text-util-lede-lh: 1.45;
+  --text-util-lede-ls: normal;
+  --text-util-micro-size: 0.85em;
+  --text-util-micro-weight: 300;
+  --text-util-micro-lh: 1.4;
+  --text-util-micro-ls: 0.02em;
+
+  /* ── CARD EYEBROW ── */
+  --card-eyebrow-ls: 0.1em;
+
+  /* ── SPOT ICON (decorative card/feature illustrations) ── */
+  --spot-icon-size: 48px;
+  --spot-icon-size-sm: 36px;
+  --spot-icon-size-lg: 64px;
+  --spot-icon-color: var(--brand-accent);
+  --spot-icon-bg: hsla(var(--brand-accent-h), var(--brand-accent-s), var(--brand-accent-l), 0.10);
+  --spot-icon-bg-hover: hsla(var(--brand-accent-h), var(--brand-accent-s), var(--brand-accent-l), 0.16);
+  --spot-icon-radius: var(--radius-md);
+  --spot-icon-padding: 0.625rem;
+  --spot-icon-stroke: 1.5px;
+  --spot-icon-fill-opacity: 0.12;
+
+  /* ── SIMPLE MODE TOGGLE ──
+     A segmented control or switch that lets readers
+     choose between Standard and Simple text. Calm,
+     clear, not a dumbing-down.
+     ──────────────────────────────────── */
+  --toggle-mode-bg: var(--bg-surface-alt);
+  --toggle-mode-bg-active: var(--brand-accent);
+  --toggle-mode-text: var(--text-body-muted);
+  --toggle-mode-text-active: #FFFFFF;
+  --toggle-mode-radius: var(--radius-pill);
+  --toggle-mode-padding-y: 0.4em;
+  --toggle-mode-padding-x: 1em;
+  --toggle-mode-font-size: var(--text-card-size-body);
+  --toggle-mode-font-weight: 600;
+  --toggle-mode-gap: 2px;
+  --toggle-mode-transition: var(--transition-duration) var(--transition-easing);
+}
+/* =========================================
+   UTILITY TEXT CLASSES
+   Full styling managed here
+   ========================================= */
+.preheader,
+.signpost {
+    font-size: var(--text-util-preheader-size);
+    font-weight: var(--text-util-preheader-weight);
+    line-height: var(--text-util-preheader-lh);
+    letter-spacing: var(--text-util-preheader-ls);
+    text-transform: uppercase;
+}
+.hero-subhead {
+    font-size: var(--text-util-hero-subhead-size);
+    font-weight: var(--text-util-hero-subhead-weight);
+    line-height: var(--text-util-hero-subhead-lh);
+    letter-spacing: var(--text-util-hero-subhead-ls);
+}
+.subheading {
+    font-size: var(--text-util-subheading-size);
+    font-weight: var(--text-util-subheading-weight);
+    line-height: var(--text-util-subheading-lh);
+    letter-spacing: var(--text-util-subheading-ls);
+}
+.lede {
+    font-size: var(--text-util-lede-size);
+    font-weight: var(--text-util-lede-weight);
+    line-height: var(--text-util-lede-lh);
+    letter-spacing: var(--text-util-lede-ls);
+}
+.microtext,
+small {
+    font-size: var(--text-util-micro-size);
+    font-weight: var(--text-util-micro-weight);
+    line-height: var(--text-util-micro-lh);
+    letter-spacing: var(--text-util-micro-ls);
+}
+
+/* ── Base body & heading styles ── */
+body {
+    font-family: var(--font-body-stack);
+    color: var(--text-body);
+    background-color: var(--bg-page);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading-stack);
+    color: var(--text-heading);
+}
+
+/* =========================================
+   OKAY TO ASK TYPOGRAPHIC LAYER
+   -----------------------------------------
+   Applied to the <main> element on question pages,
+   glossary pages, and the /questions/ landing.
+   The nav shell (header, footer) is OUTSIDE this scope
+   and stays in Lexend.
+   ========================================= */
+
+.layer-ota {
+    font-family: var(--font-ota-body-stack);
+    color: var(--text-ota-body);
+}
+.layer-ota h1,
+.layer-ota h2,
+.layer-ota h3,
+.layer-ota h4,
+.layer-ota h5,
+.layer-ota h6 {
+    font-family: var(--font-ota-heading-stack);
+    color: var(--text-ota-heading);
+}
+.layer-ota h1,
+.layer-ota h2,
+.layer-ota h3 {
+    font-variation-settings: 'opsz' var(--font-ota-heading-opsz), 'WONK' var(--font-ota-heading-wonk);
+}
+
+/* =========================================
+   OKAY TO ASK SURFACE VARIANTS
+   -----------------------------------------
+   Warm paper-like surfaces for the OtA layer.
+   Combined with .layer-ota for the full
+   "different room" effect.
+   ========================================= */
+
+.surface--ota {
+    background: var(--bg-ota-surface);
+}
+.surface--ota-alt {
+    background: var(--bg-ota-surface-alt);
+}
+/* =========================================
+   BUTTON COMPONENT CLASSES
+   =========================================
+
+   USAGE
+   Drop-in classes — add to any <a> or <button>.
+   In Divi: paste the class string into Advanced > CSS ID & Classes.
+   The .et_pb_button.btn reset block (below) overrides Divi defaults.
+
+   CLASS STRUCTURE
+   .btn                  – base (font, cursor, transition, border-style)
+   .btn--std             – standard size (padding, border-width)
+   .btn--sm              – small size (tighter padding, 90% font)
+   .btn--{style}         – colour/style (primary, tint, outline, text, white-*, disabled)
+   .has-icon-right       – persistent right arrow (always visible)
+   .has-icon-left        – persistent left arrow (always visible)
+   .has-icon-hover       – right arrow that reveals on hover
+
+   Example:  <a class="btn btn--std btn--primary has-icon-hover">CTA</a>
+
+   ICON MODEL
+   Icons are rendered via ::after (right / hover) or ::before (left).
+   They use inline SVG data URIs (24×24 viewBox, 1.5px stroke, round caps,
+   miter joins) matching the system icon spec. No external font dependency.
+   Icons are absolutely positioned inside the button — they don't
+   push the text. Instead, asymmetric padding makes room for them:
+
+   PADDING MODEL (the key concept)
+   Without icon:   padding uses --btn-padding-y / --btn-padding-x on all sides.
+   With icon:      the ICON SIDE gets --btn-padding-icon (wider, makes room
+                   for the arrow), the OPPOSITE SIDE gets --btn-padding-bal
+                   (slightly reduced to keep the text visually centred).
+   Hover-icon:     at rest, padding is symmetric (no icon visible).
+                   On hover, padding animates to icon/bal values as the
+                   arrow fades in — this creates the "slide-in" effect.
+
+   Small buttons use the -sm variants of each token. The icon position
+   itself is calc(--btn-padding-x * 0.5) from the edge.
+
+   BORDER MODEL
+   All styles use border-style: solid on .btn base.
+   Primary & Tint use an invisible border (colour matches bg) so the
+   box model stays identical to Outline — no layout shift when mixing
+   styles side by side. Outline uses --btn-outline-border at 35% opacity,
+   going full brand on hover.
+   ========================================= */
+
+/* ── BASE ── */
+.btn {
+    position: relative;
+    display: inline-block;
+    font-family: inherit;
+    font-size: var(--btn-font-size);
+    font-weight: var(--btn-font-weight);
+    letter-spacing: var(--btn-ls);
+    line-height: var(--btn-lh);
+    text-decoration: none;
+    cursor: pointer;
+    border-style: solid;
+    border-radius: var(--radius-base);
+    transition: background var(--transition-duration) var(--transition-easing),
+                border-color var(--transition-duration) var(--transition-easing),
+                padding var(--transition-duration) var(--transition-easing),
+                color var(--transition-duration) var(--transition-easing);
+    white-space: nowrap;
+}
+
+/* ── SIZE: STANDARD ── */
+.btn--std {
+    padding: var(--btn-padding-y) var(--btn-padding-x);
+    border-width: var(--border-width-xs);
+}
+.btn--std.has-icon-right  { padding-right: var(--btn-padding-icon); padding-left: var(--btn-padding-bal); }
+.btn--std.has-icon-left   { padding-left: var(--btn-padding-icon); padding-right: var(--btn-padding-bal); }
+.btn--std.has-icon-hover:hover { padding-right: var(--btn-padding-icon); padding-left: var(--btn-padding-bal); }
+
+/* ── SIZE: SMALL ── */
+.btn--sm {
+    font-size: 13px;
+    padding: var(--btn-padding-y-sm) var(--btn-padding-x-sm);
+    border-width: var(--border-width-xs);
+}
+.btn--sm.has-icon-right  { padding-right: var(--btn-padding-icon-sm); padding-left: var(--btn-padding-bal-sm); }
+.btn--sm.has-icon-left   { padding-left: var(--btn-padding-icon-sm); padding-right: var(--btn-padding-bal-sm); }
+.btn--sm.has-icon-hover:hover { padding-right: var(--btn-padding-icon-sm); padding-left: var(--btn-padding-bal-sm); }
+
+/* ── ICONS: RIGHT (::after) ── */
+/* SVG data URI — 24×24 viewBox, 1.5px stroke, matches system icon spec */
+.btn.has-icon-right::after,
+.btn.has-icon-hover::after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: calc(var(--btn-padding-x) * 0.5);
+    width: 1em;
+    height: 1em;
+    background: currentColor;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='miter'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='miter'%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3Cpolyline points='12 5 19 12 12 19'/%3E%3C/svg%3E");
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    transition: opacity var(--transition-duration) var(--transition-easing),
+                right var(--transition-duration) var(--transition-easing),
+                transform var(--transition-duration) var(--transition-easing);
+}
+.btn.has-icon-right::after { opacity: 1; }
+.btn.has-icon-right:hover::after { transform: translateY(-50%) translateX(3px); }
+
+/* ── ICONS: LEFT (::before) ── */
+/* SVG data URI — mirrored arrow-left, same spec as right */
+.btn.has-icon-left::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: calc(var(--btn-padding-x) * 0.5);
+    width: 1em;
+    height: 1em;
+    background: currentColor;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='miter'%3E%3Cline x1='19' y1='12' x2='5' y2='12'/%3E%3Cpolyline points='12 19 5 12 12 5'/%3E%3C/svg%3E");
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='miter'%3E%3Cline x1='19' y1='12' x2='5' y2='12'/%3E%3Cpolyline points='12 19 5 12 12 5'/%3E%3C/svg%3E");
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    transition: opacity var(--transition-duration) var(--transition-easing),
+                left var(--transition-duration) var(--transition-easing),
+                transform var(--transition-duration) var(--transition-easing);
+}
+.btn.has-icon-left::before { opacity: 1; }
+.btn.has-icon-left:hover::before { transform: translateY(-50%) translateX(-3px); }
+
+/* ── ICONS: HOVER-REVEAL (right, hidden at rest) ── */
+.btn.has-icon-hover::after { opacity: 0; }
+.btn.has-icon-hover:hover::after { opacity: 1; transform: translateY(-50%) translateX(3px); }
+
+/* Small icon positioning */
+.btn--sm.has-icon-right::after,
+.btn--sm.has-icon-hover::after { right: calc(var(--btn-padding-x-sm) * 0.5); }
+.btn--sm.has-icon-left::before  { left: calc(var(--btn-padding-x-sm) * 0.5); }
+
+/* ── STYLE: PRIMARY ── */
+.btn--primary {
+    background: var(--btn-primary-bg);
+    color: var(--btn-primary-text);
+    border-color: var(--btn-primary-border);
+}
+.btn--primary:hover {
+    background: var(--btn-primary-bg-hover);
+    color: var(--btn-primary-text);
+    border-color: var(--btn-primary-border-hover);
+}
+
+/* ── STYLE: TINT (Secondary — Translucent) ── */
+.btn--tint {
+    background: var(--btn-tint-bg);
+    color: var(--btn-tint-text);
+    border-color: var(--btn-tint-border);
+}
+.btn--tint:hover {
+    background: var(--btn-tint-bg-hover);
+    border-color: var(--btn-tint-border-hover);
+}
+
+/* ── STYLE: OUTLINE (Secondary — Bordered) ── */
+.btn--outline {
+    background: var(--btn-outline-bg);
+    color: var(--btn-outline-text);
+    border-color: var(--btn-outline-border);
+    border-width: var(--btn-outline-border-width);
+}
+.btn--outline:hover {
+    background: var(--btn-outline-bg-hover);
+    border-color: var(--btn-outline-border-hover);
+}
+
+/* ── STYLE: WHITE PRIMARY (for brand backgrounds) ── */
+.btn--white-primary {
+    background: var(--btn-white-primary-bg);
+    color: var(--btn-white-primary-text);
+    border-color: var(--btn-white-primary-bg);
+}
+.btn--white-primary:hover {
+    background: var(--btn-white-primary-bg-hover);
+    border-color: var(--btn-white-primary-bg-hover);
+}
+
+/* ── STYLE: WHITE TINT (for brand backgrounds) ── */
+.btn--white-tint {
+    background: var(--btn-white-tint-bg);
+    color: var(--btn-white-tint-text);
+    border-color: transparent;
+}
+.btn--white-tint:hover {
+    background: var(--btn-white-tint-bg-hover);
+}
+
+/* ── STYLE: WHITE OUTLINE (for brand backgrounds) ── */
+.btn--white-outline {
+    background: var(--btn-white-outline-bg);
+    color: var(--btn-white-outline-text);
+    border-color: var(--btn-white-outline-border);
+    border-width: var(--btn-outline-border-width);
+}
+.btn--white-outline:hover {
+    background: var(--btn-white-outline-bg-hover);
+    border-color: var(--btn-white-outline-border-hover);
+}
+
+/* ── STYLE: TEXT (minimal — action trigger without visual weight) ── */
+.btn--text {
+    background: transparent;
+    color: var(--brand-accent-text);
+    border-color: transparent;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+.btn--text:hover {
+    color: var(--btn-text-color-hover);
+    background: hsla(var(--brand-accent-h), var(--brand-accent-s), var(--brand-accent-l), 0.06);
+}
+
+/* ── STYLE: DISABLED ── */
+.btn--disabled,
+.btn--disabled:hover,
+.btn--disabled:focus {
+    background: var(--btn-disabled-bg);
+    color: var(--btn-disabled-text);
+    border-color: var(--btn-disabled-bg);
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+/* ── STYLE: SECONDARY (surface bg, visible border) ── */
+.btn--secondary {
+    background: var(--bg-surface-alt);
+    color: var(--text-body);
+    border: 1px solid var(--border-strong);
+}
+.btn--secondary:hover {
+    background: var(--bg-subtle);
+}
+
+/* ── STYLE: DANGER ── */
+.btn--danger {
+    padding: 5px 8px;
+    font-size: 12px;
+}
+.btn--danger-text {
+    background: transparent;
+    color: var(--state-error);
+    border-color: transparent;
+}
+.btn--danger-text:hover {
+    color: var(--state-error-text);
+    background: var(--state-error-soft);
+}
+
+/* ── STYLE: GHOST ON DARK ── */
+.btn--ghost-on-dark {
+    background: rgba(255,255,255,0.1);
+    color: var(--text-on-dark);
+    border-color: rgba(255,255,255,0.2);
+}
+.btn--ghost-on-dark:hover {
+    background: rgba(255,255,255,0.18);
+}
+/* ── DIVI OVERRIDE — REMOVED ──
+   The Divi button reset and post content row fix have been
+   removed for the Astro site build. If you need to use this
+   file in a Divi context, restore from v1.0.0.
+   ──────────────────────────────────── */
+
+/* =========================================
+   LINK COMPONENT CLASSES
+   =========================================
+
+   Two link types:
+   .link-inline  – within body text (subtle underline at rest, full on hover)
+   .link-action  – standalone action triggers ("Read more →", "Learn more →")
+
+   Both use --link-default / --link-hover for colour.
+   ========================================= */
+
+/* ── INLINE LINK (within paragraphs) ── */
+.link-inline {
+    color: var(--link-default);
+    text-decoration: underline;
+    text-decoration-color: var(--link-underline-rest);
+    text-underline-offset: 0.15em;
+    transition: color var(--transition-duration) var(--transition-easing),
+                text-decoration-color var(--transition-duration) var(--transition-easing);
+}
+.link-inline:hover {
+    color: var(--link-hover);
+    text-decoration-color: var(--link-underline-hover);
+}
+.link-inline:visited {
+    color: var(--link-visited);
+}
+
+/* ── ACTION LINK (card footers, surface CTAs, standalone) ── */
+.link-action {
+    color: var(--link-action-color);
+    text-decoration: none;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--link-action-gap);
+    letter-spacing: var(--link-action-tracking-rest);
+    transition: color var(--transition-duration) var(--transition-easing),
+                letter-spacing var(--transition-duration) var(--transition-easing);
+}
+.link-action::after {
+    content: "\2192" / "";
+    display: inline-block;
+    transition: transform var(--transition-duration) var(--transition-easing);
+}
+.link-action:hover {
+    color: var(--link-action-color-hover);
+    letter-spacing: var(--link-action-tracking-hover);
+}
+.link-action:hover::after {
+    transform: translateX(var(--link-action-arrow-nudge));
+}
+
+/* Action link — on dark surfaces */
+.surface--dark .link-action,
+.on-dark .link-action {
+    color: var(--link-action-color-on-dark);
+}
+.surface--dark .link-action:hover,
+.on-dark .link-action:hover {
+    color: var(--link-action-color-on-dark-hover);
+}
+
+/* Action link — no arrow variant */
+.link-action--no-arrow::after {
+    display: none;
+}
+
+/* =========================================
+   FOCUS STATES
+   -----------------------------------------
+   Global :focus-visible rule for all interactive
+   elements. Keyboard-only — mouse clicks won't
+   trigger the ring. Uses outline (not box-shadow)
+   for consistent rendering on all element types.
+
+   Form inputs layer a border-color change on top
+   of this for a tighter visual. The outline still
+   fires as the accessibility indicator.
+
+   On dark surfaces, swap --focus-ring for
+   --focus-ring-on-dark via the .surface--dark or
+   .on-dark utility class.
+   ========================================= */
+
+/* ── Global keyboard focus ring ── */
+:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+}
+
+/* Suppress outline for mouse/touch — only keyboard gets it */
+:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* ── On-dark focus ring ── */
+.surface--dark :focus-visible,
+.on-dark :focus-visible {
+    outline-color: var(--focus-ring-on-dark);
+}
+
+/* =========================================
+   ACCORDIONS
+   -----------------------------------------
+   Built on native <details>/<summary> — no JS.
+   Exclusive grouping via shared name attribute.
+   Smooth expand via grid-template-rows 0fr→1fr.
+   Plus/minus icon via SVG with .v-bar scaleY toggle.
+   ========================================= */
+
+/* ── Accordion tokens ── */
+:root {
+    --accordion-padding-y: 0.85rem;
+    --accordion-border: var(--border-width-xs) solid var(--neutral-200);
+    --accordion-icon-size: 14px;
+    --accordion-icon-color: var(--neutral-500);
+    --accordion-title-size: var(--text-card-size-h5);
+    --accordion-title-weight: 700;
+    --accordion-content-size: var(--text-card-size-body);
+    --accordion-content-color: var(--text-body-muted);
+    --accordion-transition: var(--transition-duration) var(--transition-easing);
+}
+
+/* ── Container ── */
+.accordion {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Item ── */
+.accordion__item {
+    border-bottom: var(--accordion-border);
+    overflow: hidden;
+}
+.accordion__item:last-child {
+    border-bottom: none;
+}
+
+/* ── Trigger (summary) ── */
+.accordion__trigger {
+    padding: var(--accordion-padding-y) 0;
+    font-weight: var(--accordion-title-weight);
+    font-size: var(--accordion-title-size);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-heading);
+}
+.accordion__trigger::-webkit-details-marker { display: none; }
+.accordion__trigger::marker { display: none; content: ""; }
+
+/* ── Icon (plus/minus SVG) ── */
+.accordion__icon {
+    color: var(--accordion-icon-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.accordion__icon .v-bar {
+    transition: transform var(--accordion-transition),
+                opacity var(--accordion-transition);
+    transform-origin: center;
+}
+.accordion__item[open] .accordion__icon .v-bar {
+    transform: scaleY(0);
+    opacity: 0;
+}
+
+/* ── Content (animated expand) ── */
+.accordion__content {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--accordion-transition);
+}
+.accordion__item[open] .accordion__content {
+    grid-template-rows: 1fr;
+}
+.accordion__content-inner {
+    overflow: hidden;
+}
+.accordion__content-inner p {
+    padding: 0 0 var(--space-global-sm);
+    font-size: var(--accordion-content-size);
+    color: var(--accordion-content-color);
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+    .accordion__icon .v-bar,
+    .accordion__content {
+        transition: none;
+    }
+}
+
+
+/* =========================================
+   FORMS
+   -----------------------------------------
+   Text inputs, textareas, selects, checkboxes,
+   radios, validation states. Every visual value
+   references an existing design token.
+
+   Focus pattern:
+   - :focus → border-color change (mouse + keyboard)
+   - :focus-visible → outline ring (keyboard only)
+   ========================================= */
+
+/* ── Form tokens ── */
+:root {
+    --form-input-padding-y: 0.65rem;
+    --form-input-padding-x: 0.875rem;
+    --form-label-size: var(--text-card-size-h6);
+    --form-label-weight: 600;
+    --form-input-size: var(--text-card-size-body);
+    --form-placeholder-color: var(--neutral-400);
+    --form-border: var(--border-width-xs) solid var(--neutral-200);
+    --form-border-focus: var(--brand-accent);
+    --form-group-gap: 0.4rem;
+    --form-stack-gap: var(--space-global-md);
+    --form-check-size: 1.15em;
+    --form-check-gap: var(--space-global-xs);
+}
+
+/* ── Form group (stacked layout) ── */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--form-group-gap);
+    margin-bottom: var(--form-stack-gap);
+}
+
+/* ── Label ── */
+.form-label {
+    font-size: var(--form-label-size);
+    font-weight: var(--form-label-weight);
+    color: var(--text-heading);
+}
+.form-label .required {
+    color: var(--state-error);
+    margin-left: 0.15em;
+}
+
+/* ── Text input & textarea ── */
+.form-input {
+    font-family: inherit;
+    font-size: var(--form-input-size);
+    color: var(--text-body);
+    background: var(--bg-page, #fff);
+    border: var(--form-border);
+    border-radius: var(--radius-sm);
+    padding: var(--form-input-padding-y) var(--form-input-padding-x);
+    transition: border-color var(--transition-duration) var(--transition-easing);
+    outline: none;
+    line-height: 1.5;
+}
+.form-input::placeholder {
+    color: var(--form-placeholder-color);
+}
+.form-input:focus {
+    border-color: var(--form-border-focus);
+}
+.form-input:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+}
+textarea.form-input {
+    resize: vertical;
+    min-height: 5rem;
+}
+
+/* ── Select ── */
+.form-select {
+    font-family: inherit;
+    font-size: var(--form-input-size);
+    color: var(--text-body);
+    background: var(--bg-page, #fff);
+    border: var(--form-border);
+    border-radius: var(--radius-sm);
+    padding: var(--form-input-padding-y) var(--form-select-padding-right) var(--form-input-padding-y) var(--form-input-padding-x);
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='miter'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--form-select-arrow-offset) center;
+    background-size: var(--form-select-arrow-size);
+    cursor: pointer;
+    transition: border-color var(--transition-duration) var(--transition-easing);
+    outline: none;
+    line-height: 1.5;
+}
+.form-select:focus {
+    border-color: var(--form-border-focus);
+}
+.form-select:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+}
+.form-select option {
+    background: var(--bg-page, #fff);
+    color: var(--text-body);
+}
+
+/* ── Checkbox & Radio ── */
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: var(--form-check-gap);
+    cursor: pointer;
+    font-size: var(--form-input-size);
+    color: var(--text-body);
+}
+.form-check input[type="checkbox"],
+.form-check input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: var(--form-check-size);
+    height: var(--form-check-size);
+    border: var(--form-border);
+    background: var(--bg-page, #fff);
+    cursor: pointer;
+    flex-shrink: 0;
+    display: grid;
+    place-content: center;
+    transition: border-color var(--transition-duration) var(--transition-easing),
+                background var(--transition-duration) var(--transition-easing);
+}
+.form-check input[type="checkbox"] {
+    border-radius: var(--radius-sm);
+}
+.form-check input[type="radio"] {
+    border-radius: 50%;
+}
+
+/* Checked states */
+.form-check input[type="checkbox"]:checked {
+    background: var(--brand-accent);
+    border-color: var(--brand-accent);
+}
+.form-check input[type="checkbox"]:checked::after {
+    content: "";
+    width: 0.55em;
+    height: 0.55em;
+    background: white;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+    -webkit-mask-size: contain;
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+    mask-size: contain;
+}
+.form-check input[type="radio"]:checked {
+    border-color: var(--brand-accent);
+    background: var(--bg-page, #fff);
+}
+.form-check input[type="radio"]:checked::after {
+    content: "";
+    width: 0.5em;
+    height: 0.5em;
+    border-radius: 50%;
+    background: var(--brand-accent);
+}
+
+/* ── Helper text ── */
+.form-helper {
+    font-size: calc(var(--form-label-size) * 0.9);
+    color: var(--neutral-500);
+    line-height: 1.5;
+}
+
+/* ── Validation: Error ── */
+.form-group--error .form-input,
+.form-group--error .form-select {
+    border-color: var(--state-error);
+}
+.form-group--error .form-input:focus,
+.form-group--error .form-select:focus {
+    border-color: var(--state-error);
+}
+.form-group--error .form-input:focus-visible,
+.form-group--error .form-select:focus-visible {
+    outline-color: var(--state-error);
+}
+.form-group--error .form-helper { color: var(--state-error-text); }
+.form-group--error .form-label { color: var(--state-error-text); }
+
+/* ── Validation: Success ── */
+.form-group--success .form-input,
+.form-group--success .form-select {
+    border-color: var(--state-success);
+}
+.form-group--success .form-input:focus,
+.form-group--success .form-select:focus {
+    border-color: var(--state-success);
+}
+.form-group--success .form-input:focus-visible,
+.form-group--success .form-select:focus-visible {
+    outline-color: var(--state-success);
+}
+.form-group--success .form-helper { color: var(--state-success-text); }
+
+/* ── Disabled ── */
+.form-group--disabled .form-input,
+.form-group--disabled .form-select {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--neutral-100, #f4f4f5);
+}
+.form-group--disabled .form-label {
+    opacity: 0.5;
+}
+
+
+/* =========================================
+   BADGES / TAGS
+   -----------------------------------------
+   Small inline labels for status, categories,
+   or metadata. Five semantic variants plus a
+   neutral default. Pill shape optional via
+   modifier.
+   ========================================= */
+
+/* ── Badge tokens ── */
+:root {
+    --badge-font-size: 11px;
+    --badge-font-weight: 600;
+    --badge-padding-y: 0.25em;
+    --badge-padding-x: 0.65em;
+    --badge-radius: var(--radius-sm);
+    --badge-letter-spacing: 0.02em;
+}
+
+/* ── Base badge ── */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    font-family: inherit;
+    font-size: var(--badge-font-size);
+    font-weight: var(--badge-font-weight);
+    letter-spacing: var(--badge-letter-spacing);
+    line-height: 1;
+    padding: var(--badge-padding-y) var(--badge-padding-x);
+    border-radius: var(--badge-radius);
+    white-space: nowrap;
+    /* Default: neutral */
+    background: var(--neutral-100);
+    color: var(--neutral-700);
+    border: 1px solid var(--neutral-200);
+}
+
+/* ── Pill modifier ── */
+.badge--pill {
+    border-radius: var(--radius-pill);
+}
+
+/* ── Semantic variants ── */
+.badge--accent {
+    background: hsla(var(--brand-accent-h), var(--brand-accent-s), var(--brand-accent-l), 0.1);
+    color: var(--brand-accent-text);
+    border-color: hsla(var(--brand-accent-h), var(--brand-accent-s), var(--brand-accent-l), 0.25);
+}
+.badge--success {
+    background: var(--state-success-soft);
+    color: var(--state-success-text);
+    border-color: var(--state-success);
+}
+.badge--warning {
+    background: var(--state-warning-soft);
+    color: var(--state-warning-text);
+    border-color: var(--state-warning);
+}
+.badge--error {
+    background: var(--state-error-soft);
+    color: var(--state-error-text);
+    border-color: var(--state-error);
+}
+.badge--info {
+    background: var(--state-info-soft);
+    color: var(--state-info-text);
+    border-color: var(--state-info);
+}
+
+/* ── Solid variants (stronger emphasis) ── */
+.badge--solid-accent {
+    background: var(--brand-accent);
+    color: var(--text-on-dark);
+    border-color: var(--brand-accent);
+}
+.badge--solid-success {
+    background: var(--state-success);
+    color: var(--text-on-dark);
+    border-color: var(--state-success);
+}
+.badge--solid-error {
+    background: var(--state-error);
+    color: var(--text-on-dark);
+    border-color: var(--state-error);
+}
+
+/* ── Content type badges ── */
+.badge--programme,
+.badge--lesson,
+.badge--activity {
+    align-self: flex-start;
+    background: transparent;
+    border-color: transparent;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    gap: 0.3em;
+}
+.badge--programme::before,
+.badge--lesson::before,
+.badge--activity::before {
+    content: "";
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    background: currentColor;
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    flex-shrink: 0;
+}
+
+/* Programme: indigo + layers icon */
+.badge--programme {
+    color: var(--content-programme);
+}
+.badge--programme::before {
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='8' y='2' width='13' height='13' rx='2'/%3E%3Cpath d='M5 8H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='8' y='2' width='13' height='13' rx='2'/%3E%3Cpath d='M5 8H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1'/%3E%3C/svg%3E");
+}
+
+/* Lesson: slate blue + book icon */
+.badge--lesson {
+    color: var(--content-lesson);
+}
+.badge--lesson::before {
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z'/%3E%3Cpath d='M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z'/%3E%3Cpath d='M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z'/%3E%3C/svg%3E");
+}
+
+/* Activity: ochre + lightning bolt icon */
+.badge--activity {
+    color: var(--content-activity);
+}
+.badge--activity::before {
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M13 2 3 14h9l-1 8 10-12h-9l1-8z'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M13 2 3 14h9l-1 8 10-12h-9l1-8z'/%3E%3C/svg%3E");
+}
+
+/* ── Solid badge ── */
+.badge--solid {
+    background: var(--brand-accent);
+    color: #ffffff;
+    border-color: var(--brand-accent);
+}
+
+/* ── Status badges ── */
+.badge--draft {
+    background-color: var(--bg-surface-alt);
+    color: var(--text-body-muted);
+}
+.badge--published {
+    background-color: var(--state-success-soft);
+    color: var(--state-success-text);
+}
+.badge--review {
+    background-color: var(--state-warning-soft);
+    color: var(--state-warning-text);
+}
+.badge--archived {
+    background-color: var(--neutral-200);
+    color: var(--neutral-500);
+}
+
+/* ── Metadata badges ── */
+.badge--meta {
+    background-color: var(--bg-surface-alt);
+    color: var(--text-body-muted);
+    font-weight: 500;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    line-height: 1.5;
+}
+
+/* ── Sensitivity badges ── */
+.badge--sensitive {
+    background-color: var(--state-warning-soft);
+    color: var(--state-warning-text);
+}
+.badge--specialist {
+    background-color: var(--state-error-soft);
+    color: var(--state-error-text);
+}
+.badge--mandatory {
+    background-color: var(--state-error-soft);
+    color: var(--state-error-text);
+    font-weight: 700;
+}
+
+/* ── Okay to Ask category badges ── */
+.badge--ota-anatomy        { background: var(--ota-cat-anatomy-soft);        color: hsl(var(--ota-cat-anatomy-h), var(--ota-cat-anatomy-s), 30%);        border-color: var(--ota-cat-anatomy); }
+.badge--ota-puberty        { background: var(--ota-cat-puberty-soft);        color: hsl(var(--ota-cat-puberty-h), var(--ota-cat-puberty-s), 28%);        border-color: var(--ota-cat-puberty); }
+.badge--ota-relationships  { background: var(--ota-cat-relationships-soft);  color: hsl(var(--ota-cat-relationships-h), var(--ota-cat-relationships-s), 30%); border-color: var(--ota-cat-relationships); }
+.badge--ota-sex            { background: var(--ota-cat-sex-soft);            color: hsl(var(--ota-cat-sex-h), var(--ota-cat-sex-s), 22%);            border-color: var(--ota-cat-sex); }
+.badge--ota-sexual-health  { background: var(--ota-cat-sexual-health-soft);  color: hsl(var(--ota-cat-sexual-health-h), var(--ota-cat-sexual-health-s), 28%); border-color: var(--ota-cat-sexual-health); }
+.badge--ota-law            { background: var(--ota-cat-law-soft);            color: hsl(var(--ota-cat-law-h), var(--ota-cat-law-s), 28%);            border-color: var(--ota-cat-law); }
+.badge--ota-contraception  { background: var(--ota-cat-contraception-soft);  color: hsl(var(--ota-cat-contraception-h), var(--ota-cat-contraception-s), 28%); border-color: var(--ota-cat-contraception); }
+
+
+/* =========================================
+   ALERTS / NOTIFICATIONS
+   -----------------------------------------
+   Block-level callouts for contextual messages.
+   Four semantic variants matching the state
+   colour tokens. Optional dismiss button.
+   ========================================= */
+
+/* ── Alert tokens ── */
+:root {
+    --alert-padding-y: var(--space-global-sm);
+    --alert-padding-x: var(--space-global-md);
+    --alert-radius: var(--radius-md);
+    --alert-border-width: var(--border-width-xs);
+    --alert-font-size: var(--text-card-size-body);
+    --alert-title-size: var(--text-card-size-h6);
+    --alert-title-weight: 700;
+    --alert-icon-size: 1.25em;
+}
+
+/* ── Base alert ── */
+.alert {
+    display: flex;
+    gap: var(--space-global-xs);
+    padding: var(--alert-padding-y) var(--alert-padding-x);
+    border-radius: var(--alert-radius);
+    border: var(--alert-border-width) solid var(--neutral-200);
+    background: var(--neutral-100, #f4f4f5);
+    color: var(--text-body);
+    font-size: var(--alert-font-size);
+    line-height: 1.6;
+    position: relative;
+}
+
+/* ── Icon slot ── */
+.alert__icon {
+    flex-shrink: 0;
+    width: var(--alert-icon-size);
+    height: var(--alert-icon-size);
+    margin-top: 0.15em;
+}
+
+/* ── Content area ── */
+.alert__content {
+    flex: 1;
+    min-width: 0;
+}
+.alert__title {
+    font-size: var(--alert-title-size);
+    font-weight: var(--alert-title-weight);
+    margin-bottom: 0.25em;
+}
+.alert__body p {
+    margin: 0;
+}
+
+/* ── Dismiss button ── */
+.alert__dismiss {
+    position: absolute;
+    top: var(--alert-padding-y);
+    right: var(--alert-padding-x);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.5;
+    padding: 0;
+    line-height: 1;
+    font-size: 1.1em;
+    transition: opacity var(--transition-duration) var(--transition-easing);
+}
+.alert__dismiss:hover {
+    opacity: 1;
+}
+
+/* ── Semantic variants ── */
+.alert--info {
+    background: var(--state-info-soft);
+    border-color: var(--state-info);
+    color: var(--state-info-text);
+}
+.alert--success {
+    background: var(--state-success-soft);
+    border-color: var(--state-success);
+    color: var(--state-success-text);
+}
+.alert--warning {
+    background: var(--state-warning-soft);
+    border-color: var(--state-warning);
+    color: var(--state-warning-text);
+}
+.alert--error {
+    background: var(--state-error-soft);
+    border-color: var(--state-error);
+    color: var(--state-error-text);
+}
+
+/* ── Safeguarding variants ──
+   These use the safeguarding tone tokens, NOT the UI
+   state colours. They serve content-emotional purposes
+   (A8 signposting, D1 age flag, A9 crisis support).
+   ──────────────────────────────────── */
+.alert--support {
+    background: var(--safeguarding-support-bg);
+    border-color: var(--safeguarding-support-border);
+    color: var(--safeguarding-support-text);
+}
+.alert--support .alert__icon {
+    color: var(--safeguarding-support-icon);
+}
+
+.alert--crisis {
+    background: var(--safeguarding-crisis-bg);
+    border-color: var(--safeguarding-crisis-border);
+    color: var(--safeguarding-crisis-text);
+}
+.alert--crisis .alert__icon {
+    color: var(--safeguarding-crisis-icon);
+}
+
+.alert--ageflag {
+    background: var(--safeguarding-ageflag-bg);
+    border-color: var(--safeguarding-ageflag-border);
+    color: var(--safeguarding-ageflag-text);
+}
+.alert--ageflag .alert__icon {
+    color: var(--safeguarding-ageflag-icon);
+}
+
+
+/* =========================================
+   CHIPS / FILTER CHIPS
+   -----------------------------------------
+   Pill-shaped toggle buttons used in filter
+   bars, onboarding multi-select, key stage
+   selectors. Chips are NOT buttons — they
+   toggle on/off.
+   ========================================= */
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 14px;
+    font-size: var(--text-card-size-body, 0.875rem);
+    font-weight: 500;
+    font-family: inherit;
+    color: var(--text-body-muted);
+    background: var(--bg-page);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-base);
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background var(--transition-duration) var(--transition-easing),
+                color var(--transition-duration) var(--transition-easing),
+                border-color var(--transition-duration) var(--transition-easing);
+}
+
+.chip:hover {
+    background: var(--bg-surface-alt);
+    color: var(--text-body);
+    border-color: var(--neutral-400);
+}
+
+.chip--active,
+.chip.is-active {
+    background: var(--brand-accent);
+    color: #fff;
+    border-color: var(--brand-accent);
+    font-weight: 600;
+}
+
+.chip--active:hover,
+.chip.is-active:hover {
+    background: var(--brand-accent-strong, #0B7B71);
+    border-color: var(--brand-accent-strong, #0B7B71);
+}
+
+.chip__count {
+    font-weight: 400;
+    opacity: 0.75;
+}
+
+
+/* =========================================
+   INPUT BRIDGE
+   -----------------------------------------
+   Components use className="input" but the
+   design system defines .form-input. This
+   bridges both so either class works.
+   ========================================= */
+
+.input {
+    font-family: inherit;
+    font-size: var(--form-input-size, 0.875rem);
+    color: var(--text-body);
+    background: var(--bg-page, #fff);
+    border: var(--form-border, 1px solid var(--neutral-300));
+    border-radius: var(--radius-sm);
+    padding: var(--form-input-padding-y, 0.5rem) var(--form-input-padding-x, 0.75rem);
+    transition: border-color var(--transition-duration) var(--transition-easing);
+    outline: none;
+    line-height: 1.5;
+}
+.input::placeholder { color: var(--form-placeholder-color, var(--text-body-muted)); }
+.input:focus { border-color: var(--brand-accent); }
+.input:focus-visible {
+    outline: var(--focus-ring-width, 2px) solid var(--focus-ring, var(--brand-accent));
+    outline-offset: var(--focus-ring-offset, 2px);
+}
+
+
+/* =========================================
+   CARDS
+   -----------------------------------------
+   Composable card component with vertical
+   (default) and horizontal layouts, plus
+   interaction variants (lift, reveal, ghost).
+
+   Structure:
+     .card
+       .card__img > img
+       .card__body
+         .card__eyebrow
+         .card__title
+         .card__text
+         .card__link   (action link)
+   ========================================= */
+
+/* ── Card tokens ── */
+:root {
+    --card-radius: var(--radius-lg);
+    --card-padding: 16px;
+    --card-gap: 8px;
+    --card-shadow: var(--shadow-sm);
+    --card-bg: var(--bg-page);
+    --card-border: var(--border-width-xs) solid var(--border-subtle);
+    --card-img-ratio: 56.25%;
+    --card-horizontal-img-width: 40%;
+    --card-thumbnail-size: 120px;
+}
+
+/* ── Base card (vertical) ── */
+.card {
+    background: var(--card-bg);
+    border-radius: var(--card-radius);
+    border: var(--card-border);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow var(--transition-duration) var(--transition-easing),
+                transform var(--transition-duration) var(--transition-easing),
+                border-color var(--transition-duration) var(--transition-easing);
+}
+
+/* ── Image slot ── */
+.card__img {
+    position: relative;
+    overflow: hidden;
+}
+.card__img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+/* Aspect ratio for vertical cards */
+.card:not(.card--horizontal):not(.card--thumbnail) .card__img {
+    padding-top: var(--card-img-ratio);
+}
+.card:not(.card--horizontal):not(.card--thumbnail) .card__img img {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* ── Body ── */
+.card__body {
+    padding: var(--card-padding);
+    display: flex;
+    flex-direction: column;
+    gap: var(--card-gap);
+    flex: 1;
+}
+.card__eyebrow {
+    font-size: var(--text-card-size-h6);
+    font-weight: 700;
+    letter-spacing: var(--card-eyebrow-ls);
+    text-transform: uppercase;
+    color: var(--brand-accent-text);
+}
+.card__title {
+    font-size: var(--text-card-size-h5);
+    font-weight: 700;
+    color: var(--text-heading);
+    line-height: 1.3;
+}
+.card__text {
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+    line-height: 1.6;
+}
+
+/* ── Card link (action link style) ── */
+.card__link {
+    font-size: var(--text-card-size-body);
+    font-weight: 700;
+    color: var(--link-action-color, var(--brand-accent-text));
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--link-action-gap);
+    transition: color var(--transition-duration) var(--transition-easing),
+                letter-spacing var(--transition-duration) var(--transition-easing);
+}
+.card__link::after {
+    content: "\2192" / "";
+    display: inline-block;
+    transition: transform var(--transition-duration) var(--transition-easing);
+}
+.card__link:hover {
+    color: var(--link-hover, var(--brand-accent-strong));
+    letter-spacing: var(--link-action-tracking-hover);
+}
+.card__link:hover::after {
+    transform: translateX(var(--link-action-arrow-nudge));
+}
+
+/* ── Interaction variants ── */
+
+/* Lift: no shadow at rest, lifts on hover */
+.card--lift {
+    box-shadow: var(--shadow-none);
+    border-color: transparent;
+}
+.card--lift:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(var(--card-lift-distance));
+    border-color: var(--border-subtle);
+}
+
+/* Reveal: transparent at rest, reveals on hover */
+.card--reveal {
+    background: transparent;
+    box-shadow: var(--shadow-none);
+    border-color: transparent;
+}
+.card--reveal:hover {
+    background: var(--card-bg);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(var(--card-lift-distance));
+    border-color: var(--border-subtle);
+}
+
+/* Ghost: no background, no border, no shadow — pure content */
+.card--ghost {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    border-radius: var(--radius-none);
+}
+.card--ghost .card__body {
+    padding: 0;
+}
+
+
+/* ── HORIZONTAL CARD ── */
+/* Image on left (40%), content on right (60%) */
+.card--horizontal {
+    flex-direction: row;
+}
+.card--horizontal .card__img {
+    width: var(--card-horizontal-img-width);
+    flex-shrink: 0;
+}
+.card--horizontal .card__img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.card--horizontal .card__body {
+    justify-content: center;
+}
+
+/* Reverse: image on right */
+.card--horizontal-reverse {
+    flex-direction: row-reverse;
+}
+.card--horizontal-reverse .card__img {
+    width: var(--card-horizontal-img-width);
+    flex-shrink: 0;
+}
+.card--horizontal-reverse .card__img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.card--horizontal-reverse .card__body {
+    justify-content: center;
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 768px) /* --bp-md */ {
+    .card--horizontal,
+    .card--horizontal-reverse {
+        flex-direction: column;
+    }
+    .card--horizontal .card__img,
+    .card--horizontal-reverse .card__img {
+        width: 100%;
+    }
+    /* Re-apply vertical aspect ratio on stack */
+    .card--horizontal .card__img,
+    .card--horizontal-reverse .card__img {
+        padding-top: var(--card-img-ratio);
+        position: relative;
+    }
+    .card--horizontal .card__img img,
+    .card--horizontal-reverse .card__img img {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+}
+
+
+/* ── THUMBNAIL CARD ── */
+/* Small square image on left, compact layout */
+.card--thumbnail {
+    flex-direction: row;
+    align-items: stretch;
+}
+.card--thumbnail .card__img {
+    width: var(--card-thumbnail-size);
+    flex-shrink: 0;
+}
+.card--thumbnail .card__img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.card--thumbnail .card__body {
+    justify-content: center;
+}
+
+/* Thumbnail reverse */
+.card--thumbnail.card--reverse {
+    flex-direction: row-reverse;
+}
+
+/* Responsive: stack thumbnails too */
+@media (max-width: 768px) /* --bp-md */ {
+    .card--thumbnail {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .card--thumbnail .card__img {
+        width: 100%;
+        height: auto;
+        padding-top: var(--card-img-ratio);
+        position: relative;
+    }
+    .card--thumbnail .card__img img {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    .card--thumbnail.card--reverse {
+        flex-direction: column;
+    }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+    .card {
+        transition: none;
+    }
+    .card__link::after {
+        transition: none;
+    }
+}
+
+
+/* =========================================
+   SURFACES
+   -----------------------------------------
+   Standalone containers with their own
+   background, padding, and optional border.
+   Content-agnostic — typography, buttons,
+   and spacing tokens handle everything inside.
+
+   Rule: if it's singular, it's a surface.
+   If it's plural and in a grid, it's a card.
+   ========================================= */
+
+/* ── Surface tokens ── */
+:root {
+    --surface-padding: var(--space-global-xl);
+    --surface-radius: var(--radius-lg);
+}
+
+/* ── Base surface ── */
+.surface {
+    padding: var(--surface-padding);
+    border-radius: var(--surface-radius);
+}
+
+/* ── Background variants ── */
+.surface--light {
+    background: var(--bg-surface);
+}
+.surface--alt {
+    background: var(--bg-surface-alt);
+}
+.surface--dark {
+    background: var(--neutral-900, #18181b);
+    color: var(--text-on-dark);
+}
+.surface--dark h1,
+.surface--dark h2,
+.surface--dark h3,
+.surface--dark h4,
+.surface--dark h5,
+.surface--dark h6,
+.surface--dark .card__title {
+    color: var(--text-heading-on-dark);
+}
+.surface--brand {
+    background: var(--brand-accent);
+    color: var(--text-on-dark);
+}
+.surface--brand h1,
+.surface--brand h2,
+.surface--brand h3,
+.surface--brand h4,
+.surface--brand h5,
+.surface--brand h6 {
+    color: var(--text-heading-on-dark);
+}
+
+/* ── Border modifier ── */
+.surface--bordered {
+    border: var(--border-width-xs) solid var(--border-subtle);
+}
+.surface--dark.surface--bordered {
+    border-color: var(--border-subtle-on-dark);
+}
+
+
+/* =========================================
+   GLASSMORPHISM
+   -----------------------------------------
+   Universal .glass modifier that layers a
+   frosted-glass effect onto any container —
+   surfaces, cards, navs, modals, etc.
+
+   Two tint modes:
+   .glass           – light tint (white overlay)
+   .glass--dark     – dark tint (dark overlay)
+
+   Requires a background behind the element
+   (image, gradient, or colour) for the blur
+   to have something to frost.
+
+   Fallback: browsers without backdrop-filter
+   get a slightly more opaque background so
+   the content stays readable.
+   ========================================= */
+
+/* ── Glass tokens ── */
+:root {
+    --glass-blur: 12px;
+    --glass-tint-light: rgba(255, 255, 255, 0.15);
+    --glass-tint-light-strong: rgba(255, 255, 255, 0.4);
+    --glass-tint-dark: rgba(0, 0, 0, 0.25);
+    --glass-tint-dark-strong: rgba(0, 0, 0, 0.45);
+    --glass-border-light: rgba(255, 255, 255, 0.25);
+    --glass-tint-light-solid: rgba(255, 255, 255, 0.82);
+    --glass-border-light-solid: rgba(255, 255, 255, 0.5);
+    --glass-border-dark: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+    --glass-shadow-dark: 0 4px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* ── Base glass (light tint — white frosted overlay) ── */
+.glass {
+    background: var(--glass-tint-light);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    border: var(--border-width-xs) solid var(--glass-border-light);
+    box-shadow: var(--glass-shadow);
+}
+
+/* Stronger tint for readability on busy backgrounds */
+.glass--strong {
+    background: var(--glass-tint-light-strong);
+}
+
+/* ── Dark glass (dark frosted overlay) ── */
+.glass--dark {
+    background: var(--glass-tint-dark);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    border: var(--border-width-xs) solid var(--glass-border-dark);
+    box-shadow: var(--glass-shadow-dark);
+    color: var(--text-on-dark);
+}
+.glass--dark h1,
+.glass--dark h2,
+.glass--dark h3,
+.glass--dark h4,
+.glass--dark h5,
+.glass--dark h6 {
+    color: var(--text-heading-on-dark);
+}
+
+/* Stronger dark tint */
+.glass--dark.glass--strong {
+    background: var(--glass-tint-dark-strong);
+}
+
+/* ── Dark glass link / focus overrides ── */
+.glass--dark .link-action {
+    color: var(--link-action-color-on-dark);
+}
+.glass--dark .link-action:hover {
+    color: var(--link-action-color-on-dark-hover);
+}
+.glass--dark :focus-visible {
+    outline-color: var(--focus-ring-on-dark);
+}
+
+/* ── Fallback for browsers without backdrop-filter ── */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .glass {
+        background: rgba(255, 255, 255, 0.7);
+    }
+    .glass--dark {
+        background: rgba(0, 0, 0, 0.65);
+    }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+    .glass,
+    .glass--dark {
+        transition: none;
+    }
+}
+
+
+/* =========================================
+   SPOT ICONS
+   -----------------------------------------
+   Decorative single-colour illustrations for
+   card headers, feature grids, and empty states.
+   These are NOT functional UI icons (see Lucide).
+
+   Provides a consistent container, size scale,
+   colour, and background tint. You supply the
+   SVG content — the component handles the rest.
+
+   Sizes:  .spot-icon (48px default)
+           .spot-icon--sm (36px)
+           .spot-icon--lg (64px)
+
+   Usage:
+     <span class="spot-icon" aria-hidden="true">
+       <svg viewBox="0 0 24 24" ...>...</svg>
+     </span>
+
+   SVGs should use viewBox="0 0 24 24", stroke=
+   "currentColor", stroke-width="1.5", fill="none"
+   (or a single fill at --spot-icon-fill-opacity).
+   ========================================= */
+
+/* ── Base spot icon ── */
+.spot-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--spot-icon-size);
+    height: var(--spot-icon-size);
+    padding: var(--spot-icon-padding);
+    color: var(--spot-icon-color);
+    background: var(--spot-icon-bg);
+    border-radius: var(--spot-icon-radius);
+    flex-shrink: 0;
+    transition: background var(--transition-duration) var(--transition-easing);
+}
+
+/* SVG inside spot-icon fills the container */
+.spot-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* ── Size modifiers ── */
+.spot-icon--sm {
+    width: var(--spot-icon-size-sm);
+    height: var(--spot-icon-size-sm);
+    padding: 0.5rem;
+}
+
+.spot-icon--lg {
+    width: var(--spot-icon-size-lg);
+    height: var(--spot-icon-size-lg);
+    padding: 0.75rem;
+}
+
+/* ── Shape modifier: circle ── */
+.spot-icon--circle {
+    border-radius: var(--radius-circle);
+}
+
+/* ── Hover tint (opt-in for interactive cards) ── */
+.spot-icon--hoverable:hover {
+    background: var(--spot-icon-bg-hover);
+}
+
+/* ── On-dark variant ── */
+.spot-icon--on-dark {
+    color: hsl(var(--brand-accent-h), var(--brand-accent-s), 75%);
+    background: hsla(var(--brand-accent-h), var(--brand-accent-s), var(--brand-accent-l), 0.15);
+}
+
+/* ── Neutral variant (non-brand) ── */
+.spot-icon--neutral {
+    color: var(--neutral-500);
+    background: var(--neutral-100);
+}
+
+
+/* =========================================
+   TABLES
+   -----------------------------------------
+   Styled data tables for content, dashboards,
+   and admin views. Opt-in modifiers for
+   striped rows, hover highlight, bordered
+   cells, and compact density.
+   ========================================= */
+
+/* ── Table tokens ── */
+:root {
+    --table-font-size: 14px;
+    --table-header-size: 12px;
+    --table-header-weight: 700;
+    --table-header-tracking: 0.04em;
+    --table-header-bg: var(--bg-surface);
+    --table-header-color: var(--text-heading);
+    --table-cell-padding-y: 10px;
+    --table-cell-padding-x: 14px;
+    --table-border-color: var(--neutral-200);
+    --table-border-color-strong: var(--neutral-400);
+    --table-stripe-bg: var(--bg-surface);
+    --table-hover-bg: var(--bg-surface-alt);
+
+    /* ====================================
+       Z-INDEX SCALE
+       ==================================== */
+    --z-base: 1;
+    --z-sticky: 100;
+    --z-dropdown: 400;
+    --z-overlay: 500;
+    --z-modal: 600;
+    --z-toast: 700;
+
+    /* ====================================
+       BREAKPOINTS (reference values)
+       Note: CSS custom properties cannot be used
+       inside @media rules. These tokens serve as
+       the single source of truth for documentation
+       and JS consumption. Use the raw values in
+       @media queries, e.g. @media (min-width: 768px).
+       ==================================== */
+    --bp-sm: 480px;
+    --bp-md: 768px;
+    --bp-lg: 1024px;
+    --bp-xl: 1280px;
+}
+
+/* ── Base table ── */
+.table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    font-size: var(--table-font-size);
+    line-height: 1.5;
+    color: var(--text-body);
+}
+
+/* ── Header ── */
+.table thead th {
+    text-align: left;
+    font-size: var(--table-header-size);
+    font-weight: var(--table-header-weight);
+    letter-spacing: var(--table-header-tracking);
+    text-transform: uppercase;
+    color: var(--table-header-color);
+    background: var(--table-header-bg);
+    padding: var(--table-cell-padding-y) var(--table-cell-padding-x);
+    border-bottom: var(--border-width-xs) solid var(--table-border-color-strong);
+}
+
+/* ── Body cells ── */
+.table tbody td {
+    padding: var(--table-cell-padding-y) var(--table-cell-padding-x);
+    border-bottom: var(--border-width-xs) solid var(--table-border-color);
+    vertical-align: top;
+}
+.table tbody tr:last-child td {
+    border-bottom: none;
+    padding-bottom: calc(var(--table-cell-padding-y) * 0.5);
+}
+
+/* ── Footer ── */
+.table tfoot td {
+    padding: var(--table-cell-padding-y) var(--table-cell-padding-x);
+    border-top: var(--border-width-xs) solid var(--table-border-color-strong);
+    font-weight: var(--table-header-weight);
+    color: var(--text-heading);
+}
+
+/* ── Striped rows ── */
+.table--striped tbody tr:nth-child(even) {
+    background: var(--table-stripe-bg);
+}
+
+/* ── Hover highlight ── */
+.table--hover tbody tr {
+    transition: background var(--transition-duration) var(--transition-easing);
+}
+.table--hover tbody tr:hover {
+    background: var(--table-hover-bg);
+}
+
+/* ── Bordered (all cells) ── */
+/* Each cell gets a full border, then border-top: none
+   on body cells prevents doubling between rows.
+   Header uses border-separate spacing of 0 so
+   adjacent cell borders share a single edge. */
+.table--bordered thead th {
+    border: var(--border-width-xs) solid var(--table-border-color);
+    border-bottom-color: var(--table-border-color-strong);
+}
+.table--bordered tbody td {
+    border: var(--border-width-xs) solid var(--table-border-color);
+    border-top: none;
+}
+.table--bordered tfoot td {
+    border: var(--border-width-xs) solid var(--table-border-color);
+    border-top-color: var(--table-border-color-strong);
+}
+/* Restore full bottom padding on bordered last row
+   (base table halves it, but bordered has a visible edge) */
+.table--bordered tbody tr:last-child td {
+    padding-bottom: var(--table-cell-padding-y);
+}
+
+/* ── Compact density ── */
+.table--compact thead th,
+.table--compact tbody td,
+.table--compact tfoot td {
+    padding: var(--table-compact-padding-y) var(--table-compact-padding-x);
+    font-size: calc(var(--table-font-size) * 0.9);
+}
+
+/* ── Numeric alignment helper ── */
+.table .text-right {
+    text-align: right;
+}
+
+/* ── On-dark tables ── */
+.surface--dark .table {
+    color: var(--text-on-dark);
+}
+.surface--dark .table thead th {
+    color: var(--text-heading-on-dark);
+    background: var(--table-header-bg-on-dark);
+    border-bottom-color: var(--border-subtle-on-dark);
+}
+.surface--dark .table tbody td {
+    border-bottom-color: var(--border-subtle-on-dark);
+}
+.surface--dark .table--striped tbody tr:nth-child(even) {
+    background: var(--table-stripe-bg-on-dark);
+}
+.surface--dark .table--hover tbody tr:hover {
+    background: var(--table-hover-bg-on-dark);
+}
+.surface--dark .table--bordered thead th,
+.surface--dark .table--bordered tbody td,
+.surface--dark .table--bordered tfoot td {
+    border-color: var(--border-subtle-on-dark);
+}

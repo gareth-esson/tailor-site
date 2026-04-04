@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B1 — Homepage Wireframe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding: 40px 20px; }
+
+  .wireframe-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #999; margin-bottom: 6px; }
+  .wireframe-title { font-size: 22px; font-weight: 700; color: #222; margin-bottom: 4px; }
+  .wireframe-desc { font-size: 13px; color: #777; margin-bottom: 32px; max-width: 600px; line-height: 1.5; }
+
+  .frame { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; max-width: 720px; margin: 0 auto 48px; }
+  .frame-label { background: #f0f0f0; padding: 8px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ddd; }
+
+  /* ---- PAGE SECTIONS ---- */
+  .page-section {
+    padding: 24px; border-bottom: 1px solid #eee;
+  }
+  .page-section:last-of-type { border-bottom: none; }
+
+  .section-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #fff; background: #888; display: inline-block; padding: 2px 8px;
+    border-radius: 3px; margin-bottom: 12px;
+  }
+  .section-label.highlight { background: #555; }
+
+  .placeholder-block {
+    background: #f0f0f0; border: 1px dashed #ccc; border-radius: 6px;
+    padding: 16px; margin-bottom: 12px;
+  }
+  .placeholder-block.hero {
+    padding: 32px 20px; text-align: center;
+  }
+  .placeholder-block.ota-hero {
+    padding: 32px 20px; text-align: center;
+    background: #fdf6e8; border-color: #e8d9b8;
+  }
+
+  h2.wf { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 6px; }
+  h3.wf { font-size: 15px; font-weight: 600; color: #444; margin-bottom: 6px; }
+  p.wf { font-size: 13px; color: #777; line-height: 1.5; margin-bottom: 10px; }
+  .wf-small { font-size: 11px; color: #999; line-height: 1.5; }
+
+  .cta-button {
+    display: inline-block; padding: 8px 18px; border: 2px solid #333;
+    border-radius: 5px; font-size: 12px; font-weight: 600; color: #333;
+    margin-right: 8px; margin-bottom: 6px;
+  }
+  .cta-button.primary { background: #333; color: #fff; }
+  .cta-button.secondary { background: transparent; }
+  .cta-button.ota { background: #e8c84a; color: #333; border-color: #d4b63e; }
+
+  /* ---- CARD GRIDS ---- */
+  .card-row {
+    display: flex; gap: 12px; flex-wrap: wrap;
+  }
+  .card {
+    flex: 1; min-width: 140px; background: #fafafa; border: 1px dashed #ccc;
+    border-radius: 6px; padding: 14px;
+  }
+  .card.postit {
+    background: #fdf6e8; border-color: #e8d9b8;
+  }
+  .card h4 { font-size: 12px; font-weight: 600; color: #444; margin-bottom: 4px; }
+  .card p { font-size: 11px; color: #888; line-height: 1.4; }
+
+  .postit-thumb {
+    width: 100%; height: 48px; background: #f0e4c4; border-radius: 3px;
+    margin-bottom: 8px; border: 1px solid #e0d4b4;
+  }
+
+  /* ---- TRUST SIGNALS ---- */
+  .badge-row {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px;
+  }
+  .badge {
+    padding: 6px 12px; background: #f5f5f5; border: 1px solid #ddd;
+    border-radius: 4px; font-size: 10px; font-weight: 600; color: #666;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  .testimonial-block {
+    padding: 14px 18px; background: #fafafa; border-left: 3px solid #ccc;
+    border-radius: 0 6px 6px 0; margin-bottom: 10px;
+  }
+  .testimonial-block p { font-size: 12px; color: #555; font-style: italic; line-height: 1.5; margin: 0; }
+  .testimonial-block .attribution { font-size: 11px; color: #999; font-style: normal; margin-top: 6px; }
+
+  /* ---- TOPIC BROWSE ---- */
+  .category-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  }
+  .category-card {
+    background: #fafafa; border: 1px dashed #ccc; border-radius: 6px;
+    padding: 12px; text-align: center;
+  }
+  .category-card h4 { font-size: 12px; font-weight: 600; color: #444; margin-bottom: 2px; }
+  .category-card span { font-size: 10px; color: #999; }
+
+  /* ---- ANNOTATIONS ---- */
+  .annotations { padding: 16px 24px 20px; background: #fafafa; border-top: 1px solid #eee; }
+  .annotation { display: flex; gap: 8px; margin-bottom: 8px; font-size: 12px; line-height: 1.5; }
+  .annotation-code { font-weight: 700; color: #888; white-space: nowrap; min-width: 24px; }
+  .annotation-text { color: #666; }
+
+  .behaviour-notes {
+    max-width: 720px; margin: 0 auto;
+    background: #fffff0; border: 1px solid #e8e8d0; border-radius: 8px; padding: 16px 20px;
+  }
+  .behaviour-notes h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 10px; }
+  .behaviour-notes p { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<div style="max-width:720px; margin:0 auto 32px;">
+  <div class="wireframe-label">B1 — Wireframe</div>
+  <div class="wireframe-title">Homepage</div>
+  <div class="wireframe-desc">
+    The front door for the entire site. Serves two audiences with a clear fork — teachers/school leaders and young people/parents. Six sections in content hierarchy order. Single-column structure; art direction applied later.
+  </div>
+</div>
+
+<div class="frame">
+  <div class="frame-label">Homepage — Content hierarchy (single column)</div>
+
+  <!-- HEADER REFERENCE -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A1 — Site Header ]</div>
+  </div>
+
+  <!-- SECTION 1: TEACHER/SCHOOL HERO -->
+  <div class="page-section">
+    <span class="section-label highlight">Section 1 — Teacher / School hero</span>
+    <div class="placeholder-block hero">
+      <h2 class="wf">Expert RSE lessons, ready to teach</h2>
+      <p class="wf">Curriculum-aligned resources, CPD training, and specialist delivery for primary and secondary schools.</p>
+      <div style="margin-top: 14px;">
+        <span class="cta-button primary">Explore RSE lessons →</span>
+        <span class="cta-button secondary">Training & services for schools →</span>
+      </div>
+      <div class="wf-small" style="margin-top:12px;">Primary CTA → app library or /topics | Secondary CTA → /services</div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: OKAY TO ASK HERO -->
+  <div class="page-section">
+    <span class="section-label highlight">Section 2 — Okay to Ask hero</span>
+    <div class="placeholder-block ota-hero">
+      <div class="wf-small" style="margin-bottom:8px; color:#b89a3a;">[ Visual shift to Okay to Ask identity — warmer tone, post-it motif ]</div>
+      <h2 class="wf">Got a question? Okay to Ask.</h2>
+      <p class="wf" style="color:#8a7a4a;">Real questions from real young people. Answered honestly.</p>
+      <div style="margin-top: 14px;">
+        <span class="cta-button ota">Browse questions →</span>
+      </div>
+      <div class="wf-small" style="margin-top:10px;">CTA → /questions/ (B8)</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: BOOK PROMOTION -->
+  <div class="page-section">
+    <span class="section-label highlight">Section 3 — Book promotion</span>
+    <div class="placeholder-block ota-hero">
+      <div class="wf-small" style="margin-bottom:8px; color:#b89a3a;">[ Okay to Ask book visual — within the Okay to Ask identity zone ]</div>
+      <div style="background: #f0e4c4; border: 1px solid #e0d4b4; border-radius: 6px; padding: 20px; margin-bottom: 16px; height: 120px; display: flex; align-items: center; justify-content: center;">
+        <div class="wf-small" style="color: #999;">Book cover placeholder</div>
+      </div>
+      <h3 class="wf" style="color:#4a3f2a;">The Okay to Ask book is here</h3>
+      <p class="wf" style="color:#8a7a4a;">Real questions from real young people. Answered honestly. In print.</p>
+      <div style="margin-top: 14px;">
+        <span class="cta-button ota">Buy the book →</span>
+      </div>
+      <div class="wf-small" style="margin-top:10px;">CTA → B11 (book page)</div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: WHAT TAILOR EDUCATION DOES -->
+  <div class="page-section">
+    <span class="section-label">Section 4 — What Tailor Education does</span>
+    <p class="wf">Brief — 2–3 short points. Not a wall of text. Each links to the relevant section.</p>
+    <div class="card-row" style="margin-top: 12px;">
+      <div class="card">
+        <h4>Expert-authored RSE lessons</h4>
+        <p>Curriculum-aligned, ready to teach in your classroom.</p>
+        <div class="wf-small" style="margin-top:6px;">→ app library or /topics</div>
+      </div>
+      <div class="card">
+        <h4>CPD training for teachers</h4>
+        <p>Build confidence to deliver RSE effectively.</p>
+        <div class="wf-small" style="margin-top:6px;">→ /training (B4)</div>
+      </div>
+      <div class="card">
+        <h4>Delivery & consultancy</h4>
+        <p>Specialist RSE delivery and consultancy for schools.</p>
+        <div class="wf-small" style="margin-top:6px;">→ /services (B5)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: FEATURED QUESTIONS -->
+  <div class="page-section">
+    <span class="section-label">Section 5 — Featured questions (Okay to Ask taster)</span>
+    <h3 class="wf">Questions young people are asking</h3>
+    <p class="wf">3–5 question titles with post-it images, linking to question pages. Draws the young person audience deeper into the site.</p>
+    <div class="card-row" style="margin-top: 12px;">
+      <div class="card postit">
+        <div class="postit-thumb"></div>
+        <h4>"Why do people get butterflies in their stomach?"</h4>
+        <div class="wf-small">→ /anonymous_question/{slug}</div>
+      </div>
+      <div class="card postit">
+        <div class="postit-thumb"></div>
+        <h4>"Is it normal to not want a boyfriend or girlfriend?"</h4>
+        <div class="wf-small">→ /anonymous_question/{slug}</div>
+      </div>
+      <div class="card postit">
+        <div class="postit-thumb"></div>
+        <h4>"What does consent actually mean?"</h4>
+        <div class="wf-small">→ /anonymous_question/{slug}</div>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top:10px;">Selection: curated by Gareth or auto-populated from a "featured" flag in the Questions DB.</div>
+  </div>
+
+  <!-- SECTION 6: TRUST SIGNALS -->
+  <div class="page-section">
+    <span class="section-label">Section 6 — Trust signals</span>
+    <h3 class="wf">Trusted by schools. Aligned to national frameworks.</h3>
+    <div class="badge-row" style="margin-top: 12px;">
+      <div class="badge">DfE Statutory Guidance</div>
+      <div class="badge">PSHE Association</div>
+      <div class="badge">UNESCO ITGSE</div>
+      <div class="badge">WHO Standards</div>
+    </div>
+    <div class="testimonial-block">
+      <p>"Gareth's training gave our staff the confidence to deliver RSE properly for the first time."</p>
+      <div class="attribution">— PSHE Lead, [School Name]</div>
+    </div>
+    <div class="wf-small">Link: "See our approach →" → /our-approach (B3)</div>
+  </div>
+
+  <!-- SECTION 7: TOPICS OVERVIEW -->
+  <div class="page-section">
+    <span class="section-label">Section 7 — Topics overview</span>
+    <h3 class="wf">Browse by topic</h3>
+    <p class="wf">22 landing pages grouped by the 7 app categories. A visual browse-by-topic element.</p>
+    <div class="category-grid" style="margin-top: 12px;">
+      <div class="category-card">
+        <h4>Bodies & Health</h4>
+        <span>4 landing pages</span>
+      </div>
+      <div class="category-card">
+        <h4>Relationships</h4>
+        <span>3 landing pages</span>
+      </div>
+      <div class="category-card">
+        <h4>Identity & Diversity</h4>
+        <span>3 landing pages</span>
+      </div>
+      <div class="category-card">
+        <h4>Safety & Safeguarding</h4>
+        <span>4 landing pages</span>
+      </div>
+      <div class="category-card">
+        <h4>Rights & Responsibilities</h4>
+        <span>2 landing pages</span>
+      </div>
+      <div class="category-card">
+        <h4>Wellbeing</h4>
+        <span>3 landing pages</span>
+      </div>
+      <div class="category-card" style="grid-column: span 3; text-align:center; border-style:solid; background:#f0f0f0;">
+        <h4 style="margin:0;">Browse all 22 topics →</h4>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Each category links to /topics/ filtered by that category, or directly to individual /topics/{slug} pages.</div>
+  </div>
+
+  <!-- FOOTER REFERENCE -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A2 — Site Footer ]</div>
+  </div>
+</div>
+
+<!-- ANNOTATIONS -->
+<div class="frame" style="margin-top:-24px;">
+  <div class="frame-label">Annotations</div>
+  <div class="annotations" style="border-top:none;">
+    <div class="annotation">
+      <span class="annotation-code">1</span>
+      <span class="annotation-text"><strong>Dual hero:</strong> Sections 1 and 2 are the fork. A teacher scanning the page sees the professional hero first and can act immediately. A young person sees the Okay to Ask section immediately below and is drawn in by the visual shift. The two shouldn't compete — there should be a clear tonal and visual break between them.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">2</span>
+      <span class="annotation-text"><strong>Visual identity shift:</strong> Section 2 marks the transition into Okay to Ask territory — warmer colours, post-it motif, informal tone. This shift is previewed here and fully realised on B8 and C1.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">3</span>
+      <span class="annotation-text"><strong>Book promotion (Section 3):</strong> Sits within the Okay to Ask visual identity zone (warm background like the OTA hero). Book cover placeholder, one-line pitch, CTA to B11. Hero-level prominence, not a sidebar.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">4</span>
+      <span class="annotation-text"><strong>"What Tailor does" (Section 4):</strong> Brief and scannable. Not a mission statement — three concrete things with links. A school leader who skipped the hero can orient here.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">5</span>
+      <span class="annotation-text"><strong>Featured questions (Section 5):</strong> This is the Okay to Ask taster that draws young people deeper. Post-it thumbnails make these visually distinct from the professional content above. Selection is either curated or flagged in the DB.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">6</span>
+      <span class="annotation-text"><strong>Trust signals (Section 6):</strong> Framework badges + a testimonial pull quote. This is for the school leader or parent who needs reassurance. Link to /our-approach for the full story.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">7</span>
+      <span class="annotation-text"><strong>Topics overview (Section 7):</strong> Serves both audiences — a teacher can browse by curriculum area, a young person can explore by interest. Shows 7 categories grouped by the app, with 22 landing pages total across all categories.</span>
+    </div>
+  </div>
+</div>
+
+<!-- BEHAVIOUR NOTES -->
+<div class="behaviour-notes">
+  <h4>Design decisions flagged</h4>
+  <p><strong>Hero split:</strong> Sections 1 and 2 could be a true 50/50 split (side by side on desktop), or sequential with a clear visual break. The wireframe shows them stacked (content hierarchy only) — art direction will determine the actual layout relationship.</p>
+  <p><strong>Featured questions source:</strong> Curated (Gareth picks 3–5 questions manually) or auto-populated (most viewed, or a "featured" boolean in the Questions DB). Curated is better for launch; auto-populated scales better.</p>
+  <p><strong>Mobile:</strong> All sections stack naturally. The dual hero becomes two sequential blocks. Featured questions may become a horizontal scroll.</p>
+  <p><strong>Seventh category?</strong> The topic counts are placeholder — actual category count and distribution will come from the Topics DB. The grid should handle 6–8 categories gracefully.</p>
+</div>
+
+</body>
+</html>

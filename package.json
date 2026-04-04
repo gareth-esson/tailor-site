@@ -1,0 +1,16 @@
+{
+  "name": "tailor-site",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/vercel": "^10.0.4",
+    "@notionhq/client": "^5.16.0",
+    "astro": "^6.1.3"
+  }
+}

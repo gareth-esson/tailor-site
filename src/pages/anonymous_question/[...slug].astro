@@ -1,0 +1,23 @@
+---
+import { getQuestions } from '../../lib/content';
+import type { Question } from '../../lib/types';
+
+export async function getStaticPaths() {
+  const questions = await getQuestions();
+  return questions.map((q) => ({
+    params: { slug: q.slug },
+    props: { question: q },
+  }));
+}
+
+interface Props {
+  question: Question;
+}
+
+const { question } = Astro.props;
+---
+
+<html lang="en">
+  <head><meta charset="utf-8" /><title>{question.question} — Okay to Ask</title></head>
+  <body><h1>{question.question}</h1></body>
+</html>

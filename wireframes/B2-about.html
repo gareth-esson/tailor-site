@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B2 — About Wireframe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding: 40px 20px; }
+
+  .wireframe-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #999; margin-bottom: 6px; }
+  .wireframe-title { font-size: 22px; font-weight: 700; color: #222; margin-bottom: 4px; }
+  .wireframe-desc { font-size: 13px; color: #777; margin-bottom: 32px; max-width: 600px; line-height: 1.5; }
+
+  .frame { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; max-width: 720px; margin: 0 auto 48px; }
+  .frame-label { background: #f0f0f0; padding: 8px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ddd; }
+
+  .page-section { padding: 24px; border-bottom: 1px solid #eee; }
+  .page-section:last-of-type { border-bottom: none; }
+
+  .section-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #fff; display: inline-block; padding: 2px 8px; border-radius: 3px; margin-bottom: 12px;
+  }
+  .section-label.core { background: #4a6a5a; }
+  .section-label.component { background: #666; }
+
+  h2.wf { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 6px; }
+  h3.wf { font-size: 15px; font-weight: 600; color: #444; margin-bottom: 6px; }
+  p.wf { font-size: 13px; color: #777; line-height: 1.5; margin-bottom: 10px; }
+  .wf-small { font-size: 11px; color: #999; line-height: 1.5; }
+
+  /* ---- PHOTO BLOCK ---- */
+  .photo-block {
+    display: flex; gap: 20px; align-items: flex-start;
+  }
+  .photo-placeholder {
+    width: 140px; height: 170px; background: #e0e0e0; border-radius: 8px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .photo-placeholder span { font-size: 11px; color: #aaa; }
+  .bio-text { flex: 1; }
+  .bio-text p { font-size: 14px; color: #444; line-height: 1.7; margin-bottom: 10px; }
+
+  /* ---- OTA STORY ---- */
+  .ota-block {
+    background: #fdf6e8; border: 1px dashed #e8d9b8; border-radius: 6px; padding: 18px;
+  }
+  .ota-block h3 { color: #4a3f2a; }
+  .ota-block p { font-size: 13px; color: #7a6a3a; line-height: 1.6; margin-bottom: 8px; }
+  .postit-scatter {
+    display: flex; gap: 8px; margin-top: 10px;
+  }
+  .postit-mini {
+    width: 44px; height: 44px; background: #f0e4c4; border: 1px solid #e0d4b4;
+    border-radius: 3px; transform: rotate(-2deg);
+  }
+  .postit-mini:nth-child(2) { transform: rotate(3deg); }
+  .postit-mini:nth-child(3) { transform: rotate(-1deg); }
+
+  /* ---- FRAMEWORK BADGES ---- */
+  .badge-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .badge {
+    padding: 6px 12px; background: #f5f5f5; border: 1px solid #ddd;
+    border-radius: 4px; font-size: 10px; font-weight: 600; color: #666;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  /* ---- CTA ---- */
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .cta-button {
+    display: inline-block; padding: 10px 20px; border-radius: 5px;
+    font-size: 13px; font-weight: 600;
+  }
+  .cta-primary { background: #333; color: #fff; }
+  .cta-secondary { background: #fff; color: #333; border: 2px solid #333; }
+
+  /* ---- ANNOTATIONS ---- */
+  .annotations { padding: 16px 24px 20px; background: #fafafa; border-top: 1px solid #eee; }
+  .annotation { display: flex; gap: 8px; margin-bottom: 8px; font-size: 12px; line-height: 1.5; }
+  .annotation-code { font-weight: 700; color: #888; white-space: nowrap; min-width: 30px; }
+  .annotation-text { color: #666; }
+
+  .behaviour-notes {
+    max-width: 720px; margin: 0 auto;
+    background: #fffff0; border: 1px solid #e8e8d0; border-radius: 8px; padding: 16px 20px;
+  }
+  .behaviour-notes h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 10px; }
+  .behaviour-notes p { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<div style="max-width:720px; margin:0 auto 32px;">
+  <div class="wireframe-label">B2 — Wireframe</div>
+  <div class="wireframe-title">About</div>
+  <div class="wireframe-desc">
+    What Tailor Education is, what it does, and who's behind it. Presents the organisation as a professional practice, not a one-person operation. Five sections in hierarchy order.
+  </div>
+</div>
+
+<div class="frame">
+  <div class="frame-label">About page — Content hierarchy (single column)</div>
+
+  <!-- HEADER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A1 — Site Header ]</div>
+  </div>
+
+  <!-- 1. TAILOR EDUCATION -->
+  <div class="page-section">
+    <span class="section-label core">1 — Tailor Education</span>
+    <h2 class="wf">Tailor Education</h2>
+    <p class="wf">Tailor Education is a community interest company focused on quality relationships and sex education. We deliver training, resources, and direct RSE provision to schools across the UK. Our work is evidence-based, age-appropriate, and grounded in what young people actually need to know.</p>
+    <p class="wf">As a CIC, all work goes back into improving RSE provision. We're not a charity, and we're not a traditional for-profit company — we're a professional practice dedicated to educational excellence. We believe in honest answers to the questions young people ask.</p>
+    <div class="wf-small" style="margin-top:6px;">This section presents the organisation as the primary focus. The team (including Gareth) is introduced in Section 2.</div>
+  </div>
+
+  <!-- 2. MEET THE TEAM -->
+  <div class="page-section">
+    <span class="section-label core">2 — Meet the team</span>
+    <h3 class="wf">Meet the team</h3>
+    <p class="wf">Real people, real faces — this is the 'we' behind 'we deliver.' The team brings diverse expertise in education, wellbeing, and professional development.</p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-top: 16px;">
+      <div style="text-align: center;">
+        <div class="photo-placeholder" style="width: 100%; height: 200px; margin-bottom: 12px;"><span>Photo</span></div>
+        <h4 class="wf" style="font-size: 14px; margin-bottom: 4px;">Gareth Esson</h4>
+        <p class="wf" style="font-size: 12px; margin: 0;">Founder, specialist RSE consultant</p>
+        <div class="wf-small" style="margin-top: 6px;">Background in education, qualifications, and professional memberships.</div>
+      </div>
+      <div style="text-align: center;">
+        <div class="photo-placeholder" style="width: 100%; height: 200px; margin-bottom: 12px;"><span>Photo</span></div>
+        <h4 class="wf" style="font-size: 14px; margin-bottom: 4px;">Team member</h4>
+        <p class="wf" style="font-size: 12px; margin: 0;">Role or specialism</p>
+        <div class="wf-small" style="margin-top: 6px;">Background and expertise.</div>
+      </div>
+      <div style="text-align: center;">
+        <div class="photo-placeholder" style="width: 100%; height: 200px; margin-bottom: 12px;"><span>Photo</span></div>
+        <h4 class="wf" style="font-size: 14px; margin-bottom: 4px;">Team member</h4>
+        <p class="wf" style="font-size: 12px; margin: 0;">Role or specialism</p>
+        <div class="wf-small" style="margin-top: 6px;">Background and expertise.</div>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top: 12px;">Team grid shows 2–3 placeholder team member blocks with photo, name, and role. This approach shifts from "Gareth is the service" to "Gareth is part of a professional team."</div>
+  </div>
+
+  <!-- 3. THE OKAY TO ASK PROJECT -->
+  <div class="page-section">
+    <span class="section-label core">3 — The Okay to Ask project</span>
+    <div class="ota-block">
+      <h3 class="wf">Okay to Ask</h3>
+      <p>What it is: a collection of real questions written by real young people on post-it notes during RSE lessons, answered honestly by Gareth.</p>
+      <p>Why it exists: because the questions young people actually ask are better than any curriculum document. They show what students are really thinking about — and they deserve straight answers.</p>
+      <p>The post-it question story: how the project started from a simple classroom activity and grew into a book and a website with 152 answered questions.</p>
+      <div class="postit-scatter">
+        <div class="postit-mini"></div>
+        <div class="postit-mini"></div>
+        <div class="postit-mini"></div>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">This section shifts into Okay to Ask visual territory (warm tones, post-it motif) to preview what visitors will find at /questions/. Links naturally to B8.</div>
+  </div>
+
+  <!-- 4. FRAMEWORK ALIGNMENT -->
+  <div class="page-section">
+    <span class="section-label core">4 — Framework alignment</span>
+    <h3 class="wf">Aligned to national and international frameworks</h3>
+    <p class="wf">Brief here — /our-approach (B3) covers this in depth. Just enough to signal credibility.</p>
+    <div class="badge-row" style="margin-top: 10px;">
+      <div class="badge">DfE Statutory Guidance (2026)</div>
+      <div class="badge">PSHE Association</div>
+      <div class="badge">UNESCO ITGSE</div>
+      <div class="badge">WHO Standards</div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Framework badges only — no detailed explanations. The detail lives on B3. This is a trust signal, not an evidence page.</div>
+  </div>
+
+  <!-- 5. CTA -->
+  <div class="page-section">
+    <span class="section-label component">5 — CTA</span>
+    <div class="cta-row">
+      <span class="cta-button cta-primary">See our approach →</span>
+      <span class="cta-button cta-secondary">Get in touch →</span>
+    </div>
+    <div class="wf-small" style="margin-top:10px;">
+      Primary: → /our-approach (B3) — for those who want the evidence and detail.<br>
+      Secondary: → /contact (B7) — for those ready to talk.
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A2 — Site Footer ]</div>
+  </div>
+</div>
+
+<!-- ANNOTATIONS -->
+<div class="frame" style="max-width:720px; margin:-24px auto 48px;">
+  <div class="frame-label">Annotations</div>
+  <div class="annotations" style="border-top:none;">
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Organisation first:</strong> Section 1 leads with Tailor Education, not an individual. The page establishes what the CIC does, its mission, and its values. The organisation is the brand and the primary focus.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Meet the team:</strong> Section 2 shows real people with photos — Gareth as founder plus team members. This approach emphasizes a professional practice, not a one-person operation. The tagline "Real people, real faces — this is the 'we' behind 'we deliver'" signals collaborative expertise.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Okay to Ask story:</strong> Section 3 is the emotional core of the page. The post-it origin story is what makes the project memorable and distinctive. This section should feel warm and personal — it's the "why" behind everything.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Brief by design:</strong> This page is context, not evidence. The depth lives on B3 (our approach) and B5 (services). The About page answers "what does this organisation do and who's behind it?" — the other pages answer "how do they work?"</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Voice:</strong> We/our language throughout. The organisation speaks as a team, not Gareth as an individual. "We believe…", "We deliver…", "Our approach…" signals professional collaboration.</span>
+    </div>
+  </div>
+</div>
+
+<!-- BEHAVIOUR NOTES -->
+<div class="behaviour-notes">
+  <h4>Design decisions flagged</h4>
+  <p><strong>Photo placement:</strong> Shown alongside the bio text (side-by-side on desktop). Could also be full-width above the text, or a smaller circular avatar. Side-by-side feels more editorial and professional; full-width feels more personal and bold.</p>
+  <p><strong>Qualifications display:</strong> Could be inline in the bio text, or pulled out as a sidebar/callout. If Gareth has formal qualifications, DBS status, or professional memberships worth showing, they add credibility — but they shouldn't dominate.</p>
+  <p><strong>Mobile:</strong> Photo stacks above the bio text. Okay to Ask section stays full-width. CTAs stack vertically.</p>
+</div>
+
+</body>
+</html>

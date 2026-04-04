@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B6 — Testimonials Wireframe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding: 40px 20px; }
+
+  .wireframe-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #999; margin-bottom: 6px; }
+  .wireframe-title { font-size: 22px; font-weight: 700; color: #222; margin-bottom: 4px; }
+  .wireframe-desc { font-size: 13px; color: #777; margin-bottom: 32px; max-width: 600px; line-height: 1.5; }
+
+  .frame { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; max-width: 720px; margin: 0 auto 48px; }
+  .frame-label { background: #f0f0f0; padding: 8px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ddd; }
+
+  .page-section { padding: 24px; border-bottom: 1px solid #eee; }
+  .page-section:last-of-type { border-bottom: none; }
+
+  .section-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #fff; display: inline-block; padding: 2px 8px; border-radius: 3px; margin-bottom: 12px;
+  }
+  .section-label.core { background: #4a6a5a; }
+  .section-label.component { background: #666; }
+
+  h2.wf { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 6px; }
+  h3.wf { font-size: 15px; font-weight: 600; color: #444; margin-bottom: 6px; }
+  p.wf { font-size: 13px; color: #777; line-height: 1.5; margin-bottom: 10px; }
+  .wf-small { font-size: 11px; color: #999; line-height: 1.5; }
+
+  /* ---- TESTIMONIAL STYLES ---- */
+  .testimonial-pull {
+    border-left: 3px solid #ddd; padding: 16px 20px; margin-bottom: 16px; background: #fafafa; border-radius: 0 6px 6px 0;
+  }
+  .testimonial-pull .quote { font-size: 15px; font-style: italic; color: #444; line-height: 1.6; margin-bottom: 8px; }
+  .testimonial-pull .attribution { font-size: 12px; font-weight: 600; color: #888; }
+
+  .testimonial-case {
+    border: 1px solid #e8e8e8; border-radius: 6px; padding: 20px; margin-bottom: 16px; background: #fff;
+  }
+  .testimonial-case .case-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 8px; }
+  .testimonial-case .case-body { font-size: 13px; color: #555; line-height: 1.7; margin-bottom: 10px; }
+  .testimonial-case .attribution { font-size: 12px; font-weight: 600; color: #888; }
+
+  .service-tag {
+    display: inline-block; padding: 2px 8px; font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.5px; border-radius: 3px; margin-bottom: 8px;
+  }
+  .service-tag.delivery { background: #e8f0e8; color: #4a6a4a; }
+  .service-tag.drop-days { background: #e8e8f0; color: #4a4a6a; }
+  .service-tag.training { background: #f0e8e8; color: #6a4a4a; }
+  .service-tag.consultancy { background: #f0ece8; color: #6a5a4a; }
+
+  /* ---- FILTER ---- */
+  .filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .filter-chip {
+    padding: 5px 12px; border: 1px solid #ddd; border-radius: 20px;
+    font-size: 11px; font-weight: 600; color: #777; background: #fff; cursor: pointer;
+  }
+  .filter-chip.active { background: #333; color: #fff; border-color: #333; }
+
+  /* ---- CTA ---- */
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .cta-button {
+    display: inline-block; padding: 10px 20px; border-radius: 5px;
+    font-size: 13px; font-weight: 600;
+  }
+  .cta-primary { background: #333; color: #fff; }
+  .cta-secondary { background: #fff; color: #333; border: 2px solid #333; }
+
+  /* ---- ANNOTATIONS ---- */
+  .annotations { padding: 16px 24px 20px; background: #fafafa; border-top: 1px solid #eee; }
+  .annotation { display: flex; gap: 8px; margin-bottom: 8px; font-size: 12px; line-height: 1.5; }
+  .annotation-code { font-weight: 700; color: #888; white-space: nowrap; min-width: 30px; }
+  .annotation-text { color: #666; }
+
+  .behaviour-notes {
+    max-width: 720px; margin: 0 auto;
+    background: #fffff0; border: 1px solid #e8e8d0; border-radius: 8px; padding: 16px 20px;
+  }
+  .behaviour-notes h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 10px; }
+  .behaviour-notes p { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<div style="max-width:720px; margin:0 auto 32px;">
+  <div class="wireframe-label">B6 — Wireframe</div>
+  <div class="wireframe-title">Testimonials</div>
+  <div class="wireframe-desc">
+    Social proof page. Shows what schools and teachers say about working with Tailor Education. Supports every service line. Mix of pull quotes and longer case-study style testimonials, filterable by service.
+  </div>
+</div>
+
+<div class="frame">
+  <div class="frame-label">Testimonials page — Content hierarchy (single column)</div>
+
+  <!-- HEADER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A1 — Site Header ]</div>
+  </div>
+
+  <!-- 1. HEADLINE -->
+  <div class="page-section">
+    <span class="section-label core">1 — Headline</span>
+    <h2 class="wf">What schools say</h2>
+    <p class="wf">Teachers, safeguarding leads, and school leaders on their experience working with Tailor Education.</p>
+    <div class="wf-small">Headline establishes this as third-party voices, not Tailor talking about itself.</div>
+  </div>
+
+  <!-- 2. TESTIMONIALS -->
+  <div class="page-section">
+    <span class="section-label core">2 — Testimonials</span>
+
+    <!-- Filter -->
+    <div class="filter-row">
+      <span class="filter-chip active">All</span>
+      <span class="filter-chip">RSE delivery</span>
+      <span class="filter-chip">Drop days</span>
+      <span class="filter-chip">CPD training</span>
+      <span class="filter-chip">Consultancy</span>
+    </div>
+
+    <!-- Pull quote example -->
+    <div class="testimonial-pull">
+      <span class="service-tag delivery">RSE delivery</span>
+      <div class="quote">"The students were completely engaged. Gareth dealt with every question honestly and age-appropriately — the staff were impressed by how naturally he handled the room."</div>
+      <div class="attribution">— PSHE Lead, [School name], Year 9</div>
+    </div>
+
+    <!-- Pull quote example -->
+    <div class="testimonial-pull">
+      <span class="service-tag drop-days">Drop days</span>
+      <div class="quote">"We booked a Year 8 drop day and the feedback from students was overwhelmingly positive. Several said it was the best lesson they'd had all year."</div>
+      <div class="attribution">— Head of Year 8, [School name]</div>
+    </div>
+
+    <!-- Case study example -->
+    <div class="testimonial-case">
+      <span class="service-tag training">CPD training</span>
+      <div class="case-label">Case study</div>
+      <div class="case-body">
+        "We brought Gareth in to run a full-day CPD session for our PSHE team. Before the training, most of our staff were nervous about delivering RSE — particularly around topics like consent and pornography. By the end of the day, every teacher said they felt more confident. Three months on, the quality of RSE lessons across the department has noticeably improved."
+      </div>
+      <div class="attribution">— Assistant Headteacher, [School name]</div>
+    </div>
+
+    <!-- Pull quote example -->
+    <div class="testimonial-pull">
+      <span class="service-tag consultancy">Consultancy</span>
+      <div class="quote">"Gareth helped us audit our entire RSE provision and build a three-year development plan. It gave us real confidence at our next Ofsted inspection."</div>
+      <div class="attribution">— Deputy Head, [School name]</div>
+    </div>
+
+    <div class="wf-small" style="margin-top: 12px;">
+      Mix of pull quotes (short, punchy) and case-study blocks (longer, narrative). Each tagged by service line for filtering. Attributable wherever possible — school name and person's role. More testimonials load below or paginate as the collection grows.
+    </div>
+  </div>
+
+  <!-- 3. CTA -->
+  <div class="page-section">
+    <span class="section-label component">3 — CTA</span>
+    <div class="cta-row">
+      <span class="cta-button cta-primary">Work with us →</span>
+      <span class="cta-button cta-secondary">See our services →</span>
+    </div>
+    <div class="wf-small" style="margin-top:10px;">
+      Primary: → /contact (B7) or direct to E1 enquiry form.<br>
+      Secondary: → /services (B5) for those still exploring.
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A2 — Site Footer ]</div>
+  </div>
+</div>
+
+<!-- ANNOTATIONS -->
+<div class="frame" style="max-width:720px; margin:-24px auto 48px;">
+  <div class="frame-label">Annotations</div>
+  <div class="annotations" style="border-top:none;">
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Two testimonial types:</strong> Pull quotes are short and scannable — ideal for quick social proof. Case-study blocks are longer and narrative — they tell a story about the impact of the work. Both types are needed; the mix keeps the page from feeling like a wall of identical quotes.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Service tagging:</strong> Every testimonial is tagged by service line (delivery, drop days, training, consultancy). This enables filtering so visitors arriving from a specific service page can see relevant proof immediately. Tags also help Gareth organise testimonials as the collection grows.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Attribution matters:</strong> School name + person's role is the gold standard. "PSHE Lead, Oakfield Academy" is more credible than an anonymous quote. Where full attribution isn't possible, role + key stage still adds credibility.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Filter behaviour:</strong> "All" shows everything. Selecting a service chip filters to just that service's testimonials. Only one filter active at a time. If a service has no testimonials yet, the chip can be hidden or disabled rather than showing an empty state.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Growth path:</strong> This page starts small (maybe 4–6 testimonials at launch) and grows over time. The structure supports scaling — the filter becomes more useful as the collection builds. Case studies can be added as relationships with schools deepen.</span>
+    </div>
+  </div>
+</div>
+
+<!-- BEHAVIOUR NOTES -->
+<div class="behaviour-notes">
+  <h4>Design decisions flagged</h4>
+  <p><strong>Testimonial density:</strong> Pull quotes could appear in a single column (full-width, stacked) or a masonry/2-column grid. Single column is simpler and more readable; grid is more visual and lets you show more on screen. Consider starting single-column and moving to grid as the collection grows.</p>
+  <p><strong>Case studies:</strong> Could be expandable (show first 2 lines, click to expand) or always fully visible. If there are only 1–2 case studies at launch, show them in full. If the page grows to 5+, consider expandable.</p>
+  <p><strong>Photo/logo:</strong> If schools provide logos or photos, these could appear alongside testimonials for visual credibility. Not essential at launch but worth planning for in the component design.</p>
+  <p><strong>Deep-link from service pages:</strong> Service pages (C5) and the services hub (B5) can link to this page with a service filter pre-selected via URL parameter (e.g., `/testimonials?service=training`). This creates a seamless "see what others say" flow from any service page.</p>
+  <p><strong>Mobile:</strong> Filters scroll horizontally as a chip row. Testimonials stack full-width. Case-study blocks stay full-width.</p>
+</div>
+
+</body>
+</html>

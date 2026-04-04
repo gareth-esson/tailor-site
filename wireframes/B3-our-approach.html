@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B3 — Our Approach Wireframe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding: 40px 20px; }
+
+  .wireframe-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #999; margin-bottom: 6px; }
+  .wireframe-title { font-size: 22px; font-weight: 700; color: #222; margin-bottom: 4px; }
+  .wireframe-desc { font-size: 13px; color: #777; margin-bottom: 32px; max-width: 600px; line-height: 1.5; }
+
+  .frame { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; max-width: 720px; margin: 0 auto 48px; }
+  .frame-label { background: #f0f0f0; padding: 8px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ddd; }
+
+  .page-section { padding: 24px; border-bottom: 1px solid #eee; }
+  .page-section:last-of-type { border-bottom: none; }
+
+  .section-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #fff; display: inline-block; padding: 2px 8px; border-radius: 3px; margin-bottom: 12px;
+  }
+  .section-label.core { background: #3a5a3a; }
+  .section-label.component { background: #666; }
+
+  h2.wf { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 6px; }
+  h3.wf { font-size: 15px; font-weight: 600; color: #444; margin-bottom: 6px; }
+  p.wf { font-size: 13px; color: #777; line-height: 1.5; margin-bottom: 10px; }
+  .wf-small { font-size: 11px; color: #999; line-height: 1.5; }
+
+  /* ---- FRAMEWORK BLOCK ---- */
+  .framework-list { margin-top: 12px; }
+  .framework-item {
+    padding: 14px 0; border-bottom: 1px solid #f0f0f0;
+  }
+  .framework-item:last-child { border-bottom: none; }
+  .framework-item h4 { font-size: 14px; font-weight: 600; color: #333; margin-bottom: 4px; }
+  .framework-item p { font-size: 12px; color: #777; line-height: 1.5; }
+  .framework-badge {
+    font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+    color: #3a5a3a; background: #e0f0e0; padding: 2px 6px; border-radius: 3px;
+    margin-left: 6px; vertical-align: middle;
+  }
+
+  /* ---- SAFEGUARDING BLOCK ---- */
+  .safeguarding-block {
+    background: #f0f7ff; border: 2px solid #d0e0f0; border-radius: 6px; padding: 18px;
+  }
+  .safeguarding-block h3 { font-size: 15px; font-weight: 700; color: #2a5a8a; margin-bottom: 10px; }
+  .safeguarding-item {
+    display: flex; align-items: flex-start; gap: 10px; padding: 8px 0;
+    border-bottom: 1px solid #e0ecf5;
+  }
+  .safeguarding-item:last-child { border-bottom: none; }
+  .safeguarding-icon {
+    width: 18px; height: 18px; background: #d0e0f0; border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+  }
+  .safeguarding-item p { font-size: 13px; color: #444; line-height: 1.5; }
+
+  /* ---- INCLUSIVITY ---- */
+  .inclusivity-block {
+    background: #f8f0ff; border-left: 4px solid #8a6ab0; border-radius: 0 6px 6px 0;
+    padding: 16px 20px;
+  }
+  .inclusivity-block p { font-size: 13px; color: #444; line-height: 1.6; margin-bottom: 8px; }
+
+  /* ---- OTA EDITORIAL ---- */
+  .editorial-block {
+    background: #fdf6e8; border: 1px dashed #e8d9b8; border-radius: 6px; padding: 18px;
+  }
+  .editorial-block h3 { color: #4a3f2a; }
+  .editorial-block p { font-size: 13px; color: #7a6a3a; line-height: 1.6; margin-bottom: 8px; }
+  .voice-principle {
+    display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid #e8d9b8;
+  }
+  .voice-principle:last-child { border-bottom: none; }
+  .voice-principle strong { font-size: 12px; color: #4a3f2a; min-width: 100px; }
+  .voice-principle span { font-size: 12px; color: #8a7a4a; }
+
+  /* ---- CTA ---- */
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .cta-button {
+    display: inline-block; padding: 10px 20px; border-radius: 5px;
+    font-size: 13px; font-weight: 600;
+  }
+  .cta-primary { background: #333; color: #fff; }
+  .cta-secondary { background: #fff; color: #333; border: 2px solid #333; }
+
+  /* ---- ANNOTATIONS ---- */
+  .annotations { padding: 16px 24px 20px; background: #fafafa; border-top: 1px solid #eee; }
+  .annotation { display: flex; gap: 8px; margin-bottom: 8px; font-size: 12px; line-height: 1.5; }
+  .annotation-code { font-weight: 700; color: #888; white-space: nowrap; min-width: 30px; }
+  .annotation-text { color: #666; }
+
+  .behaviour-notes {
+    max-width: 720px; margin: 0 auto;
+    background: #fffff0; border: 1px solid #e8e8d0; border-radius: 8px; padding: 16px 20px;
+  }
+  .behaviour-notes h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 10px; }
+  .behaviour-notes p { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<div style="max-width:720px; margin:0 auto 32px;">
+  <div class="wireframe-label">B3 — Wireframe</div>
+  <div class="wireframe-title">Our Approach</div>
+  <div class="wireframe-desc">
+    The trust page. Parents checking the site, school leaders justifying their choice of provider, Ofsted evidence. Six sections covering how content is made, framework alignment, safeguarding, inclusivity, the Okay to Ask editorial voice, and a CTA.
+  </div>
+</div>
+
+<div class="frame">
+  <div class="frame-label">Our Approach — Content hierarchy (single column)</div>
+
+  <!-- HEADER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A1 — Site Header ]</div>
+  </div>
+
+  <!-- 1. HOW WE WRITE CONTENT -->
+  <div class="page-section">
+    <span class="section-label core">1 — How we write content</span>
+    <h2 class="wf">How we write content</h2>
+    <p class="wf">Expert-authored by our team, not crowdsourced. Every lesson, every answer, every glossary definition is written by specialists with direct classroom experience. Content is reviewed, updated, and maintained — not published and forgotten.</p>
+    <p class="wf">A consistent pedagogical voice runs through everything. Whether a teacher is using a Tailor lesson plan or a young person is reading an Okay to Ask answer, the quality and approach are the same: clear, honest, age-appropriate, and evidence-based.</p>
+    <div class="wf-small" style="margin-top:6px;">This establishes the baseline: who writes it, how it's maintained, and why the voice matters. Short — the frameworks section below provides the evidence backing.</div>
+  </div>
+
+  <!-- 2. FRAMEWORK ALIGNMENT -->
+  <div class="page-section">
+    <span class="section-label core">2 — Framework alignment</span>
+    <h3 class="wf">Aligned to national and international frameworks</h3>
+    <p class="wf">Every piece of content maps to recognised frameworks. This isn't a marketing claim — it's built into the content production process.</p>
+    <div class="framework-list">
+      <div class="framework-item">
+        <h4>DfE Statutory RSE Guidance <span class="framework-badge">2020 + 2026 revision</span></h4>
+        <p>The legal baseline for every school in England. Our content meets statutory requirements and is updated when the guidance changes. The 2026 revision is fully reflected in current content.</p>
+      </div>
+      <div class="framework-item">
+        <h4>PSHE Association Programme of Study</h4>
+        <p>The most widely used framework for planning PSHE in UK schools. Our topic structure and learning objectives align directly to the PSHE Association's core themes and key stages.</p>
+      </div>
+      <div class="framework-item">
+        <h4>UNESCO International Technical Guidance on Sexuality Education</h4>
+        <p>The global standard for evidence-based sexuality education. Informs our approach to age-appropriateness, rights-based framing, and the breadth of topics covered.</p>
+      </div>
+      <div class="framework-item">
+        <h4>WHO Standards for Sexuality Education in Europe</h4>
+        <p>The European regional framework for comprehensive sexuality education. Supports our developmental approach and the principle that education should be positive, not fear-based.</p>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Each framework gets a brief explanation of what it means and how Tailor content maps to it. This is the section school leaders screenshot for their governors.</div>
+  </div>
+
+  <!-- 3. SAFEGUARDING COMMITMENT -->
+  <div class="page-section">
+    <span class="section-label core">3 — Safeguarding commitment</span>
+    <div class="safeguarding-block">
+      <h3>Safeguarding is embedded, not bolted on</h3>
+      <div class="safeguarding-item">
+        <div class="safeguarding-icon"></div>
+        <p>Content design accounts for safeguarding from the start — activities are disclosure-aware, and sensitive topics are handled with appropriate scaffolding and signposting.</p>
+      </div>
+      <div class="safeguarding-item">
+        <div class="safeguarding-icon"></div>
+        <p>FGM mandatory reporting duties are reflected in content and training. Staff are made aware of their obligations.</p>
+      </div>
+      <div class="safeguarding-item">
+        <div class="safeguarding-icon"></div>
+        <p>KCSIE (Keeping Children Safe in Education) awareness is built into every training session and resource.</p>
+      </div>
+      <div class="safeguarding-item">
+        <div class="safeguarding-icon"></div>
+        <p>Every question page includes contextual signposting to relevant support services (Childline, Brook, The Mix, NSPCC, Women's Aid, NHS Sexual Health, Galop).</p>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">This is the section the safeguarding statement link in the footer (A2) points to — either directly or via an anchor. It needs to be findable and unambiguous.</div>
+  </div>
+
+  <!-- 4. INCLUSIVITY -->
+  <div class="page-section">
+    <span class="section-label core">4 — Inclusivity</span>
+    <h3 class="wf">Inclusive by design</h3>
+    <div class="inclusivity-block">
+      <p>The Equality Act 2010 protected characteristics inform every activity, every answer, and every glossary definition. Inclusivity isn't an afterthought or an add-on — it's in the foundation.</p>
+      <p>Our content reflects the diversity of young people's experiences: different family structures, identities, bodies, and relationships. Representation matters — and so does the language we use to talk about it.</p>
+      <p>Simple Mode exists because accessibility is a right, not a feature. Every young person deserves to understand the information that affects their life, regardless of reading level.</p>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">This section connects to B13 (Accessibility & inclusivity page) for the full accessibility statement. Here it's about the editorial and pedagogical commitment.</div>
+  </div>
+
+  <!-- 5. OKAY TO ASK EDITORIAL APPROACH -->
+  <div class="page-section">
+    <span class="section-label core">5 — The Okay to Ask editorial approach</span>
+    <div class="editorial-block">
+      <h3 class="wf">How we answer questions</h3>
+      <p>Every answer on Okay to Ask follows the same principles. These aren't guidelines we sometimes follow — they're the voice of the project.</p>
+      <div style="margin-top: 12px;">
+        <div class="voice-principle">
+          <strong>Honest</strong>
+          <span>We don't dodge difficult questions. If a young person asked it, they deserve a straight answer.</span>
+        </div>
+        <div class="voice-principle">
+          <strong>Age-appropriate</strong>
+          <span>Not dumbed down — pitched right. Age-flagged content is signposted, not hidden.</span>
+        </div>
+        <div class="voice-principle">
+          <strong>Non-judgmental</strong>
+          <span>No moralising, no shame, no "you shouldn't be asking that." Every question is valid.</span>
+        </div>
+        <div class="voice-principle">
+          <strong>Inclusive</strong>
+          <span>Every answer assumes the reader could be anyone — any gender, any orientation, any background.</span>
+        </div>
+        <div class="voice-principle">
+          <strong>Safe</strong>
+          <span>Every answer links to support. Safeguarding-related questions lead with crisis services.</span>
+        </div>
+      </div>
+      <p style="margin-top:12px;">The age flagging system: some answers are marked "Year 9+" because the content is detailed and assumes some foundational knowledge. This isn't a gate — it's an honest signpost. The answer is always accessible.</p>
+    </div>
+  </div>
+
+  <!-- 6. CTA -->
+  <div class="page-section">
+    <span class="section-label component">6 — CTA</span>
+    <div class="cta-row">
+      <span class="cta-button cta-primary">Explore our training →</span>
+      <span class="cta-button cta-secondary">Browse topics →</span>
+    </div>
+    <div class="wf-small" style="margin-top:10px;">
+      Primary: → /training (B4) — for school leaders ready to act.<br>
+      Secondary: → /topics/ — for those who want to see the content for themselves.
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A2 — Site Footer ]</div>
+  </div>
+</div>
+
+<!-- ANNOTATIONS -->
+<div class="frame" style="max-width:720px; margin:-24px auto 48px;">
+  <div class="frame-label">Annotations</div>
+  <div class="annotations" style="border-top:none;">
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>The evidence page:</strong> While B2 (About) is "who we are", B3 is "how we work." This is the page a school leader sends to their SLT. The framework alignment section (Section 2) is the most referenced — it needs to be screenshot-friendly and specific.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Safeguarding anchor:</strong> The safeguarding statement link in the footer (A2) points here — either to the page generally or to a #safeguarding anchor within Section 3. This section must be easy to find from any page on the site.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Okay to Ask editorial voice:</strong> Section 5 explains how answers are written. This is valuable for parents who want to understand the tone before their child reads the answers, and for teachers who want to know the pedagogical philosophy. The voice principles are the soul of the project.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Dual audience:</strong> Parents read this page for reassurance ("is this content appropriate for my child?"). School leaders read it for evidence ("can I justify this to governors and Ofsted?"). The page needs to serve both without talking down to either.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>No Simple Mode:</strong> This is a professional trust page. Standard reading level only. The content here is for adults making decisions about RSE provision.</span>
+    </div>
+  </div>
+</div>
+
+<!-- BEHAVIOUR NOTES -->
+<div class="behaviour-notes">
+  <h4>Design decisions flagged</h4>
+  <p><strong>Framework section format:</strong> Shown as a list with framework name, badge (for DfE revision year), and brief explanation. Could also be an accordion — collapsed by default, expandable per framework. The list format is better for scanability; the accordion saves space if the page gets long.</p>
+  <p><strong>Safeguarding section prominence:</strong> Shown here as a distinct blue block. Could be more prominent (full-width banner, coloured background) or more integrated (just another section). It needs to stand out because it's the footer link destination, but it shouldn't feel alarming.</p>
+  <p><strong>Voice principles format:</strong> Shown as a key-value list (principle name → explanation). Could also be a grid, or just prose. The list format makes the principles scannable and quotable — a teacher can point to "Honest" and explain what that means in practice.</p>
+  <p><strong>Page length:</strong> This is the longest content page on the site. It needs to be comprehensive without being exhausting. Section anchors in the URL (#frameworks, #safeguarding, #editorial) would help deep-linking from other pages.</p>
+</div>
+
+</body>
+</html>

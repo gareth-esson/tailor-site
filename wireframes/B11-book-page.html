@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B11 — Book Page Wireframe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding: 40px 20px; }
+
+  .wireframe-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #999; margin-bottom: 6px; }
+  .wireframe-title { font-size: 22px; font-weight: 700; color: #222; margin-bottom: 4px; }
+  .wireframe-desc { font-size: 13px; color: #777; margin-bottom: 32px; max-width: 600px; line-height: 1.5; }
+
+  .frame { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; max-width: 720px; margin: 0 auto 48px; }
+  .frame-label { background: #f0f0f0; padding: 8px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ddd; }
+
+  .page-section { padding: 24px; border-bottom: 1px solid #eee; }
+  .page-section:last-of-type { border-bottom: none; }
+
+  .section-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #fff; display: inline-block; padding: 2px 8px; border-radius: 3px; margin-bottom: 12px;
+  }
+  .section-label.core { background: #b8860b; }
+  .section-label.component { background: #666; }
+
+  h2.wf { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 6px; }
+  h3.wf { font-size: 15px; font-weight: 600; color: #444; margin-bottom: 6px; }
+  p.wf { font-size: 13px; color: #777; line-height: 1.5; margin-bottom: 10px; }
+  .wf-small { font-size: 11px; color: #999; line-height: 1.5; }
+
+  /* ---- HERO ---- */
+  .book-hero {
+    text-align: center; padding: 20px 0;
+  }
+  .book-cover-placeholder {
+    width: 180px; height: 240px; background: #f0ead8; border: 2px solid #d8cdb8;
+    border-radius: 4px; margin: 0 auto 16px; display: flex; align-items: center;
+    justify-content: center; font-size: 11px; color: #a89878; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .book-title { font-size: 22px; font-weight: 700; color: #333; margin-bottom: 4px; }
+  .book-pitch { font-size: 14px; color: #777; line-height: 1.5; max-width: 480px; margin: 0 auto; }
+
+  /* ---- AUDIENCE CARDS ---- */
+  .audience-card {
+    border: 1px solid #eee; border-radius: 6px; padding: 14px 16px; margin-bottom: 10px;
+    background: #fafafa;
+  }
+  .audience-card h4 { font-size: 13px; font-weight: 700; color: #333; margin-bottom: 4px; }
+  .audience-card p { font-size: 12px; color: #777; line-height: 1.5; }
+
+  /* ---- PURCHASE CTA ---- */
+  .purchase-block {
+    text-align: center; padding: 20px; background: #fafaf0; border: 1px solid #e8e8d0;
+    border-radius: 8px;
+  }
+  .purchase-block .price { font-size: 24px; font-weight: 700; color: #333; margin-bottom: 4px; }
+  .purchase-block .price-note { font-size: 11px; color: #999; margin-bottom: 12px; }
+  .cta-button {
+    display: inline-block; padding: 12px 28px; border-radius: 6px;
+    font-size: 14px; font-weight: 700;
+  }
+  .cta-primary { background: #333; color: #fff; }
+  .cta-secondary { background: #fff; color: #333; border: 2px solid #333; margin-left: 8px; }
+
+  /* ---- SAMPLE QUESTIONS ---- */
+  .sample-question {
+    display: flex; gap: 14px; align-items: flex-start; padding: 14px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .sample-question:last-child { border-bottom: none; }
+  .postit-thumb {
+    width: 60px; height: 60px; background: #fff9c4; border: 1px solid #e8e0a0;
+    border-radius: 3px; flex-shrink: 0; display: flex; align-items: center;
+    justify-content: center; font-size: 9px; color: #b8a860; font-weight: 600;
+    transform: rotate(-2deg);
+  }
+  .sample-question:nth-child(2) .postit-thumb { background: #c4e8ff; border-color: #a0cce8; color: #608ab8; transform: rotate(1deg); }
+  .sample-question:nth-child(3) .postit-thumb { background: #ffd4d4; border-color: #e8b0b0; color: #b86060; transform: rotate(-1deg); }
+  .sample-text h4 { font-size: 13px; font-weight: 600; color: #333; margin-bottom: 4px; }
+  .sample-text p { font-size: 12px; color: #888; line-height: 1.5; }
+  .sample-text .read-more { font-size: 11px; font-weight: 600; color: #3a6a8a; margin-top: 4px; display: inline-block; }
+
+  /* ---- TRUST ---- */
+  .trust-block {
+    border-left: 3px solid #ddd; padding: 14px 18px; background: #fafafa;
+    border-radius: 0 6px 6px 0;
+  }
+  .trust-block .quote { font-size: 14px; font-style: italic; color: #555; line-height: 1.6; margin-bottom: 6px; }
+  .trust-block .attr { font-size: 12px; font-weight: 600; color: #999; }
+
+  /* ---- VARIANT STATES ---- */
+  .variant-block {
+    border: 1px dashed #ccc; border-radius: 6px; padding: 16px; margin-top: 12px;
+    background: #fafafa;
+  }
+  .variant-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 8px; }
+  .variant-block .cta-button { font-size: 12px; padding: 8px 18px; }
+
+  /* ---- ANNOTATIONS ---- */
+  .annotations { padding: 16px 24px 20px; background: #fafafa; border-top: 1px solid #eee; }
+  .annotation { display: flex; gap: 8px; margin-bottom: 8px; font-size: 12px; line-height: 1.5; }
+  .annotation-code { font-weight: 700; color: #888; white-space: nowrap; min-width: 30px; }
+  .annotation-text { color: #666; }
+
+  .behaviour-notes {
+    max-width: 720px; margin: 0 auto;
+    background: #fffff0; border: 1px solid #e8e8d0; border-radius: 8px; padding: 16px 20px;
+  }
+  .behaviour-notes h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 10px; }
+  .behaviour-notes p { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<div style="max-width:720px; margin:0 auto 32px;">
+  <div class="wireframe-label">B11 — Wireframe</div>
+  <div class="wireframe-title">The Okay to Ask Book</div>
+  <div class="wireframe-desc">
+    The book's dedicated page. Destination for every "Get the book" CTA in the end-of-answer panel (A17) across all 152 question pages, plus the book promotion blocks on B1 (homepage) and B8 (OTA landing). This page lives in the Okay to Ask zone — OTA visual identity, not B2B showcase tone.
+  </div>
+</div>
+
+<div class="frame">
+  <div class="frame-label">Book page — Content hierarchy (single column)</div>
+
+  <!-- HEADER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A1 — Site Header ]</div>
+  </div>
+
+  <!-- 1. HERO -->
+  <div class="page-section">
+    <span class="section-label core">1 — Hero</span>
+    <div class="book-hero">
+      <div class="book-cover-placeholder">Book cover</div>
+      <div class="book-title">Okay to Ask</div>
+      <div class="book-pitch">Real questions from real young people, answered honestly. The book that started as anonymous post-it notes in classrooms across the country.</div>
+    </div>
+    <div class="wf-small">Hero-level prominence. Book cover image (or hero photograph of the physical book) is the centrepiece. The pitch line should land the concept in one sentence. Full Okay to Ask visual identity here — post-it warmth, not corporate.</div>
+  </div>
+
+  <!-- 2. WHAT'S INSIDE -->
+  <div class="page-section">
+    <span class="section-label core">2 — What's inside</span>
+    <h3 class="wf">What's inside</h3>
+    <p class="wf">The Okay to Ask book collects real, anonymous questions from young people — written on post-it notes during RSE sessions in schools — and answers every one of them with honesty and care.</p>
+    <p class="wf">Inside you'll find post-it scans alongside clear, age-appropriate answers covering relationships, sex, bodies, identity, safety, and the law. It's the physical version of everything on this site — a book you can pick up, put down, and come back to.</p>
+    <div class="wf-small">This section sells the format: post-its + answers. It bridges the gap between the site and the book — visitors who've been reading answers online now understand what the book adds (physicality, browsability, a thing you can hand to someone).</div>
+  </div>
+
+  <!-- 3. WHO IT'S FOR -->
+  <div class="page-section">
+    <span class="section-label core">3 — Who it's for</span>
+    <h3 class="wf">Who it's for</h3>
+
+    <div class="audience-card">
+      <h4>Parents and carers</h4>
+      <p>A conversation starter for home. Leave it on the coffee table, the kitchen counter, their bedside table. It opens doors to conversations that might not happen otherwise.</p>
+    </div>
+
+    <div class="audience-card">
+      <h4>School staff rooms</h4>
+      <p>A reference that's always on the shelf. Teachers can dip into it before lessons, or leave it where students can browse it themselves.</p>
+    </div>
+
+    <div class="audience-card">
+      <h4>Conferences and training</h4>
+      <p>A credibility artefact. The book demonstrates what young people actually want to know — grounding any presentation or CPD session in their real questions.</p>
+    </div>
+
+    <div class="audience-card">
+      <h4>Young people</h4>
+      <p>A book that treats them with respect. No condescension, no scare tactics — just honest answers to the things they're actually wondering.</p>
+    </div>
+
+    <div class="wf-small">Four audience cards. This section is important because the book serves genuinely different use cases. Each card speaks directly to that audience — "you" language, not third person.</div>
+  </div>
+
+  <!-- 4. PURCHASE CTA -->
+  <div class="page-section">
+    <span class="section-label core">4 — Purchase CTA</span>
+
+    <div class="purchase-block">
+      <div class="price">£[TBD]</div>
+      <div class="price-note">Free UK delivery · Schools: bulk pricing available</div>
+      <span class="cta-button cta-primary">Buy now →</span>
+    </div>
+
+    <!-- Variant: External retailer -->
+    <div class="variant-block">
+      <div class="variant-label">Variant: External retailer</div>
+      <div style="text-align:center; padding: 8px 0;">
+        <span class="cta-button cta-primary">Buy on [Retailer] →</span>
+      </div>
+      <div class="wf-small" style="text-align:center;">If selling via Amazon, Bookshop.org, etc. Button links off-site.</div>
+    </div>
+
+    <!-- Variant: Not yet available -->
+    <div class="variant-block">
+      <div class="variant-label">Variant: Not yet available</div>
+      <div style="text-align:center; padding: 8px 0;">
+        <p class="wf" style="margin-bottom:8px;">The book is coming soon.</p>
+        <span class="cta-button cta-primary">Register interest →</span>
+      </div>
+      <div class="wf-small" style="text-align:center;">Email capture field — name + email. "We'll let you know when it's ready." This variant is useful pre-launch.</div>
+    </div>
+
+    <div class="wf-small" style="margin-top:12px;">Three possible CTA states depending on Gareth's sales approach. Only one appears at a time. The wireframe shows all three so the developer can build for each scenario.</div>
+  </div>
+
+  <!-- 5. SAMPLE CONTENT -->
+  <div class="page-section">
+    <span class="section-label core">5 — Sample content</span>
+    <h3 class="wf">A taste of what's inside</h3>
+
+    <div class="sample-question">
+      <div class="postit-thumb">Post-it</div>
+      <div class="sample-text">
+        <h4>"Is it normal to not want a relationship?"</h4>
+        <p>Yes. Some people don't want romantic relationships, and that's completely fine. There's no timeline you have to follow…</p>
+        <span class="read-more">Read full answer →</span>
+      </div>
+    </div>
+
+    <div class="sample-question">
+      <div class="postit-thumb">Post-it</div>
+      <div class="sample-text">
+        <h4>"Why do people send nudes?"</h4>
+        <p>There are lots of reasons people share intimate images. Sometimes it's curiosity, sometimes pressure, sometimes…</p>
+        <span class="read-more">Read full answer →</span>
+      </div>
+    </div>
+
+    <div class="sample-question">
+      <div class="postit-thumb">Post-it</div>
+      <div class="sample-text">
+        <h4>"What does consent actually mean?"</h4>
+        <p>Consent means freely giving your agreement to something happening. It's not just about sex — consent is part of…</p>
+        <span class="read-more">Read full answer →</span>
+      </div>
+    </div>
+
+    <div class="wf-small" style="margin-top:12px;">2–3 example questions showing the post-it + answer format. Each links to the full question page (C1). This lets visitors see the tone and quality before buying — the book's USP is the questions themselves, so show them.</div>
+  </div>
+
+  <!-- 6. TRUST SIGNAL -->
+  <div class="page-section">
+    <span class="section-label component">6 — Trust signal</span>
+
+    <div class="trust-block">
+      <div class="quote">"This book should be in every school staff room in the country. It's the questions young people are actually asking — and the answers are exactly right."</div>
+      <div class="attr">— [Attribution: role, school name]</div>
+    </div>
+
+    <p class="wf" style="margin-top:14px; text-align:center; font-size:12px; color:#999;">Written by Gareth Esson · Specialist RSE consultant · Tailor Education CIC</p>
+
+    <div class="wf-small" style="margin-top:10px;">Trust signal can be a testimonial (ideal), framework badges, or an author credential line. Ideally a testimonial — someone in education endorsing the book specifically. The author credential line works as a fallback or complement.</div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A2 — Site Footer ]</div>
+  </div>
+</div>
+
+<!-- ANNOTATIONS -->
+<div class="frame" style="max-width:720px; margin:-24px auto 48px;">
+  <div class="frame-label">Annotations</div>
+  <div class="annotations" style="border-top:none;">
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>High-traffic destination:</strong> Every question page's end-of-answer panel (A17) links here via the "young people / parents" CTA. With 152 question pages, this is one of the most-linked-to pages on the site. It needs to convert — the content should be compelling, not just informational.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Okay to Ask zone:</strong> This page belongs to the Okay to Ask visual identity — warm, post-it textures, young-people-facing tone. It should feel like the OTA landing (B8), not the B2B services pages.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>"Who it's for" does real work:</strong> This isn't filler — the book genuinely serves different audiences with different motivations. A parent browsing at home needs a different pitch than a teacher stocking a staff room. The audience cards let each visitor see themselves in the product.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Purchase CTA flexibility:</strong> Three variants wireframed because the sales approach is TBD. The developer builds all three and Gareth activates the right one via CMS or config. "Register interest" is the safest launch-day default.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Sample content links back to site:</strong> The "Read full answer" links on sample questions create a loop: site → book page → sample → back to site. This keeps visitors engaged even if they don't buy — the book page isn't a dead end.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Bulk pricing mention:</strong> "Schools: bulk pricing available" in the purchase CTA is a lightweight B2B nudge without breaking the consumer-facing tone. Teachers seeing this page will note it; parents will skim past it.</span>
+    </div>
+  </div>
+</div>
+
+<!-- BEHAVIOUR NOTES -->
+<div class="behaviour-notes">
+  <h4>Design decisions flagged</h4>
+  <p><strong>Book cover image:</strong> A high-quality photo or render of the physical book is essential — this is a product page. If the cover isn't finalised, a styled placeholder showing the Okay to Ask branding works at launch, but a real image should replace it as soon as possible.</p>
+  <p><strong>Purchase CTA position:</strong> Currently section 4 of 6 — after "who it's for" but before samples and trust. This follows a persuasion arc: what it is → who it's for → buy it → proof it's good. An alternative is to place the CTA after the samples (section 5), so the visitor sees examples before being asked to buy. Either works — test and iterate.</p>
+  <p><strong>Sticky buy button:</strong> On mobile, a sticky "Buy now" bar at the bottom of the screen could improve conversion. The visitor can scroll through all the content and tap buy at any point without scrolling back up. Design decision.</p>
+  <p><strong>Post-it image quality:</strong> The sample content section should use actual post-it scans (photos of real handwritten questions), not illustrated recreations. The authenticity of real handwriting is a huge part of the book's appeal.</p>
+  <p><strong>Mobile:</strong> Book cover scales down but stays prominent. Audience cards stack. Purchase block is full-width. Sample questions stack with post-it thumbnails to the left.</p>
+</div>
+
+</body>
+</html>

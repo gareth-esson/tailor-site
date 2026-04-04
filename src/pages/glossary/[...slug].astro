@@ -1,0 +1,23 @@
+---
+import { getGlossaryTerms } from '../../lib/content';
+import type { GlossaryTerm } from '../../lib/types';
+
+export async function getStaticPaths() {
+  const terms = await getGlossaryTerms();
+  return terms.map((t) => ({
+    params: { slug: t.slug },
+    props: { term: t },
+  }));
+}
+
+interface Props {
+  term: GlossaryTerm;
+}
+
+const { term } = Astro.props;
+---
+
+<html lang="en">
+  <head><meta charset="utf-8" /><title>{term.term} — Glossary — Tailor Education</title></head>
+  <body><h1>{term.term}</h1></body>
+</html>

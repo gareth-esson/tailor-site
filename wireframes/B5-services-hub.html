@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B5 — Services Hub Wireframe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding: 40px 20px; }
+
+  .wireframe-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #999; margin-bottom: 6px; }
+  .wireframe-title { font-size: 22px; font-weight: 700; color: #222; margin-bottom: 4px; }
+  .wireframe-desc { font-size: 13px; color: #777; margin-bottom: 32px; max-width: 600px; line-height: 1.5; }
+
+  .frame { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; max-width: 720px; margin: 0 auto 48px; }
+  .frame-label { background: #f0f0f0; padding: 8px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ddd; }
+
+  .page-section { padding: 24px; border-bottom: 1px solid #eee; }
+  .page-section:last-of-type { border-bottom: none; }
+
+  .section-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #fff; display: inline-block; padding: 2px 8px; border-radius: 3px; margin-bottom: 12px;
+  }
+  .section-label.core { background: #3a6a8a; }
+  .section-label.component { background: #666; }
+
+  h2.wf { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 6px; }
+  h3.wf { font-size: 15px; font-weight: 600; color: #444; margin-bottom: 6px; }
+  p.wf { font-size: 13px; color: #777; line-height: 1.5; margin-bottom: 10px; }
+  .wf-small { font-size: 11px; color: #999; line-height: 1.5; }
+
+  /* ---- HEADLINE ---- */
+  .hub-headline { font-size: 26px; font-weight: 800; color: #222; margin-bottom: 6px; }
+  .hub-subline { font-size: 14px; color: #666; line-height: 1.5; }
+
+  /* ---- SERVICE CARDS ---- */
+  .service-cards { display: flex; flex-direction: column; gap: 16px; margin-top: 12px; }
+  .service-card {
+    background: #fff; border: 1px solid #ddd; border-radius: 8px;
+    padding: 20px; display: flex; gap: 16px; align-items: flex-start;
+    transition: border-color 0.15s;
+  }
+  .service-card:hover { border-color: #aaa; }
+  .service-icon {
+    width: 48px; height: 48px; background: #e8f0f8; border-radius: 8px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: #5a8aaa;
+  }
+  .service-card-body { flex: 1; }
+  .service-card-body h3 { font-size: 16px; font-weight: 700; color: #222; margin-bottom: 4px; }
+  .service-card-body p { font-size: 13px; color: #777; line-height: 1.5; margin-bottom: 8px; }
+  .service-card-body .card-link { font-size: 12px; font-weight: 600; color: #3a6a8a; }
+  .service-card-body .card-dest { font-size: 10px; color: #bbb; margin-top: 2px; }
+
+  .service-card.highlight {
+    border-color: #8a5a2a; border-width: 2px; background: #fdf8f0;
+  }
+  .service-card.highlight .service-icon { background: #f0e4c8; color: #8a5a2a; }
+  .service-card.highlight .card-link { color: #8a5a2a; }
+
+  /* ---- TRUST ---- */
+  .trust-block {
+    background: #fafafa; border: 1px solid #eee; border-radius: 6px; padding: 18px;
+  }
+  .trust-badges { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .trust-badge {
+    font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+    color: #666; background: #f0f0f0; border: 1px solid #ddd;
+    padding: 5px 12px; border-radius: 4px;
+  }
+  .testimonial-inline {
+    border-left: 3px solid #ccc; padding-left: 14px; margin-top: 12px;
+  }
+  .testimonial-inline p { font-size: 13px; color: #555; font-style: italic; line-height: 1.5; }
+  .testimonial-inline .attr { font-size: 11px; color: #999; font-style: normal; margin-top: 4px; }
+
+  /* ---- CTA ---- */
+  .cta-block {
+    background: #f0f7ff; border: 2px solid #d0e0f0; border-radius: 6px;
+    padding: 20px; text-align: center;
+  }
+  .cta-block h3 { font-size: 15px; font-weight: 600; color: #2a5a8a; margin-bottom: 6px; }
+  .cta-block .cta-link { font-size: 13px; font-weight: 600; color: #2a5a8a; }
+
+  /* ---- ANNOTATIONS ---- */
+  .annotations { padding: 16px 24px 20px; background: #fafafa; border-top: 1px solid #eee; }
+  .annotation { display: flex; gap: 8px; margin-bottom: 8px; font-size: 12px; line-height: 1.5; }
+  .annotation-code { font-weight: 700; color: #888; white-space: nowrap; min-width: 30px; }
+  .annotation-text { color: #666; }
+
+  .behaviour-notes {
+    max-width: 720px; margin: 0 auto;
+    background: #fffff0; border: 1px solid #e8e8d0; border-radius: 8px; padding: 16px 20px;
+  }
+  .behaviour-notes h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 10px; }
+  .behaviour-notes p { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<div style="max-width:720px; margin:0 auto 32px;">
+  <div class="wireframe-label">B5 — Wireframe</div>
+  <div class="wireframe-title">Services Hub</div>
+  <div class="wireframe-desc">
+    The landing page for all services at /services. Brief descriptions with cards linking to individual pages. Where "RSE services for schools" search queries land. Four sections — headline, service cards, trust signal, and a catch-all CTA.
+  </div>
+</div>
+
+<div class="frame">
+  <div class="frame-label">Services hub — Content hierarchy (single column)</div>
+
+  <!-- HEADER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A1 — Site Header ]</div>
+  </div>
+
+  <!-- 1. HEADLINE -->
+  <div class="page-section">
+    <span class="section-label core">1 — Headline</span>
+    <div class="hub-headline">RSE services for schools</div>
+    <div class="hub-subline">Expert-led training, delivery, and consultancy from a specialist RSE provider. Choose the service that fits your school.</div>
+    <div class="wf-small" style="margin-top:8px;">Page H1 + positioning line. This is the SEO landing page for service-related queries. The headline should match what schools are searching for.</div>
+  </div>
+
+  <!-- 2. SERVICE CARDS -->
+  <div class="page-section">
+    <span class="section-label core">2 — Service cards</span>
+    <p class="wf">One card per service line. Each has: service name, one-sentence description, "Learn more →" link.</p>
+
+    <div class="service-cards">
+
+      <div class="service-card highlight">
+        <div class="service-icon">T</div>
+        <div class="service-card-body">
+          <h3>CPD Training</h3>
+          <p>Give your teachers the confidence and skills to deliver RSE. Completing training unlocks resources in the Tailor app.</p>
+          <span class="card-link">Learn more →</span>
+          <div class="card-dest">→ /training (B4)</div>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">D</div>
+        <div class="service-card-body">
+          <h3>Direct RSE Delivery</h3>
+          <p>Specialist-led RSE lessons delivered directly to your students by Gareth Esson.</p>
+          <span class="card-link">Learn more →</span>
+          <div class="card-dest">→ /services/delivery (C5)</div>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">DD</div>
+        <div class="service-card-body">
+          <h3>Drop Day Delivery</h3>
+          <p>A full-day or half-day intensive RSE programme for a year group. Focused, impactful, memorable.</p>
+          <span class="card-link">Learn more →</span>
+          <div class="card-dest">→ /services/drop-days (C5)</div>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">C</div>
+        <div class="service-card-body">
+          <h3>RSE Consultancy</h3>
+          <p>Expert guidance on your RSE programme, policy, and curriculum. We help you do it yourselves, well.</p>
+          <span class="card-link">Learn more →</span>
+          <div class="card-dest">→ /services/consultancy (C5)</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="wf-small" style="margin-top:12px;">Training is highlighted (border accent) because it's the highest-traffic service and has the app connection. This is a design suggestion, not a requirement — all four could be equal weight.</div>
+  </div>
+
+  <!-- 3. TRUST SIGNAL -->
+  <div class="page-section">
+    <span class="section-label core">3 — Trust signal</span>
+    <div class="trust-block">
+      <div class="trust-badges">
+        <div class="trust-badge">DfE Aligned</div>
+        <div class="trust-badge">PSHE Association</div>
+        <div class="trust-badge">UNESCO</div>
+        <div class="trust-badge">WHO</div>
+      </div>
+      <div class="testimonial-inline">
+        <p>"We've worked with Gareth for three years now. The quality of his training and delivery is consistently excellent."</p>
+        <div class="attr">— Headteacher, [School Name]</div>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Framework badges + a testimonial. Could also be "Trusted by X schools" if Gareth has the numbers. Supports the service cards above — reinforces credibility before the visitor clicks through.</div>
+  </div>
+
+  <!-- 4. CTA -->
+  <div class="page-section">
+    <span class="section-label component">4 — CTA</span>
+    <div class="cta-block">
+      <h3>Not sure what you need? Get in touch</h3>
+      <p class="wf" style="color:#4a6a8a;">Tell us about your school and we'll recommend the right service.</p>
+      <span class="cta-link">Contact us →</span>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">→ /contact (B7). Catch-all for visitors who can't self-select from the cards above. The message is consultative — "we'll help you decide" — not "buy now."</div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A2 — Site Footer ]</div>
+  </div>
+</div>
+
+<!-- ANNOTATIONS -->
+<div class="frame" style="max-width:720px; margin:-24px auto 48px;">
+  <div class="frame-label">Annotations</div>
+  <div class="annotations" style="border-top:none;">
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Four services, one hub:</strong> Training (B4) is a standalone page. The other three (delivery, drop-days, consultancy) use the C5 template. All four are linked from this hub. Training gets slightly more prominence because it's the highest-traffic path.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Card order:</strong> Training first (highest traffic, app connection). Then delivery (the "do it for us" option — likely the most intuitive service). Then drop-days (a variant of delivery). Then consultancy (the "help us do it ourselves" option). This order goes from most to least hands-on.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>SEO role:</strong> This page is the landing page for broad service queries ("RSE services for schools", "RSE provider", "RSE training and delivery"). The individual pages (B4, C5) handle more specific queries ("RSE CPD training", "RSE consultancy for schools").</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Lightweight by design:</strong> This page is deliberately brief. It's a routing page — the job is to help the visitor find the right service page, not to sell them on this page. The depth lives on B4 and the three C5 pages.</span>
+    </div>
+  </div>
+</div>
+
+<!-- BEHAVIOUR NOTES -->
+<div class="behaviour-notes">
+  <h4>Design decisions flagged</h4>
+  <p><strong>Training highlight:</strong> The wireframe suggests a visual accent on the training card (thicker border, warm background) since it's the highest-traffic service and the only one with the app connection. This could be too heavy-handed if the other services are equally important commercially — Gareth's call.</p>
+  <p><strong>Card layout:</strong> Shown stacked (single column) for hierarchy clarity. On desktop, these could be a 2×2 grid. Stacked is better for scanning; grid is better for showing them as equals. Design decision.</p>
+  <p><strong>Icons:</strong> Placeholder letters shown. Real icons or illustrations would help differentiate the services visually. Even simple abstract icons (a person teaching, a calendar, a conversation) would improve scanability.</p>
+  <p><strong>Price indicators:</strong> Not included. If Gareth wants to add "from £X" to any cards, it would sit after the description. This is a commercial decision — some providers prefer to lead with value, others with transparency.</p>
+</div>
+
+</body>
+</html>

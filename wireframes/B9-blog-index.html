@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B9 — Blog Index Wireframe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding: 40px 20px; }
+
+  .wireframe-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #999; margin-bottom: 6px; }
+  .wireframe-title { font-size: 22px; font-weight: 700; color: #222; margin-bottom: 4px; }
+  .wireframe-desc { font-size: 13px; color: #777; margin-bottom: 32px; max-width: 600px; line-height: 1.5; }
+
+  .frame { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; max-width: 720px; margin: 0 auto 48px; }
+  .frame-label { background: #f0f0f0; padding: 8px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ddd; }
+
+  .page-section { padding: 24px; border-bottom: 1px solid #eee; }
+  .page-section:last-of-type { border-bottom: none; }
+
+  .section-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #fff; display: inline-block; padding: 2px 8px; border-radius: 3px; margin-bottom: 12px;
+  }
+  .section-label.core { background: #6b5b8a; }
+  .section-label.component { background: #666; }
+
+  h2.wf { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 6px; }
+  h3.wf { font-size: 15px; font-weight: 600; color: #444; margin-bottom: 6px; }
+  p.wf { font-size: 13px; color: #777; line-height: 1.5; margin-bottom: 10px; }
+  .wf-small { font-size: 11px; color: #999; line-height: 1.5; }
+
+  /* ---- HEADLINE ---- */
+  .index-headline { font-size: 26px; font-weight: 800; color: #222; margin-bottom: 4px; }
+  .index-subline { font-size: 14px; color: #666; line-height: 1.5; }
+
+  /* ---- FILTERS ---- */
+  .filter-bar {
+    display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+  }
+  .filter-group {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .filter-label {
+    font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .filter-select {
+    font-size: 12px; color: #555; background: #fff; border: 1px solid #ddd;
+    border-radius: 4px; padding: 5px 10px; min-width: 130px;
+  }
+  .filter-chip-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .filter-chip {
+    font-size: 11px; font-weight: 500; padding: 4px 10px;
+    border: 1px solid #ddd; border-radius: 14px; color: #666; background: #fff;
+  }
+  .filter-chip.active {
+    background: #6b5b8a; color: #fff; border-color: #6b5b8a;
+  }
+
+  /* ---- POST TILES ---- */
+  .post-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px;
+  }
+  .post-tile {
+    background: #fff; border: 1px solid #e0e0e0; border-radius: 8px;
+    padding: 18px; display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .post-tile:hover { border-color: #aaa; }
+  .post-tile h3 {
+    font-size: 14px; font-weight: 700; color: #222; line-height: 1.4; margin-bottom: 8px;
+  }
+  .post-tile-meta {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 8px;
+  }
+  .meta-item { font-size: 11px; color: #999; }
+  .meta-dot { color: #ccc; font-size: 8px; }
+  .audience-label {
+    font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+    color: #6b5b8a; background: #f0ecf5; padding: 2px 7px; border-radius: 10px;
+  }
+  .post-tile-excerpt { font-size: 12px; color: #888; line-height: 1.5; margin-bottom: 10px; flex: 1; }
+  .post-tile-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+  .post-tag {
+    font-size: 10px; font-weight: 500; color: #555; background: #f0f0f0;
+    border: 1px solid #ddd; border-radius: 10px; padding: 2px 8px;
+  }
+
+  /* ---- PAGINATION ---- */
+  .pagination {
+    display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 16px;
+  }
+  .page-num {
+    width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+    border: 1px solid #ddd; border-radius: 4px; font-size: 12px; font-weight: 500; color: #666;
+  }
+  .page-num.active { background: #333; color: #fff; border-color: #333; }
+  .page-arrow { font-size: 14px; color: #999; padding: 0 4px; }
+
+  /* ---- ANNOTATIONS ---- */
+  .annotations { padding: 16px 24px 20px; background: #fafafa; border-top: 1px solid #eee; }
+  .annotation { display: flex; gap: 8px; margin-bottom: 8px; font-size: 12px; line-height: 1.5; }
+  .annotation-code { font-weight: 700; color: #888; white-space: nowrap; min-width: 30px; }
+  .annotation-text { color: #666; }
+
+  .behaviour-notes {
+    max-width: 720px; margin: 0 auto;
+    background: #fffff0; border: 1px solid #e8e8d0; border-radius: 8px; padding: 16px 20px;
+  }
+  .behaviour-notes h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 10px; }
+  .behaviour-notes p { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<div style="max-width:720px; margin:0 auto 32px;">
+  <div class="wireframe-label">B9 — Wireframe</div>
+  <div class="wireframe-title">Blog Index</div>
+  <div class="wireframe-desc">
+    The list of all blog posts at /blog/. Filterable by topic, category, and audience. Sorted by date (newest first). ~20 posts at launch, growing over time. Teacher-facing professional content.
+  </div>
+</div>
+
+<div class="frame">
+  <div class="frame-label">Blog index — Content hierarchy (single column)</div>
+
+  <!-- HEADER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A1 — Site Header ]</div>
+  </div>
+
+  <!-- 1. HEADLINE -->
+  <div class="page-section">
+    <span class="section-label core">1 — Headline</span>
+    <div class="index-headline">Blog</div>
+    <div class="index-subline">Practical advice, curriculum guidance, and teaching strategies for RSE.</div>
+    <div class="wf-small" style="margin-top:8px;">Page H1 + positioning line. "Blog" is functional; the subline tells teachers what they'll find. Alternative headline options: "For teachers", "Teaching RSE" — Gareth's call on tone.</div>
+  </div>
+
+  <!-- 2. FILTER/SORT -->
+  <div class="page-section">
+    <span class="section-label core">2 — Filter / sort</span>
+    <div class="filter-bar">
+      <div class="filter-group">
+        <span class="filter-label">Topic</span>
+        <div class="filter-select">All topics ▾</div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Category</span>
+        <div class="filter-select">All categories ▾</div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Audience</span>
+        <div class="filter-select">Everyone ▾</div>
+      </div>
+    </div>
+    <div class="filter-chip-row">
+      <div class="filter-chip active">All</div>
+      <div class="filter-chip">Practical teaching</div>
+      <div class="filter-chip">Curriculum & policy</div>
+      <div class="filter-chip">Bridging content</div>
+    </div>
+    <div class="wf-small" style="margin-top:10px;">
+      <strong>Topic:</strong> the 22 landing page topics (Consent, Puberty, Online safety, etc.)<br>
+      <strong>Category:</strong> blog content type — practical teaching / curriculum & policy / bridging content<br>
+      <strong>Audience:</strong> teachers / school leaders / parents / all<br>
+      Default sort: newest first. Filters update the list below without page reload.
+    </div>
+  </div>
+
+  <!-- 3. POST TILES -->
+  <div class="page-section">
+    <span class="section-label core">3 — Post tiles</span>
+
+    <div class="post-grid">
+
+      <div class="post-tile">
+        <div>
+          <h3>Teaching consent without making it awkward</h3>
+          <div class="post-tile-meta">
+            <span class="meta-item">12 Mar 2026</span>
+            <span class="meta-dot">·</span>
+            <span class="audience-label">For teachers</span>
+          </div>
+          <div class="post-tile-excerpt">Consent is one of the topics teachers find hardest to deliver. Here's how to approach it with confidence…</div>
+        </div>
+        <div class="post-tile-tags">
+          <span class="post-tag">Consent</span>
+          <span class="post-tag">Healthy relationships</span>
+        </div>
+      </div>
+
+      <div class="post-tile">
+        <div>
+          <h3>Why "no means no" isn't enough</h3>
+          <div class="post-tile-meta">
+            <span class="meta-item">28 Feb 2026</span>
+            <span class="meta-dot">·</span>
+            <span class="audience-label">For teachers</span>
+          </div>
+          <div class="post-tile-excerpt">If your consent education starts and ends with "no means no", you're leaving out the part that actually helps…</div>
+        </div>
+        <div class="post-tile-tags">
+          <span class="post-tag">Consent</span>
+        </div>
+      </div>
+
+      <div class="post-tile">
+        <div>
+          <h3>Handling disclosures during RSE lessons</h3>
+          <div class="post-tile-meta">
+            <span class="meta-item">15 Jan 2026</span>
+            <span class="meta-dot">·</span>
+            <span class="audience-label">For teachers</span>
+          </div>
+          <div class="post-tile-excerpt">RSE lessons can open the door to disclosures. That's not a risk — it's evidence the lesson worked…</div>
+        </div>
+        <div class="post-tile-tags">
+          <span class="post-tag">Abuse and exploitation</span>
+          <span class="post-tag">Online safety</span>
+        </div>
+      </div>
+
+      <div class="post-tile">
+        <div>
+          <h3>What the 2026 DfE guidance changes actually mean</h3>
+          <div class="post-tile-meta">
+            <span class="meta-item">8 Jan 2026</span>
+            <span class="meta-dot">·</span>
+            <span class="audience-label">For school leaders</span>
+          </div>
+          <div class="post-tile-excerpt">The revised DfE statutory guidance is here. What's changed, what hasn't, and what you need to do…</div>
+        </div>
+        <div class="post-tile-tags">
+          <span class="post-tag">The law and young people</span>
+        </div>
+      </div>
+
+      <div class="post-tile" style="opacity: 0.4; border-style: dashed; align-items: center; justify-content: center; text-align: center; min-height: 120px;">
+        <div>
+          <div class="meta-item">+ further posts</div>
+        </div>
+      </div>
+
+      <div class="post-tile" style="opacity: 0.4; border-style: dashed; align-items: center; justify-content: center; text-align: center; min-height: 120px;">
+        <div>
+          <div class="meta-item">Sorted newest first</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="pagination">
+      <span class="page-arrow">← Prev</span>
+      <span class="page-num active">1</span>
+      <span class="page-num">2</span>
+      <span class="page-num">3</span>
+      <span class="page-arrow">Next →</span>
+    </div>
+
+    <div class="wf-small" style="margin-top:12px;">2-column tile grid. Each tile shows: title (as link), date, audience label, excerpt (1–2 lines), and topic tags. Author omitted from tiles (it's always Gareth). Tags sit at the bottom of each tile for consistent alignment. Links to /blog/{slug} (C4). Mobile: tiles stack to single column.</div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A2 — Site Footer ]</div>
+  </div>
+</div>
+
+<!-- ANNOTATIONS -->
+<div class="frame" style="max-width:720px; margin:-24px auto 48px;">
+  <div class="frame-label">Annotations</div>
+  <div class="annotations" style="border-top:none;">
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Three filter dimensions:</strong> Topic (the 22 landing page topics), category (practical teaching / curriculum & policy / bridging content), and audience (teachers / school leaders / parents). These can be combined — e.g. "show me practical teaching posts about consent for teachers." Filters are additive.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Category chips:</strong> The quick-filter chips below the dropdowns offer the blog content categories as a fast toggle. "All" is the default. These are an alternative interaction to the dropdown — tapping a chip updates the list the same way the dropdown does.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Tile layout:</strong> 2-column grid on desktop, single column on mobile. Tiles give each post equal visual weight and scale well as the library grows. The consistent height means tags always sit at the bottom — no ragged edges.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Excerpts:</strong> Kept short (1–2 lines) to fit the tile format. These should be hand-written opening lines, not auto-generated summaries. Gareth's blog copy should front-load the hook.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Author omitted:</strong> Since every post is by Gareth, the author name is dropped from the tile to save space. It's shown on the C4 post page itself.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Topic tags + audience label:</strong> Each tile shows its topic tags (bottom) and audience label (meta line). Both serve double duty — scanability for the reader, and clickable links to C3 landing pages for the tags.</span>
+    </div>
+  </div>
+</div>
+
+<!-- BEHAVIOUR NOTES -->
+<div class="behaviour-notes">
+  <h4>Design decisions flagged</h4>
+  <p><strong>Filters: dropdowns vs chips?</strong> The wireframe shows both — dropdowns for topic and audience (which have many options), chips for category (which only has 3 options). Could simplify to chips-only if the filter set is small enough, or dropdowns-only for consistency. With 22 topics, a dropdown is more practical than 22 chips.</p>
+  <p><strong>Tile sizing:</strong> All tiles should be equal height within each row. The title and excerpt vary in length, so the excerpt area is the flex element — tags pin to the bottom. If a title is long enough to wrap to 3 lines, the excerpt can shorten to 1 line to compensate.</p>
+  <p><strong>Empty filter states:</strong> If a filter combination returns no results, show: "No posts matching these filters. Try broadening your search, or browse all posts." Reset filters link.</p>
+  <p><strong>Pagination vs load-more:</strong> Pagination shown. At ~20 posts, the index may not need pagination at launch (~10 tiles per page = 2 pages). But the template should support it. With tiles, 8–10 per page feels right (4–5 rows of 2).</p>
+  <p><strong>Featured/pinned post:</strong> Not in the brief, but a pinned tile could span both columns at the top — a "latest" or "featured" post that's always visible regardless of filters. Useful for timely content like the DfE guidance changes post.</p>
+  <p><strong>Mobile:</strong> Tiles stack to a single column, full width. The grid collapses naturally.</p>
+</div>
+
+</body>
+</html>

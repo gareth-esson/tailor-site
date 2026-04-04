@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A1 — Site Header Wireframe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding: 40px 20px; }
+
+  .wireframe-label {
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #999; margin-bottom: 6px;
+  }
+  .wireframe-title {
+    font-size: 22px; font-weight: 700; color: #222; margin-bottom: 4px;
+  }
+  .wireframe-desc {
+    font-size: 13px; color: #777; margin-bottom: 32px; max-width: 600px; line-height: 1.5;
+  }
+
+  .frame {
+    background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;
+    max-width: 960px; margin: 0 auto 48px;
+  }
+  .frame-label {
+    background: #f0f0f0; padding: 8px 16px; font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ddd;
+  }
+
+  /* ---- DESKTOP HEADER ---- */
+  .header-desktop {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 24px; border-bottom: 2px solid #e0e0e0;
+  }
+  .logo-block {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .logo-placeholder {
+    width: 36px; height: 36px; background: #ccc; border-radius: 6px;
+  }
+  .logo-text { font-size: 15px; font-weight: 700; color: #444; }
+
+  .nav-items {
+    display: flex; gap: 20px; list-style: none;
+  }
+  .nav-items li {
+    font-size: 13px; font-weight: 500; color: #555;
+    padding: 6px 10px; border: 1px dashed #ccc; border-radius: 4px;
+  }
+
+  .header-right {
+    display: flex; align-items: center; gap: 14px;
+  }
+  .search-bar {
+    display: flex; align-items: center; gap: 6px;
+    border: 1px solid #ccc; border-radius: 6px; padding: 6px 12px;
+    font-size: 12px; color: #999; min-width: 200px;
+  }
+  .search-icon {
+    width: 14px; height: 14px; background: #bbb; border-radius: 50%;
+  }
+
+  /* ---- MOBILE HEADER ---- */
+  .header-mobile {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; border-bottom: 2px solid #e0e0e0;
+    max-width: 375px; margin: 0 auto;
+  }
+  .hamburger {
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .hamburger span {
+    display: block; width: 20px; height: 2px; background: #666; border-radius: 1px;
+  }
+  .mobile-right {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .mobile-search-icon {
+    width: 20px; height: 20px; background: #ccc; border-radius: 50%;
+  }
+
+  /* ---- ANNOTATIONS ---- */
+  .annotations {
+    padding: 16px 24px 20px; background: #fafafa; border-top: 1px solid #eee;
+  }
+  .annotation {
+    display: flex; gap: 8px; margin-bottom: 8px; font-size: 12px; line-height: 1.5;
+  }
+  .annotation-code {
+    font-weight: 700; color: #888; white-space: nowrap; min-width: 24px;
+  }
+  .annotation-text { color: #666; }
+
+  .section-divider {
+    border: none; border-top: 1px dashed #ddd; margin: 8px 0;
+  }
+
+  /* ---- BEHAVIOUR NOTES ---- */
+  .behaviour-notes {
+    max-width: 960px; margin: 0 auto;
+    background: #fffff0; border: 1px solid #e8e8d0; border-radius: 8px;
+    padding: 16px 20px;
+  }
+  .behaviour-notes h4 {
+    font-size: 12px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 1px; color: #999; margin-bottom: 10px;
+  }
+  .behaviour-notes p {
+    font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px;
+  }
+</style>
+</head>
+<body>
+
+<div style="max-width:960px; margin:0 auto 32px;">
+  <div class="wireframe-label">A1 — Wireframe</div>
+  <div class="wireframe-title">Site Header</div>
+  <div class="wireframe-desc">
+    The persistent top-level navigation bar on every page. Same structural shell across the whole site — Okay to Ask pages receive different visual treatment via CSS tokens, not a different header.
+  </div>
+</div>
+
+<!-- DESKTOP -->
+<div class="frame">
+  <div class="frame-label">Desktop — Default state</div>
+  <div class="header-desktop">
+    <div class="logo-block">
+      <div class="logo-placeholder"></div>
+      <span class="logo-text">Tailor Education</span>
+    </div>
+    <ul class="nav-items">
+      <li>Topics</li>
+      <li>Okay to Ask</li>
+      <li>Training</li>
+      <li>Services</li>
+      <li>Blog</li>
+      <li>About</li>
+      <li>Contact</li>
+    </ul>
+    <div class="header-right">
+      <div class="search-bar">
+        <div class="search-icon"></div>
+        <span>Search questions, topics, glossary…</span>
+      </div>
+    </div>
+  </div>
+  <div class="annotations">
+    <div class="annotation">
+      <span class="annotation-code">1</span>
+      <span class="annotation-text"><strong>Logo</strong> — links to <code>/</code>. Always Tailor Education brand mark.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">2</span>
+      <span class="annotation-text"><strong>Primary nav (A3)</strong> — 7 items. "Topics" and "Okay to Ask" are highest-traffic, should be prominent. Full nav component wireframed separately.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">3</span>
+      <span class="annotation-text"><strong>Search bar (A4)</strong> — visible in header. Expands/highlights on focus. Triggers instant results dropdown (A5) after 2+ characters. Wireframed separately.</span>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE -->
+<div class="frame">
+  <div class="frame-label">Mobile — Default state (375px)</div>
+  <div class="header-mobile">
+    <div class="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="logo-block">
+      <div class="logo-placeholder" style="width:28px;height:28px;"></div>
+      <span class="logo-text" style="font-size:13px;">Tailor Education</span>
+    </div>
+    <div class="mobile-right">
+      <div class="mobile-search-icon"></div>
+    </div>
+  </div>
+  <div class="annotations">
+    <div class="annotation">
+      <span class="annotation-code">1</span>
+      <span class="annotation-text"><strong>Hamburger</strong> — opens mobile navigation (D3).</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">2</span>
+      <span class="annotation-text"><strong>Logo</strong> — centred or left-aligned (design decision). Links to <code>/</code>.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">3</span>
+      <span class="annotation-text"><strong>Search icon</strong> — tapping expands the search bar (see D2 for the expanded mobile search state).</span>
+    </div>
+  </div>
+</div>
+
+<!-- BEHAVIOUR NOTES -->
+<div class="behaviour-notes">
+  <h4>Behaviour notes</h4>
+  <p><strong>Sticky/fixed:</strong> Whether the header sticks on scroll is a design decision. Wireframe assumes persistent presence at top.</p>
+  <p><strong>Okay to Ask pages:</strong> Same structural shell — the header doesn't change shape or content. Visual treatment (colour, background) may shift via CSS tokens to feel warmer/more informal on <code>/questions/</code> pages.</p>
+</div>
+
+</body>
+</html>

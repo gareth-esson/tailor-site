@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B7 — Contact Wireframe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding: 40px 20px; }
+
+  .wireframe-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #999; margin-bottom: 6px; }
+  .wireframe-title { font-size: 22px; font-weight: 700; color: #222; margin-bottom: 4px; }
+  .wireframe-desc { font-size: 13px; color: #777; margin-bottom: 32px; max-width: 600px; line-height: 1.5; }
+
+  .frame { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; max-width: 720px; margin: 0 auto 48px; }
+  .frame-label { background: #f0f0f0; padding: 8px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ddd; }
+
+  .page-section { padding: 24px; border-bottom: 1px solid #eee; }
+  .page-section:last-of-type { border-bottom: none; }
+
+  .section-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #fff; display: inline-block; padding: 2px 8px; border-radius: 3px; margin-bottom: 12px;
+  }
+  .section-label.core { background: #4a6a5a; }
+  .section-label.component { background: #666; }
+
+  h2.wf { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 6px; }
+  h3.wf { font-size: 15px; font-weight: 600; color: #444; margin-bottom: 6px; }
+  p.wf { font-size: 13px; color: #777; line-height: 1.5; margin-bottom: 10px; }
+  .wf-small { font-size: 11px; color: #999; line-height: 1.5; }
+
+  /* ---- FORM EMBED ---- */
+  .form-embed {
+    border: 2px dashed #ccc; border-radius: 6px; padding: 32px 20px;
+    text-align: center; background: #fafafa; margin-bottom: 12px;
+  }
+  .form-embed .embed-label { font-size: 13px; font-weight: 600; color: #888; margin-bottom: 4px; }
+  .form-embed .embed-ref { font-size: 11px; color: #aaa; }
+
+  /* ---- CONTACT DETAIL ---- */
+  .contact-block { margin-bottom: 12px; }
+  .contact-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 4px; }
+  .contact-value { font-size: 14px; color: #333; font-weight: 500; }
+  .contact-value a { color: #3a6a8a; text-decoration: none; }
+
+  /* ---- SOCIAL ---- */
+  .social-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
+  .social-icon {
+    width: 36px; height: 36px; border-radius: 50%; background: #eee; border: 1px solid #ddd;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; color: #888;
+  }
+
+  /* ---- SAFEGUARDING NOTE ---- */
+  .safeguarding-note {
+    border: 1px solid #e0d0c0; background: #fdf8f0; border-radius: 6px; padding: 16px;
+  }
+  .safeguarding-note h3 { font-size: 13px; font-weight: 700; color: #8a6a3a; margin-bottom: 6px; }
+  .safeguarding-note p { font-size: 12px; color: #666; line-height: 1.6; }
+
+  /* ---- ANNOTATIONS ---- */
+  .annotations { padding: 16px 24px 20px; background: #fafafa; border-top: 1px solid #eee; }
+  .annotation { display: flex; gap: 8px; margin-bottom: 8px; font-size: 12px; line-height: 1.5; }
+  .annotation-code { font-weight: 700; color: #888; white-space: nowrap; min-width: 30px; }
+  .annotation-text { color: #666; }
+
+  .behaviour-notes {
+    max-width: 720px; margin: 0 auto;
+    background: #fffff0; border: 1px solid #e8e8d0; border-radius: 8px; padding: 16px 20px;
+  }
+  .behaviour-notes h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 10px; }
+  .behaviour-notes p { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<div style="max-width:720px; margin:0 auto 32px;">
+  <div class="wireframe-label">B7 — Wireframe</div>
+  <div class="wireframe-title">Contact</div>
+  <div class="wireframe-desc">
+    General contact page at /contact. Hosts the enquiry form (E1) inline so it's the single conversion destination from across the site. Also provides direct contact details and social links for those who prefer not to use a form.
+  </div>
+</div>
+
+<div class="frame">
+  <div class="frame-label">Contact page — Content hierarchy (single column)</div>
+
+  <!-- HEADER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A1 — Site Header ]</div>
+  </div>
+
+  <!-- 1. ENQUIRY FORM (E1) -->
+  <div class="page-section">
+    <span class="section-label component">1 — Enquiry form (E1)</span>
+    <h2 class="wf">Get in touch</h2>
+    <p class="wf">Whether you're ready to book, want to learn more, or just have a question — we'd love to hear from you.</p>
+
+    <div class="form-embed">
+      <div class="embed-label">E1 — Service enquiry form</div>
+      <div class="embed-ref">Full wireframe: E1-enquiry-form.html</div>
+      <div class="wf-small" style="margin-top:8px;">7 fields: Name*, Email*, School name*, Service interested in*, Key stage, Preferred timing, Message</div>
+      <div class="wf-small">Pre-fill logic: "Service interested in" dropdown can be pre-selected via URL parameter from source page (e.g. /contact?service=training)</div>
+    </div>
+    <div class="wf-small">The form lives here as the primary content — not linked to from elsewhere. Service pages, CTAs, and the services hub all point here.</div>
+  </div>
+
+  <!-- 2. DIRECT CONTACT -->
+  <div class="page-section">
+    <span class="section-label core">2 — Direct contact</span>
+    <h3 class="wf">Or reach out directly</h3>
+
+    <div class="contact-block">
+      <div class="contact-label">Email</div>
+      <div class="contact-value"><a href="#">gareth@tailoreducation.co.uk</a></div>
+    </div>
+
+    <div class="contact-block">
+      <div class="contact-label">Phone</div>
+      <div class="contact-value">[Phone number — if Gareth wants it public]</div>
+    </div>
+
+    <div class="wf-small">Display whatever contact details Gareth is comfortable making public. Email is the minimum. Phone is optional.</div>
+  </div>
+
+  <!-- 3. SOCIAL LINKS -->
+  <div class="page-section">
+    <span class="section-label core">3 — Social links</span>
+    <h3 class="wf">Find us</h3>
+
+    <div class="social-row">
+      <div class="social-icon">IG</div>
+      <div style="display:flex; align-items:center;">
+        <span class="contact-value"><a href="#">@oktoask.co.uk</a></span>
+      </div>
+    </div>
+
+    <div class="wf-small" style="margin-top:10px;">Instagram is the primary social channel. Add others here if/when they exist. These duplicate the footer links but are more prominent here for visitors who'd rather DM than fill in a form.</div>
+  </div>
+
+  <!-- 4. SAFEGUARDING NOTE -->
+  <div class="page-section">
+    <span class="section-label core">4 — Safeguarding note</span>
+
+    <div class="safeguarding-note">
+      <h3>Safeguarding concerns</h3>
+      <p>This contact form is for service enquiries only. If you have an urgent safeguarding concern about a child or young person, contact your local authority's designated safeguarding team or call the NSPCC helpline on 0808 800 5000.</p>
+      <p style="margin-top:6px;">For young people who need support, see our <a href="#" style="color:#8a6a3a; font-weight:600;">crisis support page</a>.</p>
+    </div>
+
+    <div class="wf-small" style="margin-top:10px;">Not a crisis helpline page — just a responsible acknowledgement that this form isn't the right channel for safeguarding. Points visitors in the right direction without overcomplicating the contact experience.</div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A2 — Site Footer ]</div>
+  </div>
+</div>
+
+<!-- ANNOTATIONS -->
+<div class="frame" style="max-width:720px; margin:-24px auto 48px;">
+  <div class="frame-label">Annotations</div>
+  <div class="annotations" style="border-top:none;">
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>E1 lives here:</strong> The enquiry form is embedded inline as section 1 — this is where the form lives. Every "Get in touch" CTA across the site (A12, A13, service pages, services hub) links to /contact, optionally with a ?service= parameter to pre-select the service dropdown.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Form first, details second:</strong> The form is the primary conversion mechanism and comes first. Direct contact details are secondary — for people who already know what they want and would rather email directly than fill in a form.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Safeguarding placement:</strong> The safeguarding note sits at the bottom — visible but not dominant. It's there for responsibility, not prominence. It prevents someone using the enquiry form for a safeguarding concern and being disappointed by a slow response.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>No map or address:</strong> Tailor Education is a CIC that delivers in schools, not a venue. A postal/office address and map would be misleading. Contact details are people-based (email, phone, social), not location-based.</span>
+    </div>
+  </div>
+</div>
+
+<!-- BEHAVIOUR NOTES -->
+<div class="behaviour-notes">
+  <h4>Design decisions flagged</h4>
+  <p><strong>Form prominence:</strong> The form should feel like the main event — large, clear, not buried. The intro copy above it should be warm and low-pressure ("we'd love to hear from you" not "submit your enquiry").</p>
+  <p><strong>Direct contact vs. form:</strong> These are complementary, not competing. The "Or reach out directly" heading makes the relationship clear — the form is preferred, but direct contact is always available.</p>
+  <p><strong>Phone number:</strong> Gareth to decide whether a phone number is public. If not, email alone is fine — the section still works.</p>
+  <p><strong>Success state:</strong> After form submission, the page should show the E1 success state (wireframed in E1-enquiry-form.html) in place of the form. Direct contact and social links remain visible below.</p>
+  <p><strong>Mobile:</strong> Everything stacks naturally. The form fields are already full-width in E1. Social icons and contact details remain tappable.</p>
+</div>
+
+</body>
+</html>

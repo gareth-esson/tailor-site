@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B8 — Okay to Ask Landing Wireframe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding: 40px 20px; }
+
+  .wireframe-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #999; margin-bottom: 6px; }
+  .wireframe-title { font-size: 22px; font-weight: 700; color: #222; margin-bottom: 4px; }
+  .wireframe-desc { font-size: 13px; color: #777; margin-bottom: 32px; max-width: 600px; line-height: 1.5; }
+
+  .frame { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; max-width: 720px; margin: 0 auto 48px; }
+  .frame-label { background: #f0f0f0; padding: 8px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ddd; }
+
+  .page-section { padding: 24px; border-bottom: 1px solid #eee; }
+  .page-section:last-of-type { border-bottom: none; }
+
+  .section-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #fff; background: #b89a3a; display: inline-block; padding: 2px 8px;
+    border-radius: 3px; margin-bottom: 12px;
+  }
+
+  h2.wf { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 6px; }
+  h3.wf { font-size: 15px; font-weight: 600; color: #444; margin-bottom: 6px; }
+  p.wf { font-size: 13px; color: #777; line-height: 1.5; margin-bottom: 10px; }
+  .wf-small { font-size: 11px; color: #999; line-height: 1.5; }
+
+  /* ---- OTA VISUAL IDENTITY ---- */
+  .ota-hero {
+    background: #fdf6e8; border: 1px dashed #e8d9b8; border-radius: 6px;
+    padding: 36px 24px; text-align: center;
+  }
+  .ota-hero h2.wf { color: #4a3f2a; }
+  .ota-hero p.wf { color: #8a7a4a; }
+
+  .postit-scatter {
+    display: flex; gap: 10px; justify-content: center; margin-top: 16px; flex-wrap: wrap;
+  }
+  .postit-mini {
+    width: 56px; height: 56px; background: #f0e4c4; border: 1px solid #e0d4b4;
+    border-radius: 3px; transform: rotate(-2deg);
+  }
+  .postit-mini:nth-child(2) { transform: rotate(3deg); }
+  .postit-mini:nth-child(3) { transform: rotate(-1deg); }
+  .postit-mini:nth-child(4) { transform: rotate(2deg); }
+  .postit-mini:nth-child(5) { transform: rotate(-3deg); }
+
+  /* ---- TOPIC FILTER ---- */
+  .topic-filter {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;
+  }
+  .filter-chip {
+    font-size: 11px; font-weight: 500; padding: 6px 12px;
+    border: 1px solid #ddd; border-radius: 20px; color: #666;
+    background: #fff;
+  }
+  .filter-chip.active {
+    background: #333; color: #fff; border-color: #333;
+  }
+  .filter-chip.category-header {
+    font-weight: 600; color: #444; background: #f5f5f5; border-color: #ccc;
+  }
+
+  /* ---- QUESTION LIST ---- */
+  .question-list { margin-top: 12px; }
+  .question-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 0; border-bottom: 1px solid #f0f0f0;
+  }
+  .question-item:last-child { border-bottom: none; }
+  .question-postit {
+    width: 44px; height: 44px; background: #f0e4c4; border: 1px solid #e0d4b4;
+    border-radius: 3px; flex-shrink: 0;
+  }
+  .question-content { flex: 1; }
+  .question-content h4 {
+    font-size: 13px; font-weight: 600; color: #333; margin-bottom: 3px;
+    line-height: 1.4;
+  }
+  .question-tag {
+    font-size: 10px; font-weight: 500; color: #888; background: #f5f5f5;
+    padding: 2px 8px; border-radius: 10px; display: inline-block;
+  }
+
+  .load-more {
+    text-align: center; padding: 14px;
+    font-size: 12px; font-weight: 600; color: #666;
+    border: 1px dashed #ccc; border-radius: 6px; margin-top: 12px;
+  }
+
+  /* ---- WHAT IS OTA ---- */
+  .explainer-block {
+    background: #fdf6e8; border: 1px dashed #e8d9b8; border-radius: 6px;
+    padding: 18px;
+  }
+
+  /* ---- SUPPORT BLOCK ---- */
+  .support-block {
+    background: #f0f7ff; border: 1px solid #d0e0f0; border-radius: 6px;
+    padding: 18px;
+  }
+  .support-block h3.wf { color: #2a5a8a; }
+  .support-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
+  .support-card {
+    flex: 1; min-width: 140px; background: #fff; border: 1px solid #d0e0f0;
+    border-radius: 6px; padding: 12px;
+  }
+  .support-card h4 { font-size: 12px; font-weight: 600; color: #333; margin-bottom: 2px; }
+  .support-card p { font-size: 11px; color: #777; line-height: 1.4; }
+
+  /* ---- ANNOTATIONS ---- */
+  .annotations { padding: 16px 24px 20px; background: #fafafa; border-top: 1px solid #eee; }
+  .annotation { display: flex; gap: 8px; margin-bottom: 8px; font-size: 12px; line-height: 1.5; }
+  .annotation-code { font-weight: 700; color: #888; white-space: nowrap; min-width: 24px; }
+  .annotation-text { color: #666; }
+
+  .behaviour-notes {
+    max-width: 720px; margin: 0 auto;
+    background: #fffff0; border: 1px solid #e8e8d0; border-radius: 8px; padding: 16px 20px;
+  }
+  .behaviour-notes h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 10px; }
+  .behaviour-notes p { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<div style="max-width:720px; margin:0 auto 32px;">
+  <div class="wireframe-label">B8 — Wireframe</div>
+  <div class="wireframe-title">Okay to Ask Landing</div>
+  <div class="wireframe-desc">
+    The front door for young people at /questions/. Browse all questions by topic. Must feel like Okay to Ask — warm, informal, post-it motif — not the B2B showcase. Five sections in hierarchy order.
+  </div>
+</div>
+
+<div class="frame">
+  <div class="frame-label">Okay to Ask Landing — Content hierarchy (single column)</div>
+
+  <!-- HEADER REFERENCE -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A1 — Site Header — may have warmer visual treatment on /questions/ pages ]</div>
+  </div>
+
+  <!-- SECTION 1: HERO -->
+  <div class="page-section">
+    <span class="section-label">Section 1 — Hero</span>
+    <div class="ota-hero">
+      <div class="wf-small" style="margin-bottom:10px; color:#b89a3a;">[ Okay to Ask branding — post-it motif prominent ]</div>
+      <h2 class="wf">Real questions from real young people. Answered honestly.</h2>
+      <p class="wf" style="color:#8a7a4a;">Every question here was written on a post-it note by a real student in a real classroom.</p>
+      <div class="postit-scatter">
+        <div class="postit-mini"></div>
+        <div class="postit-mini"></div>
+        <div class="postit-mini"></div>
+        <div class="postit-mini"></div>
+        <div class="postit-mini"></div>
+      </div>
+      <div class="wf-small" style="margin-top:12px;">Post-it scatter: decorative hero element. Scanned post-it thumbnails at various angles.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: BOOK PROMOTION -->
+  <div class="page-section">
+    <span class="section-label">Section 2 — Book promotion</span>
+    <div class="ota-hero">
+      <div class="wf-small" style="margin-bottom:10px; color:#b89a3a;">[ Okay to Ask book visual — hero-level element ]</div>
+      <div style="background: #f0e4c4; border: 1px solid #e0d4b4; border-radius: 6px; padding: 20px; margin-bottom: 16px; height: 120px; display: flex; align-items: center; justify-content: center;">
+        <div class="wf-small" style="color: #999;">Book cover placeholder</div>
+      </div>
+      <h3 class="wf" style="color:#4a3f2a;">The Okay to Ask book is here</h3>
+      <p class="wf" style="color:#8a7a4a;">Real questions from real young people. Answered honestly. In print.</p>
+      <div style="margin-top: 14px;">
+        <span style="display: inline-block; padding: 8px 18px; background: #e8c84a; color: #333; border: 2px solid #d4b63e; border-radius: 5px; font-size: 12px; font-weight: 600;">Buy the book →</span>
+      </div>
+      <div class="wf-small" style="margin-top:10px;">CTA → B11</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: BROWSE BY TOPIC -->
+  <div class="page-section">
+    <span class="section-label">Section 3 — Browse by topic</span>
+    <h3 class="wf">Browse by topic</h3>
+    <p class="wf">6 Okay to Ask categories. These are the book categories, distinct from the app's categories and the site's 22 landing pages. Tapping a category filters the question list below.</p>
+
+    <div class="topic-filter">
+      <div class="filter-chip active">All questions</div>
+      <div class="filter-chip category-header">Anatomy</div>
+      <div class="filter-chip category-header">Puberty</div>
+      <div class="filter-chip category-header">Relationships</div>
+      <div class="filter-chip category-header">Sex</div>
+      <div class="filter-chip category-header">Sexual Health</div>
+      <div class="filter-chip category-header">Sex and the Law</div>
+    </div>
+
+    <div class="wf-small">These 6 categories are the book's structure and are distinct from the app's 7 category structure (B1, Section 7) and the site's 22 landing pages.</div>
+  </div>
+
+  <!-- SECTION 4: QUESTION LIST -->
+  <div class="page-section">
+    <span class="section-label">Section 4 — Question list</span>
+    <h3 class="wf">152 questions</h3>
+    <p class="wf">All published questions, filterable by topic. Each shows: post-it thumbnail, question title (as link), topic tag.</p>
+
+    <div class="question-list">
+      <div class="question-item">
+        <div class="question-postit"></div>
+        <div class="question-content">
+          <h4>"Why do people get butterflies in their stomach?"</h4>
+          <span class="question-tag">Relationships</span>
+        </div>
+      </div>
+      <div class="question-item">
+        <div class="question-postit"></div>
+        <div class="question-content">
+          <h4>"Is it normal to not want a boyfriend or girlfriend?"</h4>
+          <span class="question-tag">Identity & Diversity</span>
+        </div>
+      </div>
+      <div class="question-item">
+        <div class="question-postit"></div>
+        <div class="question-content">
+          <h4>"What does consent actually mean?"</h4>
+          <span class="question-tag">Safety & Safeguarding</span>
+        </div>
+      </div>
+      <div class="question-item">
+        <div class="question-postit"></div>
+        <div class="question-content">
+          <h4>"How do you know if you're going through puberty?"</h4>
+          <span class="question-tag">Bodies & Health</span>
+        </div>
+      </div>
+      <div class="question-item">
+        <div class="question-postit"></div>
+        <div class="question-content">
+          <h4>"What should I do if someone is being bullied online?"</h4>
+          <span class="question-tag">Safety & Safeguarding</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="load-more">Show more questions ↓</div>
+
+    <div class="wf-small" style="margin-top:10px;">Pagination or infinite scroll — design decision. With 152 questions, some form of progressive loading is needed. Default sort TBD — could be by topic, by popularity, or random.</div>
+  </div>
+
+  <!-- SECTION 5: WHAT IS OKAY TO ASK -->
+  <div class="page-section">
+    <span class="section-label">Section 5 — What is Okay to Ask?</span>
+    <div class="explainer-block">
+      <h3 class="wf" style="color:#4a3f2a;">Where do these questions come from?</h3>
+      <p class="wf" style="color:#7a6a3a;">Every question on this site was written anonymously by a real young person on a post-it note during an RSE lesson. They were answered by Gareth Esson, a specialist RSE consultant who has worked with thousands of young people in schools across the UK.</p>
+      <p class="wf" style="color:#7a6a3a;">No question is too awkward, too small, or too weird. If a young person asked it, it's okay to ask.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 6: GENERAL SIGNPOSTING -->
+  <div class="page-section">
+    <span class="section-label">Section 6 — Signposting (general)</span>
+    <div class="support-block">
+      <h3 class="wf">Need support?</h3>
+      <p class="wf" style="color:#4a6a8a;">If you're going through something difficult, these services are here to help.</p>
+      <div class="support-row">
+        <div class="support-card">
+          <h4>Childline</h4>
+          <p>Free, confidential support for under 19s. Call 0800 1111 or chat online.</p>
+        </div>
+        <div class="support-card">
+          <h4>The Mix</h4>
+          <p>Support for under 25s on any issue. thesite.org</p>
+        </div>
+        <div class="support-card">
+          <h4>Brook</h4>
+          <p>Sexual health and wellbeing for under 25s. brook.org.uk</p>
+        </div>
+      </div>
+      <div class="wf-small" style="margin-top:10px;">Not question-specific — a general safety net for anyone browsing. Shows key services from the full signposting pool.</div>
+    </div>
+  </div>
+
+  <!-- FOOTER REFERENCE -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A2 — Site Footer ]</div>
+  </div>
+</div>
+
+<!-- ANNOTATIONS -->
+<div class="frame" style="margin-top:-24px;">
+  <div class="frame-label">Annotations</div>
+  <div class="annotations" style="border-top:none;">
+    <div class="annotation">
+      <span class="annotation-code">1</span>
+      <span class="annotation-text"><strong>Visual identity:</strong> This entire page lives in Okay to Ask territory — warm colours, post-it motif, informal voice. It should feel different from the B2B showcase pages. The header (A1) is structurally the same but may carry warmer visual treatment via CSS tokens.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">2</span>
+      <span class="annotation-text"><strong>Book promotion (Section 2):</strong> Hero-level element within the Okay to Ask visual identity. Book cover placeholder, one-line pitch, purchase CTA to B11. Same warm OTA identity as the hero.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">3</span>
+      <span class="annotation-text"><strong>Topic filtering (Section 3):</strong> 6 Okay to Ask book categories (Anatomy, Puberty, Relationships, Sex, Sexual Health, Sex and the Law). These are distinct from the app's 7 categories and the site's 22 landing pages. Selecting a category filters the question list below without a page reload. "All questions" is the default.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">4</span>
+      <span class="annotation-text"><strong>Question list (Section 4):</strong> Each item shows the post-it thumbnail, question title as a link, and a topic tag. The post-it thumbnail is the visual hook — it makes this feel like real questions, not a database dump. Links go to <code>/anonymous_question/{slug}</code> (C1).</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">5</span>
+      <span class="annotation-text"><strong>"What is Okay to Ask?" (Section 5):</strong> This grounds the project for anyone who's arrived directly. Brief — not a manifesto. Establishes that these are real questions from real young people, answered by a named expert.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">6</span>
+      <span class="annotation-text"><strong>Signposting (Section 6):</strong> A general "Need support?" block — not contextual to any specific question. Safety net for anyone browsing who might be going through something. Key services only (Childline, The Mix, Brook). This is distinct from the question-specific signposting (A8) on individual question pages.</span>
+    </div>
+  </div>
+</div>
+
+<!-- BEHAVIOUR NOTES -->
+<div class="behaviour-notes">
+  <h4>Design decisions flagged</h4>
+  <p><strong>Default sort order:</strong> Should 152 questions appear by topic, by popularity, randomly shuffled, or newest first? Alphabetical by question title would be unhelpful. By topic (grouped) or by popularity (most viewed) are the strongest options.</p>
+  <p><strong>Pagination vs infinite scroll:</strong> With 152 questions, showing all at once is unwieldy. Options: paginated (20 per page), "load more" button, or infinite scroll. "Load more" is the gentlest — it doesn't lose the user's scroll position and doesn't overwhelm.</p>
+  <p><strong>Post-it thumbnails:</strong> These are the scanned handwritten question images. On this listing page they appear as small thumbnails. They're key to the identity — without them this is just a list of links.</p>
+  <p><strong>Mobile:</strong> Topic filter chips may horizontally scroll. Question list items stack naturally. Post-it thumbnails could shrink or be hidden on very small screens — but ideally they stay, even small.</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C5 — Service Page Wireframe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding: 40px 20px; }
+
+  .wireframe-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #999; margin-bottom: 6px; }
+  .wireframe-title { font-size: 22px; font-weight: 700; color: #222; margin-bottom: 4px; }
+  .wireframe-desc { font-size: 13px; color: #777; margin-bottom: 32px; max-width: 600px; line-height: 1.5; }
+
+  .frame { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; max-width: 720px; margin: 0 auto 48px; }
+  .frame-label { background: #f0f0f0; padding: 8px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ddd; }
+
+  .page-section { padding: 24px; border-bottom: 1px solid #eee; }
+  .page-section:last-of-type { border-bottom: none; }
+
+  .section-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #fff; display: inline-block; padding: 2px 8px; border-radius: 3px; margin-bottom: 12px;
+  }
+  .section-label.core { background: #2a6a8a; }
+  .section-label.component { background: #666; }
+
+  h2.wf { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 6px; }
+  h3.wf { font-size: 15px; font-weight: 600; color: #444; margin-bottom: 6px; }
+  p.wf { font-size: 13px; color: #777; line-height: 1.5; margin-bottom: 10px; }
+  .wf-small { font-size: 11px; color: #999; line-height: 1.5; }
+
+  /* ---- SERVICE HEADER ---- */
+  .service-name { font-size: 26px; font-weight: 800; color: #222; line-height: 1.2; }
+  .service-headline { font-size: 15px; color: #666; margin-top: 6px; line-height: 1.5; }
+
+  /* ---- BODY ---- */
+  .service-body { font-size: 14px; color: #444; line-height: 1.7; }
+  .service-body p { margin-bottom: 12px; }
+
+  /* ---- WHO IT'S FOR ---- */
+  .persona-block {
+    background: #f0f7ff; border-left: 4px solid #2a6a8a; border-radius: 0 6px 6px 0;
+    padding: 16px 20px;
+  }
+  .persona-block p { font-size: 14px; color: #333; line-height: 1.6; margin: 0; }
+
+  /* ---- WHAT'S INCLUDED ---- */
+  .included-list { margin-top: 10px; }
+  .included-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 0; border-bottom: 1px solid #f0f0f0;
+  }
+  .included-item:last-child { border-bottom: none; }
+  .included-icon {
+    width: 20px; height: 20px; background: #e0f0e0; border-radius: 50%; flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .included-item .text { font-size: 13px; color: #444; line-height: 1.5; }
+  .included-item .detail { font-size: 11px; color: #999; margin-top: 2px; }
+
+  /* ---- CTA ---- */
+  .cta-enquiry {
+    background: #2a6a8a; border-radius: 6px; padding: 24px; text-align: center;
+  }
+  .cta-enquiry h3 { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  .cta-enquiry p { font-size: 13px; color: #a0c8d8; margin-bottom: 14px; }
+  .cta-enquiry .cta-button {
+    display: inline-block; padding: 10px 24px; background: #fff; color: #2a6a8a;
+    border-radius: 5px; font-size: 13px; font-weight: 600;
+  }
+
+  /* ---- TESTIMONIAL ---- */
+  .testimonial-block {
+    background: #fafafa; border-left: 4px solid #ccc; border-radius: 0 6px 6px 0;
+    padding: 18px 20px;
+  }
+  .testimonial-block .quote {
+    font-size: 15px; color: #444; font-style: italic; line-height: 1.6; margin-bottom: 10px;
+  }
+  .testimonial-block .attribution { font-size: 12px; color: #888; font-style: normal; }
+  .testimonial-link { font-size: 12px; color: #2a6a8a; margin-top: 8px; display: block; }
+
+  /* ---- RELATED BLOG POSTS ---- */
+  .blog-list { margin-top: 12px; }
+  .blog-item {
+    padding: 10px 0; border-bottom: 1px solid #f0f0f0;
+  }
+  .blog-item:last-child { border-bottom: none; }
+  .blog-item h4 { font-size: 13px; font-weight: 600; color: #333; margin-bottom: 2px; }
+  .blog-meta { font-size: 11px; color: #999; }
+
+  /* ---- RELATED TOPICS ---- */
+  .related-topics { display: flex; gap: 10px; flex-wrap: wrap; }
+  .related-topic-card {
+    flex: 1; min-width: 140px; background: #fafafa; border: 1px dashed #ccc;
+    border-radius: 6px; padding: 14px; text-align: center;
+  }
+  .related-topic-card h4 { font-size: 12px; font-weight: 600; color: #444; margin-bottom: 2px; }
+  .related-topic-card span { font-size: 10px; color: #999; }
+
+  /* ---- ANNOTATIONS ---- */
+  .annotations { padding: 16px 24px 20px; background: #fafafa; border-top: 1px solid #eee; }
+  .annotation { display: flex; gap: 8px; margin-bottom: 8px; font-size: 12px; line-height: 1.5; }
+  .annotation-code { font-weight: 700; color: #888; white-space: nowrap; min-width: 30px; }
+  .annotation-text { color: #666; }
+
+  .behaviour-notes {
+    max-width: 720px; margin: 0 auto;
+    background: #fffff0; border: 1px solid #e8e8d0; border-radius: 8px; padding: 16px 20px;
+  }
+  .behaviour-notes h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 10px; }
+  .behaviour-notes p { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<div style="max-width:720px; margin:0 auto 32px;">
+  <div class="wireframe-label">C5 — Wireframe</div>
+  <div class="wireframe-title">Service Page Template</div>
+  <div class="wireframe-desc">
+    Three instances using one template: /services/delivery, /services/drop-days, /services/consultancy. Each describes a specific service line, who it's for, what's included, and drives towards an enquiry. (Training lives at B4 as a standalone showcase page, not this template.)
+  </div>
+</div>
+
+<div class="frame">
+  <div class="frame-label">Service page — Content hierarchy (single column) — example: "Direct RSE Delivery"</div>
+
+  <!-- HEADER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A1 — Site Header ]</div>
+  </div>
+
+  <!-- 1. SERVICE NAME + HEADLINE -->
+  <div class="page-section">
+    <span class="section-label core">1 — Service name + headline</span>
+    <div class="service-name">Direct RSE Delivery</div>
+    <div class="service-headline">Expert-led RSE lessons delivered directly to your students by a specialist consultant.</div>
+    <div class="wf-small" style="margin-top:8px;">Page H1 + a one-line positioning statement. Sets the expectation immediately.</div>
+  </div>
+
+  <!-- 2. WHAT THE SERVICE IS -->
+  <div class="page-section">
+    <span class="section-label core">2 — What the service is</span>
+    <div class="service-body">
+      <p>Clear description of what happens when a school books this service. What does Gareth actually deliver? What does the day look like? What does the school get out of it?</p>
+      <p>This isn't a features list — it's a narrative explanation. A school leader reading this should be able to picture what the engagement looks like from start to finish.</p>
+    </div>
+  </div>
+
+  <!-- 3. WHO IT'S FOR -->
+  <div class="page-section">
+    <span class="section-label core">3 — Who it's for</span>
+    <div class="persona-block">
+      <p><strong>For schools who want</strong> high-quality RSE delivered directly to students by a specialist — either because they don't have a confident PSHE lead, because they want expert input on sensitive topics, or because they need a one-off session for a specific year group.</p>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">The buyer persona in plain language. Helps the reader self-select — "this is for me" or "I need something else." Different for each of the 3 service pages.</div>
+  </div>
+
+  <!-- 4. WHAT'S INCLUDED -->
+  <div class="page-section">
+    <span class="section-label core">4 — What's included</span>
+    <h3 class="wf">What's included</h3>
+    <div class="included-list">
+      <div class="included-item">
+        <div class="included-icon"></div>
+        <div>
+          <div class="text">Pre-visit planning call to agree topics, year groups, and any sensitivities</div>
+        </div>
+      </div>
+      <div class="included-item">
+        <div class="included-icon"></div>
+        <div>
+          <div class="text">Direct delivery to students — Key Stage 2, 3, or 4</div>
+          <div class="detail">Duration and group size agreed per school</div>
+        </div>
+      </div>
+      <div class="included-item">
+        <div class="included-icon"></div>
+        <div>
+          <div class="text">Post-session summary and follow-up resources for staff</div>
+        </div>
+      </div>
+      <div class="included-item">
+        <div class="included-icon"></div>
+        <div>
+          <div class="text">Disclosure-aware delivery — trained to handle disclosures sensitively and in line with school safeguarding procedures</div>
+        </div>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Specifics: key stages covered, duration, what Gareth delivers, what the school provides. Concrete enough that a school leader can assess fit without needing to call first.</div>
+  </div>
+
+  <!-- 5. CTA: ENQUIRY (A13) -->
+  <div class="page-section">
+    <span class="section-label component">5 — CTA: enquiry (A13)</span>
+    <div class="cta-enquiry">
+      <h3>Enquire about Direct RSE Delivery</h3>
+      <p>Tell us about your school and we'll get back to you within 2 working days.</p>
+      <span class="cta-button">Start an enquiry →</span>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">→ Enquiry form (E1) pre-tagged with "Direct RSE delivery". This is the primary conversion CTA — positioned mid-page so the reader doesn't have to scroll to the bottom to act. The CTA also appears at the bottom (after testimonial and related content).</div>
+  </div>
+
+  <!-- 6. TESTIMONIAL -->
+  <div class="page-section">
+    <span class="section-label core">6 — Testimonial</span>
+    <div class="testimonial-block">
+      <div class="quote">"Gareth delivered a Year 8 session on consent and healthy relationships. The students were completely engaged, and the follow-up resources meant our PSHE team could continue the conversation confidently."</div>
+      <div class="attribution">— Head of PSHE, [School Name]</div>
+      <span class="testimonial-link">Read more testimonials →</span>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">A pull quote relevant to this specific service. Links to /testimonials (B6) for more. Each of the 3 service pages should have a different testimonial.</div>
+  </div>
+
+  <!-- 7. RELATED BLOG POSTS -->
+  <div class="page-section">
+    <span class="section-label component">7 — Related blog posts</span>
+    <h3 class="wf">Further reading</h3>
+    <div class="blog-list">
+      <div class="blog-item">
+        <h4>What to expect when you book specialist RSE delivery</h4>
+        <div class="blog-meta">5 Mar 2026 · For school leaders · Gareth Esson</div>
+      </div>
+      <div class="blog-item">
+        <h4>Why outsourcing RSE doesn't mean opting out</h4>
+        <div class="blog-meta">18 Feb 2026 · For school leaders · Gareth Esson</div>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Posts where Service Link matches this service type. Uses A15 (blog variant). Reinforces expertise and gives the reader more to explore before deciding.</div>
+  </div>
+
+  <!-- 8. RELATED TOPICS -->
+  <div class="page-section">
+    <span class="section-label component">8 — Related topics</span>
+    <h3 class="wf">Topics we cover</h3>
+    <div class="related-topics" style="margin-top:12px;">
+      <div class="related-topic-card">
+        <h4>Consent</h4>
+        <span>Relationships</span>
+      </div>
+      <div class="related-topic-card">
+        <h4>Healthy relationships</h4>
+        <span>Relationships</span>
+      </div>
+      <div class="related-topic-card">
+        <h4>Online safety</h4>
+        <span>Safety & Safeguarding</span>
+      </div>
+      <div class="related-topic-card">
+        <h4>Puberty</h4>
+        <span>Bodies</span>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Landing pages most relevant to this service line. Links to /topics/{slug} (C3). Shows the breadth of what Gareth can deliver — helps the school leader see the scope.</div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A2 — Site Footer ]</div>
+  </div>
+</div>
+
+<!-- ANNOTATIONS -->
+<div class="frame" style="max-width:720px; margin:-24px auto 48px;">
+  <div class="frame-label">Annotations</div>
+  <div class="annotations" style="border-top:none;">
+    <div class="annotation">
+      <span class="annotation-code">A13</span>
+      <span class="annotation-text"><strong>Enquiry CTA:</strong> The primary conversion element. Pre-tagged with this service type so the enquiry form (E1) arrives with the correct service pre-selected. Positioned mid-page (Section 5) — could also be repeated at the bottom after related content for visitors who scroll the full page.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Three instances, one template:</strong> /services/delivery, /services/drop-days, /services/consultancy. Same structure, different content. The "who it's for" persona block (Section 3) is the key differentiator — it helps the reader self-select the right service.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Training is separate:</strong> CPD training lives at B4 (/training) as a standalone showcase page, not this template. It has unique content about the app connection and how training unlocks resources. The services hub (B5) links to all four.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>Testimonial sourcing:</strong> Each of the 3 pages needs a distinct testimonial relevant to that specific service. If testimonials aren't available at launch for all three, a generic one can fill in — but service-specific quotes are significantly more persuasive.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">→</span>
+      <span class="annotation-text"><strong>No Simple Mode:</strong> Service pages are B2B — written for school leaders and teachers. No Standard/Simple toggle.</span>
+    </div>
+  </div>
+</div>
+
+<!-- THE THREE INSTANCES -->
+<div class="frame" style="max-width:720px; margin:0 auto 48px;">
+  <div class="frame-label">The three instances — content differences</div>
+  <div class="annotations" style="border-top:none;">
+    <div class="annotation">
+      <span class="annotation-code" style="min-width:100px;">/delivery</span>
+      <span class="annotation-text"><strong>Direct RSE Delivery</strong> — Gareth comes into the school and delivers lessons directly to students. The "we do it for you" option. Persona: schools without a confident PSHE lead, or wanting expert input on sensitive topics.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code" style="min-width:100px;">/drop-days</span>
+      <span class="annotation-text"><strong>Drop Day Delivery</strong> — A full-day or half-day intensive RSE programme for a year group. The "event" option. Persona: schools wanting a focused, impactful day rather than drip-fed lessons.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code" style="min-width:100px;">/consultancy</span>
+      <span class="annotation-text"><strong>RSE Consultancy</strong> — Gareth advises the school on their RSE programme, policy, and curriculum. The "help us do it ourselves" option. Persona: schools with some capacity but wanting expert guidance on structure, content, and compliance.</span>
+    </div>
+  </div>
+</div>
+
+<!-- BEHAVIOUR NOTES -->
+<div class="behaviour-notes">
+  <h4>Design decisions flagged</h4>
+  <p><strong>CTA placement:</strong> The enquiry CTA (Section 5) is positioned mid-page — after "what's included" but before the testimonial and related content. This gives the reader enough information to act without scrolling to the bottom. Consider repeating the CTA at the very end of the page as well, for visitors who read everything first.</p>
+  <p><strong>Pricing:</strong> The brief doesn't mention pricing. If Gareth wants to show indicative pricing ("from £X per day"), it would slot naturally into Section 4 (what's included) or as a standalone section between 4 and 5. If pricing is bespoke per school, the current structure works — the CTA drives to a conversation, not a checkout.</p>
+  <p><strong>"What's included" format:</strong> Shown here as a list with icons. Could also be a grid of feature cards or a simple prose description. The list format is scannable and helps school leaders quickly assess what they're getting.</p>
+  <p><strong>Related topics scope:</strong> How many topics to show? 3–5 is enough to demonstrate breadth without overwhelming. The selection should be the most commonly requested topics for this service type.</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,23 @@
+---
+import { getTopics } from '../../lib/content';
+import type { Topic } from '../../lib/types';
+
+export async function getStaticPaths() {
+  const topics = await getTopics();
+  return topics.map((t) => ({
+    params: { slug: t.slug },
+    props: { topic: t },
+  }));
+}
+
+interface Props {
+  topic: Topic;
+}
+
+const { topic } = Astro.props;
+---
+
+<html lang="en">
+  <head><meta charset="utf-8" /><title>{topic.name} — Tailor Education</title></head>
+  <body><h1>{topic.name}</h1></body>
+</html>

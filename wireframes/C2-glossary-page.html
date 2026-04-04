@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C2 — Glossary Page Wireframe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding: 40px 20px; }
+
+  .wireframe-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #999; margin-bottom: 6px; }
+  .wireframe-title { font-size: 22px; font-weight: 700; color: #222; margin-bottom: 4px; }
+  .wireframe-desc { font-size: 13px; color: #777; margin-bottom: 32px; max-width: 600px; line-height: 1.5; }
+
+  .frame { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; max-width: 720px; margin: 0 auto 48px; }
+  .frame-label { background: #f0f0f0; padding: 8px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #888; border-bottom: 1px solid #ddd; }
+
+  .page-section { padding: 24px; border-bottom: 1px solid #eee; }
+  .page-section:last-of-type { border-bottom: none; }
+
+  .section-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: #fff; display: inline-block; padding: 2px 8px; border-radius: 3px; margin-bottom: 12px;
+  }
+  .section-label.core { background: #5b7fa5; }
+  .section-label.component { background: #666; }
+  .section-label.conditional { background: #c0392b; }
+  .section-label.future { background: #aaa; }
+
+  .conditional-badge {
+    font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    color: #aaa; background: #f0f0f0; padding: 2px 6px; border-radius: 3px; margin-left: 6px;
+  }
+
+  h2.wf { font-size: 18px; font-weight: 700; color: #333; margin-bottom: 6px; }
+  h3.wf { font-size: 15px; font-weight: 600; color: #444; margin-bottom: 6px; }
+  p.wf { font-size: 13px; color: #777; line-height: 1.5; margin-bottom: 10px; }
+  .wf-small { font-size: 11px; color: #999; line-height: 1.5; }
+
+  /* ---- TERM HEADING ---- */
+  .term-heading {
+    font-size: 28px; font-weight: 800; color: #222; letter-spacing: -0.5px;
+  }
+
+  /* ---- SIMPLE MODE TOGGLE ---- */
+  .simple-toggle {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #f5f5f5; border: 1px solid #ddd; border-radius: 20px; padding: 6px 14px;
+  }
+  .toggle-option { font-size: 12px; font-weight: 500; color: #999; }
+  .toggle-option.active { color: #333; font-weight: 600; }
+  .toggle-track {
+    width: 32px; height: 16px; background: #ccc; border-radius: 8px; position: relative;
+  }
+  .toggle-knob {
+    width: 12px; height: 12px; background: #fff; border-radius: 50%; position: absolute;
+    top: 2px; left: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  }
+
+  /* ---- DEFINITION BLOCK ---- */
+  .definition-block {
+    background: #f0f7ff; border-left: 4px solid #5b7fa5; border-radius: 0 6px 6px 0;
+    padding: 16px 20px;
+  }
+  .definition-block .def-label {
+    font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+    color: #5b7fa5; margin-bottom: 6px;
+  }
+  .definition-block p { font-size: 14px; color: #333; line-height: 1.6; }
+
+  /* ---- EXPLAINER BODY ---- */
+  .explainer-body {
+    font-size: 14px; color: #444; line-height: 1.7;
+  }
+  .explainer-body p { margin-bottom: 12px; }
+  .glossary-term {
+    color: #333; font-weight: 500; border-bottom: 1px dashed #b89a3a; cursor: help;
+  }
+
+  /* ---- DIAGRAM PLACEHOLDER ---- */
+  .diagram-placeholder {
+    background: #f5f5f5; border: 2px dashed #ddd; border-radius: 6px;
+    height: 140px; display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 4px;
+  }
+  .diagram-placeholder span { font-size: 12px; color: #bbb; }
+
+  /* ---- RELATED TERMS ---- */
+  .term-cards { display: flex; gap: 12px; flex-wrap: wrap; }
+  .term-card {
+    flex: 1; min-width: 160px; background: #f8f8f8; border: 1px dashed #ccc;
+    border-radius: 6px; padding: 14px;
+  }
+  .term-card h4 { font-size: 13px; font-weight: 600; color: #333; margin-bottom: 4px; }
+  .term-card p { font-size: 11px; color: #888; line-height: 1.4; }
+  .term-card .link { font-size: 11px; color: #5b7fa5; margin-top: 6px; display: block; }
+
+  /* ---- QUESTION CARDS ---- */
+  .question-cards { display: flex; gap: 12px; flex-wrap: wrap; }
+  .question-card {
+    flex: 1; min-width: 160px; background: #fdf6e8; border: 1px solid #e8d9b8;
+    border-radius: 6px; padding: 14px;
+  }
+  .question-postit {
+    width: 100%; height: 36px; background: #f0e4c4; border: 1px solid #e0d4b4;
+    border-radius: 3px; margin-bottom: 8px;
+  }
+  .question-card h4 { font-size: 12px; font-weight: 600; color: #333; line-height: 1.4; margin-bottom: 4px; }
+  .question-card .tag { font-size: 10px; color: #888; background: #f5f5f5; padding: 2px 6px; border-radius: 8px; }
+
+  /* ---- SIGNPOSTING ---- */
+  .signpost-block {
+    background: #f0f7ff; border: 1px solid #d0e0f0; border-radius: 6px; padding: 18px;
+  }
+  .signpost-block h3 { font-size: 14px; font-weight: 600; color: #2a5a8a; margin-bottom: 10px; }
+  .signpost-service {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid #e0ecf5;
+  }
+  .signpost-service:last-child { border-bottom: none; }
+  .signpost-service .svc-name { font-size: 13px; font-weight: 600; color: #333; }
+  .signpost-service .svc-desc { font-size: 11px; color: #777; }
+  .signpost-service .svc-contact { font-size: 11px; color: #2a5a8a; font-weight: 500; text-align: right; }
+
+  /* ---- CTA ---- */
+  .cta-block {
+    background: #f8f8f8; border: 1px solid #e0e0e0; border-radius: 6px;
+    padding: 18px; text-align: center;
+  }
+  .cta-block h3 { font-size: 14px; font-weight: 600; color: #333; margin-bottom: 4px; }
+  .cta-block .cta-link { font-size: 13px; font-weight: 600; color: #5b7fa5; }
+
+  /* ---- TOPIC TAGS ---- */
+  .topic-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .topic-chip {
+    font-size: 11px; font-weight: 500; color: #555; background: #f0f0f0;
+    border: 1px solid #ddd; border-radius: 14px; padding: 4px 12px;
+  }
+
+  /* ---- ANNOTATIONS ---- */
+  .annotations { padding: 16px 24px 20px; background: #fafafa; border-top: 1px solid #eee; }
+  .annotation { display: flex; gap: 8px; margin-bottom: 8px; font-size: 12px; line-height: 1.5; }
+  .annotation-code { font-weight: 700; color: #888; white-space: nowrap; min-width: 30px; }
+  .annotation-text { color: #666; }
+
+  .behaviour-notes {
+    max-width: 720px; margin: 0 auto;
+    background: #fffff0; border: 1px solid #e8e8d0; border-radius: 8px; padding: 16px 20px;
+  }
+  .behaviour-notes h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 10px; }
+  .behaviour-notes p { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<div style="max-width:720px; margin:0 auto 32px;">
+  <div class="wireframe-label">C2 — Wireframe</div>
+  <div class="wireframe-title">Glossary Page Template</div>
+  <div class="wireframe-desc">
+    Applied to ~80–100 glossary term pages. The destination for every glossary tooltip (A7) across the site. Supports Standard and Simple modes for both the definition and the full explainer. Simpler than C1 but shares several components.
+  </div>
+</div>
+
+<div class="frame">
+  <div class="frame-label">Glossary page — Content hierarchy (single column)</div>
+
+  <!-- HEADER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A1 — Site Header ]</div>
+  </div>
+
+  <!-- 1. TERM HEADING -->
+  <div class="page-section">
+    <span class="section-label core">1 — Term heading</span>
+    <div class="term-heading">Consent</div>
+    <div class="wf-small" style="margin-top:8px;">The glossary term as the page title. This is the page's H1.</div>
+  </div>
+
+  <!-- 2. SIMPLE MODE TOGGLE -->
+  <div class="page-section">
+    <span class="section-label component">2 — Simple Mode toggle (A6)</span>
+    <div style="display:flex; align-items:center; gap:16px;">
+      <div class="simple-toggle">
+        <span class="toggle-option active">Standard</span>
+        <div class="toggle-track"><div class="toggle-knob"></div></div>
+        <span class="toggle-option">Simple</span>
+      </div>
+      <span class="wf-small">Same toggle as C1. Persists via localStorage.</span>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Should remain accessible as the reader scrolls (sticky/fixed — design decision). Controls both the definition and the full explainer below.</div>
+  </div>
+
+  <!-- 3. DEFINITION -->
+  <div class="page-section">
+    <span class="section-label core">3 — Definition</span>
+    <div class="wf-small" style="margin-bottom:10px;">This is the tooltip text, shown here as a standalone prominent element. In Standard mode: Short Definition. In Simple mode: Simple Definition.</div>
+    <div class="definition-block">
+      <div class="def-label">Definition</div>
+      <p><strong>Standard:</strong> Consent means giving permission for something to happen, or agreeing to do something, freely and willingly. In the context of relationships and sex, consent means that everyone involved actively agrees to what's happening.</p>
+    </div>
+    <div class="definition-block" style="margin-top:12px; background:#fff8e6; border-color:#d4a830;">
+      <div class="def-label" style="color:#a08020;">Simple mode</div>
+      <p><strong>Simple:</strong> Consent means saying yes to something because you want to, not because someone made you.</p>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Only one version is visible at a time — controlled by the A6 toggle above. Both shown here for wireframing purposes.</div>
+  </div>
+
+  <!-- 4. FULL EXPLAINER -->
+  <div class="page-section">
+    <span class="section-label core">4 — Full explainer</span>
+    <div class="wf-small" style="margin-bottom:10px;">Standard explainer (from Notion page body) or Simple Explainer (from property field), depending on mode. This is the in-depth content beyond the short definition.</div>
+    <div class="explainer-body">
+      <p>This is the full explainer text for the term. It provides context, examples, and a deeper understanding of what the term means in practice.</p>
+      <p>The explainer may reference other <span class="glossary-term">glossary terms</span> inline, which are tooltipped using A7 — the same tooltip behaviour as on question pages (C1).</p>
+      <p>In Simple mode, this entire section swaps to the Simple Explainer — a rewritten version using shorter sentences, simpler vocabulary, and more direct phrasing. The Simple version is not a summary — it covers the same ground in accessible language.</p>
+    </div>
+  </div>
+
+  <!-- 5. DIAGRAM/ILLUSTRATION (FUTURE) -->
+  <div class="page-section">
+    <span class="section-label future">5 — Diagram / illustration</span>
+    <span class="conditional-badge">Future</span>
+    <div class="wf-small" style="margin-bottom:10px;">Where relevant. Shows in both modes. Not all glossary pages will have this — only terms where a visual aid helps understanding.</div>
+    <div class="diagram-placeholder">
+      <span>[ Diagram or illustration placeholder ]</span>
+      <span>Shows in both Standard and Simple modes</span>
+    </div>
+  </div>
+
+  <!-- 6. RELATED GLOSSARY TERMS -->
+  <div class="page-section">
+    <span class="section-label component">6 — Related glossary terms (A15, glossary variant)</span>
+    <h3 class="wf">Related terms</h3>
+    <div class="term-cards" style="margin-top:12px;">
+      <div class="term-card">
+        <h4>Boundaries</h4>
+        <p>The limits a person sets about what they are comfortable with.</p>
+        <span class="link">Read more →</span>
+      </div>
+      <div class="term-card">
+        <h4>Coercion</h4>
+        <p>When someone pressures or forces another person into doing something.</p>
+        <span class="link">Read more →</span>
+      </div>
+      <div class="term-card">
+        <h4>Autonomy</h4>
+        <p>The right to make decisions about your own body and life.</p>
+        <span class="link">Read more →</span>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Uses A15 (related content cards, glossary variant). Each shows term name, short definition (or Simple Definition in Simple mode), and link to /glossary/{slug}.</div>
+  </div>
+
+  <!-- 7. QUESTIONS THAT REFERENCE THIS TERM -->
+  <div class="page-section">
+    <span class="section-label component">7 — Questions referencing this term (A15, question variant)</span>
+    <h3 class="wf">Questions about this</h3>
+    <div class="question-cards" style="margin-top:12px;">
+      <div class="question-card">
+        <div class="question-postit"></div>
+        <h4>"What does consent actually mean?"</h4>
+        <span class="tag">Consent</span>
+      </div>
+      <div class="question-card">
+        <div class="question-postit"></div>
+        <h4>"Can you change your mind after saying yes?"</h4>
+        <span class="tag">Consent</span>
+      </div>
+      <div class="question-card">
+        <div class="question-postit"></div>
+        <h4>"How do you know if someone is okay with it?"</h4>
+        <span class="tag">Relationships</span>
+      </div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Auto-populated from Questions DB — any question whose answer tooltips this glossary term. Uses A15 (question variant). Post-it thumbnails, question title, topic tag.</div>
+  </div>
+
+  <!-- 8. SIGNPOSTING (CONDITIONAL) -->
+  <div class="page-section">
+    <span class="section-label component">8 — Signposting (A8)</span>
+    <span class="conditional-badge">If relevant</span>
+    <div class="wf-small" style="margin-bottom:10px;">Only appears if the term's topic has associated support services. Not all glossary pages need this — "Puberty" might, "Metaphor" wouldn't.</div>
+    <div class="signpost-block">
+      <h3>Support services</h3>
+      <div class="signpost-service">
+        <div>
+          <div class="svc-name">Childline</div>
+          <div class="svc-desc">Free, confidential support for under 19s</div>
+        </div>
+        <div class="svc-contact">0800 1111</div>
+      </div>
+      <div class="signpost-service">
+        <div>
+          <div class="svc-name">Brook</div>
+          <div class="svc-desc">Sexual health and wellbeing for under 25s</div>
+        </div>
+        <div class="svc-contact">brook.org.uk</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. CTA -->
+  <div class="page-section">
+    <span class="section-label component">9 — CTA</span>
+    <div class="cta-block">
+      <h3>Explore Consent →</h3>
+      <div class="cta-link">Lessons, questions, and curriculum mapping for this topic</div>
+      <div class="wf-small" style="margin-top:8px;">→ /topics/{slug} (C3 landing page for this term's primary topic)</div>
+    </div>
+  </div>
+
+  <!-- 10. TOPIC TAGS -->
+  <div class="page-section">
+    <span class="section-label component">10 — Topic tags (A16)</span>
+    <div class="topic-chips">
+      <div class="topic-chip">Consent</div>
+      <div class="topic-chip">Healthy relationships</div>
+    </div>
+    <div class="wf-small" style="margin-top:8px;">Links to parent landing page(s) at /topics/{slug}.</div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-section" style="padding:12px 24px; background:#f8f8f8;">
+    <div class="wf-small" style="text-align:center;">[ A2 — Site Footer ]</div>
+  </div>
+</div>
+
+<!-- ANNOTATIONS -->
+<div class="frame" style="max-width:720px; margin:-24px auto 48px;">
+  <div class="frame-label">Annotations</div>
+  <div class="annotations" style="border-top:none;">
+    <div class="annotation">
+      <span class="annotation-code">A6</span>
+      <span class="annotation-text"><strong>Simple Mode toggle:</strong> Controls both the definition (Section 3) and the full explainer (Section 4). Same component as C1. Should remain accessible as reader scrolls. Persists via localStorage.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">A7</span>
+      <span class="annotation-text"><strong>Glossary tooltips:</strong> The full explainer (Section 4) may contain inline links to other glossary terms, tooltipped the same way as on question pages. First occurrence only.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">A8</span>
+      <span class="annotation-text"><strong>Signposting:</strong> Conditional — only appears if the term's topic warrants support service links. Same component as C1 but not guaranteed on every page.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">A15</span>
+      <span class="annotation-text"><strong>Related content cards:</strong> Two variants used here — glossary variant (Section 6) for related terms, and question variant (Section 7) for referencing questions. Same card component as C1, different content types.</span>
+    </div>
+    <div class="annotation">
+      <span class="annotation-code">A16</span>
+      <span class="annotation-text"><strong>Topic tags:</strong> Links to the landing page(s) this term belongs to. Same component as C1.</span>
+    </div>
+  </div>
+</div>
+
+<!-- BEHAVIOUR NOTES -->
+<div class="behaviour-notes">
+  <h4>Design decisions flagged</h4>
+  <p><strong>Definition prominence:</strong> The definition (Section 3) is the tooltip text shown standalone. It should be visually distinct from the explainer — a pull-out block, larger type, or a coloured background. This is what the visitor came for; the explainer is the depth.</p>
+  <p><strong>Simple Mode scope:</strong> The toggle controls both the definition and the explainer. When toggled, both swap simultaneously. Related term cards (Section 6) also swap their definitions to match the active mode.</p>
+  <p><strong>Referencing questions:</strong> Auto-populated — every question whose answer contains a tooltip for this term. This could be a long list for common terms (e.g. "consent" might appear in 20+ questions). Consider a "Show more" limit — 3–5 visible, rest behind a toggle.</p>
+  <p><strong>CTA destination:</strong> Links to the C3 landing page for this term's primary topic. If the term spans multiple topics, use the primary one. The topic tags (Section 10) cover the full set.</p>
+</div>
+
+</body>
+</html>
