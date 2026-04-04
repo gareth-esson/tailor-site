@@ -1,0 +1,44 @@
+---
+/**
+ * Signposting block [A8].
+ * Always present on question pages, not dismissable.
+ * Shows services from the Signposting multi-select field.
+ * Uses .alert--support class.
+ */
+import { SUPPORT_SERVICES } from '../lib/support-services';
+
+interface Props {
+  services: string[];
+}
+
+const { services } = Astro.props;
+
+// Resolve service names to full service data
+const resolvedServices = services
+  .map((name) => SUPPORT_SERVICES[name])
+  .filter(Boolean);
+
+if (resolvedServices.length === 0) return;
+---
+
+<div class="alert alert--support">
+  <div class="alert__icon">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+    </svg>
+  </div>
+  <div class="alert__content">
+    <div class="alert__title">Need to talk to someone?</div>
+    <div class="alert__body">
+      {resolvedServices.map((svc) => (
+        <p>
+          <strong>{svc.name}</strong> — {svc.description}
+          {svc.phone && (
+            <> Call free: <a href={`tel:${svc.phone.replace(/\s/g, '')}`}>{svc.phone}</a>.</>
+          )}
+          {' '}<a href={svc.url} target="_blank" rel="noopener noreferrer">{svc.urlLabel}</a>
+        </p>
+      ))}
+    </div>
+  </div>
+</div>

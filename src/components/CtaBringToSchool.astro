@@ -1,0 +1,63 @@
+---
+/**
+ * CTA block [A12] — "Bring [topic] into your school"
+ * Bottom-page CTA linking to services or training.
+ * Used on landing pages [C3]. Target varies by landing page.
+ */
+interface Props {
+  topicTitle: string;
+  /** delivery | training | drop-days | consultancy */
+  serviceTarget: string | null;
+}
+
+const { topicTitle, serviceTarget } = Astro.props;
+
+const targetMap: Record<string, { href: string; label: string }> = {
+  delivery: { href: '/services/delivery', label: 'Direct RSE delivery' },
+  training: { href: '/training', label: 'RSE training' },
+  'drop-days': { href: '/services/drop-days', label: 'Drop days' },
+  consultancy: { href: '/services/consultancy', label: 'RSE policy and curriculum planning' },
+};
+
+const target = targetMap[serviceTarget || ''] || targetMap['training'];
+---
+
+<section class="cta-school">
+  <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+    <div class="cta-school__card">
+      <h2 class="cta-school__title">Bring {topicTitle} into your school</h2>
+      <p class="cta-school__text">
+        Expert-led RSE sessions delivered directly to your students, or training for your staff to deliver with confidence.
+      </p>
+      <a href={target.href} class="btn btn--std btn--primary has-icon-hover">
+        {target.label}
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-school__card {
+    text-align: center;
+    padding: var(--space-global-xl) var(--space-global-lg);
+    background: var(--bg-surface-alt);
+    border-radius: var(--radius-lg);
+  }
+
+  .cta-school__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h3);
+    font-weight: var(--weight-tailor-h2);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .cta-school__text {
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body-muted);
+    margin: 0 0 var(--space-global-md);
+    max-width: 36rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>

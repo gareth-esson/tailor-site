@@ -1,23 +1,458 @@
 ---
-import { getTopics } from '../../lib/content';
-import type { Topic } from '../../lib/types';
+/**
+ * Landing page template [C3] — /topics/{slug}
+ * 22 instances. Teacher-facing topic landing pages.
+ * Aggregates questions, glossary terms, and blog posts from underlying granular topics.
+ * Uses Tailor layer (default — Lexend, neutral surfaces, teal accent).
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CtaExploreLessons from '../../components/CtaExploreLessons.astro';
+import CtaBringToSchool from '../../components/CtaBringToSchool.astro';
+import { getLandingPages, getQuestions, getGlossaryTerms, getBlogPosts, getGlossaryIndex } from '../../lib/content';
+import { renderBlocks } from '../../lib/render-blocks';
+import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
+import type { LandingPage, Question, GlossaryTerm, BlogPost } from '../../lib/types';
 
 export async function getStaticPaths() {
-  const topics = await getTopics();
-  return topics.map((t) => ({
-    params: { slug: t.slug },
-    props: { topic: t },
-  }));
+  const landingPages = await getLandingPages();
+  const allQuestions = await getQuestions();
+  const allGlossary = await getGlossaryTerms();
+  const allBlog = await getBlogPosts();
+  const glossaryIndex = await getGlossaryIndex();
+
+  return landingPages.map((lp) => {
+    // Collect granular topic IDs for this landing page
+    const granularTopicIds = new Set(lp.granularTopicIds);
+
+    // Aggregate questions: where primary topic matches any granular topic
+    const questions = allQuestions
+      .filter((q) => q.topicIds.some((tid) => granularTopicIds.has(tid)))
+      .sort((a, b) => {
+        // Answered questions first (have body content), then alphabetically
+        const aHasAnswer = a.body.length > 0 ? 0 : 1;
+        const bHasAnswer = b.body.length > 0 ? 0 : 1;
+        if (aHasAnswer !== bHasAnswer) return aHasAnswer - bHasAnswer;
+        return a.question.localeCompare(b.question);
+      });
+
+    // Aggregate glossary terms: where topic matches any granular topic
+    const glossary = allGlossary
+      .filter((g) => g.topicIds.some((tid) => granularTopicIds.has(tid)))
+      .sort((a, b) => a.term.localeCompare(b.term));
+
+    // Aggregate blog posts: where Topic or Secondary Topics match any granular topic
+    // Blog posts use landing page IDs (not granular topic IDs) for Topic relations
+    const blogPosts = allBlog
+      .filter((bp) => {
+        const bpTopicIds = [...bp.topicIds, ...bp.secondaryTopicIds];
+        return bpTopicIds.includes(lp.id);
+      })
+      .sort((a, b) => b.title.localeCompare(a.title)); // placeholder sort — dates not yet in type
+
+    // Related landing pages: same category, excluding self
+    const relatedPages = landingPages
+      .filter((other) => other.id !== lp.id && other.category === lp.category)
+      .map((other) => ({ title: other.title, slug: other.slug, category: other.category }));
+
+    return {
+      params: { slug: lp.slug },
+      props: {
+        landingPage: lp,
+        questions,
+        glossary,
+        blogPosts,
+        relatedPages,
+        glossaryIndex,
+      },
+    };
+  });
 }
 
 interface Props {
-  topic: Topic;
+  landingPage: LandingPage;
+  questions: Question[];
+  glossary: GlossaryTerm[];
+  blogPosts: BlogPost[];
+  relatedPages: { title: string; slug: string; category: string | null }[];
+  glossaryIndex: Record<string, any>;
 }
 
-const { topic } = Astro.props;
+const { landingPage, questions, glossary, blogPosts, relatedPages, glossaryIndex } = Astro.props;
+
+// Render body content (overview, curriculum mapping, learning objectives)
+const bodyHtml = renderBlocks(landingPage.body);
+const bodyWithTooltips = injectGlossaryTooltips(bodyHtml, glossaryIndex, undefined);
+
+// Build granular topic slugs for the CTA URL
+const topicSlugs = landingPage.granularTopics.map((t) => t.slug);
+
+// Map category to --cat-* token name
+const categoryTokenMap: Record<string, string> = {
+  'Relationships': 'relationships',
+  'Sex & Sexual Health': 'sexual-health',
+  'Puberty & The Body': 'puberty',
+  'Identity & Diversity': 'identity',
+  'Online Safety & Media': 'online-safety',
+  'Safety & Safeguarding': 'safety',
+  'Health & Wellbeing': 'wellbeing',
+};
+const catToken = categoryTokenMap[landingPage.category || ''] || 'relationships';
+
+// Map OtA category on questions to badge class
+function otaCategoryClass(cat: string | null): string {
+  const map: Record<string, string> = {
+    'Anatomy': 'badge--ota-anatomy',
+    'Puberty': 'badge--ota-puberty',
+    'Relationships': 'badge--ota-relationships',
+    'Sex': 'badge--ota-sex',
+    'Sexual Health': 'badge--ota-sexual-health',
+    'Sex & the Law': 'badge--ota-law',
+    'Contraception & Pregnancy': 'badge--ota-contraception',
+  };
+  return map[cat || ''] || '';
+}
 ---
 
-<html lang="en">
-  <head><meta charset="utf-8" /><title>{topic.name} — Tailor Education</title></head>
-  <body><h1>{topic.name}</h1></body>
-</html>
+<BaseLayout title={`${landingPage.title} — Tailor Education`}>
+  <div class="landing-page">
+    <!-- 1. Page title + category label -->
+    <section class="landing-hero">
+      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+        <span class="landing-hero__category" style={`--cat-color: var(--cat-${catToken})`}>
+          {landingPage.category}
+        </span>
+        <h1 class="landing-hero__title">{landingPage.title}</h1>
+      </div>
+    </section>
+
+    <!-- 2–4. Topic overview, curriculum mapping, learning objectives (from Notion body) -->
+    {bodyWithTooltips && (
+      <section class="landing-body">
+        <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+          <div class="prose" set:html={bodyWithTooltips} />
+        </div>
+      </section>
+    )}
+
+    <!-- 5. CTA [A11] — mid-page -->
+    <CtaExploreLessons topicTitle={landingPage.title} topicSlugs={topicSlugs} />
+
+    <!-- 6. Questions young people ask -->
+    {questions.length > 0 && (
+      <section class="landing-section">
+        <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+          <h2 class="landing-section__title">Questions young people ask</h2>
+          <ul class="question-list" role="list">
+            {questions.map((q) => (
+              <li class="question-list__item">
+                <a href={`/anonymous_question/${q.slug}`} class="question-list__link">
+                  {q.question}
+                </a>
+                {q.okayToAskCategory && (
+                  <span class={`badge badge--pill ${otaCategoryClass(q.okayToAskCategory)}`}>
+                    {q.okayToAskCategory}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
+
+    <!-- 7. Key terms -->
+    {glossary.length > 0 && (
+      <section class="landing-section landing-section--alt">
+        <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+          <h2 class="landing-section__title">Key terms</h2>
+          <dl class="glossary-grid">
+            {glossary.map((g) => (
+              <div class="glossary-grid__item">
+                <dt class="glossary-grid__term">
+                  <a href={`/glossary/${g.slug}`}>{g.term}</a>
+                </dt>
+                <dd class="glossary-grid__def">{g.shortDefinition}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+    )}
+
+    <!-- 8. For teachers: further reading (conditional) -->
+    {blogPosts.length > 0 && (
+      <section class="landing-section">
+        <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+          <h2 class="landing-section__title">For teachers: further reading</h2>
+          <div class="blog-cards">
+            {blogPosts.map((bp) => (
+              <a href={`/blog/${bp.slug}`} class="card blog-card">
+                <div class="card__body">
+                  {bp.targetAudience && (
+                    <div class="card__eyebrow">{bp.targetAudience}</div>
+                  )}
+                  <div class="card__title">{bp.title}</div>
+                  {bp.author && (
+                    <div class="blog-card__author">By {bp.author}</div>
+                  )}
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- 9. Related landing pages -->
+    {relatedPages.length > 0 && (
+      <section class="landing-section landing-section--alt">
+        <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+          <h2 class="landing-section__title">Related topics</h2>
+          <div class="related-topics">
+            {relatedPages.map((rp) => (
+              <a href={`/topics/${rp.slug}`} class="related-topics__link">
+                {rp.title}
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- 10. CTA [A12] — bottom of page -->
+    <CtaBringToSchool topicTitle={landingPage.title} serviceTarget={landingPage.serviceCtaTarget} />
+  </div>
+</BaseLayout>
+
+<style>
+  /* ========================================
+     Landing page [C3] styles
+     ======================================== */
+  .landing-page {
+    background: var(--bg-page);
+  }
+
+  /* --- Hero --- */
+  .landing-hero {
+    background: var(--bg-surface);
+    border-bottom: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  .landing-hero__category {
+    display: inline-block;
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: 600;
+    color: var(--cat-color, var(--text-body-muted));
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+
+  .landing-hero__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h1);
+    font-weight: var(--weight-tailor-h1);
+    color: var(--text-heading);
+    margin: 0;
+    line-height: 1.15;
+  }
+
+  /* --- Body (overview / curriculum / objectives) --- */
+  .landing-body :global(.prose) {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body);
+    line-height: 1.7;
+  }
+
+  .landing-body :global(.prose h2) {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h2);
+    font-weight: var(--weight-tailor-h2);
+    color: var(--text-heading);
+    margin-top: var(--space-global-lg);
+    margin-bottom: var(--space-global-sm);
+  }
+
+  .landing-body :global(.prose h3) {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h3);
+    font-weight: var(--weight-tailor-h3);
+    color: var(--text-heading);
+    margin-top: var(--space-global-md);
+    margin-bottom: var(--space-global-xs);
+  }
+
+  .landing-body :global(.prose p) {
+    margin-bottom: var(--space-global-sm);
+  }
+
+  .landing-body :global(.prose ul),
+  .landing-body :global(.prose ol) {
+    margin-bottom: var(--space-global-sm);
+    padding-left: 1.5rem;
+  }
+
+  .landing-body :global(.prose li) {
+    margin-bottom: 0.25rem;
+  }
+
+  .landing-body :global(.prose a) {
+    color: var(--brand-accent-text);
+    text-decoration: underline;
+  }
+
+  /* --- Sections --- */
+  .landing-section {
+    border-top: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  .landing-section--alt {
+    background: var(--bg-surface-alt);
+  }
+
+  .landing-section__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h2);
+    font-weight: var(--weight-tailor-h2);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  /* --- Question list --- */
+  .question-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .question-list__item {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-global-xs);
+    padding: 0.75rem 1rem;
+    background: var(--bg-surface);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    transition: border-color var(--transition-speed) var(--transition-ease);
+  }
+
+  .question-list__item:hover {
+    border-color: var(--brand-accent);
+  }
+
+  .question-list__link {
+    flex: 1;
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--brand-accent-text);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .question-list__link:hover {
+    text-decoration: underline;
+  }
+
+  /* --- Glossary grid --- */
+  .glossary-grid {
+    display: grid;
+    gap: var(--space-global-sm);
+    margin: 0;
+  }
+
+  .glossary-grid__item {
+    padding: 0.75rem 1rem;
+    background: var(--bg-surface);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+  }
+
+  .glossary-grid__term {
+    font-family: var(--font-tailor-body-stack);
+    font-weight: 600;
+    color: var(--text-heading);
+    margin-bottom: 0.25rem;
+  }
+
+  .glossary-grid__term a {
+    color: var(--brand-accent-text);
+    text-decoration: none;
+  }
+
+  .glossary-grid__term a:hover {
+    text-decoration: underline;
+  }
+
+  .glossary-grid__def {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+    margin: 0;
+  }
+
+  /* --- Blog cards --- */
+  .blog-cards {
+    display: grid;
+    gap: var(--space-global-sm);
+  }
+
+  .blog-card {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .blog-card__author {
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+    margin-top: 0.25rem;
+  }
+
+  /* --- Related topics --- */
+  .related-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-global-xs);
+  }
+
+  .related-topics__link {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--bg-surface);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: 500;
+    color: var(--text-body);
+    text-decoration: none;
+    transition: border-color var(--transition-speed) var(--transition-ease),
+                color var(--transition-speed) var(--transition-ease);
+  }
+
+  .related-topics__link:hover {
+    border-color: var(--brand-accent);
+    color: var(--brand-accent-text);
+  }
+
+  /* --- Responsive --- */
+  @media (min-width: 768px) {
+    .glossary-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .blog-cards {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .blog-cards {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

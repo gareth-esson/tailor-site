@@ -1,0 +1,44 @@
+---
+import '../styles/tailwind.css';
+import '../styles/tailor-site-v2.css';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+
+interface Props {
+  title: string;
+  layer?: 'tailor' | 'ota';
+}
+
+const { title, layer = 'tailor' } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+
+    <!-- Simple Mode: check preference before first paint to prevent flash of wrong content -->
+    <script is:inline>
+      if (localStorage.getItem('simple_mode') === 'true') {
+        document.documentElement.classList.add('simple-active');
+      }
+    </script>
+
+    <!-- Font loading — all three families on every page to prevent FOUT on navigation -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,100..900,0..100,0..1;1,9..144,100..900,0..100,0..1&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <SiteHeader />
+
+    <main class:list={[layer === 'ota' && 'layer-ota']}>
+      <slot />
+    </main>
+
+    <SiteFooter />
+  </body>
+</html>

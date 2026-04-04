@@ -1,8 +1,190 @@
 ---
-// Topics browse page — template coming in a later stage
+/**
+ * Topics index page — /topics/
+ * Browse all 22 topic landing pages grouped by 7 app categories.
+ * Tailor layer (default).
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+/**
+ * Same category data as TopicsMegaMenu — keeps them in sync.
+ */
+const categories = [
+  {
+    name: 'Relationships',
+    token: 'relationships',
+    pages: [
+      { title: 'Consent', slug: 'consent' },
+      { title: 'Healthy relationships', slug: 'healthy-relationships' },
+      { title: 'Friendships', slug: 'friendships' },
+      { title: 'Families', slug: 'families' },
+      { title: 'Positive sexuality and intimacy', slug: 'positive-sexuality-and-intimacy' },
+    ],
+  },
+  {
+    name: 'Sex & Sexual Health',
+    token: 'sexual-health',
+    pages: [
+      { title: 'Contraception', slug: 'contraception' },
+      { title: 'STIs and sexual health', slug: 'stis-and-sexual-health' },
+      { title: 'Pregnancy and reproductive health', slug: 'pregnancy-and-reproductive-health' },
+      { title: 'Sex and the law', slug: 'sex-and-the-law' },
+    ],
+  },
+  {
+    name: 'Puberty & The Body',
+    token: 'puberty',
+    pages: [
+      { title: 'Puberty', slug: 'puberty' },
+      { title: 'Body image', slug: 'body-image' },
+    ],
+  },
+  {
+    name: 'Identity & Diversity',
+    token: 'identity',
+    pages: [
+      { title: 'LGBTQ+ inclusion', slug: 'lgbtq-inclusion' },
+      { title: 'Masculinity and misogyny', slug: 'masculinity-and-misogyny' },
+      { title: 'Stereotypes, prejudice and discrimination', slug: 'stereotypes-prejudice-and-discrimination' },
+    ],
+  },
+  {
+    name: 'Online Safety & Media',
+    token: 'online-safety',
+    pages: [
+      { title: 'Online safety', slug: 'online-safety' },
+      { title: 'Sexting and sharing nudes', slug: 'sexting-and-sharing-nudes' },
+      { title: 'Pornography and media literacy', slug: 'pornography-and-media-literacy' },
+    ],
+  },
+  {
+    name: 'Safety & Safeguarding',
+    token: 'safety',
+    pages: [
+      { title: 'Abuse, exploitation and violence', slug: 'abuse-exploitation-and-violence' },
+      { title: 'FGM and harmful practices', slug: 'fgm-and-harmful-practices' },
+      { title: 'Personal safety', slug: 'personal-safety' },
+    ],
+  },
+  {
+    name: 'Health & Wellbeing',
+    token: 'wellbeing',
+    pages: [
+      { title: 'Mental health and wellbeing', slug: 'mental-health-and-wellbeing' },
+      { title: 'Drugs, alcohol and vaping', slug: 'drugs-alcohol-and-vaping' },
+    ],
+  },
+];
 ---
 
-<html lang="en">
-  <head><meta charset="utf-8" /><title>Topics — Tailor Education</title></head>
-  <body><h1>Topics</h1></body>
-</html>
+<BaseLayout title="Topics — Tailor Education">
+  <section class="topics-index">
+    <div class="mx-auto max-w-5xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+      <h1 class="topics-index__title">RSE topics</h1>
+      <p class="topics-index__intro">
+        Expert guidance across 22 topics. Curriculum-aligned resources, key terminology, and the questions young people actually ask.
+      </p>
+
+      <div class="topics-grid">
+        {categories.map((cat) => (
+          <div class="topics-grid__group">
+            <h2 class="topics-grid__heading" style={`--cat-color: var(--cat-${cat.token})`}>
+              {cat.name}
+            </h2>
+            <ul class="topics-grid__list" role="list">
+              {cat.pages.map((page) => (
+                <li>
+                  <a href={`/topics/${page.slug}`} class="topics-grid__link">
+                    {page.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .topics-index {
+    background: var(--bg-page);
+  }
+
+  .topics-index__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h1);
+    font-weight: var(--weight-tailor-h1);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .topics-index__intro {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body-muted);
+    max-width: 36rem;
+    margin: 0 0 var(--space-global-xl);
+    line-height: 1.6;
+  }
+
+  .topics-grid {
+    display: grid;
+    gap: var(--space-global-lg);
+  }
+
+  .topics-grid__group {
+    padding: var(--space-global-md);
+    background: var(--bg-surface);
+    border-radius: var(--radius-md);
+    border: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  .topics-grid__heading {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h3);
+    font-weight: var(--weight-tailor-h3);
+    color: var(--cat-color, var(--text-heading));
+    margin: 0 0 var(--space-global-sm);
+    padding-bottom: 0.375rem;
+    border-bottom: 2px solid var(--cat-color, var(--border-subtle));
+  }
+
+  .topics-grid__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .topics-grid__link {
+    display: block;
+    padding: 0.4rem 0.5rem;
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    font-weight: 500;
+    color: var(--brand-accent-text);
+    text-decoration: none;
+    border-radius: var(--radius-xs);
+    transition: background var(--transition-speed) var(--transition-ease);
+  }
+
+  .topics-grid__link:hover {
+    background: var(--bg-surface-alt);
+  }
+
+  @media (min-width: 768px) {
+    .topics-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .topics-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

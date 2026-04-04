@@ -1,23 +1,280 @@
 ---
-import { getQuestions } from '../../lib/content';
-import type { Question } from '../../lib/types';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getQuestions, getGlossaryIndex, getTopics } from '../../lib/content';
+import { renderBlocks } from '../../lib/render-blocks';
+import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
+import { getPostItImagePath } from '../../lib/post-it-images';
+import { selectRelatedQuestions } from '../../lib/related-questions';
+import type { Question, Topic, GlossaryIndex } from '../../lib/types';
+
+import SimpleModeToggle from '../../components/SimpleModeToggle.astro';
+import GlossaryTooltips from '../../components/GlossaryTooltips.astro';
+import CrisisSupport from '../../components/CrisisSupport.astro';
+import AgeFlag from '../../components/AgeFlag.astro';
+import SignpostingBlock from '../../components/SignpostingBlock.astro';
+import EndOfAnswerPanel from '../../components/EndOfAnswerPanel.astro';
+import RelatedQuestions from '../../components/RelatedQuestions.astro';
+import TopicTags from '../../components/TopicTags.astro';
 
 export async function getStaticPaths() {
   const questions = await getQuestions();
+  const glossaryIndex = await getGlossaryIndex();
+  const topics = await getTopics();
+  const topicMap = new Map(topics.map((t) => [t.id, t]));
+
   return questions.map((q) => ({
     params: { slug: q.slug },
-    props: { question: q },
+    props: {
+      question: q,
+      allQuestions: questions,
+      glossaryIndex,
+      fullTopic: q.topicIds[0] ? topicMap.get(q.topicIds[0]) || null : null,
+    },
   }));
 }
 
 interface Props {
   question: Question;
+  allQuestions: Question[];
+  glossaryIndex: GlossaryIndex;
+  fullTopic: Topic | null;
 }
 
-const { question } = Astro.props;
+const { question, allQuestions, glossaryIndex, fullTopic } = Astro.props;
+
+// --- Data preparation ---
+
+// Post-it image
+const postItImage = getPostItImagePath(question.slug);
+
+// Crisis support: show if topic category is Safety & Safeguarding
+const isSafeguarding = question.topic?.category === 'Safety & Safeguarding';
+const showCrisis = isSafeguarding;
+const crisisService = fullTopic?.crisisService || 'Childline';
+
+// Age flag: show if Age Tier is "Age-flagged Year 9+"
+const showAgeFlag = question.ageTier === 'Age-flagged Year 9+';
+
+// Render answer body with glossary tooltips
+const standardBodyHtml = renderBlocks(question.body);
+const standardWithTooltips = injectGlossaryTooltips(standardBodyHtml, glossaryIndex);
+
+// Simple answer with tooltips (using simple definitions)
+const simpleAnswerHtml = question.simpleAnswer
+  ? `<p>${question.simpleAnswer.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>')}</p>`
+  : '';
+const simpleWithTooltips = injectGlossaryTooltips(simpleAnswerHtml, glossaryIndex);
+
+// Related questions
+const relatedQuestions = selectRelatedQuestions(question, allQuestions);
+
+// Topic info for end-of-answer panel
+const topicName = question.topic?.name || 'this topic';
+const topicSlug = question.topic?.slug || '';
+
+// Category badge
+const categoryBadgeMap: Record<string, string> = {
+  'Anatomy': 'ota-anatomy',
+  'Puberty': 'ota-puberty',
+  'Relationships': 'ota-relationships',
+  'Sex': 'ota-sex',
+  'Sexual Health': 'ota-sexual-health',
+  'Sex & the Law': 'ota-law',
+  'Contraception': 'ota-contraception',
+};
+const categoryBadge = question.okayToAskCategory
+  ? categoryBadgeMap[question.okayToAskCategory]
+  : null;
 ---
 
-<html lang="en">
-  <head><meta charset="utf-8" /><title>{question.question} — Okay to Ask</title></head>
-  <body><h1>{question.question}</h1></body>
-</html>
+<BaseLayout title={`${question.question} — Okay to Ask`} layer="ota">
+  {/* Crisis support [A9] — above everything */}
+  {showCrisis && <CrisisSupport crisisService={crisisService} />}
+
+  {/* Age flag interstitial [D1] */}
+  {showAgeFlag && question.topic && (
+    <AgeFlag topicLabel={question.topic.name} topicSlug={question.topic.slug} />
+  )}
+
+  <article class="surface--ota">
+    <div class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+      {/* Category badge */}
+      {question.okayToAskCategory && (
+        <span class:list={['badge', 'badge--pill', categoryBadge && `badge--${categoryBadge}`]}>
+          {question.okayToAskCategory}
+        </span>
+      )}
+
+      {/* Post-it image */}
+      {postItImage && (
+        <div class="post-it-wrapper">
+          <img
+            src={postItImage}
+            alt={`Handwritten question: ${question.question}`}
+            class="post-it-image"
+            loading="eager"
+          />
+        </div>
+      )}
+
+      {/* Page title */}
+      <h1>{question.question}</h1>
+
+      {/* Simple Mode toggle [A6] */}
+      <div class="toggle-wrapper">
+        <SimpleModeToggle />
+      </div>
+
+      {/* Answer content — both views rendered at build time */}
+      <div data-mode="standard" class="mode-content ota-prose">
+        <Fragment set:html={standardWithTooltips} />
+      </div>
+      <div data-mode="simple" class="mode-content ota-prose">
+        <Fragment set:html={simpleWithTooltips} />
+      </div>
+
+      {/* Signposting block [A8] */}
+      {question.signposting.length > 0 && (
+        <div class="signposting-wrapper">
+          <SignpostingBlock services={question.signposting} />
+        </div>
+      )}
+    </div>
+  </article>
+
+  {/* End-of-answer panel [A17] */}
+  <EndOfAnswerPanel topicName={topicName} topicSlug={topicSlug} />
+
+  {/* Related questions [A15] */}
+  <RelatedQuestions questions={relatedQuestions} />
+
+  {/* Topic tags [A16] */}
+  <TopicTags topic={question.topic} />
+
+  {/* Glossary tooltip runtime */}
+  <GlossaryTooltips />
+</BaseLayout>
+
+<style>
+  /* Simple Mode visibility — driven by .simple-active on <html> */
+  [data-mode="simple"] {
+    display: none;
+  }
+  :global(.simple-active) [data-mode="standard"] {
+    display: none !important;
+  }
+  :global(.simple-active) [data-mode="simple"] {
+    display: block !important;
+  }
+
+  .post-it-wrapper {
+    margin: var(--space-global-lg) 0;
+    max-width: 400px;
+  }
+
+  .post-it-image {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    background: var(--surface-ota-postit-soft);
+    padding: var(--space-global-xs);
+    transform: rotate(-1deg);
+  }
+
+  .toggle-wrapper {
+    margin: var(--space-global-md) 0 var(--space-global-lg);
+  }
+
+  .signposting-wrapper {
+    margin-top: var(--space-global-xl);
+  }
+</style>
+
+<style is:global>
+  /* OtA prose styling — for rendered Notion content */
+  .ota-prose p {
+    margin-bottom: var(--space-global-sm);
+    line-height: 1.7;
+  }
+
+  .ota-prose h2 {
+    margin-top: var(--space-global-lg);
+    margin-bottom: var(--space-global-sm);
+  }
+
+  .ota-prose h3 {
+    margin-top: var(--space-global-md);
+    margin-bottom: var(--space-global-xs);
+  }
+
+  .ota-prose ul,
+  .ota-prose ol {
+    margin-bottom: var(--space-global-sm);
+    padding-left: var(--space-global-md);
+  }
+
+  .ota-prose li {
+    margin-bottom: var(--space-global-xs);
+    line-height: 1.6;
+  }
+
+  .ota-prose blockquote {
+    border-left: 3px solid var(--brand-accent);
+    padding-left: var(--space-global-md);
+    margin: var(--space-global-md) 0;
+    color: var(--text-body-muted);
+    font-style: italic;
+  }
+
+  .ota-prose a {
+    color: var(--link-ota-color, var(--brand-accent-text));
+    text-decoration: underline;
+    text-decoration-color: var(--brand-accent);
+    text-underline-offset: 2px;
+  }
+
+  .ota-prose a:hover {
+    color: var(--link-ota-color-hover, var(--brand-accent-strong));
+  }
+
+  .ota-prose figure {
+    margin: var(--space-global-md) 0;
+  }
+
+  .ota-prose figure img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+  }
+
+  .ota-prose figcaption {
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+    margin-top: var(--space-global-xs);
+  }
+
+  .ota-prose .callout {
+    background: var(--bg-tinted);
+    border-radius: var(--radius-md);
+    padding: var(--space-global-sm) var(--space-global-md);
+    margin: var(--space-global-md) 0;
+  }
+
+  .ota-prose .video-embed {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    margin: var(--space-global-md) 0;
+  }
+
+  .ota-prose .video-embed iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: var(--radius-md);
+  }
+</style>

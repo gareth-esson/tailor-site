@@ -1,0 +1,167 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Test — Okay to Ask Layer" layer="ota">
+  <section class="test-section surface--ota">
+    <p class="preheader">Design system verification</p>
+    <h1>Okay to Ask Layer Test</h1>
+    <p class="lede">This page verifies the OtA layer: Fraunces headings, Atkinson Hyperlegible body, warm surfaces, category badges, and safeguarding alerts.</p>
+  </section>
+
+  <section class="test-section surface--ota">
+    <h2>Typography hierarchy</h2>
+    <p>Body text in Atkinson Hyperlegible. Designed for maximum legibility — every letterform is distinct, which matters for younger readers and people with dyslexia. This is the same body font used in the Okay to Ask book.</p>
+    <h3>Heading level three</h3>
+    <p>Fraunces brings warmth and character to headings. It complements the Okay to Ask wordmark serif and creates a deliberate tonal contrast with Atkinson's functional clarity.</p>
+    <h4>Heading level four</h4>
+    <p>The shift from Lexend to Atkinson + Fraunces creates the "two rooms in one building" effect. The header and footer above and below stay in Lexend.</p>
+  </section>
+
+  <section class="test-section surface--ota-alt">
+    <h2>Alternate OtA surface</h2>
+    <p>This section uses <code>.surface--ota-alt</code> for a slightly deeper warm tint, creating visual rhythm within OtA pages.</p>
+  </section>
+
+  <section class="test-section surface--ota">
+    <h2>Category badges</h2>
+    <div class="test-badges">
+      <span class="badge badge--pill badge--ota-anatomy">Anatomy</span>
+      <span class="badge badge--pill badge--ota-puberty">Puberty</span>
+      <span class="badge badge--pill badge--ota-relationships">Relationships</span>
+      <span class="badge badge--pill badge--ota-sex">Sex</span>
+      <span class="badge badge--pill badge--ota-sexual-health">Sexual Health</span>
+      <span class="badge badge--pill badge--ota-law">Sex &amp; the Law</span>
+      <span class="badge badge--pill badge--ota-contraception">Contraception</span>
+    </div>
+  </section>
+
+  <section class="test-section surface--ota">
+    <h2>Safeguarding alerts</h2>
+
+    <!-- A8 signposting — no dismiss button (safeguarding requirement) -->
+    <div class="alert alert--support">
+      <div class="alert__icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div class="alert__content">
+        <div class="alert__title">Need to talk to someone?</div>
+        <div class="alert__body"><p>If anything on this page has raised concerns, you can speak to a trusted adult or contact Childline on 0800 1111. It is free, confidential, and available 24 hours a day.</p></div>
+      </div>
+    </div>
+
+    <!-- A9 crisis support — no dismiss button (safeguarding requirement) -->
+    <div class="alert alert--crisis">
+      <div class="alert__icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div class="alert__content">
+        <div class="alert__title">Need support right now?</div>
+        <div class="alert__body"><p>If you are in immediate danger, call 999. You can also text SHOUT to 85258 for free, 24/7 crisis support.</p></div>
+      </div>
+    </div>
+
+    <!-- D1 age flag -->
+    <div class="alert alert--ageflag">
+      <div class="alert__icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      </div>
+      <div class="alert__content">
+        <div class="alert__title">This content is aimed at Year 9+</div>
+        <div class="alert__body"><p>Some of the language and topics here are more suited to older students. If you are younger, you might want to check with a trusted adult first.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="test-section surface--ota">
+    <h2>Buttons on OtA</h2>
+    <p>Buttons use the brand teal everywhere — no layer-specific button styles.</p>
+    <div class="test-buttons">
+      <a class="btn btn--std btn--primary">Primary button</a>
+      <a class="btn btn--std btn--outline">Outline button</a>
+      <a class="btn btn--sm btn--tint">Tint button</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .test-section {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: var(--space-global-xl) var(--space-global-gutter);
+  }
+
+  .test-section.surface--ota,
+  .test-section.surface--ota-alt {
+    max-width: none;
+  }
+
+  .test-section.surface--ota > *,
+  .test-section.surface--ota-alt > * {
+    max-width: 48rem;
+    margin-inline: auto;
+  }
+
+  .test-section h1 {
+    font-size: var(--text-display-size-h1);
+    margin-bottom: var(--space-global-sm);
+  }
+
+  .test-section h2 {
+    font-size: var(--text-display-size-h3);
+    margin-bottom: var(--space-global-sm);
+  }
+
+  .test-section h3 {
+    font-size: var(--text-display-size-h4);
+    margin-bottom: var(--space-global-xs);
+  }
+
+  .test-section h4 {
+    font-size: var(--text-display-size-h5);
+    margin-bottom: var(--space-global-xs);
+  }
+
+  .test-section p {
+    margin-bottom: var(--space-global-sm);
+    line-height: 1.65;
+  }
+
+  .preheader {
+    font-size: var(--text-util-preheader-size);
+    font-weight: var(--text-util-preheader-weight);
+    letter-spacing: var(--text-util-preheader-ls);
+    text-transform: uppercase;
+    color: var(--text-body-muted);
+    margin-bottom: var(--space-global-xs);
+  }
+
+  .lede {
+    font-size: var(--text-util-lede-size);
+    line-height: var(--text-util-lede-lh);
+  }
+
+  .test-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-global-xs);
+  }
+
+  .test-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-global-sm);
+    align-items: center;
+  }
+
+  .alert {
+    margin-bottom: var(--space-global-md);
+  }
+
+  code {
+    font-size: var(--text-util-micro-size);
+    background: var(--bg-tinted);
+    padding: 0.15em 0.4em;
+    border-radius: var(--radius-xs);
+  }
+</style>

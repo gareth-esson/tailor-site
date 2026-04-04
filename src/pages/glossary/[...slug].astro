@@ -1,23 +1,177 @@
 ---
-import { getGlossaryTerms } from '../../lib/content';
-import type { GlossaryTerm } from '../../lib/types';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getGlossaryTerms, getGlossaryIndex } from '../../lib/content';
+import { renderBlocks } from '../../lib/render-blocks';
+import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
+import type { GlossaryTerm, GlossaryIndex } from '../../lib/types';
+
+import SimpleModeToggle from '../../components/SimpleModeToggle.astro';
+import GlossaryTooltips from '../../components/GlossaryTooltips.astro';
+import SignpostingBlock from '../../components/SignpostingBlock.astro';
+import RelatedTerms from '../../components/RelatedTerms.astro';
+import RelatedQuestions from '../../components/RelatedQuestions.astro';
+import TopicTags from '../../components/TopicTags.astro';
 
 export async function getStaticPaths() {
   const terms = await getGlossaryTerms();
+  const glossaryIndex = await getGlossaryIndex();
+
   return terms.map((t) => ({
     params: { slug: t.slug },
-    props: { term: t },
+    props: { term: t, glossaryIndex },
   }));
 }
 
 interface Props {
   term: GlossaryTerm;
+  glossaryIndex: GlossaryIndex;
 }
 
-const { term } = Astro.props;
+const { term, glossaryIndex } = Astro.props;
+
+// --- Data preparation ---
+
+// Render standard explainer body with glossary tooltips
+// Exclude this term from tooltipping on its own page
+const standardBodyHtml = renderBlocks(term.body);
+const standardWithTooltips = injectGlossaryTooltips(
+  standardBodyHtml,
+  glossaryIndex,
+  term.slug
+);
+
+// Simple explainer — from the simpleDefinition extended field
+// For now, the simple explainer comes from the body in simple mode
+// We use the same body but with simple tooltips
+const simpleWithTooltips = injectGlossaryTooltips(
+  standardBodyHtml,
+  glossaryIndex,
+  term.slug
+);
+
+// Topic info for CTA
+const topicName = term.topic?.name || '';
+const topicSlug = term.topic?.slug || '';
 ---
 
-<html lang="en">
-  <head><meta charset="utf-8" /><title>{term.term} — Glossary — Tailor Education</title></head>
-  <body><h1>{term.term}</h1></body>
-</html>
+<BaseLayout title={`${term.term} — Glossary — Tailor Education`} layer="ota">
+  <article class="surface--ota">
+    <div class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+      {/* Term heading */}
+      <h1>{term.term}</h1>
+
+      {/* Simple Mode toggle [A6] */}
+      <div class="toggle-wrapper">
+        <SimpleModeToggle />
+      </div>
+
+      {/* Definition — prominent */}
+      <div data-mode="standard" class="mode-content">
+        <div class="definition-block">
+          <p class="definition-text">{term.shortDefinition}</p>
+        </div>
+      </div>
+      <div data-mode="simple" class="mode-content">
+        <div class="definition-block">
+          <p class="definition-text">{term.simpleDefinition}</p>
+        </div>
+      </div>
+
+      {/* Full explainer — with glossary tooltips */}
+      {term.body.length > 0 && (
+        <>
+          <div data-mode="standard" class="mode-content ota-prose explainer-section">
+            <Fragment set:html={standardWithTooltips} />
+          </div>
+          <div data-mode="simple" class="mode-content ota-prose explainer-section">
+            <Fragment set:html={simpleWithTooltips} />
+          </div>
+        </>
+      )}
+    </div>
+  </article>
+
+  {/* Related glossary terms [A15] */}
+  <RelatedTerms terms={term.relatedTerms} />
+
+  {/* Questions that reference this term [A15] */}
+  {term.referencedIn.length > 0 && (
+    <section class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-md)]">
+      <h2>Questions about this term</h2>
+      <ul class="grid gap-[var(--space-global-sm)]" style="list-style: none; padding: 0;">
+        {term.referencedIn.map((q) => (
+          <li>
+            <a
+              href={`/anonymous_question/${q.slug}`}
+              class="link-action"
+              style={`display: block; padding: var(--space-global-sm); background: var(--bg-surface); border-radius: var(--radius-md); border: var(--border-width-xs) solid var(--border-subtle); text-decoration: none;`}
+            >
+              {q.question}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {/* Signposting block [A8] — if relevant to the term's topic */}
+  {term.topic && (
+    <div class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-md)]">
+      {/* Signposting shows Childline as default for any topic-linked term */}
+      <SignpostingBlock services={['Childline']} />
+    </div>
+  )}
+
+  {/* CTA — Explore topic */}
+  {topicName && topicSlug && (
+    <section class="surface--ota-alt">
+      <div class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]" style="text-align: center;">
+        <a href={`/topics/${topicSlug}`} class="link-action" style="font-size: var(--text-card-size-h4);">
+          Explore {topicName}
+        </a>
+      </div>
+    </section>
+  )}
+
+  {/* Topic tags [A16] */}
+  <TopicTags topic={term.topic} />
+
+  {/* Glossary tooltip runtime */}
+  <GlossaryTooltips />
+</BaseLayout>
+
+<style>
+  /* Simple Mode visibility */
+  [data-mode="simple"] {
+    display: none;
+  }
+  :global(.simple-active) [data-mode="standard"] {
+    display: none !important;
+  }
+  :global(.simple-active) [data-mode="simple"] {
+    display: block !important;
+  }
+
+  .toggle-wrapper {
+    margin: var(--space-global-md) 0 var(--space-global-lg);
+  }
+
+  .definition-block {
+    background: var(--bg-surface);
+    border-left: 4px solid var(--brand-accent);
+    border-radius: var(--radius-md);
+    padding: var(--space-global-md) var(--space-global-lg);
+    margin-bottom: var(--space-global-lg);
+  }
+
+  .definition-text {
+    font-size: 1.15rem;
+    line-height: 1.6;
+    margin: 0;
+    color: var(--text-body);
+  }
+
+  .explainer-section {
+    margin-top: var(--space-global-md);
+  }
+</style>

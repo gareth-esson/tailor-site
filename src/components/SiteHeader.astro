@@ -1,0 +1,417 @@
+---
+/**
+ * Site header [A1] with navigation [A3].
+ * Persistent on every page. Always uses Lexend (shell layer).
+ * Contains: logo, primary nav, search placeholder, mobile hamburger.
+ * "Topics" nav item triggers mega menu [D8].
+ */
+import TopicsMegaMenu from './TopicsMegaMenu.astro';
+---
+
+<header class="site-header" id="site-header">
+  <div class="site-header__inner">
+    <!-- Logo -->
+    <a href="/" class="site-header__brand" aria-label="Tailor Education — home">
+      <img src="/assets/tailor-logo-lockup-dark.svg" alt="Tailor Education" class="site-header__logo" width="180" height="36" />
+    </a>
+
+    <!-- Desktop navigation -->
+    <nav class="site-header__nav" aria-label="Main navigation">
+      <ul class="site-header__nav-list" role="list">
+        <li class="site-header__nav-item site-header__nav-item--has-mega">
+          <button
+            class="site-header__nav-link site-header__mega-trigger"
+            aria-expanded="false"
+            aria-controls="mega-menu"
+            type="button"
+          >
+            Topics
+            <svg class="site-header__chevron" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+              <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <TopicsMegaMenu />
+        </li>
+        <li class="site-header__nav-item">
+          <a href="/questions/" class="site-header__nav-link">Okay to Ask</a>
+        </li>
+        <li class="site-header__nav-item">
+          <a href="/training" class="site-header__nav-link">Training</a>
+        </li>
+        <li class="site-header__nav-item">
+          <a href="/services" class="site-header__nav-link">Services</a>
+        </li>
+        <li class="site-header__nav-item">
+          <a href="/blog/" class="site-header__nav-link">Blog</a>
+        </li>
+        <li class="site-header__nav-item">
+          <a href="/about" class="site-header__nav-link">About</a>
+        </li>
+        <li class="site-header__nav-item">
+          <a href="/contact" class="site-header__nav-link">Contact</a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Search placeholder (non-functional until Stage 6) -->
+    <button class="site-header__search-btn" type="button" aria-label="Search (coming soon)" disabled>
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <circle cx="8.5" cy="8.5" r="5.75" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M13 13L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <!-- Mobile hamburger -->
+    <button
+      class="site-header__hamburger"
+      type="button"
+      aria-expanded="false"
+      aria-controls="mobile-nav"
+      aria-label="Open menu"
+    >
+      <span class="site-header__hamburger-line"></span>
+      <span class="site-header__hamburger-line"></span>
+      <span class="site-header__hamburger-line"></span>
+    </button>
+  </div>
+
+  <!-- Mobile navigation [D3] -->
+  <div class="mobile-nav" id="mobile-nav" aria-hidden="true">
+    <nav aria-label="Mobile navigation">
+      <ul class="mobile-nav__list" role="list">
+        <li class="mobile-nav__item">
+          <button
+            class="mobile-nav__link mobile-nav__accordion-trigger"
+            aria-expanded="false"
+            type="button"
+          >
+            Topics
+            <svg class="mobile-nav__chevron" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+              <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="mobile-nav__mega" aria-hidden="true">
+            <TopicsMegaMenu mobile />
+          </div>
+        </li>
+        <li class="mobile-nav__item">
+          <a href="/questions/" class="mobile-nav__link">Okay to Ask</a>
+        </li>
+        <li class="mobile-nav__item">
+          <a href="/training" class="mobile-nav__link">Training</a>
+        </li>
+        <li class="mobile-nav__item">
+          <a href="/services" class="mobile-nav__link">Services</a>
+        </li>
+        <li class="mobile-nav__item">
+          <a href="/blog/" class="mobile-nav__link">Blog</a>
+        </li>
+        <li class="mobile-nav__item">
+          <a href="/about" class="mobile-nav__link">About</a>
+        </li>
+        <li class="mobile-nav__item">
+          <a href="/contact" class="mobile-nav__link">Contact</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    const header = document.getElementById('site-header');
+    if (!header) return;
+
+    // --- Desktop mega menu ---
+    const megaTrigger = header.querySelector('.site-header__mega-trigger') as HTMLButtonElement | null;
+    const megaMenu = header.querySelector('#mega-menu') as HTMLElement | null;
+
+    if (megaTrigger && megaMenu) {
+      megaTrigger.addEventListener('click', () => {
+        const expanded = megaTrigger.getAttribute('aria-expanded') === 'true';
+        megaTrigger.setAttribute('aria-expanded', String(!expanded));
+        megaMenu.setAttribute('aria-hidden', String(expanded));
+      });
+
+      // Close mega menu on outside click
+      document.addEventListener('click', (e) => {
+        if (!header.contains(e.target as Node)) {
+          megaTrigger.setAttribute('aria-expanded', 'false');
+          megaMenu.setAttribute('aria-hidden', 'true');
+        }
+      });
+
+      // Close on Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && megaTrigger.getAttribute('aria-expanded') === 'true') {
+          megaTrigger.setAttribute('aria-expanded', 'false');
+          megaMenu.setAttribute('aria-hidden', 'true');
+          megaTrigger.focus();
+        }
+      });
+    }
+
+    // --- Mobile hamburger ---
+    const hamburger = header.querySelector('.site-header__hamburger') as HTMLButtonElement | null;
+    const mobileNav = document.getElementById('mobile-nav');
+
+    if (hamburger && mobileNav) {
+      hamburger.addEventListener('click', () => {
+        const expanded = hamburger.getAttribute('aria-expanded') === 'true';
+        hamburger.setAttribute('aria-expanded', String(!expanded));
+        mobileNav.setAttribute('aria-hidden', String(expanded));
+        hamburger.classList.toggle('is-open', !expanded);
+        document.body.classList.toggle('nav-open', !expanded);
+      });
+    }
+
+    // --- Mobile accordion for Topics ---
+    const accordionTriggers = header.querySelectorAll('.mobile-nav__accordion-trigger');
+    accordionTriggers.forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        const expanded = trigger.getAttribute('aria-expanded') === 'true';
+        trigger.setAttribute('aria-expanded', String(!expanded));
+        const panel = trigger.nextElementSibling as HTMLElement | null;
+        if (panel) panel.setAttribute('aria-hidden', String(expanded));
+      });
+    });
+  }
+
+  // Run on initial load and Astro page transitions
+  initHeader();
+  document.addEventListener('astro:after-swap', initHeader);
+</script>
+
+<style>
+  /* ========================================
+     Site Header [A1]
+     ======================================== */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg-surface);
+    border-bottom: var(--border-width-xs) solid var(--border-subtle);
+    font-family: var(--font-shell-body-stack);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-global-md);
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: var(--space-global-sm) var(--space-global-gutter);
+  }
+
+  .site-header__brand {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .site-header__logo {
+    height: 2rem;
+    width: auto;
+  }
+
+  /* --- Desktop nav --- */
+  .site-header__nav {
+    display: none;
+  }
+
+  .site-header__nav-list {
+    display: flex;
+    align-items: center;
+    gap: var(--space-global-xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-header__nav-item {
+    position: relative;
+  }
+
+  .site-header__nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    font-family: var(--font-shell-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: 500;
+    color: var(--text-body);
+    text-decoration: none;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: background var(--transition-speed) var(--transition-ease),
+                color var(--transition-speed) var(--transition-ease);
+  }
+
+  .site-header__nav-link:hover,
+  .site-header__nav-link[aria-expanded="true"] {
+    background: var(--bg-surface-alt);
+    color: var(--brand-accent-text);
+  }
+
+  .site-header__chevron {
+    transition: transform var(--transition-speed) var(--transition-ease);
+  }
+
+  .site-header__mega-trigger[aria-expanded="true"] .site-header__chevron {
+    transform: rotate(180deg);
+  }
+
+  /* --- Search button --- */
+  .site-header__search-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: none;
+    background: none;
+    color: var(--text-body-muted);
+    cursor: not-allowed;
+    opacity: 0.5;
+    border-radius: var(--radius-sm);
+  }
+
+  /* --- Hamburger --- */
+  .site-header__hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .site-header__hamburger:hover {
+    background: var(--bg-surface-alt);
+  }
+
+  .site-header__hamburger-line {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--text-body);
+    border-radius: 1px;
+    transition: transform var(--transition-speed) var(--transition-ease),
+                opacity var(--transition-speed) var(--transition-ease);
+  }
+
+  .site-header__hamburger.is-open .site-header__hamburger-line:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+  .site-header__hamburger.is-open .site-header__hamburger-line:nth-child(2) {
+    opacity: 0;
+  }
+  .site-header__hamburger.is-open .site-header__hamburger-line:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  /* ========================================
+     Mobile Navigation [D3]
+     ======================================== */
+  .mobile-nav {
+    display: none;
+    background: var(--bg-surface);
+    border-top: var(--border-width-xs) solid var(--border-subtle);
+    padding: var(--space-global-sm) var(--space-global-gutter);
+    max-height: calc(100vh - 4rem);
+    overflow-y: auto;
+  }
+
+  .mobile-nav[aria-hidden="false"] {
+    display: block;
+  }
+
+  .mobile-nav__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .mobile-nav__item {
+    border-bottom: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  .mobile-nav__item:last-child {
+    border-bottom: none;
+  }
+
+  .mobile-nav__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.75rem 0;
+    font-family: var(--font-shell-body-stack);
+    font-size: var(--text-prose-size-body);
+    font-weight: 500;
+    color: var(--text-body);
+    text-decoration: none;
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+
+  .mobile-nav__link:hover {
+    color: var(--brand-accent-text);
+  }
+
+  .mobile-nav__chevron {
+    transition: transform var(--transition-speed) var(--transition-ease);
+  }
+
+  .mobile-nav__accordion-trigger[aria-expanded="true"] .mobile-nav__chevron {
+    transform: rotate(180deg);
+  }
+
+  .mobile-nav__mega {
+    display: none;
+    padding-bottom: var(--space-global-sm);
+  }
+
+  .mobile-nav__mega[aria-hidden="false"] {
+    display: block;
+  }
+
+  /* Lock body scroll when mobile nav is open */
+  :global(body.nav-open) {
+    overflow: hidden;
+  }
+
+  /* ========================================
+     Responsive: show desktop nav on lg+
+     ======================================== */
+  @media (min-width: 1024px) {
+    .site-header__nav {
+      display: flex;
+    }
+
+    .site-header__search-btn {
+      display: flex;
+    }
+
+    .site-header__hamburger {
+      display: none;
+    }
+
+    .mobile-nav {
+      display: none !important;
+    }
+  }
+</style>

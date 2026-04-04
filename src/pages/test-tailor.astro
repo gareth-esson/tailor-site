@@ -1,0 +1,157 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Test — Tailor Layer">
+  <section class="test-section">
+    <p class="preheader">Design system verification</p>
+    <h1>Tailor Layer Test</h1>
+    <p class="lede">This page verifies the default Tailor layer: Lexend throughout, teal accents, neutral surfaces.</p>
+  </section>
+
+  <section class="test-section">
+    <h2>Typography hierarchy</h2>
+    <p>Body text in Lexend. The Tailor layer uses a single typeface for everything — headings, body, UI, labels. This creates consistency between the website and the Tailor app.</p>
+    <h3>Heading level three</h3>
+    <p>More body text to verify line height and measure. The design system provides generous spacing and clear hierarchy between levels.</p>
+    <h4>Heading level four</h4>
+    <p>Smaller heading followed by body text. All values come from CSS custom properties.</p>
+  </section>
+
+  <section class="test-section test-section--alt">
+    <h2>Alternate surface band</h2>
+    <p>This section uses <code>--bg-surface-alt</code> for visual rhythm between content sections on Tailor pages.</p>
+  </section>
+
+  <section class="test-section">
+    <h2>Buttons</h2>
+    <div class="test-buttons">
+      <a class="btn btn--std btn--primary">Primary button</a>
+      <a class="btn btn--std btn--outline">Outline button</a>
+      <a class="btn btn--sm btn--tint">Tint button</a>
+    </div>
+  </section>
+
+  <section class="test-section">
+    <h2>Card surface</h2>
+    <div class="test-card">
+      <h3>Elevated card</h3>
+      <p>A contained surface using <code>--bg-surface</code> with shadow elevation. Cards sit above the page ground.</p>
+    </div>
+  </section>
+
+  <section class="test-section surface--dark">
+    <h2>Dark authority band</h2>
+    <p>This section uses <code>.surface--dark</code> for high-contrast bands. Text switches to <code>--text-on-dark</code>.</p>
+    <div class="test-buttons">
+      <a class="btn btn--std btn--white-primary">White primary</a>
+      <a class="btn btn--std btn--white-outline">White outline</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .test-section {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: var(--space-global-xl) var(--space-global-gutter);
+  }
+
+  .test-section--alt {
+    max-width: none;
+    background: var(--bg-surface-alt);
+  }
+
+  .test-section--alt > * {
+    max-width: 48rem;
+    margin-inline: auto;
+  }
+
+  .test-section h1 {
+    font-size: var(--text-display-size-h1);
+    color: var(--text-heading);
+    margin-bottom: var(--space-global-sm);
+  }
+
+  .test-section h2 {
+    font-size: var(--text-display-size-h3);
+    color: var(--text-heading);
+    margin-bottom: var(--space-global-sm);
+  }
+
+  .test-section h3 {
+    font-size: var(--text-display-size-h4);
+    color: var(--text-heading);
+    margin-bottom: var(--space-global-xs);
+  }
+
+  .test-section h4 {
+    font-size: var(--text-display-size-h5);
+    color: var(--text-heading);
+    margin-bottom: var(--space-global-xs);
+  }
+
+  .test-section p {
+    margin-bottom: var(--space-global-sm);
+    line-height: 1.65;
+  }
+
+  .preheader {
+    font-size: var(--text-util-preheader-size);
+    font-weight: var(--text-util-preheader-weight);
+    letter-spacing: var(--text-util-preheader-ls);
+    text-transform: uppercase;
+    color: var(--text-body-muted);
+    margin-bottom: var(--space-global-xs);
+  }
+
+  .lede {
+    font-size: var(--text-util-lede-size);
+    line-height: var(--text-util-lede-lh);
+    color: var(--text-body-muted);
+  }
+
+  .test-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-global-sm);
+    align-items: center;
+  }
+
+  .test-card {
+    background: var(--bg-surface);
+    padding: var(--space-global-lg);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+  }
+
+  .test-card h3 {
+    margin-bottom: var(--space-global-xs);
+  }
+
+  .test-card p {
+    margin-bottom: 0;
+  }
+
+  .test-section.surface--dark {
+    max-width: none;
+    padding: var(--space-global-xl) var(--space-global-gutter);
+  }
+
+  .test-section.surface--dark > * {
+    max-width: 48rem;
+    margin-inline: auto;
+  }
+
+  code {
+    font-size: var(--text-util-micro-size);
+    background: var(--bg-tinted);
+    padding: 0.15em 0.4em;
+    border-radius: var(--radius-xs);
+  }
+
+  .surface--dark code {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--text-on-dark);
+  }
+</style>

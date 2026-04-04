@@ -1,0 +1,68 @@
+---
+/**
+ * CTA block [A11] — "Explore ready-made lessons on [topic]"
+ * Mid-page CTA linking to app library filtered by topic.
+ * Used on landing pages [C3].
+ */
+interface Props {
+  topicTitle: string;
+  /** Granular topic slugs for app library URL filter */
+  topicSlugs: string[];
+}
+
+const { topicTitle, topicSlugs } = Astro.props;
+
+// Build app library URL with topic filter
+const filterParam = topicSlugs.join(',');
+const appUrl = `https://app.tailoreducation.org.uk/library?topics=${filterParam}`;
+---
+
+<section class="cta-explore">
+  <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+    <div class="cta-explore__card">
+      <div class="cta-explore__content">
+        <h2 class="cta-explore__title">Explore ready-made lessons on {topicTitle}</h2>
+        <p class="cta-explore__text">
+          Browse expert-written RSE lessons in the Tailor library, ready to use with your students.
+        </p>
+      </div>
+      <a href={appUrl} class="btn btn--std btn--primary has-icon-hover" target="_blank" rel="noopener noreferrer">
+        Explore lessons
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-explore__card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-md);
+    padding: var(--space-global-lg);
+    background: var(--bg-tinted);
+    border-radius: var(--radius-lg);
+    border: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  .cta-explore__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h3);
+    font-weight: var(--weight-tailor-h3);
+    color: var(--text-heading);
+    margin: 0 0 0.25rem;
+  }
+
+  .cta-explore__text {
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body-muted);
+    margin: 0;
+  }
+
+  @media (min-width: 768px) {
+    .cta-explore__card {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+</style>

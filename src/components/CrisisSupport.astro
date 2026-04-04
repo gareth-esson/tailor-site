@@ -1,0 +1,43 @@
+---
+/**
+ * Crisis support component [A9].
+ * Renders when a question's topic is in Safety & Safeguarding,
+ * or content sensitivity tags trigger it.
+ * Not dismissable. Uses .alert--crisis class.
+ */
+import { SUPPORT_SERVICES } from '../lib/support-services';
+
+interface Props {
+  crisisService: string | null;
+}
+
+const { crisisService } = Astro.props;
+
+const service = crisisService ? SUPPORT_SERVICES[crisisService] : SUPPORT_SERVICES['Childline'];
+if (!service) return;
+---
+
+<div class="alert alert--crisis">
+  <div class="alert__icon">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+      <line x1="12" y1="9" x2="12" y2="13"></line>
+      <line x1="12" y1="17" x2="12.01" y2="17"></line>
+    </svg>
+  </div>
+  <div class="alert__content">
+    <div class="alert__title">Need support right now?</div>
+    <div class="alert__body">
+      <p>{service.description}</p>
+      <p>
+        {service.phone && (
+          <>
+            Call <strong>{service.name}</strong> free on <a href={`tel:${service.phone.replace(/\s/g, '')}`}>{service.phone}</a>
+            {' — '}
+          </>
+        )}
+        <a href={service.url} target="_blank" rel="noopener noreferrer">{service.urlLabel}</a>
+      </p>
+    </div>
+  </div>
+</div>

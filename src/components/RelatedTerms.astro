@@ -1,0 +1,30 @@
+---
+/**
+ * Related glossary terms [A15] — glossary variant.
+ * Links to related terms from the self-relation.
+ */
+import type { GlossaryRef } from '../lib/types';
+
+interface Props {
+  terms: GlossaryRef[];
+}
+
+const { terms } = Astro.props;
+
+if (terms.length === 0) return;
+---
+
+<section class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-md)]">
+  <h2>Related terms</h2>
+  <div class="flex flex-wrap gap-[var(--space-global-xs)]">
+    {terms.map((t) => (
+      <a
+        href={`/glossary/${t.slug}`}
+        class="badge badge--pill badge--accent"
+        style="text-decoration: none;"
+      >
+        {t.term}
+      </a>
+    ))}
+  </div>
+</section>

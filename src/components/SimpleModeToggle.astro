@@ -1,0 +1,103 @@
+---
+/**
+ * Simple Mode toggle [A6] — Astro island component.
+ * Segmented control with Standard / Simple options.
+ * Reads from localStorage, updates visibility of data-mode elements.
+ */
+---
+
+<div class="mode-toggle" role="radiogroup" aria-label="Reading level">
+  <button
+    type="button"
+    role="radio"
+    aria-checked="true"
+    class="mode-toggle__option mode-toggle__option--active"
+    data-mode-btn="standard"
+  >
+    Standard
+  </button>
+  <button
+    type="button"
+    role="radio"
+    aria-checked="false"
+    class="mode-toggle__option"
+    data-mode-btn="simple"
+  >
+    Simple
+  </button>
+</div>
+
+<script>
+  function initToggle() {
+    const toggle = document.querySelector('.mode-toggle');
+    if (!toggle) return;
+
+    const standardBtn = toggle.querySelector('[data-mode-btn="standard"]') as HTMLButtonElement;
+    const simpleBtn = toggle.querySelector('[data-mode-btn="simple"]') as HTMLButtonElement;
+    if (!standardBtn || !simpleBtn) return;
+
+    const isSimple = localStorage.getItem('simple_mode') === 'true';
+
+    function setMode(simple: boolean) {
+      if (simple) {
+        document.documentElement.classList.add('simple-active');
+        simpleBtn.classList.add('mode-toggle__option--active');
+        simpleBtn.setAttribute('aria-checked', 'true');
+        standardBtn.classList.remove('mode-toggle__option--active');
+        standardBtn.setAttribute('aria-checked', 'false');
+      } else {
+        document.documentElement.classList.remove('simple-active');
+        standardBtn.classList.add('mode-toggle__option--active');
+        standardBtn.setAttribute('aria-checked', 'true');
+        simpleBtn.classList.remove('mode-toggle__option--active');
+        simpleBtn.setAttribute('aria-checked', 'false');
+      }
+      localStorage.setItem('simple_mode', simple ? 'true' : 'false');
+    }
+
+    // Set initial state from localStorage
+    setMode(isSimple);
+
+    standardBtn.addEventListener('click', () => setMode(false));
+    simpleBtn.addEventListener('click', () => setMode(true));
+  }
+
+  // Run on initial load and on Astro page transitions
+  initToggle();
+  document.addEventListener('astro:after-swap', initToggle);
+</script>
+
+<style>
+  .mode-toggle {
+    display: inline-flex;
+    gap: var(--toggle-mode-gap);
+    background: var(--toggle-mode-bg);
+    border-radius: var(--toggle-mode-radius);
+    padding: var(--toggle-mode-gap);
+  }
+
+  .mode-toggle__option {
+    padding: var(--toggle-mode-padding-y) var(--toggle-mode-padding-x);
+    border-radius: var(--toggle-mode-radius);
+    border: none;
+    background: transparent;
+    color: var(--toggle-mode-text);
+    font-size: var(--toggle-mode-font-size);
+    font-weight: var(--toggle-mode-font-weight);
+    cursor: pointer;
+    transition: background var(--toggle-mode-transition),
+                color var(--toggle-mode-transition);
+    font-family: inherit;
+    line-height: 1;
+  }
+
+  .mode-toggle__option--active {
+    background: var(--toggle-mode-bg-active);
+    color: var(--toggle-mode-text-active);
+  }
+
+  .mode-toggle__option:focus-visible {
+    outline: 2px solid var(--brand-accent);
+    outline-offset: 2px;
+  }
+</style>

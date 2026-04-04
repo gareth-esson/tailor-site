@@ -1,0 +1,280 @@
+---
+/**
+ * Topics mega menu [D8].
+ * Shows all 22 landing pages grouped by 7 app categories.
+ * Desktop: multi-column layout expanding from "Topics" nav item.
+ * Mobile: accordion by category within mobile nav.
+ *
+ * Category headings use --cat-* tokens and are labels, not links.
+ */
+
+interface Props {
+  mobile?: boolean;
+}
+
+const { mobile = false } = Astro.props;
+
+/**
+ * Landing pages grouped by the 7 app categories.
+ * Static data — matches the 22 pages from the site structure doc.
+ */
+const categories = [
+  {
+    name: 'Relationships',
+    token: 'relationships',
+    pages: [
+      { title: 'Consent', slug: 'consent' },
+      { title: 'Healthy relationships', slug: 'healthy-relationships' },
+      { title: 'Friendships', slug: 'friendships' },
+      { title: 'Families', slug: 'families' },
+      { title: 'Positive sexuality and intimacy', slug: 'positive-sexuality-and-intimacy' },
+    ],
+  },
+  {
+    name: 'Sex & Sexual Health',
+    token: 'sexual-health',
+    pages: [
+      { title: 'Contraception', slug: 'contraception' },
+      { title: 'STIs and sexual health', slug: 'stis-and-sexual-health' },
+      { title: 'Pregnancy and reproductive health', slug: 'pregnancy-and-reproductive-health' },
+      { title: 'Sex and the law', slug: 'sex-and-the-law' },
+    ],
+  },
+  {
+    name: 'Puberty & The Body',
+    token: 'puberty',
+    pages: [
+      { title: 'Puberty', slug: 'puberty' },
+      { title: 'Body image', slug: 'body-image' },
+    ],
+  },
+  {
+    name: 'Identity & Diversity',
+    token: 'identity',
+    pages: [
+      { title: 'LGBTQ+ inclusion', slug: 'lgbtq-inclusion' },
+      { title: 'Masculinity and misogyny', slug: 'masculinity-and-misogyny' },
+      { title: 'Stereotypes, prejudice and discrimination', slug: 'stereotypes-prejudice-and-discrimination' },
+    ],
+  },
+  {
+    name: 'Online Safety & Media',
+    token: 'online-safety',
+    pages: [
+      { title: 'Online safety', slug: 'online-safety' },
+      { title: 'Sexting and sharing nudes', slug: 'sexting-and-sharing-nudes' },
+      { title: 'Pornography and media literacy', slug: 'pornography-and-media-literacy' },
+    ],
+  },
+  {
+    name: 'Safety & Safeguarding',
+    token: 'safety',
+    pages: [
+      { title: 'Abuse, exploitation and violence', slug: 'abuse-exploitation-and-violence' },
+      { title: 'FGM and harmful practices', slug: 'fgm-and-harmful-practices' },
+      { title: 'Personal safety', slug: 'personal-safety' },
+    ],
+  },
+  {
+    name: 'Health & Wellbeing',
+    token: 'wellbeing',
+    pages: [
+      { title: 'Mental health and wellbeing', slug: 'mental-health-and-wellbeing' },
+      { title: 'Drugs, alcohol and vaping', slug: 'drugs-alcohol-and-vaping' },
+    ],
+  },
+];
+---
+
+{mobile ? (
+  <!-- Mobile: accordion by category -->
+  <div class="mega-mobile">
+    {categories.map((cat) => (
+      <div class="mega-mobile__group">
+        <div class="mega-mobile__heading" style={`--cat-color: var(--cat-${cat.token})`}>
+          {cat.name}
+        </div>
+        <ul class="mega-mobile__list" role="list">
+          {cat.pages.map((page) => (
+            <li>
+              <a href={`/topics/${page.slug}`} class="mega-mobile__link">{page.title}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+    <a href="/topics/" class="mega-mobile__view-all">View all topics</a>
+  </div>
+) : (
+  <!-- Desktop: multi-column flyout -->
+  <div class="mega-menu" id="mega-menu" aria-hidden="true" role="region" aria-label="Topics menu">
+    <div class="mega-menu__inner">
+      <div class="mega-menu__grid">
+        {categories.map((cat) => (
+          <div class="mega-menu__group">
+            <div class="mega-menu__heading" style={`--cat-color: var(--cat-${cat.token})`}>
+              {cat.name}
+            </div>
+            <ul class="mega-menu__list" role="list">
+              {cat.pages.map((page) => (
+                <li>
+                  <a href={`/topics/${page.slug}`} class="mega-menu__link">{page.title}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <div class="mega-menu__footer">
+        <a href="/topics/" class="mega-menu__view-all">View all topics</a>
+      </div>
+    </div>
+  </div>
+)}
+
+<style>
+  /* ========================================
+     Desktop Mega Menu [D8]
+     ======================================== */
+  .mega-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 99;
+    width: max(70vw, 56rem);
+    max-width: calc(100vw - 2rem);
+    background: var(--bg-surface);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-component-lg);
+    margin-top: 0.25rem;
+  }
+
+  .mega-menu[aria-hidden="false"] {
+    display: block;
+  }
+
+  .mega-menu__inner {
+    padding: var(--space-global-lg) var(--space-global-lg) var(--space-global-md);
+  }
+
+  .mega-menu__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-global-lg) var(--space-global-md);
+  }
+
+  .mega-menu__group {
+    min-width: 0;
+  }
+
+  .mega-menu__heading {
+    font-family: var(--font-shell-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: 600;
+    color: var(--cat-color, var(--text-heading));
+    padding-bottom: 0.375rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 2px solid var(--cat-color, var(--border-subtle));
+  }
+
+  .mega-menu__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .mega-menu__link {
+    display: block;
+    padding: 0.3rem 0.5rem;
+    font-family: var(--font-shell-body-stack);
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--text-body);
+    text-decoration: none;
+    border-radius: var(--radius-xs);
+    transition: background var(--transition-speed) var(--transition-ease),
+                color var(--transition-speed) var(--transition-ease);
+  }
+
+  .mega-menu__link:hover {
+    background: var(--bg-surface-alt);
+    color: var(--brand-accent-text);
+  }
+
+  .mega-menu__footer {
+    margin-top: var(--space-global-md);
+    padding-top: var(--space-global-sm);
+    border-top: var(--border-width-xs) solid var(--border-subtle);
+    text-align: center;
+  }
+
+  .mega-menu__view-all {
+    font-family: var(--font-shell-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: 500;
+    color: var(--brand-accent-text);
+    text-decoration: none;
+  }
+
+  .mega-menu__view-all:hover {
+    text-decoration: underline;
+  }
+
+  /* ========================================
+     Mobile Mega Menu
+     ======================================== */
+  .mega-mobile {
+    padding-left: var(--space-global-sm);
+  }
+
+  .mega-mobile__group {
+    margin-bottom: var(--space-global-sm);
+  }
+
+  .mega-mobile__heading {
+    font-family: var(--font-shell-body-stack);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--cat-color, var(--text-heading));
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding-bottom: 0.25rem;
+    margin-bottom: 0.25rem;
+    border-bottom: 2px solid var(--cat-color, var(--border-subtle));
+  }
+
+  .mega-mobile__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .mega-mobile__link {
+    display: block;
+    padding: 0.4rem 0.5rem;
+    font-family: var(--font-shell-body-stack);
+    font-size: 0.9rem;
+    color: var(--text-body);
+    text-decoration: none;
+  }
+
+  .mega-mobile__link:hover {
+    color: var(--brand-accent-text);
+  }
+
+  .mega-mobile__view-all {
+    display: block;
+    padding: 0.5rem 0;
+    font-family: var(--font-shell-body-stack);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--brand-accent-text);
+    text-decoration: none;
+  }
+</style>

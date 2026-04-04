@@ -1,0 +1,40 @@
+---
+/**
+ * Topic tags [A16].
+ * Links to parent landing page(s) for a question or glossary term.
+ */
+import type { TopicRef } from '../lib/types';
+
+interface Props {
+  topic: TopicRef | null;
+}
+
+const { topic } = Astro.props;
+
+if (!topic) return;
+
+// Map OtA category names to badge class suffixes
+const categoryBadgeMap: Record<string, string> = {
+  'Anatomy': 'ota-anatomy',
+  'Puberty': 'ota-puberty',
+  'Relationships': 'ota-relationships',
+  'Sex': 'ota-sex',
+  'Sexual Health': 'ota-sexual-health',
+  'Sex & the Law': 'ota-law',
+  'Contraception': 'ota-contraception',
+};
+
+const badgeSuffix = topic.category ? categoryBadgeMap[topic.category] : null;
+---
+
+<section class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-md)]">
+  <div class="flex flex-wrap gap-[var(--space-global-xs)]">
+    <a
+      href={`/topics/${topic.slug}`}
+      class:list={['badge', 'badge--pill', badgeSuffix && `badge--${badgeSuffix}`]}
+      style="text-decoration: none;"
+    >
+      {topic.name}
+    </a>
+  </div>
+</section>

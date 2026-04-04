@@ -1,0 +1,157 @@
+---
+/**
+ * Glossary tooltip runtime behaviour [A7].
+ * Include this component once per page that has glossary tooltips.
+ * The build-time tooltip injection (in glossary-tooltips.ts) adds
+ * data attributes; this script handles hover/tap display.
+ */
+---
+
+<script>
+  function initTooltips() {
+    const terms = document.querySelectorAll('[data-glossary-tooltip]');
+    let activeTooltip: HTMLElement | null = null;
+
+    function isSimpleMode(): boolean {
+      return document.documentElement.classList.contains('simple-active');
+    }
+
+    function createTooltip(el: HTMLElement): HTMLElement {
+      const slug = el.dataset.termSlug || '';
+      const shortDef = el.dataset.shortDef || '';
+      const simpleDef = el.dataset.simpleDef || '';
+      const definition = isSimpleMode() ? simpleDef : shortDef;
+
+      const tooltip = document.createElement('div');
+      tooltip.className = 'glossary-tooltip';
+      tooltip.setAttribute('role', 'tooltip');
+      tooltip.innerHTML = `
+        <div class="glossary-tooltip__content">
+          <p>${definition}</p>
+          <a href="/glossary/${slug}" class="glossary-tooltip__link">Read more &rarr;</a>
+        </div>
+      `;
+
+      return tooltip;
+    }
+
+    function showTooltip(el: HTMLElement) {
+      hideTooltip();
+      const tooltip = createTooltip(el);
+      el.appendChild(tooltip);
+      activeTooltip = tooltip;
+
+      // Position: ensure tooltip stays in viewport
+      requestAnimationFrame(() => {
+        const rect = tooltip.getBoundingClientRect();
+        if (rect.right > window.innerWidth) {
+          tooltip.style.left = 'auto';
+          tooltip.style.right = '0';
+        }
+        if (rect.left < 0) {
+          tooltip.style.left = '0';
+          tooltip.style.right = 'auto';
+        }
+      });
+    }
+
+    function hideTooltip() {
+      if (activeTooltip) {
+        activeTooltip.remove();
+        activeTooltip = null;
+      }
+    }
+
+    const isTouchDevice = 'ontouchstart' in window;
+
+    terms.forEach((el) => {
+      const termEl = el as HTMLElement;
+      termEl.style.position = 'relative';
+
+      if (isTouchDevice) {
+        termEl.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (activeTooltip && activeTooltip.parentElement === termEl) {
+            hideTooltip();
+          } else {
+            showTooltip(termEl);
+          }
+        });
+      } else {
+        termEl.addEventListener('mouseenter', () => showTooltip(termEl));
+        termEl.addEventListener('mouseleave', (e) => {
+          // Allow hovering the tooltip itself
+          const related = (e as MouseEvent).relatedTarget as HTMLElement;
+          if (related && termEl.contains(related)) return;
+          hideTooltip();
+        });
+      }
+    });
+
+    // Close tooltip on click elsewhere (touch)
+    if (isTouchDevice) {
+      document.addEventListener('click', (e) => {
+        if (activeTooltip && !(e.target as HTMLElement).closest('[data-glossary-tooltip]')) {
+          hideTooltip();
+        }
+      });
+    }
+
+    // Update tooltip content when mode changes
+    const toggle = document.querySelector('.mode-toggle');
+    if (toggle) {
+      toggle.addEventListener('click', () => {
+        hideTooltip();
+      });
+    }
+  }
+
+  initTooltips();
+  document.addEventListener('astro:after-swap', initTooltips);
+</script>
+
+<style is:global>
+  .glossary-term {
+    border-bottom: 1px dotted var(--brand-accent);
+    cursor: help;
+    position: relative;
+  }
+
+  .glossary-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    padding-bottom: 8px;
+    pointer-events: auto;
+  }
+
+  .glossary-tooltip__content {
+    background: var(--bg-surface);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-global-sm);
+    min-width: 200px;
+    max-width: 320px;
+    font-size: var(--text-card-size-body);
+    line-height: 1.5;
+    color: var(--text-body);
+  }
+
+  .glossary-tooltip__content p {
+    margin: 0 0 var(--space-global-xs);
+  }
+
+  .glossary-tooltip__link {
+    color: var(--brand-accent-text);
+    font-size: var(--text-card-size-h6);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .glossary-tooltip__link:hover {
+    text-decoration: underline;
+  }
+</style>

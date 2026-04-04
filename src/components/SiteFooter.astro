@@ -1,0 +1,238 @@
+---
+/**
+ * Site footer [A2].
+ * Always Lexend. Always outside <main>.
+ * Contains: branding, nav links, social, legal links, design credit.
+ */
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <!-- Top section: branding + nav columns -->
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="/assets/tailor-logo-lockup-light.svg" alt="Tailor Education" class="footer-brand__logo" width="180" height="36" />
+        <p class="footer-brand__strapline">Expert RSE for every school.</p>
+        <p class="footer-brand__ota-line">Okay to Ask is a Tailor Education project.</p>
+      </div>
+
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <div class="footer-nav__col">
+          <div class="footer-nav__heading">Topics</div>
+          <ul class="footer-nav__list" role="list">
+            <li><a href="/topics/">Browse all topics</a></li>
+            <li><a href="/questions/">Okay to Ask</a></li>
+            <li><a href="/blog/">Blog</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-nav__col">
+          <div class="footer-nav__heading">For schools</div>
+          <ul class="footer-nav__list" role="list">
+            <li><a href="/services">Services</a></li>
+            <li><a href="/training">RSE Training</a></li>
+            <li><a href="/services/delivery">Direct delivery</a></li>
+            <li><a href="/services/drop-days">Drop days</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-nav__col">
+          <div class="footer-nav__heading">About</div>
+          <ul class="footer-nav__list" role="list">
+            <li><a href="/about">About Tailor Education</a></li>
+            <li><a href="/our-approach">Our approach</a></li>
+            <li><a href="/book">The Okay to Ask book</a></li>
+            <li><a href="/contact">Contact</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Social links -->
+    <div class="footer-social">
+      <a href="https://www.instagram.com/oktoask.co.uk/" target="_blank" rel="noopener noreferrer" class="footer-social__link" aria-label="Follow Okay to Ask on Instagram">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="2"/>
+          <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/>
+          <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor"/>
+        </svg>
+        <span>@oktoask.co.uk</span>
+      </a>
+    </div>
+
+    <!-- Bottom bar: legal links + credits -->
+    <div class="footer-bottom">
+      <div class="footer-legal">
+        <a href="/our-approach#safeguarding">Safeguarding</a>
+        <a href="/accessibility">Accessibility</a>
+        <a href="/privacy">Privacy policy</a>
+      </div>
+
+      <div class="footer-credits">
+        <span>&copy; {year} Tailor Education CIC</span>
+        <span class="footer-credits__sep" aria-hidden="true">&middot;</span>
+        <span>
+          Designed by <a href="https://guessdesignhouse.com" target="_blank" rel="noopener noreferrer">Guess Design House</a>
+        </span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--bg-emphasis);
+    color: var(--text-on-dark);
+    font-family: var(--font-shell-body-stack);
+    padding: var(--space-global-xl) var(--space-global-gutter) var(--space-global-lg);
+  }
+
+  .site-footer__inner {
+    max-width: 72rem;
+    margin: 0 auto;
+  }
+
+  /* --- Top: brand + nav columns --- */
+  .footer-top {
+    display: grid;
+    gap: var(--space-global-xl);
+    padding-bottom: var(--space-global-lg);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .footer-brand__logo {
+    height: 2rem;
+    width: auto;
+    margin-bottom: var(--space-global-sm);
+  }
+
+  .footer-brand__strapline {
+    font-size: var(--text-prose-size-body);
+    font-weight: 400;
+    opacity: 0.9;
+    margin: 0 0 0.25rem;
+  }
+
+  .footer-brand__ota-line {
+    font-size: var(--text-card-size-body);
+    opacity: 0.7;
+    margin: 0;
+  }
+
+  .footer-nav {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: var(--space-global-lg);
+  }
+
+  .footer-nav__heading {
+    font-size: var(--text-card-size-body);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .footer-nav__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .footer-nav__list a {
+    color: var(--text-on-dark);
+    text-decoration: none;
+    font-size: 0.9rem;
+    opacity: 0.85;
+    transition: opacity var(--transition-speed) var(--transition-ease);
+  }
+
+  .footer-nav__list a:hover {
+    opacity: 1;
+    text-decoration: underline;
+  }
+
+  /* --- Social --- */
+  .footer-social {
+    padding: var(--space-global-md) 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .footer-social__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-on-dark);
+    text-decoration: none;
+    font-size: 0.9rem;
+    opacity: 0.85;
+    transition: opacity var(--transition-speed) var(--transition-ease);
+  }
+
+  .footer-social__link:hover {
+    opacity: 1;
+  }
+
+  /* --- Bottom: legal + credits --- */
+  .footer-bottom {
+    padding-top: var(--space-global-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-sm);
+  }
+
+  .footer-legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-global-sm) var(--space-global-md);
+  }
+
+  .footer-legal a {
+    color: var(--text-on-dark);
+    text-decoration: none;
+    font-size: 0.8rem;
+    opacity: 0.7;
+    transition: opacity var(--transition-speed) var(--transition-ease);
+  }
+
+  .footer-legal a:hover {
+    opacity: 1;
+    text-decoration: underline;
+  }
+
+  .footer-credits {
+    font-size: 0.8rem;
+    opacity: 0.6;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .footer-credits a {
+    color: var(--text-on-dark);
+    text-decoration: underline;
+  }
+
+  .footer-credits__sep {
+    margin: 0 0.25rem;
+  }
+
+  /* --- Responsive --- */
+  @media (min-width: 768px) {
+    .footer-top {
+      grid-template-columns: 1.2fr 2fr;
+    }
+
+    .footer-bottom {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+</style>

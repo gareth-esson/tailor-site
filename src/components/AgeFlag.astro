@@ -1,0 +1,38 @@
+---
+/**
+ * Age flag interstitial [D1].
+ * Renders when Age Tier = "Age-flagged Year 9+".
+ * Not a hard gate — the answer is always in the HTML.
+ * Uses .alert--ageflag class.
+ */
+import type { TopicRef } from '../lib/types';
+
+interface Props {
+  topicLabel: string;
+  topicSlug: string;
+}
+
+const { topicLabel, topicSlug } = Astro.props;
+---
+
+<div class="alert alert--ageflag" id="age-flag">
+  <div class="alert__icon">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="8" x2="12" y2="12"></line>
+      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    </svg>
+  </div>
+  <div class="alert__content">
+    <div class="alert__title">This content is aimed at Year 9+</div>
+    <div class="alert__body">
+      <p>
+        This answer covers <strong>{topicLabel}</strong> in a way that's suitable for students in Year 9 and above.
+        If you're looking for foundational content, try <a href={`/topics/${topicSlug}`}>exploring the {topicLabel} topic page</a>.
+      </p>
+      <button type="button" class="btn btn--sm btn--outline" onclick="document.getElementById('age-flag')?.remove()">
+        Continue to answer
+      </button>
+    </div>
+  </div>
+</div>

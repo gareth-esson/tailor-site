@@ -1,0 +1,54 @@
+---
+/**
+ * End-of-answer panel [A17].
+ * Three CTAs on every question page:
+ * 1. Get the book → /book
+ * 2. Explore how to teach this topic → /topics/{slug}
+ * 3. Bring RSE into your school → /services or /training
+ */
+interface Props {
+  topicName: string;
+  topicSlug: string;
+}
+
+const { topicName, topicSlug } = Astro.props;
+---
+
+<section class="surface--ota-alt">
+  <div class="mx-auto max-w-5xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+    <div class="grid gap-[var(--space-global-md)] md:grid-cols-3">
+      <div class="card">
+        <div class="card__body">
+          <div class="card__eyebrow">For parents</div>
+          <div class="card__title">Get the book</div>
+          <p class="card__text">
+            The Okay to Ask book gives parents and carers the words to answer real questions from real young people.
+          </p>
+          <a href="/book" class="link-action card__link">Find out more</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__body">
+          <div class="card__eyebrow">For teachers</div>
+          <div class="card__title">Explore how to teach this topic</div>
+          <p class="card__text">
+            Curriculum guidance, lesson ideas, and key terms for teaching {topicName}.
+          </p>
+          <a href={`/topics/${topicSlug}`} class="link-action card__link">Explore topic</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__body">
+          <div class="card__eyebrow">For schools</div>
+          <div class="card__title">Bring RSE into your school</div>
+          <p class="card__text">
+            Expert-led RSE delivery, training, and curriculum planning for your school.
+          </p>
+          <a href="/services" class="link-action card__link">View services</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+/*
+  Tailwind v4 — layout utilities only.
+  All colours, fonts, spacing, and component styling come from
+  tailor-site-v2.css custom properties. Tailwind is used strictly
+  for grid, flexbox, containers, responsive breakpoints, and
+  structural layout utilities.
+
+  We disable Tailwind's default theme colours and typography
+  to prevent accidental use of Tailwind colour/font classes.
+*/
+
+@theme {
+  /* Disable default colour palette */
+  --color-*: initial;
+
+  /* Disable default font families */
+  --font-*: initial;
+
+  /* Disable default font sizes */
+  --text-*: initial;
+
+  /* Disable default shadows */
+  --shadow-*: initial;
+
+  /* Disable default border radius */
+  --radius-*: initial;
+}

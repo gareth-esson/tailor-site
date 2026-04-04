@@ -1,4 +1,5 @@
 ---
+import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getBlogPosts } from '../../lib/content';
 import type { BlogPost } from '../../lib/types';
 
@@ -17,7 +18,6 @@ interface Props {
 const { post } = Astro.props;
 ---
 
-<html lang="en">
-  <head><meta charset="utf-8" /><title>{post.title} — Blog — Tailor Education</title></head>
-  <body><h1>{post.title}</h1></body>
-</html>
+<BaseLayout title={`${post.title} — Blog — Tailor Education`}>
+  <h1>{post.title}</h1>
+</BaseLayout>
