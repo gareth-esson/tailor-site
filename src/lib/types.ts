@@ -85,7 +85,8 @@ export interface GlossaryTerm {
   relatedTerms: GlossaryRef[];
   referencedInIds: string[];
   referencedIn: QuestionRef[];
-  needsDiagram: boolean;
+  needsDiagram: string;
+  simpleExplainer: string;
   metaTitle: string;
   metaDescription: string;
   body: BlockObjectResponse[];

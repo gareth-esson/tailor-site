@@ -95,7 +95,8 @@ export async function fetchGlossaryTerms(): Promise<GlossaryTerm[]> {
         relatedTerms: [], // resolved later
         referencedInIds: getRelationIds(p['Referenced In']),
         referencedIn: [], // resolved later
-        needsDiagram: getCheckboxValue(p['Needs Diagram']),
+        needsDiagram: getRichTextValue(p['Needs Diagram']),
+        simpleExplainer: getRichTextValue(p['Simple Explainer']),
         metaTitle: getRichTextValue(p['Meta Title']),
         metaDescription: getRichTextValue(p['Meta Description']),
         body,

@@ -55,11 +55,13 @@ const standardWithTooltips = injectGlossaryTooltips(
   term.slug
 );
 
-// Simple explainer — from the simpleDefinition extended field
-// For now, the simple explainer comes from the body in simple mode
-// We use the same body but with simple tooltips
+// Simple explainer — from the Simple Explainer rich text field in Notion
+// Falls back to the standard body if no simple explainer is set
+const simpleExplainerHtml = term.simpleExplainer
+  ? `<p>${term.simpleExplainer.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>')}</p>`
+  : standardBodyHtml;
 const simpleWithTooltips = injectGlossaryTooltips(
-  standardBodyHtml,
+  simpleExplainerHtml,
   glossaryIndex,
   term.slug
 );
