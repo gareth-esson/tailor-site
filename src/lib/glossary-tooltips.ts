@@ -43,9 +43,10 @@ export function injectGlossaryTooltips(
 
     const ref = glossaryIndex[termLower];
     // Build a regex that matches the term as a whole word, case-insensitive,
+    // including common inflected forms (plurals, -ing, -ed, -er, -est)
     // but NOT inside HTML tags, headings, or existing tooltip spans
     const escaped = termLower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const regex = new RegExp(`\\b(${escaped})\\b`, 'i');
+    const regex = new RegExp(`\\b(${escaped}(?:s|es|ing|ed|er|est)?)\\b`, 'i');
 
     // Split HTML into segments: tags vs text
     // We only want to match in text segments outside of:
