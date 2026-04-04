@@ -8,8 +8,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import TopicsOverviewGrid from '../components/TopicsOverviewGrid.astro';
 import { getQuestions } from '../lib/content';
 
-export const prerender = true;
-
 const allQuestions = await getQuestions();
 
 // Featured questions: pick 5 answered questions with post-it scans, spread across categories

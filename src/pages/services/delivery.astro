@@ -8,8 +8,6 @@ import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
 import TopicsOverviewGrid from '../../components/TopicsOverviewGrid.astro';
 import { getBlogPosts } from '../../lib/content';
 
-export const prerender = true;
-
 const allPosts = await getBlogPosts();
 const relatedPosts = allPosts.filter((p) => p.serviceLink === 'delivery');
 ---

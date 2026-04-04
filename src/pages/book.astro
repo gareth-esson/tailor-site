@@ -6,7 +6,6 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getQuestions } from '../lib/content';
 
-export const prerender = true;
 
 const allQuestions = await getQuestions();
 // Sample 3 questions with post-it scans for the preview section

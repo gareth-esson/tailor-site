@@ -9,8 +9,6 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import GlossaryTooltips from '../../components/GlossaryTooltips.astro';
 import { getQuestions } from '../../lib/content';
 
-export const prerender = true;
-
 const allQuestions = await getQuestions();
 
 // Only published questions with answers

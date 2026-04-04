@@ -15,6 +15,24 @@ export default defineConfig({
       filter: (page) =>
         !page.includes('/test-') &&
         !page.includes('/api/'),
+      customPages: [
+        'https://tailoreducation.org.uk/',
+        'https://tailoreducation.org.uk/about',
+        'https://tailoreducation.org.uk/our-approach',
+        'https://tailoreducation.org.uk/contact',
+        'https://tailoreducation.org.uk/training',
+        'https://tailoreducation.org.uk/services/',
+        'https://tailoreducation.org.uk/services/delivery',
+        'https://tailoreducation.org.uk/services/drop-days',
+        'https://tailoreducation.org.uk/services/rse-policy-curriculum-planning',
+        'https://tailoreducation.org.uk/topics/',
+        'https://tailoreducation.org.uk/questions/',
+        'https://tailoreducation.org.uk/blog/',
+        'https://tailoreducation.org.uk/book',
+        'https://tailoreducation.org.uk/testimonials',
+        'https://tailoreducation.org.uk/accessibility',
+        'https://tailoreducation.org.uk/privacy',
+      ],
     }),
   ],
   redirects: {
