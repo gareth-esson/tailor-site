@@ -12,6 +12,7 @@ import { getLandingPages, getQuestions, getGlossaryTerms, getBlogPosts, getGloss
 import { renderBlocks } from '../../lib/render-blocks';
 import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
 import type { LandingPage, Question, GlossaryTerm, BlogPost } from '../../lib/types';
+import topicAliases from '../../../docs/topic-aliases.json';
 
 export const prerender = true;
 
@@ -154,9 +155,11 @@ function otaCategoryClass(cat: string | null): string {
         <h1 class="landing-hero__title">{landingPage.title}</h1>
 
         {/* Topic search aliases — indexed by Pagefind but hidden from view */}
-        <div data-pagefind-meta="aliases" style="display:none">
-          {/* Gareth: add comma-separated search aliases for this topic here */}
-        </div>
+        {(topicAliases as Record<string, string[]>)[landingPage.slug] && (
+          <div data-pagefind-meta="aliases" style="display:none">
+            {(topicAliases as Record<string, string[]>)[landingPage.slug].join(', ')}
+          </div>
+        )}
       </div>
     </section>
 
