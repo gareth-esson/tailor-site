@@ -36,14 +36,12 @@ async function loadAllContent(): Promise<void> {
 
   console.log('\n=== Loading content from Notion ===\n');
 
-  // Fetch all databases in parallel
-  const [topics, glossaryTerms, questions, landingPages, blogPosts] = await Promise.all([
-    fetchTopics(),
-    fetchGlossaryTerms(),
-    fetchQuestions(),
-    fetchLandingPages(),
-    fetchBlogPosts(),
-  ]);
+  // Fetch databases sequentially to avoid Notion API rate limits
+  const topics = await fetchTopics();
+  const glossaryTerms = await fetchGlossaryTerms();
+  const questions = await fetchQuestions();
+  const landingPages = await fetchLandingPages();
+  const blogPosts = await fetchBlogPosts();
 
   // Build lookup maps
   const topicMap = new Map<string, Topic>(topics.map((t) => [t.id, t]));
