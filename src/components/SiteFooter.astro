@@ -98,7 +98,7 @@ const year = new Date().getFullYear();
     display: grid;
     gap: var(--space-global-xl);
     padding-bottom: var(--space-global-lg);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    border-bottom: var(--border-width-xs) solid var(--border-subtle-on-dark);
   }
 
   .footer-brand__logo {
@@ -149,7 +149,7 @@ const year = new Date().getFullYear();
     text-decoration: none;
     font-size: 0.9rem;
     opacity: 0.85;
-    transition: opacity var(--transition-speed) var(--transition-ease);
+    transition: opacity var(--transition-duration) var(--transition-easing);
   }
 
   .footer-nav__list a:hover {
@@ -160,7 +160,7 @@ const year = new Date().getFullYear();
   /* --- Social --- */
   .footer-social {
     padding: var(--space-global-md) 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    border-bottom: var(--border-width-xs) solid var(--border-subtle-on-dark);
   }
 
   .footer-social__link {
@@ -171,7 +171,7 @@ const year = new Date().getFullYear();
     text-decoration: none;
     font-size: 0.9rem;
     opacity: 0.85;
-    transition: opacity var(--transition-speed) var(--transition-ease);
+    transition: opacity var(--transition-duration) var(--transition-easing);
   }
 
   .footer-social__link:hover {
@@ -197,7 +197,7 @@ const year = new Date().getFullYear();
     text-decoration: none;
     font-size: 0.8rem;
     opacity: 0.7;
-    transition: opacity var(--transition-speed) var(--transition-ease);
+    transition: opacity var(--transition-duration) var(--transition-easing);
   }
 
   .footer-legal a:hover {

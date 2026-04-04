@@ -16,6 +16,8 @@ import EndOfAnswerPanel from '../../components/EndOfAnswerPanel.astro';
 import RelatedQuestions from '../../components/RelatedQuestions.astro';
 import TopicTags from '../../components/TopicTags.astro';
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   const questions = await getQuestions();
   const glossaryIndex = await getGlossaryIndex();
@@ -228,14 +230,14 @@ const categoryBadge = question.okayToAskCategory
   }
 
   .ota-prose a {
-    color: var(--link-ota-color, var(--brand-accent-text));
+    color: var(--link-ota-contextual);
     text-decoration: underline;
     text-decoration-color: var(--brand-accent);
     text-underline-offset: 2px;
   }
 
   .ota-prose a:hover {
-    color: var(--link-ota-color-hover, var(--brand-accent-strong));
+    color: var(--brand-accent-strong);
   }
 
   .ota-prose figure {

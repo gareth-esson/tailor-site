@@ -1,8 +1,220 @@
 ---
+/**
+ * Service page [C5] — /services/delivery
+ * Direct RSE delivery in schools. Tailor layer.
+ */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-// Delivery — template coming in a later stage
+import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
+import TopicsOverviewGrid from '../../components/TopicsOverviewGrid.astro';
+import { getBlogPosts } from '../../lib/content';
+
+const allPosts = await getBlogPosts();
+const relatedPosts = allPosts.filter((p) => p.serviceLink === 'delivery');
 ---
 
-<BaseLayout title="Delivery — Tailor Education">
-  <h1>Delivery</h1>
+<BaseLayout title="Direct RSE Delivery — Tailor Education">
+  <article class="service-page">
+    <!-- 1. Service name + headline -->
+    <header class="service-page__header">
+      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+        <span class="service-page__eyebrow">Services</span>
+        <h1 class="service-page__title">Direct RSE delivery</h1>
+        <p class="service-page__subtitle">
+          Expert-led relationships and sex education delivered directly to your students by a specialist RSE educator.
+        </p>
+      </div>
+    </header>
+
+    <!-- 2. Description -->
+    <section class="service-page__content">
+      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+        <div class="service-page__details">
+          <div class="service-page__detail-block">
+            <h2 class="service-page__section-title">What the service is</h2>
+            <p>A specialist RSE educator visits your school and delivers lessons directly to your students. Sessions are tailored to your school's needs, covering the topics that matter most for your year groups.</p>
+          </div>
+
+          <div class="service-page__detail-block">
+            <h2 class="service-page__section-title">Who it's for</h2>
+            <p>For schools who want expert-led RSE delivery — whether that's covering sensitive topics that staff find challenging, supplementing your existing provision, or delivering a full RSE programme.</p>
+          </div>
+
+          <div class="service-page__detail-block">
+            <h2 class="service-page__section-title">What's included</h2>
+            <ul>
+              <li>Pre-visit consultation to agree topics, year groups, and approach</li>
+              <li>Curriculum-aligned lesson delivery by a specialist RSE educator</li>
+              <li>Age-appropriate content matched to your students' needs</li>
+              <li>Post-session summary and follow-up resources</li>
+              <li>Lessons aligned to DfE statutory guidance and the PSHE Association framework</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. CTA [A13] — primary -->
+    <CtaServiceEnquiry serviceName="direct RSE delivery" serviceParam="Direct RSE delivery" />
+
+    <!-- 4. Testimonial -->
+    <section class="service-page__testimonial">
+      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+        <blockquote class="testimonial-card">
+          <p class="testimonial-card__quote">"The sessions were exactly what our students needed. Delivered with sensitivity, honesty, and real expertise."</p>
+          <footer class="testimonial-card__source">
+            <span class="testimonial-card__name">Head of PSHE</span>
+            <a href="/testimonials" class="testimonial-card__link">Read more testimonials</a>
+          </footer>
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- 5. Related blog posts -->
+    {relatedPosts.length > 0 && (
+      <section class="service-page__blog">
+        <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+          <h2 class="service-page__section-title">Related articles</h2>
+          <div class="service-page__blog-grid">
+            {relatedPosts.map((bp) => (
+              <a href={`/blog/${bp.slug}`} class="card">
+                <div class="card__body">
+                  {bp.targetAudience && <div class="card__eyebrow">{bp.targetAudience}</div>}
+                  <div class="card__title">{bp.title}</div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- 6. Topics overview grid -->
+    <TopicsOverviewGrid />
+
+    <!-- 7. CTA [A13] — repeated -->
+    <CtaServiceEnquiry serviceName="direct RSE delivery" serviceParam="Direct RSE delivery" variant="alt" />
+  </article>
 </BaseLayout>
+
+<style>
+  .service-page {
+    background: var(--bg-page);
+  }
+
+  .service-page__header {
+    background: var(--bg-surface);
+    border-bottom: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  .service-page__eyebrow {
+    display: inline-block;
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: 600;
+    color: var(--brand-accent-text);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+
+  .service-page__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h1);
+    font-weight: var(--heading-weight-h1);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+    line-height: 1.15;
+  }
+
+  .service-page__subtitle {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body-muted);
+    max-width: 36rem;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .service-page__content {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body);
+    line-height: 1.7;
+  }
+
+  .service-page__details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-lg);
+  }
+
+  .service-page__section-title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h2);
+    font-weight: var(--heading-weight-h2);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .service-page__content ul {
+    padding-left: 1.5rem;
+    margin: 0;
+  }
+
+  .service-page__content li {
+    margin-bottom: 0.375rem;
+  }
+
+  .service-page__testimonial {
+    background: var(--bg-surface-alt);
+  }
+
+  .testimonial-card {
+    padding: var(--space-global-lg);
+    margin: 0;
+    border-left: 4px solid var(--brand-accent);
+  }
+
+  .testimonial-card__quote {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    font-style: italic;
+    color: var(--text-body);
+    line-height: 1.7;
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .testimonial-card__source {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-global-sm);
+    align-items: baseline;
+  }
+
+  .testimonial-card__name {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: 600;
+    color: var(--text-heading);
+  }
+
+  .testimonial-card__link {
+    font-size: var(--text-card-size-body);
+    color: var(--brand-accent-text);
+  }
+
+  .service-page__blog {
+    border-top: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  .service-page__blog-grid {
+    display: grid;
+    gap: var(--space-global-sm);
+  }
+
+  @media (min-width: 768px) {
+    .service-page__blog-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

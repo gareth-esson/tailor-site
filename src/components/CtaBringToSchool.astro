@@ -6,7 +6,7 @@
  */
 interface Props {
   topicTitle: string;
-  /** delivery | training | drop-days | consultancy */
+  /** delivery | training | drop-days | consultancy | rse-policy-curriculum-planning */
   serviceTarget: string | null;
 }
 
@@ -16,7 +16,8 @@ const targetMap: Record<string, { href: string; label: string }> = {
   delivery: { href: '/services/delivery', label: 'Direct RSE delivery' },
   training: { href: '/training', label: 'RSE training' },
   'drop-days': { href: '/services/drop-days', label: 'Drop days' },
-  consultancy: { href: '/services/consultancy', label: 'RSE policy and curriculum planning' },
+  consultancy: { href: '/services/rse-policy-curriculum-planning', label: 'RSE policy and curriculum planning' },
+  'rse-policy-curriculum-planning': { href: '/services/rse-policy-curriculum-planning', label: 'RSE policy and curriculum planning' },
 };
 
 const target = targetMap[serviceTarget || ''] || targetMap['training'];
@@ -47,7 +48,7 @@ const target = targetMap[serviceTarget || ''] || targetMap['training'];
   .cta-school__title {
     font-family: var(--font-tailor-heading-stack);
     font-size: var(--text-display-size-h3);
-    font-weight: var(--weight-tailor-h2);
+    font-weight: var(--heading-weight-h2);
     color: var(--text-heading);
     margin: 0 0 var(--space-global-sm);
   }

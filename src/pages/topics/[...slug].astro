@@ -13,6 +13,8 @@ import { renderBlocks } from '../../lib/render-blocks';
 import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
 import type { LandingPage, Question, GlossaryTerm, BlogPost } from '../../lib/types';
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   const landingPages = await getLandingPages();
   const allQuestions = await getQuestions();
@@ -252,7 +254,7 @@ function otaCategoryClass(cat: string | null): string {
   .landing-hero__title {
     font-family: var(--font-tailor-heading-stack);
     font-size: var(--text-display-size-h1);
-    font-weight: var(--weight-tailor-h1);
+    font-weight: var(--heading-weight-h1);
     color: var(--text-heading);
     margin: 0;
     line-height: 1.15;
@@ -269,7 +271,7 @@ function otaCategoryClass(cat: string | null): string {
   .landing-body :global(.prose h2) {
     font-family: var(--font-tailor-heading-stack);
     font-size: var(--text-prose-size-h2);
-    font-weight: var(--weight-tailor-h2);
+    font-weight: var(--heading-weight-h2);
     color: var(--text-heading);
     margin-top: var(--space-global-lg);
     margin-bottom: var(--space-global-sm);
@@ -278,7 +280,7 @@ function otaCategoryClass(cat: string | null): string {
   .landing-body :global(.prose h3) {
     font-family: var(--font-tailor-heading-stack);
     font-size: var(--text-prose-size-h3);
-    font-weight: var(--weight-tailor-h3);
+    font-weight: var(--heading-weight-h3);
     color: var(--text-heading);
     margin-top: var(--space-global-md);
     margin-bottom: var(--space-global-xs);
@@ -315,7 +317,7 @@ function otaCategoryClass(cat: string | null): string {
   .landing-section__title {
     font-family: var(--font-tailor-heading-stack);
     font-size: var(--text-prose-size-h2);
-    font-weight: var(--weight-tailor-h2);
+    font-weight: var(--heading-weight-h2);
     color: var(--text-heading);
     margin: 0 0 var(--space-global-md);
   }
@@ -338,7 +340,7 @@ function otaCategoryClass(cat: string | null): string {
     background: var(--bg-surface);
     border: var(--border-width-xs) solid var(--border-subtle);
     border-radius: var(--radius-sm);
-    transition: border-color var(--transition-speed) var(--transition-ease);
+    transition: border-color var(--transition-duration) var(--transition-easing);
   }
 
   .question-list__item:hover {
@@ -430,8 +432,8 @@ function otaCategoryClass(cat: string | null): string {
     font-weight: 500;
     color: var(--text-body);
     text-decoration: none;
-    transition: border-color var(--transition-speed) var(--transition-ease),
-                color var(--transition-speed) var(--transition-ease);
+    transition: border-color var(--transition-duration) var(--transition-easing),
+                color var(--transition-duration) var(--transition-easing);
   }
 
   .related-topics__link:hover {

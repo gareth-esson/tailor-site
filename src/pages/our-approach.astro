@@ -1,8 +1,121 @@
 ---
+/**
+ * Our Approach page [B3] — /our-approach
+ * Trust page: content methodology, framework alignment, safeguarding, inclusivity. Tailor layer.
+ */
 import BaseLayout from '../layouts/BaseLayout.astro';
-// Our Approach — template coming in a later stage
 ---
 
 <BaseLayout title="Our Approach — Tailor Education">
-  <h1>Our Approach</h1>
+  <article class="approach-page">
+    <section class="approach-hero">
+      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+        <h1 class="approach-hero__title">Our approach</h1>
+        <p class="approach-hero__subtitle">
+          How we write content, what frameworks we align to, and why safeguarding and inclusivity are built into everything we do.
+        </p>
+      </div>
+    </section>
+
+    <!-- 1. How we write content -->
+    <section class="approach-section">
+      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+        <h2 class="approach-section__title">How we write content</h2>
+        <p class="approach-section__text">
+          Every lesson, answer, and resource is written by Gareth Esson — not crowdsourced, not AI-generated, not adapted from generic templates. This means a consistent pedagogical voice, informed by direct experience of delivering RSE in schools.
+        </p>
+        <p class="approach-section__text">
+          Content is regularly reviewed and updated to reflect changes in guidance, legislation, and the real questions young people are asking.
+        </p>
+      </div>
+    </section>
+
+    <!-- 2. Framework alignment -->
+    <section class="approach-section approach-section--alt">
+      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+        <h2 class="approach-section__title">Framework alignment</h2>
+        <div class="approach-frameworks">
+          <div class="approach-framework">
+            <h3 class="approach-framework__title">DfE statutory RSE guidance</h3>
+            <p class="approach-framework__text">All content meets the requirements of the Department for Education's statutory guidance for Relationships Education, RSE, and Health Education, including the 2026 revision.</p>
+          </div>
+          <div class="approach-framework">
+            <h3 class="approach-framework__title">PSHE Association Programme of Study</h3>
+            <p class="approach-framework__text">Lessons and resources are mapped to the PSHE Association's Programme of Study, providing a clear curriculum framework for schools.</p>
+          </div>
+          <div class="approach-framework">
+            <h3 class="approach-framework__title">UNESCO International Technical Guidance</h3>
+            <p class="approach-framework__text">Our approach is informed by the UNESCO International Technical Guidance on Sexuality Education, the global evidence-based standard.</p>
+          </div>
+          <div class="approach-framework">
+            <h3 class="approach-framework__title">WHO Standards for Sexuality Education in Europe</h3>
+            <p class="approach-framework__text">Content design reflects the WHO's European standards for comprehensive sexuality education, particularly around age-appropriateness and rights-based approaches.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Safeguarding commitment -->
+    <section class="approach-section">
+      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+        <h2 class="approach-section__title">Safeguarding commitment</h2>
+        <p class="approach-section__text">
+          Safeguarding is embedded in our content design, not bolted on. Every lesson considers disclosure risk. Activities are designed with awareness of FGM mandatory reporting duties, KCSIE guidance, and the reality that some young people may be experiencing harm.
+        </p>
+        <p class="approach-section__text">
+          On our Okay to Ask content, every question page that touches safeguarding topics surfaces relevant support services — including Childline, the NSPCC, and specialist organisations — directly in the page content.
+        </p>
+      </div>
+    </section>
+
+    <!-- 4. Inclusivity -->
+    <section class="approach-section approach-section--alt">
+      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+        <h2 class="approach-section__title">Inclusivity</h2>
+        <p class="approach-section__text">
+          Equality Act 2010 protected characteristics inform every piece of content. We don't assume heterosexuality or cisgender identity. We use correct terminology. Inclusivity is built into how we write, not added as an afterthought.
+        </p>
+      </div>
+    </section>
+
+    <!-- 5. The Okay to Ask editorial approach -->
+    <section class="approach-section">
+      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+        <h2 class="approach-section__title">The Okay to Ask editorial approach</h2>
+        <p class="approach-section__text">
+          Answers on Okay to Ask are written in a direct, honest voice. No euphemisms, no evasion, no talking down. We answer what was actually asked, at a level that respects the young person's intelligence while being age-appropriate.
+        </p>
+        <p class="approach-section__text">
+          The age flagging system signals when content is aimed at older year groups, giving younger readers and their parents a heads-up without blocking access.
+        </p>
+      </div>
+    </section>
+
+    <!-- 6. CTA -->
+    <section class="approach-cta">
+      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+        <div class="approach-cta__card">
+          <a href="/training" class="btn btn--std btn--outline">Explore our training</a>
+          <a href="/topics" class="btn btn--std btn--primary has-icon-hover">Browse topics</a>
+        </div>
+      </div>
+    </section>
+  </article>
 </BaseLayout>
+
+<style>
+  .approach-page { background: var(--bg-page); }
+  .approach-hero { background: var(--bg-surface); border-bottom: var(--border-width-xs) solid var(--border-subtle); }
+  .approach-hero__title { font-family: var(--font-tailor-heading-stack); font-size: var(--text-display-size-h1); font-weight: var(--heading-weight-h1); color: var(--text-heading); margin: 0 0 var(--space-global-sm); }
+  .approach-hero__subtitle { font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); color: var(--text-body-muted); max-width: 36rem; margin: 0; line-height: 1.6; }
+  .approach-section { font-family: var(--font-tailor-body-stack); }
+  .approach-section--alt { background: var(--bg-surface-alt); }
+  .approach-section__title { font-family: var(--font-tailor-heading-stack); font-size: var(--text-prose-size-h2); font-weight: var(--heading-weight-h2); color: var(--text-heading); margin: 0 0 var(--space-global-sm); }
+  .approach-section__text { font-size: var(--text-prose-size-body); color: var(--text-body); line-height: 1.7; max-width: 36rem; margin: 0 0 var(--space-global-sm); }
+  .approach-frameworks { display: grid; gap: var(--space-global-md); }
+  .approach-framework { padding: var(--space-global-md); background: var(--bg-surface); border-radius: var(--radius-lg); border: var(--border-width-xs) solid var(--border-subtle); }
+  .approach-framework__title { font-family: var(--font-tailor-heading-stack); font-size: var(--text-prose-size-h3); font-weight: var(--heading-weight-h3); color: var(--text-heading); margin: 0 0 var(--space-global-xs); }
+  .approach-framework__text { font-size: var(--text-card-size-body); color: var(--text-body-muted); margin: 0; line-height: 1.6; }
+  .approach-cta__card { display: flex; flex-wrap: wrap; gap: var(--space-global-sm); justify-content: center; }
+  @media (min-width: 768px) { .approach-frameworks { grid-template-columns: repeat(2, 1fr); } }
+</style>

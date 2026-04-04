@@ -1,0 +1,79 @@
+---
+/**
+ * CTA block [A13] — "Enquire about [service]"
+ * Used on service pages [C5] and blog posts [C4].
+ * Links to /contact with service type pre-selected.
+ */
+interface Props {
+  /** The service name to display */
+  serviceName: string;
+  /** URL parameter value for pre-filling the enquiry form */
+  serviceParam: string;
+  /** Visual variant: 'tinted' for mid-page, 'alt' for bottom */
+  variant?: 'tinted' | 'alt';
+}
+
+const { serviceName, serviceParam, variant = 'tinted' } = Astro.props;
+const enquiryUrl = `/contact?service=${encodeURIComponent(serviceParam)}`;
+---
+
+<section class:list={['cta-enquiry', variant === 'alt' && 'cta-enquiry--alt']}>
+  <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+    <div class="cta-enquiry__card">
+      <div class="cta-enquiry__content">
+        <h2 class="cta-enquiry__title">Enquire about {serviceName}</h2>
+        <p class="cta-enquiry__text">
+          Get in touch to discuss how we can support your school.
+        </p>
+      </div>
+      <a href={enquiryUrl} class="btn btn--std btn--primary has-icon-hover">
+        Get in touch
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-enquiry__card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-md);
+    padding: var(--space-global-lg);
+    background: var(--bg-tinted);
+    border-radius: var(--radius-lg);
+    border: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  .cta-enquiry--alt .cta-enquiry__card {
+    background: var(--bg-surface-alt);
+    border-color: transparent;
+    text-align: center;
+    align-items: center;
+  }
+
+  .cta-enquiry__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h3);
+    font-weight: var(--heading-weight-h3);
+    color: var(--text-heading);
+    margin: 0 0 0.25rem;
+  }
+
+  .cta-enquiry__text {
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body-muted);
+    margin: 0;
+  }
+
+  @media (min-width: 768px) {
+    .cta-enquiry__card {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .cta-enquiry--alt .cta-enquiry__card {
+      flex-direction: column;
+    }
+  }
+</style>

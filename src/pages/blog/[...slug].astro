@@ -1,23 +1,291 @@
 ---
+/**
+ * Blog post template [C4] — /blog/{slug}
+ * Teacher-facing editorial content. Tailor layer.
+ * Body from Notion with inline glossary tooltips.
+ */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getBlogPosts } from '../../lib/content';
-import type { BlogPost } from '../../lib/types';
+import GlossaryTooltips from '../../components/GlossaryTooltips.astro';
+import CtaBlogBottom from '../../components/CtaBlogBottom.astro';
+import { getBlogPosts, getGlossaryIndex, getLandingPages } from '../../lib/content';
+import { renderBlocks } from '../../lib/render-blocks';
+import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
+import { getRelatedBlogPosts } from '../../lib/related-blog-posts';
+import type { BlogPost, LandingPageRef } from '../../lib/types';
+
+export const prerender = true;
 
 export async function getStaticPaths() {
   const posts = await getBlogPosts();
-  return posts.map((p) => ({
-    params: { slug: p.slug },
-    props: { post: p },
-  }));
+  const allLandingPages = await getLandingPages();
+  const glossaryIndex = await getGlossaryIndex();
+
+  return posts.map((post) => {
+    const related = getRelatedBlogPosts(post, posts, 3);
+
+    // Resolve primary topic to a landing page ref
+    const primaryTopicId = post.topicIds[0];
+    const primaryLP = primaryTopicId
+      ? allLandingPages.find((lp) => lp.id === primaryTopicId)
+      : null;
+    const primaryTopic: LandingPageRef | null = primaryLP
+      ? { id: primaryLP.id, title: primaryLP.title, slug: primaryLP.slug }
+      : null;
+
+    return {
+      params: { slug: post.slug },
+      props: {
+        post,
+        relatedPosts: related,
+        primaryTopic,
+        glossaryIndex,
+      },
+    };
+  });
 }
 
 interface Props {
   post: BlogPost;
+  relatedPosts: BlogPost[];
+  primaryTopic: LandingPageRef | null;
+  glossaryIndex: Record<string, any>;
 }
 
-const { post } = Astro.props;
+const { post, relatedPosts, primaryTopic, glossaryIndex } = Astro.props;
+
+// Render body content with glossary tooltips
+const bodyHtml = renderBlocks(post.body);
+const bodyWithTooltips = injectGlossaryTooltips(bodyHtml, glossaryIndex, undefined);
 ---
 
 <BaseLayout title={`${post.title} — Blog — Tailor Education`}>
-  <h1>{post.title}</h1>
+  <article class="blog-post">
+    <!-- 1. Title -->
+    <header class="blog-post__header">
+      <div class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+        <h1 class="blog-post__title">{post.title}</h1>
+
+        <!-- 2. Meta line -->
+        <div class="blog-post__meta">
+          {post.author && <span class="blog-post__author">By {post.author}</span>}
+          {post.targetAudience && (
+            <span class="blog-post__audience">{post.targetAudience}</span>
+          )}
+        </div>
+
+        <!-- 3. Topic tags [A16] -->
+        {post.topics.length > 0 && (
+          <div class="blog-post__tags">
+            {post.topics.map((t) => (
+              <a href={`/topics/${t.slug}`} class="blog-post__tag">
+                {t.title}
+              </a>
+            ))}
+            {post.secondaryTopics.map((t) => (
+              <a href={`/topics/${t.slug}`} class="blog-post__tag blog-post__tag--secondary">
+                {t.title}
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    </header>
+
+    <!-- 4. Body content -->
+    {bodyWithTooltips && (
+      <section class="blog-post__body">
+        <div class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+          <div class="prose" set:html={bodyWithTooltips} />
+        </div>
+      </section>
+    )}
+
+    <!-- 5. Related blog posts [A15] -->
+    {relatedPosts.length > 0 && (
+      <section class="blog-post__related">
+        <div class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+          <h2 class="blog-post__section-title">Related articles</h2>
+          <div class="blog-post__related-grid">
+            {relatedPosts.map((rp) => (
+              <a href={`/blog/${rp.slug}`} class="card blog-related-card">
+                <div class="card__body">
+                  {rp.targetAudience && (
+                    <div class="card__eyebrow">{rp.targetAudience}</div>
+                  )}
+                  <div class="card__title">{rp.title}</div>
+                  {rp.author && (
+                    <div class="blog-related-card__author">By {rp.author}</div>
+                  )}
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- 6. CTA [A13] -->
+    <CtaBlogBottom serviceLink={post.serviceLink} primaryTopic={primaryTopic} />
+  </article>
+  <GlossaryTooltips />
 </BaseLayout>
+
+<style>
+  .blog-post {
+    background: var(--bg-page);
+  }
+
+  /* --- Header --- */
+  .blog-post__header {
+    background: var(--bg-surface);
+    border-bottom: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  .blog-post__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h1);
+    font-weight: var(--heading-weight-h1);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+    line-height: 1.15;
+  }
+
+  .blog-post__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-global-sm);
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+    margin-bottom: var(--space-global-md);
+  }
+
+  .blog-post__audience {
+    padding: 0.125rem 0.5rem;
+    background: var(--bg-surface-alt);
+    border-radius: var(--radius-pill);
+    font-weight: 500;
+  }
+
+  .blog-post__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  .blog-post__tag {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: var(--bg-tinted);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: 500;
+    color: var(--brand-accent-text);
+    text-decoration: none;
+    transition: background var(--transition-duration) var(--transition-easing);
+  }
+
+  .blog-post__tag:hover {
+    background: var(--brand-accent-soft);
+  }
+
+  .blog-post__tag--secondary {
+    background: var(--bg-surface-alt);
+    color: var(--text-body-muted);
+  }
+
+  .blog-post__tag--secondary:hover {
+    color: var(--brand-accent-text);
+    background: var(--bg-tinted);
+  }
+
+  /* --- Body --- */
+  .blog-post__body :global(.prose) {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body);
+    line-height: 1.7;
+  }
+
+  .blog-post__body :global(.prose h2) {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h2);
+    font-weight: var(--heading-weight-h2);
+    color: var(--text-heading);
+    margin-top: var(--space-global-lg);
+    margin-bottom: var(--space-global-sm);
+  }
+
+  .blog-post__body :global(.prose h3) {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h3);
+    font-weight: var(--heading-weight-h3);
+    color: var(--text-heading);
+    margin-top: var(--space-global-md);
+    margin-bottom: var(--space-global-xs);
+  }
+
+  .blog-post__body :global(.prose p) {
+    margin-bottom: var(--space-global-sm);
+  }
+
+  .blog-post__body :global(.prose ul),
+  .blog-post__body :global(.prose ol) {
+    margin-bottom: var(--space-global-sm);
+    padding-left: 1.5rem;
+  }
+
+  .blog-post__body :global(.prose li) {
+    margin-bottom: 0.25rem;
+  }
+
+  .blog-post__body :global(.prose a) {
+    color: var(--brand-accent-text);
+    text-decoration: underline;
+  }
+
+  .blog-post__body :global(.prose blockquote) {
+    border-left: 3px solid var(--brand-accent);
+    padding-left: var(--space-global-md);
+    margin: var(--space-global-md) 0;
+    font-style: italic;
+    color: var(--text-body-muted);
+  }
+
+  /* --- Related --- */
+  .blog-post__related {
+    border-top: var(--border-width-xs) solid var(--border-subtle);
+    background: var(--bg-surface-alt);
+  }
+
+  .blog-post__section-title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h2);
+    font-weight: var(--heading-weight-h2);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .blog-post__related-grid {
+    display: grid;
+    gap: var(--space-global-sm);
+  }
+
+  .blog-related-card {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .blog-related-card__author {
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+    margin-top: 0.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .blog-post__related-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

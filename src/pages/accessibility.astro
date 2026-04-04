@@ -1,8 +1,82 @@
 ---
+/**
+ * Accessibility & inclusivity [B13] — /accessibility
+ * Statement page. Simple Mode feature, inclusive language, WCAG, safeguarding. Tailor layer.
+ */
 import BaseLayout from '../layouts/BaseLayout.astro';
-// Accessibility — template coming in a later stage
 ---
 
-<BaseLayout title="Accessibility — Tailor Education">
-  <h1>Accessibility</h1>
+<BaseLayout title="Accessibility & Inclusivity — Tailor Education">
+  <article class="text-page">
+    <div class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+      <h1 class="text-page__title">Accessibility & inclusivity</h1>
+      <p class="text-page__intro">
+        How this site is built for accessibility, and what Tailor Education's commitment to inclusivity means in practice.
+      </p>
+
+      <section class="text-page__section">
+        <h2>Simple Mode</h2>
+        <p>
+          Every question page and glossary entry on this site has a Simple Mode option. Switching to Simple Mode shows a shorter, plainer-language version of the answer — same information, fewer words, simpler vocabulary.
+        </p>
+        <p>
+          Simple Mode is a reading level choice, not a disability accommodation. It's useful for younger readers, readers whose first language isn't English, and anyone who prefers concise answers. Your preference is remembered in your browser.
+        </p>
+      </section>
+
+      <section class="text-page__section">
+        <h2>Inclusive language</h2>
+        <p>
+          All Okay to Ask content is written without assuming heterosexuality or cisgender identity. We use correct terminology, avoid euphemisms, and write with respect for the full diversity of young people's experiences and identities.
+        </p>
+        <p>
+          Equality Act 2010 protected characteristics inform how we write every piece of content. Inclusivity is built into the writing, not added as an afterthought.
+        </p>
+      </section>
+
+      <section class="text-page__section">
+        <h2>Technical accessibility</h2>
+        <p>
+          This site is built to meet WCAG 2.1 Level AA. We're committed to:
+        </p>
+        <ul>
+          <li>Full keyboard navigation throughout the site</li>
+          <li>Screen reader compatibility with semantic HTML and ARIA labels</li>
+          <li>Colour contrast ratios that meet or exceed WCAG AA (4.5:1 for normal text)</li>
+          <li>Alt text on all meaningful images</li>
+          <li>Resizable text that doesn't break layouts</li>
+          <li>Reduced motion for users who prefer it</li>
+        </ul>
+      </section>
+
+      <section class="text-page__section">
+        <h2>Signposting and safeguarding</h2>
+        <p>
+          Every question page that touches safeguarding topics displays relevant support services — Childline, NSPCC, Brook, and specialist organisations. These appear directly in the page content and cannot be dismissed.
+        </p>
+        <p>
+          The crisis support component on sensitive topics provides immediate links to helplines and resources for young people who may need support.
+        </p>
+      </section>
+
+      <section class="text-page__section">
+        <h2>Feedback</h2>
+        <p>
+          If something on this site isn't accessible to you, or if you have suggestions for how we can improve, please <a href="/contact">get in touch</a>. We take accessibility seriously and want to hear from you.
+        </p>
+      </section>
+    </div>
+  </article>
 </BaseLayout>
+
+<style>
+  .text-page { background: var(--bg-page); }
+  .text-page__title { font-family: var(--font-tailor-heading-stack); font-size: var(--text-display-size-h1); font-weight: var(--heading-weight-h1); color: var(--text-heading); margin: 0 0 var(--space-global-sm); }
+  .text-page__intro { font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); color: var(--text-body-muted); max-width: 36rem; margin: 0 0 var(--space-global-lg); line-height: 1.6; }
+  .text-page__section { margin-bottom: var(--space-global-xl); }
+  .text-page__section h2 { font-family: var(--font-tailor-heading-stack); font-size: var(--text-prose-size-h2); font-weight: var(--heading-weight-h2); color: var(--text-heading); margin: 0 0 var(--space-global-sm); }
+  .text-page__section p { font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); color: var(--text-body); line-height: 1.7; margin: 0 0 var(--space-global-sm); max-width: 36rem; }
+  .text-page__section ul { font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); color: var(--text-body); line-height: 1.7; padding-left: 1.5rem; margin: 0; }
+  .text-page__section li { margin-bottom: 0.5rem; }
+  .text-page__section a { color: var(--brand-accent-text); }
+</style>

@@ -1,0 +1,319 @@
+---
+/**
+ * Enquiry form [E1].
+ * Service type can be pre-selected via URL parameter (?service=...).
+ * States: empty, partially filled, validation errors, submitting, success.
+ */
+interface Props {
+  /** Pre-selected service from URL param */
+  preSelectedService?: string;
+}
+
+const { preSelectedService } = Astro.props;
+
+const serviceOptions = [
+  { value: '', label: 'Please select' },
+  { value: 'Direct RSE delivery', label: 'Direct RSE delivery' },
+  { value: 'RSE training', label: 'RSE training' },
+  { value: 'Drop day delivery', label: 'Drop day delivery' },
+  { value: 'RSE policy & curriculum planning', label: 'RSE policy & curriculum planning' },
+  { value: 'Other', label: 'Other' },
+];
+---
+
+<form class="enquiry-form" id="enquiry-form" novalidate>
+  <div class="form-group" data-field="name">
+    <label class="form-label" for="enquiry-name">Name <span aria-hidden="true">*</span></label>
+    <input
+      class="form-input"
+      type="text"
+      id="enquiry-name"
+      name="name"
+      required
+      autocomplete="name"
+    />
+    <p class="form-error" role="alert" hidden>Please enter your name</p>
+  </div>
+
+  <div class="form-group" data-field="email">
+    <label class="form-label" for="enquiry-email">Email <span aria-hidden="true">*</span></label>
+    <input
+      class="form-input"
+      type="email"
+      id="enquiry-email"
+      name="email"
+      required
+      autocomplete="email"
+    />
+    <p class="form-error" role="alert" hidden>Please enter a valid email address</p>
+  </div>
+
+  <div class="form-group" data-field="school">
+    <label class="form-label" for="enquiry-school">School name <span aria-hidden="true">*</span></label>
+    <input
+      class="form-input"
+      type="text"
+      id="enquiry-school"
+      name="school"
+      required
+      autocomplete="organization"
+    />
+    <p class="form-error" role="alert" hidden>Please enter your school name</p>
+  </div>
+
+  <div class="form-group" data-field="service">
+    <label class="form-label" for="enquiry-service">Service interested in <span aria-hidden="true">*</span></label>
+    <select
+      class="form-select"
+      id="enquiry-service"
+      name="service"
+      required
+    >
+      {serviceOptions.map((opt) => (
+        <option
+          value={opt.value}
+          selected={opt.value === preSelectedService}
+        >
+          {opt.label}
+        </option>
+      ))}
+    </select>
+    <p class="form-error" role="alert" hidden>Please select a service</p>
+  </div>
+
+  <div class="form-group" data-field="keystage">
+    <label class="form-label" for="enquiry-keystage">Key stage or year group</label>
+    <input
+      class="form-input"
+      type="text"
+      id="enquiry-keystage"
+      name="keystage"
+    />
+  </div>
+
+  <div class="form-group" data-field="timing">
+    <label class="form-label" for="enquiry-timing">Preferred timing</label>
+    <input
+      class="form-input"
+      type="text"
+      id="enquiry-timing"
+      name="timing"
+    />
+  </div>
+
+  <div class="form-group" data-field="message">
+    <label class="form-label" for="enquiry-message">Message</label>
+    <textarea
+      class="form-input form-textarea"
+      id="enquiry-message"
+      name="message"
+      rows="4"
+    ></textarea>
+  </div>
+
+  <button type="submit" class="btn btn--std btn--primary" id="enquiry-submit">
+    Send enquiry
+  </button>
+</form>
+
+<!-- Success state -->
+<div class="enquiry-success" id="enquiry-success" hidden>
+  <div class="enquiry-success__card">
+    <h3 class="enquiry-success__title">Enquiry sent</h3>
+    <p class="enquiry-success__text">
+      Thanks for getting in touch. We'll get back to you as soon as we can.
+    </p>
+  </div>
+</div>
+
+<!-- Error state -->
+<div class="enquiry-error" id="enquiry-error" hidden>
+  <div class="alert alert--error">
+    <div class="alert__content">
+      <div class="alert__title">Something went wrong</div>
+      <div class="alert__body">
+        <p>We couldn't send your enquiry. Please try again, or email us directly.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initEnquiryForm() {
+    const form = document.getElementById('enquiry-form') as HTMLFormElement | null;
+    const successEl = document.getElementById('enquiry-success');
+    const errorEl = document.getElementById('enquiry-error');
+    const submitBtn = document.getElementById('enquiry-submit') as HTMLButtonElement | null;
+    if (!form || !successEl || !errorEl || !submitBtn) return;
+
+    // Pre-fill service from URL param
+    const params = new URLSearchParams(window.location.search);
+    const serviceParam = params.get('service');
+    if (serviceParam) {
+      const select = form.querySelector('#enquiry-service') as HTMLSelectElement | null;
+      if (select) {
+        const option = Array.from(select.options).find(
+          (o) => o.value.toLowerCase() === serviceParam.toLowerCase()
+        );
+        if (option) select.value = option.value;
+      }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorEl.hidden = true;
+
+      // Clear previous errors
+      form.querySelectorAll('.form-group--error').forEach((g) => g.classList.remove('form-group--error'));
+      form.querySelectorAll('.form-error').forEach((e) => ((e as HTMLElement).hidden = true));
+
+      // Validate
+      let valid = true;
+      const data = new FormData(form);
+
+      const requiredFields = ['name', 'email', 'school', 'service'];
+      for (const field of requiredFields) {
+        const value = (data.get(field) as string || '').trim();
+        if (!value) {
+          const group = form.querySelector(`[data-field="${field}"]`);
+          if (group) {
+            group.classList.add('form-group--error');
+            const err = group.querySelector('.form-error') as HTMLElement;
+            if (err) err.hidden = false;
+          }
+          valid = false;
+        }
+      }
+
+      // Email format check
+      const email = (data.get('email') as string || '').trim();
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        const group = form.querySelector('[data-field="email"]');
+        if (group) {
+          group.classList.add('form-group--error');
+          const err = group.querySelector('.form-error') as HTMLElement;
+          if (err) err.hidden = false;
+        }
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      // Submit
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending\u2026';
+
+      try {
+        const response = await fetch('/api/enquiry', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: data.get('name'),
+            email: data.get('email'),
+            school: data.get('school'),
+            service: data.get('service'),
+            keystage: data.get('keystage'),
+            timing: data.get('timing'),
+            message: data.get('message'),
+          }),
+        });
+
+        if (response.ok) {
+          form.hidden = true;
+          successEl.hidden = false;
+        } else {
+          throw new Error('Failed');
+        }
+      } catch {
+        errorEl.hidden = false;
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send enquiry';
+      }
+    });
+  }
+
+  initEnquiryForm();
+  document.addEventListener('astro:after-swap', initEnquiryForm);
+</script>
+
+<style>
+  .enquiry-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-md);
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .form-label {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: 600;
+    color: var(--text-heading);
+  }
+
+  .form-label span {
+    color: var(--state-error);
+  }
+
+  .form-input,
+  .form-select {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body);
+    padding: 0.625rem 0.75rem;
+    background: var(--bg-surface);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    transition: border-color var(--transition-duration) var(--transition-easing);
+  }
+
+  .form-input:focus,
+  .form-select:focus {
+    outline: 2px solid var(--brand-accent);
+    outline-offset: 2px;
+    border-color: var(--brand-accent);
+  }
+
+  .form-textarea {
+    resize: vertical;
+    min-height: 6rem;
+  }
+
+  .form-group--error .form-input,
+  .form-group--error .form-select {
+    border-color: var(--state-error);
+  }
+
+  .form-error {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    color: var(--state-error);
+    margin: 0;
+  }
+
+  .enquiry-success__card {
+    padding: var(--space-global-lg);
+    background: var(--state-success-soft);
+    border-radius: var(--radius-lg);
+    text-align: center;
+  }
+
+  .enquiry-success__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h3);
+    font-weight: var(--heading-weight-h3);
+    color: var(--state-success-text);
+    margin: 0 0 var(--space-global-xs);
+  }
+
+  .enquiry-success__text {
+    font-size: var(--text-prose-size-body);
+    color: var(--state-success-text);
+    margin: 0;
+  }
+</style>

@@ -290,7 +290,7 @@ function otaBadgeClass(cat: string | null): string {
 
   .ota-filter {
     cursor: pointer;
-    transition: opacity var(--transition-speed) var(--transition-ease);
+    transition: opacity var(--transition-duration) var(--transition-easing);
   }
 
   .ota-filter:not(.is-active) {
@@ -320,7 +320,7 @@ function otaBadgeClass(cat: string | null): string {
     background: var(--bg-surface);
     border: var(--border-width-xs) solid var(--border-subtle);
     border-radius: var(--radius-sm);
-    transition: border-color var(--transition-speed) var(--transition-ease);
+    transition: border-color var(--transition-duration) var(--transition-easing);
   }
 
   .ota-question-list__item:hover {
@@ -330,7 +330,7 @@ function otaBadgeClass(cat: string | null): string {
   .ota-question-list__link {
     flex: 1;
     font-size: var(--text-prose-size-body);
-    color: var(--link-ota-default, var(--brand-accent-text));
+    color: var(--link-ota-contextual);
     text-decoration: none;
     font-weight: 500;
   }

@@ -12,6 +12,8 @@ import RelatedTerms from '../../components/RelatedTerms.astro';
 import RelatedQuestions from '../../components/RelatedQuestions.astro';
 import TopicTags from '../../components/TopicTags.astro';
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   const terms = await getGlossaryTerms();
   const glossaryIndex = await getGlossaryIndex();
@@ -165,7 +167,7 @@ const topicSlug = term.topic?.slug || '';
   }
 
   .definition-text {
-    font-size: 1.15rem;
+    font-size: var(--text-prose-size-h4);
     line-height: 1.6;
     margin: 0;
     color: var(--text-body);

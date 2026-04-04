@@ -1,8 +1,65 @@
 ---
+/**
+ * Testimonials page [B6] — /testimonials
+ * Social proof. Placeholder content. Tailor layer.
+ */
 import BaseLayout from '../layouts/BaseLayout.astro';
-// Testimonials — template coming in a later stage
+
+const testimonials = [
+  { quote: 'The sessions were exactly what our students needed. Delivered with sensitivity, honesty, and real expertise.', name: 'Head of PSHE', school: 'Secondary school, West Midlands', service: 'Direct RSE delivery' },
+  { quote: 'Gareth helped us develop an RSE policy that our governors, staff, and parents all felt confident about.', name: 'Headteacher', school: 'Primary school, London', service: 'RSE policy & curriculum planning' },
+  { quote: 'The training completely changed how our PSHE team approaches RSE. Practical, honest, and directly applicable.', name: 'CPD Lead', school: 'Secondary school, Yorkshire', service: 'RSE training' },
+  { quote: 'The drop day gave our Year 9s a full day to focus on RSE properly. The students engaged brilliantly.', name: 'Head of Year', school: 'Academy, East Midlands', service: 'Drop day delivery' },
+  { quote: "Tailor Education's content is some of the best RSE material I've seen. Thoughtful, inclusive, and genuinely useful.", name: 'PSHE Coordinator', school: 'Secondary school, South East', service: 'RSE training' },
+  { quote: 'Parents were initially nervous about RSE delivery, but after seeing the Tailor approach they were fully on board.', name: 'Deputy Head', school: 'Faith school, North West', service: 'RSE policy & curriculum planning' },
+];
 ---
 
 <BaseLayout title="Testimonials — Tailor Education">
-  <h1>Testimonials</h1>
+  <section class="testimonials-page">
+    <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+      <h1 class="testimonials-page__title">What schools say</h1>
+      <p class="testimonials-page__intro">
+        Feedback from teachers, school leaders, and staff who have worked with Tailor Education.
+      </p>
+
+      <div class="testimonials-grid">
+        {testimonials.map((t) => (
+          <blockquote class="testimonial-card">
+            <p class="testimonial-card__quote">"{t.quote}"</p>
+            <footer class="testimonial-card__footer">
+              <span class="testimonial-card__name">{t.name}</span>
+              <span class="testimonial-card__school">{t.school}</span>
+              <span class="testimonial-card__service">{t.service}</span>
+            </footer>
+          </blockquote>
+        ))}
+      </div>
+
+      <div class="testimonials-cta">
+        <p class="testimonials-cta__text">Want to work with us?</p>
+        <a href="/services" class="btn btn--std btn--outline">View services</a>
+        <a href="/contact" class="btn btn--std btn--primary has-icon-hover">Get in touch</a>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .testimonials-page { background: var(--bg-page); }
+  .testimonials-page__title { font-family: var(--font-tailor-heading-stack); font-size: var(--text-display-size-h1); font-weight: var(--heading-weight-h1); color: var(--text-heading); margin: 0 0 var(--space-global-sm); }
+  .testimonials-page__intro { font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); color: var(--text-body-muted); max-width: 36rem; margin: 0 0 var(--space-global-xl); line-height: 1.6; }
+
+  .testimonials-grid { display: grid; gap: var(--space-global-md); margin-bottom: var(--space-global-xl); }
+  .testimonial-card { padding: var(--space-global-lg); margin: 0; background: var(--bg-surface); border: var(--border-width-xs) solid var(--border-subtle); border-radius: var(--radius-lg); border-left: 4px solid var(--brand-accent); }
+  .testimonial-card__quote { font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); font-style: italic; color: var(--text-body); line-height: 1.7; margin: 0 0 var(--space-global-sm); }
+  .testimonial-card__footer { display: flex; flex-direction: column; gap: 0.125rem; }
+  .testimonial-card__name { font-size: var(--text-card-size-body); font-weight: 600; color: var(--text-heading); }
+  .testimonial-card__school { font-size: var(--text-card-size-body); color: var(--text-body-muted); }
+  .testimonial-card__service { font-size: var(--text-card-size-body); color: var(--brand-accent-text); font-weight: 500; }
+
+  .testimonials-cta { text-align: center; display: flex; flex-wrap: wrap; gap: var(--space-global-sm); justify-content: center; align-items: center; }
+  .testimonials-cta__text { font-size: var(--text-prose-size-body); color: var(--text-body-muted); margin: 0; width: 100%; margin-bottom: var(--space-global-xs); }
+
+  @media (min-width: 768px) { .testimonials-grid { grid-template-columns: repeat(2, 1fr); } }
+</style>

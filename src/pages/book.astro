@@ -1,8 +1,153 @@
 ---
+/**
+ * Book page [B11] — /book
+ * Okay to Ask book. OtA visual identity. Destination for A17 book panels.
+ */
 import BaseLayout from '../layouts/BaseLayout.astro';
-// Book — template coming in a later stage
+import { getQuestions } from '../lib/content';
+
+const allQuestions = await getQuestions();
+// Sample 3 questions with post-it scans for the preview section
+const sampleQuestions = allQuestions
+  .filter((q) => q.body.length > 0 && q.hasPostItScan)
+  .slice(0, 3);
 ---
 
-<BaseLayout title="The Book — Tailor Education">
-  <h1>The Book</h1>
+<BaseLayout title="The Okay to Ask Book — Tailor Education" layer="ota">
+  <article class="book-page">
+    <!-- 1. Hero -->
+    <section class="book-hero surface--ota">
+      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-2xl)]">
+        <div class="book-hero__inner">
+          <div class="book-hero__content">
+            <img src="/assets/ota-wordmark-dark.svg" alt="Okay to Ask" class="book-hero__wordmark" width="220" height="38" />
+            <h1 class="book-hero__title">The Okay to Ask book</h1>
+            <p class="book-hero__text">
+              Real questions from real young people, answered honestly. Post-it notes and all.
+            </p>
+            <!-- Purchase CTA — placeholder until sales URL confirmed -->
+            <a href="#" class="btn btn--std btn--primary has-icon-hover">Get the book</a>
+          </div>
+          <div class="book-hero__cover">
+            <div class="book-hero__placeholder" aria-hidden="true">
+              <span>Book cover</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. What's inside -->
+    <section class="book-section surface--ota-alt">
+      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+        <h2 class="book-section__title">What's inside</h2>
+        <p class="book-section__text">
+          Over 150 real questions written anonymously by young people in schools — about relationships, sex, their bodies, and growing up. Each question comes with the original handwritten post-it note and an honest, expert-written answer.
+        </p>
+        <p class="book-section__text">
+          No euphemisms, no evasion — just the answers young people actually want.
+        </p>
+      </div>
+    </section>
+
+    <!-- 3. Who it's for -->
+    <section class="book-section surface--ota">
+      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+        <h2 class="book-section__title">Who it's for</h2>
+        <div class="book-audiences">
+          <div class="book-audience">
+            <h3 class="book-audience__title">Parents and carers</h3>
+            <p class="book-audience__text">A conversation starter for home. See the questions young people are really asking, and how to answer them.</p>
+          </div>
+          <div class="book-audience">
+            <h3 class="book-audience__title">School staff rooms</h3>
+            <p class="book-audience__text">A reference that's always on the shelf. Quick, honest answers for when students ask unexpected questions.</p>
+          </div>
+          <div class="book-audience">
+            <h3 class="book-audience__title">Training and conferences</h3>
+            <p class="book-audience__text">A credibility artefact for RSE training events and professional development sessions.</p>
+          </div>
+          <div class="book-audience">
+            <h3 class="book-audience__title">Young people</h3>
+            <p class="book-audience__text">A book that treats them with respect. The questions they've always wanted to ask, answered without judgement.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Purchase CTA -->
+    <section class="book-purchase surface--ota-alt">
+      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+        <div class="book-purchase__card">
+          <h2 class="book-purchase__title">Get your copy</h2>
+          <p class="book-purchase__text">Purchase link coming soon. Register your interest below.</p>
+          <a href="/contact?service=Other" class="btn btn--std btn--primary has-icon-hover">Register interest</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Sample content -->
+    {sampleQuestions.length > 0 && (
+      <section class="book-samples surface--ota">
+        <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+          <h2 class="book-section__title">A taste of what's inside</h2>
+          <div class="book-samples__grid">
+            {sampleQuestions.map((q) => (
+              <a href={`/anonymous_question/${q.slug}`} class="book-sample-card">
+                {q.imageUrl && (
+                  <img src={q.imageUrl} alt="" class="book-sample-card__image" loading="lazy" />
+                )}
+                <span class="book-sample-card__text">{q.question}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- 6. Trust signal -->
+    <section class="book-trust surface--ota-alt">
+      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+        <p class="book-trust__text">
+          Written by the Tailor Education team. All content aligned to DfE statutory guidance and the PSHE Association framework.
+        </p>
+      </div>
+    </section>
+  </article>
 </BaseLayout>
+
+<style>
+  .book-page { background: var(--bg-ota-surface); }
+
+  .book-hero__inner { display: grid; gap: var(--space-global-lg); }
+  .book-hero__wordmark { height: 2.5rem; width: auto; margin-bottom: var(--space-global-sm); }
+  .book-hero__title { font-size: var(--text-display-size-h1); color: var(--text-ota-heading); margin: 0 0 var(--space-global-sm); line-height: 1.15; }
+  .book-hero__text { font-size: var(--text-prose-size-body); color: var(--text-ota-body); margin: 0 0 var(--space-global-md); line-height: 1.6; }
+  .book-hero__placeholder { width: 100%; aspect-ratio: 3/4; max-width: 14rem; background: var(--surface-ota-postit-soft); border: 2px dashed var(--surface-ota-postit); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: var(--text-card-size-body); color: var(--text-body-muted); }
+
+  .book-section__title { font-size: var(--text-prose-size-h2); color: var(--text-ota-heading); margin: 0 0 var(--space-global-sm); }
+  .book-section__text { font-size: var(--text-prose-size-body); color: var(--text-ota-body); line-height: 1.7; max-width: 36rem; margin: 0 0 var(--space-global-sm); }
+
+  .book-audiences { display: grid; gap: var(--space-global-md); }
+  .book-audience { padding: var(--space-global-md); background: var(--bg-surface); border-radius: var(--radius-lg); border: var(--border-width-xs) solid var(--border-subtle); }
+  .book-audience__title { font-size: var(--text-card-size-h3); font-weight: 600; color: var(--text-ota-heading); margin: 0 0 0.25rem; }
+  .book-audience__text { font-size: var(--text-card-size-body); color: var(--text-ota-muted); margin: 0; line-height: 1.5; }
+
+  .book-purchase__card { text-align: center; padding: var(--space-global-xl); background: var(--bg-surface); border-radius: var(--radius-lg); border: var(--border-width-xs) solid var(--border-subtle); }
+  .book-purchase__title { font-size: var(--text-display-size-h3); color: var(--text-ota-heading); margin: 0 0 var(--space-global-xs); }
+  .book-purchase__text { font-size: var(--text-prose-size-body); color: var(--text-ota-muted); margin: 0 0 var(--space-global-md); }
+
+  .book-samples__grid { display: grid; gap: var(--space-global-md); }
+  .book-sample-card { display: flex; flex-direction: column; gap: var(--space-global-xs); padding: var(--space-global-md); background: var(--bg-surface); border-radius: var(--radius-lg); border: var(--border-width-xs) solid var(--border-subtle); text-decoration: none; transition: border-color var(--transition-duration) var(--transition-easing); }
+  .book-sample-card:hover { border-color: var(--brand-accent); }
+  .book-sample-card__image { width: 100%; max-width: 10rem; height: auto; border-radius: var(--radius-sm); }
+  .book-sample-card__text { font-size: var(--text-prose-size-body); font-weight: 500; color: var(--brand-accent-text); }
+
+  .book-trust__text { font-size: var(--text-prose-size-body); color: var(--text-ota-muted); text-align: center; margin: 0; line-height: 1.6; }
+
+  @media (min-width: 768px) {
+    .book-hero__inner { grid-template-columns: 1fr auto; align-items: center; }
+    .book-audiences { grid-template-columns: repeat(2, 1fr); }
+    .book-samples__grid { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>

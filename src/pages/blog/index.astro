@@ -1,8 +1,184 @@
 ---
+/**
+ * Blog index [B9] — /blog/
+ * Lists all blog posts with filtering by target audience.
+ * Tailor layer.
+ */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-// Blog index — template coming in a later stage
+import { getBlogPosts } from '../../lib/content';
+
+const posts = await getBlogPosts();
+
+// Sort by title for now (dates not yet in Notion schema)
+const sortedPosts = [...posts].sort((a, b) => a.title.localeCompare(b.title));
+
+// Collect unique audiences for filter
+const audiences = [...new Set(posts.map((p) => p.targetAudience).filter(Boolean))] as string[];
 ---
 
 <BaseLayout title="Blog — Tailor Education">
-  <h1>Blog</h1>
+  <section class="blog-index">
+    <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+      <h1 class="blog-index__title">Blog</h1>
+      <p class="blog-index__intro">
+        Practical guidance for RSE teaching, curriculum planning, and bringing relationships education to life in schools.
+      </p>
+
+      <!-- Audience filter -->
+      {audiences.length > 0 && (
+        <div class="blog-filters" role="group" aria-label="Filter by audience">
+          <button class="blog-filter btn btn--sm btn--tint is-active" data-audience="all" type="button">
+            All
+          </button>
+          {audiences.map((aud) => (
+            <button class="blog-filter btn btn--sm btn--outline" data-audience={aud} type="button">
+              {aud}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <!-- Post list -->
+      <div class="blog-list" id="blog-list">
+        {sortedPosts.map((post) => (
+          <a
+            href={`/blog/${post.slug}`}
+            class="card blog-list__card"
+            data-audience={post.targetAudience || ''}
+          >
+            <div class="card__body">
+              {post.targetAudience && (
+                <div class="card__eyebrow">{post.targetAudience}</div>
+              )}
+              <div class="card__title">{post.title}</div>
+              {post.topics.length > 0 && (
+                <div class="blog-list__topics">
+                  {post.topics.map((t) => (
+                    <span class="blog-list__topic">{t.title}</span>
+                  ))}
+                </div>
+              )}
+              {post.author && (
+                <div class="blog-list__author">By {post.author}</div>
+              )}
+            </div>
+          </a>
+        ))}
+      </div>
+
+      {sortedPosts.length === 0 && (
+        <p class="blog-index__empty">No blog posts yet. Check back soon.</p>
+      )}
+    </div>
+  </section>
 </BaseLayout>
+
+<script>
+  function initBlogFilters() {
+    const filters = document.querySelectorAll('.blog-filter');
+    const cards = document.querySelectorAll('.blog-list__card');
+    if (!filters.length || !cards.length) return;
+
+    filters.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const audience = (btn as HTMLElement).dataset.audience;
+
+        filters.forEach((f) => {
+          f.classList.remove('is-active');
+          f.classList.remove('btn--tint');
+          f.classList.add('btn--outline');
+        });
+        btn.classList.add('is-active');
+        btn.classList.remove('btn--outline');
+        btn.classList.add('btn--tint');
+
+        cards.forEach((card) => {
+          const cardAudience = (card as HTMLElement).dataset.audience;
+          const show = audience === 'all' || cardAudience === audience;
+          (card as HTMLElement).style.display = show ? '' : 'none';
+        });
+      });
+    });
+  }
+
+  initBlogFilters();
+  document.addEventListener('astro:after-swap', initBlogFilters);
+</script>
+
+<style>
+  .blog-index {
+    background: var(--bg-page);
+  }
+
+  .blog-index__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h1);
+    font-weight: var(--heading-weight-h1);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .blog-index__intro {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body-muted);
+    max-width: 36rem;
+    margin: 0 0 var(--space-global-lg);
+    line-height: 1.6;
+  }
+
+  .blog-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: var(--space-global-lg);
+  }
+
+  .blog-list {
+    display: grid;
+    gap: var(--space-global-sm);
+  }
+
+  .blog-list__card {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .blog-list__topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin-top: 0.375rem;
+  }
+
+  .blog-list__topic {
+    font-size: var(--text-card-size-body);
+    color: var(--brand-accent-text);
+    font-weight: 500;
+  }
+
+  .blog-list__topic:not(:last-child)::after {
+    content: '\00b7';
+    margin-left: 0.25rem;
+    color: var(--text-body-muted);
+  }
+
+  .blog-list__author {
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+    margin-top: 0.25rem;
+  }
+
+  .blog-index__empty {
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body-muted);
+    text-align: center;
+    padding: var(--space-global-xl) 0;
+  }
+
+  @media (min-width: 768px) {
+    .blog-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

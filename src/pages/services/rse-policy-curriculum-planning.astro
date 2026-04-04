@@ -1,7 +1,7 @@
 ---
 /**
- * Service page [C5] — /services/drop-days
- * RSE drop day delivery. Tailor layer.
+ * Service page [C5] — /services/rse-policy-curriculum-planning
+ * RSE policy and curriculum planning consultancy. Tailor layer.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
@@ -9,17 +9,17 @@ import TopicsOverviewGrid from '../../components/TopicsOverviewGrid.astro';
 import { getBlogPosts } from '../../lib/content';
 
 const allPosts = await getBlogPosts();
-const relatedPosts = allPosts.filter((p) => p.serviceLink === 'drop-days');
+const relatedPosts = allPosts.filter((p) => p.serviceLink === 'rse-policy-curriculum-planning');
 ---
 
-<BaseLayout title="Drop Day Delivery — Tailor Education">
+<BaseLayout title="RSE Policy & Curriculum Planning — Tailor Education">
   <article class="service-page">
     <header class="service-page__header">
       <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
         <span class="service-page__eyebrow">Services</span>
-        <h1 class="service-page__title">RSE drop day delivery</h1>
+        <h1 class="service-page__title">RSE policy & curriculum planning</h1>
         <p class="service-page__subtitle">
-          A dedicated day of relationships and sex education for an entire year group, designed and delivered by specialists.
+          Strategic support to build an RSE policy, plan your curriculum, and communicate with parents — all aligned to statutory guidance.
         </p>
       </div>
     </header>
@@ -29,36 +29,37 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'drop-days');
         <div class="service-page__details">
           <div class="service-page__detail-block">
             <h2 class="service-page__section-title">What the service is</h2>
-            <p>A full day of RSE sessions for a year group, covering multiple topics in a structured programme. Drop days create focused, immersive learning experiences that give RSE the time and attention it deserves.</p>
+            <p>Consultancy support to help your school develop a robust RSE policy, plan a coherent curriculum across key stages, and build confidence in communicating your RSE approach to parents and governors.</p>
           </div>
 
           <div class="service-page__detail-block">
             <h2 class="service-page__section-title">Who it's for</h2>
-            <p>For schools who want to deliver a concentrated RSE experience — ideal for covering statutory requirements, addressing specific year group needs, or complementing your existing PSHE programme with specialist delivery.</p>
+            <p>For headteachers, DSLs, and senior leadership teams who need expert guidance on RSE policy, curriculum design, or parent engagement — especially in light of the 2026 DfE guidance changes.</p>
           </div>
 
           <div class="service-page__detail-block">
             <h2 class="service-page__section-title">What's included</h2>
             <ul>
-              <li>Planning meeting to agree topics, structure, and year group focus</li>
-              <li>Full day of specialist-led RSE sessions</li>
-              <li>Multiple topics covered across the day</li>
-              <li>Resources and follow-up materials for staff</li>
-              <li>Content aligned to DfE statutory guidance</li>
+              <li>Review of your current RSE policy and provision</li>
+              <li>Policy development or revision aligned to DfE statutory guidance</li>
+              <li>Curriculum mapping across key stages</li>
+              <li>Parent communication strategy and materials</li>
+              <li>Guidance on Ofsted expectations for RSE</li>
+              <li>Ongoing support as needed</li>
             </ul>
           </div>
         </div>
       </div>
     </section>
 
-    <CtaServiceEnquiry serviceName="drop day delivery" serviceParam="Drop day delivery" />
+    <CtaServiceEnquiry serviceName="RSE policy and curriculum planning" serviceParam="RSE policy & curriculum planning" />
 
     <section class="service-page__testimonial">
       <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
         <blockquote class="testimonial-card">
-          <p class="testimonial-card__quote">"The drop day gave our Year 9s a full day to focus on RSE properly. The students engaged brilliantly."</p>
+          <p class="testimonial-card__quote">"Gareth helped us develop an RSE policy that our governors, staff, and parents all felt confident about."</p>
           <footer class="testimonial-card__source">
-            <span class="testimonial-card__name">Head of Year</span>
+            <span class="testimonial-card__name">Headteacher</span>
             <a href="/testimonials" class="testimonial-card__link">Read more testimonials</a>
           </footer>
         </blockquote>
@@ -85,7 +86,7 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'drop-days');
 
     <TopicsOverviewGrid />
 
-    <CtaServiceEnquiry serviceName="drop day delivery" serviceParam="Drop day delivery" variant="alt" />
+    <CtaServiceEnquiry serviceName="RSE policy and curriculum planning" serviceParam="RSE policy & curriculum planning" variant="alt" />
   </article>
 </BaseLayout>
 

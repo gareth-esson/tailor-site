@@ -1,8 +1,141 @@
 ---
+/**
+ * Services hub [B5] — /services
+ * Card per service line linking to individual pages. Tailor layer.
+ */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-// Services — template coming in a later stage
+
+const services = [
+  {
+    title: 'Direct RSE delivery',
+    description: 'A specialist RSE educator delivers lessons directly to your students, tailored to your school\u2019s needs.',
+    href: '/services/delivery',
+  },
+  {
+    title: 'RSE training',
+    description: 'Give your staff the confidence and skills to deliver RSE effectively, with access to the Tailor app\u2019s training-recommended content.',
+    href: '/training',
+  },
+  {
+    title: 'Drop day delivery',
+    description: 'A dedicated day of RSE sessions for an entire year group, designed and delivered by specialists.',
+    href: '/services/drop-days',
+  },
+  {
+    title: 'RSE policy & curriculum planning',
+    description: 'Expert guidance to develop your RSE policy, plan your curriculum, and communicate your approach to parents.',
+    href: '/services/rse-policy-curriculum-planning',
+  },
+];
 ---
 
-<BaseLayout title="Services — Tailor Education">
-  <h1>Services</h1>
+<BaseLayout title="RSE Services for Schools — Tailor Education">
+  <section class="services-hub">
+    <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+      <h1 class="services-hub__title">RSE services for schools</h1>
+      <p class="services-hub__intro">
+        Whether you need someone to deliver RSE directly, training for your staff, or support with policy and curriculum — we can help.
+      </p>
+
+      <div class="services-hub__grid">
+        {services.map((s) => (
+          <a href={s.href} class="card services-hub__card">
+            <div class="card__body">
+              <div class="card__title">{s.title}</div>
+              <p class="card__text">{s.description}</p>
+              <span class="link-action">Learn more</span>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <!-- Trust signal -->
+      <div class="services-hub__trust">
+        <p class="services-hub__trust-text">
+          All services are aligned to DfE statutory guidance, the PSHE Association framework, and international best practice.
+        </p>
+      </div>
+
+      <!-- CTA -->
+      <div class="services-hub__cta">
+        <p class="services-hub__cta-text">Not sure what you need?</p>
+        <a href="/contact" class="btn btn--std btn--primary has-icon-hover">Get in touch</a>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .services-hub {
+    background: var(--bg-page);
+  }
+
+  .services-hub__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h1);
+    font-weight: var(--heading-weight-h1);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .services-hub__intro {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body-muted);
+    max-width: 36rem;
+    margin: 0 0 var(--space-global-xl);
+    line-height: 1.6;
+  }
+
+  .services-hub__grid {
+    display: grid;
+    gap: var(--space-global-md);
+    margin-bottom: var(--space-global-xl);
+  }
+
+  .services-hub__card {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .services-hub__card .card__text {
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+    margin: var(--space-global-xs) 0 var(--space-global-sm);
+    line-height: 1.6;
+  }
+
+  .services-hub__trust {
+    padding: var(--space-global-md);
+    background: var(--bg-tinted);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-global-xl);
+  }
+
+  .services-hub__trust-text {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body);
+    text-align: center;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .services-hub__cta {
+    text-align: center;
+    padding: var(--space-global-xl) 0;
+  }
+
+  .services-hub__cta-text {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body-muted);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  @media (min-width: 768px) {
+    .services-hub__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

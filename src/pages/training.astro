@@ -1,8 +1,118 @@
 ---
+/**
+ * RSE Training page [B4] — /training
+ * Highest-traffic service page (app funnels here). Tailor layer.
+ */
 import BaseLayout from '../layouts/BaseLayout.astro';
-// Training — template coming in a later stage
+import CtaServiceEnquiry from '../components/CtaServiceEnquiry.astro';
 ---
 
-<BaseLayout title="Training — Tailor Education">
-  <h1>Training</h1>
+<BaseLayout title="RSE Training — Tailor Education">
+  <article class="training-page">
+    <header class="training-hero">
+      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+        <h1 class="training-hero__title">RSE training for teachers</h1>
+        <p class="training-hero__subtitle">
+          Build your team's confidence and skills to deliver relationships and sex education effectively.
+        </p>
+      </div>
+    </header>
+
+    <!-- 1. What the training is -->
+    <section class="training-section">
+      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+        <h2 class="training-section__title">What the training covers</h2>
+        <p class="training-section__text">
+          Tailor Education RSE training gives your teachers the confidence and skills to deliver RSE on the topics that matter most. Sessions are practical, grounded in real classroom experience, and linked directly to the resources in the Tailor app.
+        </p>
+      </div>
+    </section>
+
+    <!-- 2. What teachers learn -->
+    <section class="training-section training-section--alt">
+      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+        <h2 class="training-section__title">What teachers get from training</h2>
+        <ul class="training-outcomes">
+          <li>Confidence to deliver RSE across sensitive and complex topics</li>
+          <li>Practical strategies for managing disclosures and difficult questions</li>
+          <li>Understanding of the statutory framework and what Ofsted expects</li>
+          <li>Access to training-recommended content in the Tailor app</li>
+          <li>A consistent, evidence-informed approach to RSE across your school</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 3. How it connects to the app -->
+    <section class="training-section">
+      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+        <h2 class="training-section__title">Training unlocks app content</h2>
+        <p class="training-section__text">
+          Completing training unlocks training-recommended lessons in the Tailor app. This isn't just a one-day event — it's the gateway to an ongoing library of expert-written RSE resources your teachers can use immediately.
+        </p>
+      </div>
+    </section>
+
+    <!-- 4. Format and logistics -->
+    <section class="training-section training-section--alt">
+      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+        <h2 class="training-section__title">Format and logistics</h2>
+        <div class="training-details">
+          <div class="training-detail">
+            <h3 class="training-detail__title">Duration</h3>
+            <p class="training-detail__text">Half-day or full-day sessions available</p>
+          </div>
+          <div class="training-detail">
+            <h3 class="training-detail__title">Delivery</h3>
+            <p class="training-detail__text">In-person at your school or online</p>
+          </div>
+          <div class="training-detail">
+            <h3 class="training-detail__title">Delivered by</h3>
+            <p class="training-detail__text">Gareth Esson, RSE specialist</p>
+          </div>
+          <div class="training-detail">
+            <h3 class="training-detail__title">What schools provide</h3>
+            <p class="training-detail__text">A room and your teaching staff — we bring everything else</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Testimonial -->
+    <section class="training-testimonial">
+      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+        <blockquote class="testimonial-card">
+          <p class="testimonial-card__quote">"The training completely changed how our PSHE team approaches RSE. Practical, honest, and directly applicable."</p>
+          <footer class="testimonial-card__source">
+            <span class="testimonial-card__name">CPD Lead</span>
+          </footer>
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- 6. CTA -->
+    <CtaServiceEnquiry serviceName="RSE training" serviceParam="RSE training" variant="alt" />
+  </article>
 </BaseLayout>
+
+<style>
+  .training-page { background: var(--bg-page); }
+  .training-hero { background: var(--bg-surface); border-bottom: var(--border-width-xs) solid var(--border-subtle); }
+  .training-hero__title { font-family: var(--font-tailor-heading-stack); font-size: var(--text-display-size-h1); font-weight: var(--heading-weight-h1); color: var(--text-heading); margin: 0 0 var(--space-global-sm); line-height: 1.15; }
+  .training-hero__subtitle { font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); color: var(--text-body-muted); max-width: 36rem; margin: 0; line-height: 1.6; }
+  .training-section { font-family: var(--font-tailor-body-stack); }
+  .training-section--alt { background: var(--bg-surface-alt); }
+  .training-section__title { font-family: var(--font-tailor-heading-stack); font-size: var(--text-prose-size-h2); font-weight: var(--heading-weight-h2); color: var(--text-heading); margin: 0 0 var(--space-global-sm); }
+  .training-section__text { font-size: var(--text-prose-size-body); color: var(--text-body); line-height: 1.7; max-width: 36rem; margin: 0 0 var(--space-global-sm); }
+  .training-outcomes { font-size: var(--text-prose-size-body); color: var(--text-body); line-height: 1.7; padding-left: 1.5rem; margin: 0; }
+  .training-outcomes li { margin-bottom: 0.5rem; }
+  .training-details { display: grid; gap: var(--space-global-md); }
+  .training-detail { padding: var(--space-global-md); background: var(--bg-surface); border-radius: var(--radius-lg); border: var(--border-width-xs) solid var(--border-subtle); }
+  .training-detail__title { font-family: var(--font-tailor-heading-stack); font-size: var(--text-card-size-h3); font-weight: 600; color: var(--text-heading); margin: 0 0 0.25rem; }
+  .training-detail__text { font-size: var(--text-card-size-body); color: var(--text-body-muted); margin: 0; }
+  .training-testimonial { background: var(--bg-surface-alt); }
+  .testimonial-card { padding: var(--space-global-lg); margin: 0; border-left: 4px solid var(--brand-accent); }
+  .testimonial-card__quote { font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); font-style: italic; color: var(--text-body); line-height: 1.7; margin: 0 0 var(--space-global-sm); }
+  .testimonial-card__source { display: flex; gap: var(--space-global-sm); }
+  .testimonial-card__name { font-size: var(--text-card-size-body); font-weight: 600; color: var(--text-heading); }
+  @media (min-width: 768px) { .training-details { grid-template-columns: repeat(2, 1fr); } }
+</style>

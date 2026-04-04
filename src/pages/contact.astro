@@ -1,8 +1,110 @@
 ---
+/**
+ * Contact page [B7] — /contact
+ * Hosts the enquiry form [E1]. Service type pre-selected via ?service= param.
+ */
 import BaseLayout from '../layouts/BaseLayout.astro';
-// Contact — template coming in a later stage
+import EnquiryForm from '../components/EnquiryForm.astro';
+
+// Pre-fill from URL param (handled client-side in EnquiryForm)
+const serviceParam = Astro.url.searchParams.get('service') || undefined;
 ---
 
 <BaseLayout title="Contact — Tailor Education">
-  <h1>Contact</h1>
+  <section class="contact-page">
+    <div class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+      <h1 class="contact-page__title">Get in touch</h1>
+      <p class="contact-page__intro">
+        Interested in RSE delivery, training, or consultancy for your school? Fill in the form below and we'll get back to you.
+      </p>
+
+      <div class="contact-page__form">
+        <EnquiryForm preSelectedService={serviceParam} />
+      </div>
+
+      <div class="contact-page__direct">
+        <h2 class="contact-page__section-title">Other ways to reach us</h2>
+        <p class="contact-page__text">
+          Email: <a href="mailto:hello@tailoreducation.org.uk">hello@tailoreducation.org.uk</a>
+        </p>
+        <p class="contact-page__text">
+          Instagram: <a href="https://instagram.com/oktoask.co.uk" target="_blank" rel="noopener noreferrer">@oktoask.co.uk</a>
+        </p>
+      </div>
+
+      <div class="contact-page__safeguarding">
+        <p class="contact-page__note">
+          For urgent safeguarding concerns, contact your local authority designated officer (LADO) or call the NSPCC helpline on <a href="tel:08088005000">0808 800 5000</a>.
+        </p>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .contact-page {
+    background: var(--bg-page);
+  }
+
+  .contact-page__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h1);
+    font-weight: var(--heading-weight-h1);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .contact-page__intro {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body-muted);
+    max-width: 30rem;
+    margin: 0 0 var(--space-global-xl);
+    line-height: 1.6;
+  }
+
+  .contact-page__form {
+    margin-bottom: var(--space-global-2xl);
+  }
+
+  .contact-page__section-title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h3);
+    font-weight: var(--heading-weight-h3);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .contact-page__text {
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body);
+    margin: 0 0 var(--space-global-xs);
+  }
+
+  .contact-page__text a {
+    color: var(--brand-accent-text);
+  }
+
+  .contact-page__direct {
+    padding: var(--space-global-lg);
+    background: var(--bg-surface-alt);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-global-lg);
+  }
+
+  .contact-page__safeguarding {
+    padding: var(--space-global-md);
+    border-top: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  .contact-page__note {
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .contact-page__note a {
+    color: var(--brand-accent-text);
+  }
+</style>
