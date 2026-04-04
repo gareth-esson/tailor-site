@@ -168,10 +168,10 @@ const topicSlug = term.topic?.slug || '';
   [data-mode="simple"] {
     display: none;
   }
-  :global(.simple-active) [data-mode="standard"] {
+  :global(.simple-active [data-mode="standard"]) {
     display: none !important;
   }
-  :global(.simple-active) [data-mode="simple"] {
+  :global(.simple-active [data-mode="simple"]) {
     display: block !important;
   }
 
