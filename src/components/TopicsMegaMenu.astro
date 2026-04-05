@@ -2,10 +2,10 @@
 /**
  * Topics mega menu [D8].
  * Shows all 22 landing pages grouped by 7 app categories.
- * Desktop: multi-column layout expanding from "Topics" nav item.
- * Mobile: accordion by category within mobile nav.
+ * Desktop: multi-column flyout from "Topics" nav item.
+ * Mobile: accordion panel inside D3.
  *
- * Category headings use --cat-* tokens and are labels, not links.
+ * Layout via Tailwind utilities; visual values via tokens.
  */
 
 interface Props {
@@ -14,10 +14,6 @@ interface Props {
 
 const { mobile = false } = Astro.props;
 
-/**
- * Landing pages grouped by the 7 app categories.
- * Static data — matches the 22 pages from the site structure doc.
- */
 const categories = [
   {
     name: 'Relationships',
@@ -87,45 +83,52 @@ const categories = [
 ---
 
 {mobile ? (
-  <!-- Mobile: accordion by category -->
-  <div class="mega-mobile">
+  <div class="mega-mobile pl-[var(--space-global-sm)]">
     {categories.map((cat) => (
-      <div class="mega-mobile__group">
+      <div class="mega-mobile__group mb-[var(--space-global-sm)]">
         <div class="mega-mobile__heading" style={`--cat-color: var(--cat-${cat.token})`}>
           {cat.name}
         </div>
-        <ul class="mega-mobile__list" role="list">
+        <ul class="mega-mobile__list list-none p-0 m-0" role="list">
           {cat.pages.map((page) => (
             <li>
-              <a href={`/topics/${page.slug}`} class="mega-mobile__link">{page.title}</a>
+              <a href={`/topics/${page.slug}`} class="mega-mobile__link block">{page.title}</a>
             </li>
           ))}
         </ul>
       </div>
     ))}
-    <a href="/topics/" class="mega-mobile__view-all">View all topics</a>
+    <a href="/topics/" class="mega-mobile__view-all block py-2">View all topics</a>
   </div>
 ) : (
-  <!-- Desktop: multi-column flyout -->
-  <div class="mega-menu" id="mega-menu" aria-hidden="true" role="region" aria-label="Topics menu">
-    <div class="mega-menu__inner">
-      <div class="mega-menu__grid">
+  <div
+    id="mega-menu"
+    class="mega-menu absolute top-full left-0 mt-1 z-[var(--z-mega)] w-[max(70vw,56rem)] max-w-[calc(100vw-2rem)]"
+    aria-hidden="true"
+    role="region"
+    aria-label="Topics menu"
+  >
+    <div class="mega-menu__inner px-[var(--space-global-lg)] pt-[var(--space-global-lg)] pb-[var(--space-global-md)]">
+      <div class="mega-menu__grid grid grid-cols-3 xl:grid-cols-4 gap-y-[var(--space-global-lg)] gap-x-[var(--space-global-md)]">
         {categories.map((cat) => (
-          <div class="mega-menu__group">
-            <div class="mega-menu__heading" style={`--cat-color: var(--cat-${cat.token})`}>
+          <div class="mega-menu__group min-w-0">
+            <div
+              class="mega-menu__heading border-b-2 pb-1.5 mb-2"
+              style={`--cat-color: var(--cat-${cat.token})`}
+            >
               {cat.name}
             </div>
-            <ul class="mega-menu__list" role="list">
+            <ul class="mega-menu__list list-none p-0 m-0 flex flex-col gap-0.5" role="list">
               {cat.pages.map((page) => (
                 <li>
-                  <a href={`/topics/${page.slug}`} class="mega-menu__link">{page.title}</a>
+                  <a href={`/topics/${page.slug}`} class="mega-menu__link block">{page.title}</a>
                 </li>
               ))}
             </ul>
           </div>
         ))}
       </div>
-      <div class="mega-menu__footer">
+      <div class="mega-menu__footer mt-[var(--space-global-md)] pt-[var(--space-global-sm)] text-center">
         <a href="/topics/" class="mega-menu__view-all">View all topics</a>
       </div>
     </div>
@@ -138,35 +141,14 @@ const categories = [
      ======================================== */
   .mega-menu {
     display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 99;
-    width: max(70vw, 56rem);
-    max-width: calc(100vw - 2rem);
     background: var(--bg-surface);
     border: var(--border-width-xs) solid var(--border-subtle);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-lg);
-    margin-top: 0.25rem;
   }
 
   .mega-menu[aria-hidden="false"] {
     display: block;
-  }
-
-  .mega-menu__inner {
-    padding: var(--space-global-lg) var(--space-global-lg) var(--space-global-md);
-  }
-
-  .mega-menu__grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-global-lg) var(--space-global-md);
-  }
-
-  .mega-menu__group {
-    min-width: 0;
   }
 
   .mega-menu__heading {
@@ -174,22 +156,10 @@ const categories = [
     font-size: var(--text-card-size-body);
     font-weight: 600;
     color: var(--cat-color, var(--text-heading));
-    padding-bottom: 0.375rem;
-    margin-bottom: 0.5rem;
-    border-bottom: 2px solid var(--cat-color, var(--border-subtle));
-  }
-
-  .mega-menu__list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.125rem;
+    border-bottom-color: var(--cat-color, var(--border-subtle));
   }
 
   .mega-menu__link {
-    display: block;
     padding: 0.3rem 0.5rem;
     font-family: var(--font-shell-body-stack);
     font-size: 0.85rem;
@@ -206,11 +176,13 @@ const categories = [
     color: var(--brand-accent-text);
   }
 
+  .mega-menu__link:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+  }
+
   .mega-menu__footer {
-    margin-top: var(--space-global-md);
-    padding-top: var(--space-global-sm);
     border-top: var(--border-width-xs) solid var(--border-subtle);
-    text-align: center;
   }
 
   .mega-menu__view-all {
@@ -226,16 +198,8 @@ const categories = [
   }
 
   /* ========================================
-     Mobile Mega Menu
+     Mobile Mega Menu (inside D3)
      ======================================== */
-  .mega-mobile {
-    padding-left: var(--space-global-sm);
-  }
-
-  .mega-mobile__group {
-    margin-bottom: var(--space-global-sm);
-  }
-
   .mega-mobile__heading {
     font-family: var(--font-shell-body-stack);
     font-size: 0.8rem;
@@ -248,17 +212,11 @@ const categories = [
     border-bottom: 2px solid var(--cat-color, var(--border-subtle));
   }
 
-  .mega-mobile__list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
   .mega-mobile__link {
-    display: block;
     padding: 0.4rem 0.5rem;
     font-family: var(--font-shell-body-stack);
     font-size: 0.9rem;
+    font-weight: 400;
     color: var(--text-body);
     text-decoration: none;
   }
@@ -268,12 +226,14 @@ const categories = [
   }
 
   .mega-mobile__view-all {
-    display: block;
-    padding: 0.5rem 0;
     font-family: var(--font-shell-body-stack);
     font-size: 0.9rem;
     font-weight: 500;
     color: var(--brand-accent-text);
     text-decoration: none;
+  }
+
+  .mega-mobile__view-all:hover {
+    text-decoration: underline;
   }
 </style>

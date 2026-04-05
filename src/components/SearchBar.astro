@@ -245,35 +245,21 @@
     align-items: center;
   }
 
-  /* Mobile toggle button */
+  /* Mobile toggle button — hidden; inline input is always visible now */
   .search-bar__toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.25rem;
-    height: 2.25rem;
-    border: none;
-    background: none;
-    color: var(--text-body-muted);
-    cursor: pointer;
-    border-radius: var(--radius-sm);
-    transition: background var(--transition-duration) var(--transition-easing);
-  }
-
-  .search-bar__toggle:hover {
-    background: var(--bg-surface-alt);
-    color: var(--text-body);
-  }
-
-  /* Input wrapper — hidden on mobile by default */
-  .search-bar__input-wrap {
     display: none;
+  }
+
+  /* Input wrapper — visible at all breakpoints */
+  .search-bar__input-wrap {
+    display: flex;
     align-items: center;
     gap: var(--space-global-xs);
     background: var(--bg-surface-alt);
     border: var(--border-width-xs) solid var(--border-subtle);
     border-radius: var(--radius-sm);
     padding: 0.375rem 0.75rem;
+    width: clamp(8rem, 38vw, 14rem);
     transition: border-color var(--transition-duration) var(--transition-easing);
   }
 
@@ -427,33 +413,7 @@
     color: var(--link-action-color-hover);
   }
 
-  /* Desktop: show input inline, hide toggle */
-  @media (min-width: 1024px) {
-    .search-bar__toggle {
-      display: none;
-    }
-
-    .search-bar__input-wrap {
-      display: flex;
-      width: 14rem;
-    }
-
-    .search-bar__input-wrap.is-expanded {
-      position: static;
-      transform: none;
-      width: 14rem;
-      box-shadow: none;
-    }
-
-    .search-bar__close {
-      display: none !important;
-    }
-  }
-
-  /* Mobile: show close button when expanded */
-  @media (max-width: 1023px) {
-    .search-bar__input-wrap.is-expanded .search-bar__close {
-      display: flex;
-    }
+  .search-bar__close {
+    display: none !important;
   }
 </style>

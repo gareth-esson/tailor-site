@@ -2,25 +2,37 @@
 /**
  * Site footer [A2].
  * Always Lexend. Always outside <main>.
- * Contains: branding, nav links, social, legal links, design credit.
+ * Contains: branding, nav columns, social, legal links (with Cookies),
+ * and design credit.
+ *
+ * Layout via Tailwind utilities; visual values via tokens.
  */
 const year = new Date().getFullYear();
 ---
 
-<footer class="site-footer">
-  <div class="site-footer__inner">
-    <!-- Top section: branding + nav columns -->
-    <div class="footer-top">
+<footer class="site-footer pt-[var(--space-global-xl)] pb-[var(--space-global-lg)] px-[var(--space-global-gutter)]">
+  <div class="site-footer__inner mx-auto w-full max-w-[var(--container-max-shell)]">
+    <!-- Top stripe: brand + nav columns -->
+    <div class="footer-top grid grid-cols-1 md:grid-cols-[1.2fr_2fr] gap-[var(--space-global-xl)] pb-[var(--space-global-lg)]">
       <div class="footer-brand">
-        <img src="/assets/tailor-logo-lockup-light.svg" alt="Tailor Education" class="footer-brand__logo" width="180" height="36" />
+        <img
+          src="/assets/tailor-logo-lockup-light.svg"
+          alt="Tailor Education"
+          class="footer-brand__logo h-8 w-auto mb-[var(--space-global-sm)]"
+          width="180"
+          height="36"
+        />
         <p class="footer-brand__strapline">Expert RSE for every school.</p>
         <p class="footer-brand__ota-line">Okay to Ask is a Tailor Education project.</p>
       </div>
 
-      <nav class="footer-nav" aria-label="Footer navigation">
+      <nav
+        class="footer-nav grid grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] gap-[var(--space-global-lg)]"
+        aria-label="Footer navigation"
+      >
         <div class="footer-nav__col">
-          <div class="footer-nav__heading">Topics</div>
-          <ul class="footer-nav__list" role="list">
+          <div class="footer-nav__heading mb-2">Topics</div>
+          <ul class="footer-nav__list list-none p-0 m-0 flex flex-col gap-[0.375rem]" role="list">
             <li><a href="/topics/">Browse all topics</a></li>
             <li><a href="/questions/">Okay to Ask</a></li>
             <li><a href="/blog/">Blog</a></li>
@@ -28,18 +40,18 @@ const year = new Date().getFullYear();
         </div>
 
         <div class="footer-nav__col">
-          <div class="footer-nav__heading">For schools</div>
-          <ul class="footer-nav__list" role="list">
+          <div class="footer-nav__heading mb-2">For schools</div>
+          <ul class="footer-nav__list list-none p-0 m-0 flex flex-col gap-[0.375rem]" role="list">
             <li><a href="/services">Services</a></li>
-            <li><a href="/training">RSE Training</a></li>
+            <li><a href="/rse-training">RSE Training</a></li>
             <li><a href="/services/delivery">Direct delivery</a></li>
             <li><a href="/services/drop-days">Drop days</a></li>
           </ul>
         </div>
 
         <div class="footer-nav__col">
-          <div class="footer-nav__heading">About</div>
-          <ul class="footer-nav__list" role="list">
+          <div class="footer-nav__heading mb-2">About</div>
+          <ul class="footer-nav__list list-none p-0 m-0 flex flex-col gap-[0.375rem]" role="list">
             <li><a href="/about">About Tailor Education</a></li>
             <li><a href="/our-approach">Our approach</a></li>
             <li><a href="/book">The Okay to Ask book</a></li>
@@ -49,9 +61,27 @@ const year = new Date().getFullYear();
       </nav>
     </div>
 
-    <!-- Social links -->
-    <div class="footer-social">
-      <a href="https://www.instagram.com/oktoask.co.uk/" target="_blank" rel="noopener noreferrer" class="footer-social__link" aria-label="Follow Okay to Ask on Instagram">
+    <!-- Middle stripe: social -->
+    <div class="footer-social py-[var(--space-global-md)] flex flex-wrap gap-x-[var(--space-global-lg)] gap-y-[var(--space-global-sm)]">
+      <a
+        href="https://uk.linkedin.com/company/tailoreducation"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="footer-social__link inline-flex items-center gap-2"
+        aria-label="Tailor Education on LinkedIn"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.852 3.37-1.852 3.601 0 4.267 2.37 4.267 5.455v6.288zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.063 2.063 0 112.063 2.065zm1.782 13.019H3.554V9h3.565v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+        </svg>
+        <span>Tailor Education</span>
+      </a>
+      <a
+        href="https://www.instagram.com/oktoask.co.uk/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="footer-social__link inline-flex items-center gap-2"
+        aria-label="Follow Okay to Ask on Instagram"
+      >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="2"/>
           <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/>
@@ -61,19 +91,29 @@ const year = new Date().getFullYear();
       </a>
     </div>
 
-    <!-- Bottom bar: legal links + credits -->
-    <div class="footer-bottom">
-      <div class="footer-legal">
+    <!-- Bottom stripe: legal + credits -->
+    <div class="footer-bottom pt-[var(--space-global-md)] flex flex-col md:flex-row md:justify-between md:items-center gap-[var(--space-global-sm)]">
+      <div class="footer-legal flex flex-wrap gap-x-[var(--space-global-md)] gap-y-[var(--space-global-sm)]">
         <a href="/our-approach#safeguarding">Safeguarding</a>
         <a href="/accessibility">Accessibility</a>
         <a href="/privacy">Privacy policy</a>
+        <a href="/privacy#cookies">Cookies</a>
       </div>
 
-      <div class="footer-credits">
+      <div class="footer-credits flex flex-wrap items-center gap-1">
         <span>&copy; {year} Tailor Education CIC</span>
         <span class="footer-credits__sep" aria-hidden="true">&middot;</span>
-        <span>
-          Designed by <a href="https://guessdesignhouse.com" target="_blank" rel="noopener noreferrer">Guess Design House</a>
+        <span class="footer-credits__designed-by inline-flex items-center gap-[0.4rem]">
+          Designed by
+          <a
+            href="https://guessdesignhouse.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Guess Design House"
+            class="footer-credits__guess inline-flex items-center"
+          >
+            <img src="/assets/guess-logo-white.svg" alt="Guess Design House" class="footer-credits__guess-logo" />
+          </a>
         </span>
       </div>
     </div>
@@ -85,63 +125,34 @@ const year = new Date().getFullYear();
     background: var(--bg-emphasis);
     color: var(--text-on-dark);
     font-family: var(--font-shell-body-stack);
-    padding: var(--space-global-xl) var(--space-global-gutter) var(--space-global-lg);
   }
 
-  .site-footer__inner {
-    max-width: 72rem;
-    margin: 0 auto;
-  }
-
-  /* --- Top: brand + nav columns --- */
+  /* --- Top stripe --- */
   .footer-top {
-    display: grid;
-    gap: var(--space-global-xl);
-    padding-bottom: var(--space-global-lg);
     border-bottom: var(--border-width-xs) solid var(--border-subtle-on-dark);
-  }
-
-  .footer-brand__logo {
-    height: 2rem;
-    width: auto;
-    margin-bottom: var(--space-global-sm);
   }
 
   .footer-brand__strapline {
     font-size: var(--text-prose-size-body);
     font-weight: 400;
-    opacity: 0.9;
+    color: var(--text-on-dark-strapline);
     margin: 0 0 0.25rem;
   }
 
   .footer-brand__ota-line {
     font-size: var(--text-card-size-body);
-    opacity: 0.7;
+    color: var(--text-muted-on-dark);
     margin: 0;
-  }
-
-  .footer-nav {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-    gap: var(--space-global-lg);
   }
 
   .footer-nav__heading {
+    font-family: var(--font-shell-body-stack);
     font-size: var(--text-card-size-body);
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    color: var(--text-on-dark);
     opacity: 0.7;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-  }
-
-  .footer-nav__list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.375rem;
   }
 
   .footer-nav__list a {
@@ -157,16 +168,19 @@ const year = new Date().getFullYear();
     text-decoration: underline;
   }
 
-  /* --- Social --- */
+  .footer-nav__list a:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-on-dark);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-xs);
+    opacity: 1;
+  }
+
+  /* --- Middle stripe --- */
   .footer-social {
-    padding: var(--space-global-md) 0;
     border-bottom: var(--border-width-xs) solid var(--border-subtle-on-dark);
   }
 
   .footer-social__link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
     color: var(--text-on-dark);
     text-decoration: none;
     font-size: 0.9rem;
@@ -178,20 +192,14 @@ const year = new Date().getFullYear();
     opacity: 1;
   }
 
-  /* --- Bottom: legal + credits --- */
-  .footer-bottom {
-    padding-top: var(--space-global-md);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-global-sm);
+  .footer-social__link:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-on-dark);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-xs);
+    opacity: 1;
   }
 
-  .footer-legal {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-global-sm) var(--space-global-md);
-  }
-
+  /* --- Bottom stripe --- */
   .footer-legal a {
     color: var(--text-on-dark);
     text-decoration: none;
@@ -205,13 +213,16 @@ const year = new Date().getFullYear();
     text-decoration: underline;
   }
 
+  .footer-legal a:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-on-dark);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-xs);
+    opacity: 1;
+  }
+
   .footer-credits {
     font-size: 0.8rem;
     opacity: 0.6;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.25rem;
   }
 
   .footer-credits a {
@@ -219,20 +230,29 @@ const year = new Date().getFullYear();
     text-decoration: underline;
   }
 
-  .footer-credits__sep {
-    margin: 0 0.25rem;
+  .footer-credits__guess {
+    text-decoration: none;
   }
 
-  /* --- Responsive --- */
-  @media (min-width: 768px) {
-    .footer-top {
-      grid-template-columns: 1.2fr 2fr;
-    }
+  .footer-credits__guess-logo {
+    height: 2rem;
+    width: auto;
+    opacity: 0.7;
+    transition: opacity var(--transition-duration) var(--transition-easing);
+  }
 
-    .footer-bottom {
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-    }
+  .footer-credits__guess:hover .footer-credits__guess-logo,
+  .footer-credits__guess:focus-visible .footer-credits__guess-logo {
+    opacity: 1;
+  }
+
+  .footer-credits a:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-on-dark);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-xs);
+  }
+
+  .footer-credits__sep {
+    margin: 0 0.25rem;
   }
 </style>

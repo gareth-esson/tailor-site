@@ -2,24 +2,42 @@
 /**
  * Site header [A1] with navigation [A3].
  * Persistent on every page. Always uses Lexend (shell layer).
- * Contains: logo, primary nav, search placeholder, mobile hamburger.
+ * Contains: skip link, logo, primary nav, search, mobile hamburger.
  * "Topics" nav item triggers mega menu [D8].
+ * "RSE Delivery" nav item triggers a compact dropdown (D8-lite).
+ *
+ * Layout via Tailwind utilities; all visual values resolve to tokens
+ * from tailor-site-v2.css. Shell never inherits .layer-ota typography —
+ * it sits outside <main> and inherits from <body>.
  */
 import TopicsMegaMenu from './TopicsMegaMenu.astro';
 import SearchBar from './SearchBar.astro';
+
+const rseDeliveryLinks = [
+  { title: 'RSE for primary schools', href: '/services/rse-primary' },
+  { title: 'RSE for secondary schools', href: '/services/rse-secondary' },
+  { title: 'RSE for SEND & alternative provision (Circuits)', href: '/services/rse-send' },
+  { title: 'Direct RSE delivery', href: '/services/delivery' },
+];
 ---
 
-<header class="site-header" id="site-header">
-  <div class="site-header__inner">
-    <!-- Logo -->
-    <a href="/" class="site-header__brand" aria-label="Tailor Education — home">
+<header
+  class="site-header sticky top-0 w-full h-[var(--header-height)] z-[var(--z-header)]"
+  id="site-header"
+>
+  <!-- Skip link: visible only on focus -->
+  <a href="#main" class="site-header__skip-link">Skip to main content</a>
+
+  <div class="site-header__inner mx-auto flex h-full w-full items-center max-w-[var(--container-max-shell)] lg:max-w-[90vw] px-[var(--space-global-gutter)] gap-[var(--space-global-md)]">
+    <!-- Slot 1: Brand -->
+    <a href="/" class="site-header__brand flex items-center shrink-0" aria-label="Tailor Education — home">
       <img src="/assets/tailor-logo-lockup-dark.svg" alt="Tailor Education" class="site-header__logo" width="180" height="36" />
     </a>
 
-    <!-- Desktop navigation -->
-    <nav class="site-header__nav" aria-label="Main navigation">
-      <ul class="site-header__nav-list" role="list">
-        <li class="site-header__nav-item site-header__nav-item--has-mega">
+    <!-- Slot 2: Primary navigation (desktop only) -->
+    <nav class="site-header__nav hidden lg:flex flex-1 justify-center" aria-label="Main navigation">
+      <ul class="site-header__nav-list flex items-center gap-[var(--space-global-xs)] m-0 p-0 list-none" role="list">
+        <li class="site-header__nav-item site-header__nav-item--has-mega relative">
           <button
             class="site-header__nav-link site-header__mega-trigger"
             aria-expanded="false"
@@ -36,8 +54,34 @@ import SearchBar from './SearchBar.astro';
         <li class="site-header__nav-item">
           <a href="/questions/" class="site-header__nav-link">Okay to Ask</a>
         </li>
+        <li class="site-header__nav-item site-header__nav-item--has-dropdown relative">
+          <button
+            class="site-header__nav-link site-header__dropdown-trigger"
+            aria-expanded="false"
+            aria-controls="rse-delivery-menu"
+            type="button"
+          >
+            RSE Delivery
+            <svg class="site-header__chevron" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+              <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div
+            id="rse-delivery-menu"
+            class="site-header__dropdown absolute top-full left-0 mt-1 min-w-[16rem] py-2 z-[var(--z-mega)]"
+            aria-hidden="true"
+          >
+            <ul role="list" class="list-none p-0 m-0">
+              {rseDeliveryLinks.map((link) => (
+                <li>
+                  <a href={link.href} class="site-header__dropdown-link block">{link.title}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </li>
         <li class="site-header__nav-item">
-          <a href="/training" class="site-header__nav-link">Training</a>
+          <a href="/rse-training" class="site-header__nav-link">Training</a>
         </li>
         <li class="site-header__nav-item">
           <a href="/services" class="site-header__nav-link">Services</a>
@@ -54,31 +98,38 @@ import SearchBar from './SearchBar.astro';
       </ul>
     </nav>
 
-    <!-- Site search [A4] -->
-    <SearchBar />
+    <!-- Slot 3: Utility cluster — search + hamburger -->
+    <div class="site-header__utility flex items-center gap-[var(--space-global-sm)] shrink-0 ml-auto lg:ml-0">
+      <SearchBar />
 
-    <!-- Mobile hamburger -->
-    <button
-      class="site-header__hamburger"
-      type="button"
-      aria-expanded="false"
-      aria-controls="mobile-nav"
-      aria-label="Open menu"
-    >
-      <span class="site-header__hamburger-line"></span>
-      <span class="site-header__hamburger-line"></span>
-      <span class="site-header__hamburger-line"></span>
-    </button>
+      <button
+        class="site-header__hamburger flex lg:hidden flex-col items-center justify-center gap-1 w-10 h-10 p-2 bg-transparent border-0 cursor-pointer"
+        type="button"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        aria-label="Open menu"
+      >
+        <span class="site-header__hamburger-line block w-5 h-[2px] rounded-[1px]"></span>
+        <span class="site-header__hamburger-line block w-5 h-[2px] rounded-[1px]"></span>
+        <span class="site-header__hamburger-line block w-5 h-[2px] rounded-[1px]"></span>
+      </button>
+    </div>
   </div>
 
   <!-- Mobile navigation [D3] -->
-  <div class="mobile-nav" id="mobile-nav" aria-hidden="true">
+  <div
+    id="mobile-nav"
+    class="mobile-nav lg:hidden max-h-[calc(100vh-var(--header-height))] overflow-y-auto py-[var(--space-global-sm)] px-[var(--space-global-gutter)]"
+    aria-hidden="true"
+    inert
+  >
     <nav aria-label="Mobile navigation">
-      <ul class="mobile-nav__list" role="list">
+      <ul class="mobile-nav__list list-none p-0 m-0" role="list">
         <li class="mobile-nav__item">
           <button
-            class="mobile-nav__link mobile-nav__accordion-trigger"
+            class="mobile-nav__link mobile-nav__accordion-trigger flex items-center justify-between w-full py-3 border-0 bg-transparent cursor-pointer"
             aria-expanded="false"
+            aria-controls="mobile-topics-panel"
             type="button"
           >
             Topics
@@ -86,27 +137,47 @@ import SearchBar from './SearchBar.astro';
               <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
-          <div class="mobile-nav__mega" aria-hidden="true">
+          <div id="mobile-topics-panel" class="mobile-nav__mega pb-[var(--space-global-sm)]" aria-hidden="true">
             <TopicsMegaMenu mobile />
           </div>
         </li>
         <li class="mobile-nav__item">
-          <a href="/questions/" class="mobile-nav__link">Okay to Ask</a>
+          <a href="/questions/" class="mobile-nav__link flex items-center justify-between w-full py-3">Okay to Ask</a>
         </li>
         <li class="mobile-nav__item">
-          <a href="/training" class="mobile-nav__link">Training</a>
+          <button
+            class="mobile-nav__link mobile-nav__accordion-trigger flex items-center justify-between w-full py-3 border-0 bg-transparent cursor-pointer"
+            aria-expanded="false"
+            aria-controls="mobile-rse-panel"
+            type="button"
+          >
+            RSE Delivery
+            <svg class="mobile-nav__chevron" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+              <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div id="mobile-rse-panel" class="mobile-nav__accordion-panel pb-[var(--space-global-sm)]" aria-hidden="true">
+            <ul class="list-none p-0 m-0 pl-[var(--space-global-sm)] flex flex-col gap-0.5" role="list">
+              {rseDeliveryLinks.map((link) => (
+                <li><a href={link.href} class="mobile-nav__sub-link block">{link.title}</a></li>
+              ))}
+            </ul>
+          </div>
         </li>
         <li class="mobile-nav__item">
-          <a href="/services" class="mobile-nav__link">Services</a>
+          <a href="/rse-training" class="mobile-nav__link flex items-center justify-between w-full py-3">Training</a>
         </li>
         <li class="mobile-nav__item">
-          <a href="/blog/" class="mobile-nav__link">Blog</a>
+          <a href="/services" class="mobile-nav__link flex items-center justify-between w-full py-3">Services</a>
         </li>
         <li class="mobile-nav__item">
-          <a href="/about" class="mobile-nav__link">About</a>
+          <a href="/blog/" class="mobile-nav__link flex items-center justify-between w-full py-3">Blog</a>
         </li>
         <li class="mobile-nav__item">
-          <a href="/contact" class="mobile-nav__link">Contact</a>
+          <a href="/about" class="mobile-nav__link flex items-center justify-between w-full py-3">About</a>
+        </li>
+        <li class="mobile-nav__item">
+          <a href="/contact" class="mobile-nav__link flex items-center justify-between w-full py-3">Contact</a>
         </li>
       </ul>
     </nav>
@@ -118,34 +189,59 @@ import SearchBar from './SearchBar.astro';
     const header = document.getElementById('site-header');
     if (!header) return;
 
-    // --- Desktop mega menu ---
-    const megaTrigger = header.querySelector('.site-header__mega-trigger') as HTMLButtonElement | null;
-    const megaMenu = header.querySelector('#mega-menu') as HTMLElement | null;
+    // --- Desktop mega menu + dropdown (shared toggle pattern) ---
+    const flyoutTriggers = header.querySelectorAll<HTMLButtonElement>(
+      '.site-header__mega-trigger, .site-header__dropdown-trigger'
+    );
 
-    if (megaTrigger && megaMenu) {
-      megaTrigger.addEventListener('click', () => {
-        const expanded = megaTrigger.getAttribute('aria-expanded') === 'true';
-        megaTrigger.setAttribute('aria-expanded', String(!expanded));
-        megaMenu.setAttribute('aria-hidden', String(expanded));
-      });
+    flyoutTriggers.forEach((trigger) => {
+      const panelId = trigger.getAttribute('aria-controls');
+      const panel = panelId ? document.getElementById(panelId) : null;
+      if (!panel) return;
 
-      // Close mega menu on outside click
-      document.addEventListener('click', (e) => {
-        if (!header.contains(e.target as Node)) {
-          megaTrigger.setAttribute('aria-expanded', 'false');
-          megaMenu.setAttribute('aria-hidden', 'true');
-        }
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const expanded = trigger.getAttribute('aria-expanded') === 'true';
+        // Close sibling flyouts
+        flyoutTriggers.forEach((other) => {
+          if (other !== trigger) {
+            other.setAttribute('aria-expanded', 'false');
+            const otherId = other.getAttribute('aria-controls');
+            const otherPanel = otherId ? document.getElementById(otherId) : null;
+            if (otherPanel) otherPanel.setAttribute('aria-hidden', 'true');
+          }
+        });
+        trigger.setAttribute('aria-expanded', String(!expanded));
+        panel.setAttribute('aria-hidden', String(expanded));
       });
+    });
 
-      // Close on Escape
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && megaTrigger.getAttribute('aria-expanded') === 'true') {
-          megaTrigger.setAttribute('aria-expanded', 'false');
-          megaMenu.setAttribute('aria-hidden', 'true');
-          megaTrigger.focus();
-        }
-      });
-    }
+    // Close flyouts on outside click
+    document.addEventListener('click', (e) => {
+      if (!header.contains(e.target as Node)) {
+        flyoutTriggers.forEach((trigger) => {
+          trigger.setAttribute('aria-expanded', 'false');
+          const panelId = trigger.getAttribute('aria-controls');
+          const panel = panelId ? document.getElementById(panelId) : null;
+          if (panel) panel.setAttribute('aria-hidden', 'true');
+        });
+      }
+    });
+
+    // Close flyouts on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        flyoutTriggers.forEach((trigger) => {
+          if (trigger.getAttribute('aria-expanded') === 'true') {
+            trigger.setAttribute('aria-expanded', 'false');
+            const panelId = trigger.getAttribute('aria-controls');
+            const panel = panelId ? document.getElementById(panelId) : null;
+            if (panel) panel.setAttribute('aria-hidden', 'true');
+            trigger.focus();
+          }
+        });
+      }
+    });
 
     // --- Mobile hamburger ---
     const hamburger = header.querySelector('.site-header__hamburger') as HTMLButtonElement | null;
@@ -156,24 +252,29 @@ import SearchBar from './SearchBar.astro';
         const expanded = hamburger.getAttribute('aria-expanded') === 'true';
         hamburger.setAttribute('aria-expanded', String(!expanded));
         mobileNav.setAttribute('aria-hidden', String(expanded));
+        if (expanded) {
+          mobileNav.setAttribute('inert', '');
+        } else {
+          mobileNav.removeAttribute('inert');
+        }
         hamburger.classList.toggle('is-open', !expanded);
         document.body.classList.toggle('nav-open', !expanded);
       });
     }
 
-    // --- Mobile accordion for Topics ---
+    // --- Mobile accordion triggers (Topics, RSE Delivery) ---
     const accordionTriggers = header.querySelectorAll('.mobile-nav__accordion-trigger');
     accordionTriggers.forEach((trigger) => {
       trigger.addEventListener('click', () => {
         const expanded = trigger.getAttribute('aria-expanded') === 'true';
         trigger.setAttribute('aria-expanded', String(!expanded));
-        const panel = trigger.nextElementSibling as HTMLElement | null;
+        const panelId = trigger.getAttribute('aria-controls');
+        const panel = panelId ? document.getElementById(panelId) : null;
         if (panel) panel.setAttribute('aria-hidden', String(expanded));
       });
     });
   }
 
-  // Run on initial load and Astro page transitions
   initHeader();
   document.addEventListener('astro:after-swap', initHeader);
 </script>
@@ -181,31 +282,16 @@ import SearchBar from './SearchBar.astro';
 <style>
   /* ========================================
      Site Header [A1]
+     Layout is Tailwind; visual values are tokens.
+     This style block handles state-dependent
+     selectors (hover, aria-expanded, focus) and
+     the handful of properties that are cleanest
+     expressed as CSS.
      ======================================== */
   .site-header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
     background: var(--bg-surface);
     border-bottom: var(--border-width-xs) solid var(--border-subtle);
     font-family: var(--font-shell-body-stack);
-  }
-
-  .site-header__inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-global-md);
-    max-width: 72rem;
-    margin: 0 auto;
-    padding: var(--space-global-sm) var(--space-global-gutter);
-  }
-
-  .site-header__brand {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    text-decoration: none;
   }
 
   .site-header__logo {
@@ -213,29 +299,43 @@ import SearchBar from './SearchBar.astro';
     width: auto;
   }
 
-  /* --- Desktop nav --- */
-  .site-header__nav {
-    display: none;
+  .site-header__brand:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-sm);
   }
 
-  .site-header__nav-list {
-    display: flex;
-    align-items: center;
-    gap: var(--space-global-xs);
-    margin: 0;
-    padding: 0;
-    list-style: none;
+  /* --- Skip link: invisible until focused --- */
+  .site-header__skip-link {
+    position: absolute;
+    left: var(--space-global-sm);
+    top: var(--space-global-sm);
+    padding: var(--space-global-xs) var(--space-global-sm);
+    background: var(--bg-surface);
+    color: var(--text-body);
+    font-family: var(--font-shell-body-stack);
+    font-size: var(--text-card-size-body);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-200%);
+    transition: transform var(--transition-duration) var(--transition-easing);
+    z-index: calc(var(--z-header) + 1);
   }
 
-  .site-header__nav-item {
-    position: relative;
+  .site-header__skip-link:focus-visible {
+    transform: translateY(0);
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
   }
 
+  /* --- Nav link (desktop) --- */
   .site-header__nav-link {
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
     padding: 0.5rem 0.75rem;
+    white-space: nowrap;
     font-family: var(--font-shell-body-stack);
     font-size: var(--text-card-size-body);
     font-weight: 500;
@@ -255,42 +355,70 @@ import SearchBar from './SearchBar.astro';
     color: var(--brand-accent-text);
   }
 
+  .site-header__nav-link:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+  }
+
   .site-header__chevron {
     transition: transform var(--transition-duration) var(--transition-easing);
   }
 
-  .site-header__mega-trigger[aria-expanded="true"] .site-header__chevron {
+  .site-header__nav-link[aria-expanded="true"] .site-header__chevron {
     transform: rotate(180deg);
   }
 
-  /* Search bar in header is handled by SearchBar.astro */
+  /* --- RSE Delivery dropdown (D8-lite) --- */
+  .site-header__dropdown {
+    display: none;
+    background: var(--bg-surface);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+  }
+
+  .site-header__dropdown[aria-hidden="false"] {
+    display: block;
+  }
+
+  .site-header__dropdown-link {
+    padding: 0.5rem 1rem;
+    font-family: var(--font-shell-body-stack);
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--text-body);
+    text-decoration: none;
+    transition: background var(--transition-duration) var(--transition-easing),
+                color var(--transition-duration) var(--transition-easing);
+  }
+
+  .site-header__dropdown-link:hover {
+    background: var(--bg-surface-alt);
+    color: var(--brand-accent-text);
+  }
+
+  .site-header__dropdown-link:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: calc(var(--focus-ring-offset) * -1);
+  }
 
   /* --- Hamburger --- */
   .site-header__hamburger {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 4px;
-    width: 2.5rem;
-    height: 2.5rem;
-    border: none;
-    background: none;
-    cursor: pointer;
-    padding: 0.5rem;
     border-radius: var(--radius-sm);
+    transition: background var(--transition-duration) var(--transition-easing);
   }
 
   .site-header__hamburger:hover {
     background: var(--bg-surface-alt);
   }
 
+  .site-header__hamburger:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+  }
+
   .site-header__hamburger-line {
-    display: block;
-    width: 20px;
-    height: 2px;
     background: var(--text-body);
-    border-radius: 1px;
     transition: transform var(--transition-duration) var(--transition-easing),
                 opacity var(--transition-duration) var(--transition-easing);
   }
@@ -312,19 +440,12 @@ import SearchBar from './SearchBar.astro';
     display: none;
     background: var(--bg-surface);
     border-top: var(--border-width-xs) solid var(--border-subtle);
-    padding: var(--space-global-sm) var(--space-global-gutter);
-    max-height: calc(100vh - 4rem);
-    overflow-y: auto;
+    z-index: var(--z-mobile-nav);
+    position: relative;
   }
 
   .mobile-nav[aria-hidden="false"] {
     display: block;
-  }
-
-  .mobile-nav__list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
   }
 
   .mobile-nav__item {
@@ -336,65 +457,56 @@ import SearchBar from './SearchBar.astro';
   }
 
   .mobile-nav__link {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    padding: 0.75rem 0;
     font-family: var(--font-shell-body-stack);
     font-size: var(--text-prose-size-body);
     font-weight: 500;
     color: var(--text-body);
     text-decoration: none;
-    border: none;
-    background: none;
-    cursor: pointer;
   }
 
-  .mobile-nav__link:hover {
+  .mobile-nav__link:hover,
+  .mobile-nav__link:focus-visible {
     color: var(--brand-accent-text);
+  }
+
+  .mobile-nav__link:active {
+    background: var(--bg-surface-alt);
   }
 
   .mobile-nav__chevron {
     transition: transform var(--transition-duration) var(--transition-easing);
+    color: var(--text-body);
   }
 
   .mobile-nav__accordion-trigger[aria-expanded="true"] .mobile-nav__chevron {
     transform: rotate(180deg);
   }
 
-  .mobile-nav__mega {
+  .mobile-nav__mega,
+  .mobile-nav__accordion-panel {
     display: none;
-    padding-bottom: var(--space-global-sm);
   }
 
-  .mobile-nav__mega[aria-hidden="false"] {
+  .mobile-nav__mega[aria-hidden="false"],
+  .mobile-nav__accordion-panel[aria-hidden="false"] {
     display: block;
+  }
+
+  .mobile-nav__sub-link {
+    padding: 0.4rem 0.5rem;
+    font-family: var(--font-shell-body-stack);
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--text-body);
+    text-decoration: none;
+  }
+
+  .mobile-nav__sub-link:hover {
+    color: var(--brand-accent-text);
   }
 
   /* Lock body scroll when mobile nav is open */
   :global(body.nav-open) {
     overflow: hidden;
-  }
-
-  /* ========================================
-     Responsive: show desktop nav on lg+
-     ======================================== */
-  @media (min-width: 1024px) {
-    .site-header__nav {
-      display: flex;
-    }
-
-    .site-header__search-btn {
-      display: flex;
-    }
-
-    .site-header__hamburger {
-      display: none;
-    }
-
-    .mobile-nav {
-      display: none !important;
-    }
   }
 </style>

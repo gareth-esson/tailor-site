@@ -105,6 +105,7 @@
   --text-heading-on-dark: #ffffff;
   /* Text on dark — muted */
   --text-muted-on-dark: rgba(255, 255, 255, 0.6);
+  --text-on-dark-strapline: rgba(255, 255, 255, 0.9);
   /* Optional aliases */
   --text-main: var(--text-body);
   --text-muted: var(--text-body-muted);
@@ -522,7 +523,20 @@
   --space-global-sm: 1rem;
   --space-global-xs: 0.5rem;
 
-  --space-global-gutter: clamp(0.75rem, 2vw, 2rem);
+  --space-global-gutter: clamp(1rem, 2vw, 2rem);
+
+  /* ------------------------------
+     CONTAINER WIDTHS
+     Outer wrappers used by shell and page sections
+     ------------------------------ */
+  --container-max-shell: 72rem;   /* 1152px — outer wrapper on header/footer/page sections */
+  --container-max-prose: 44rem;   /* 704px — long-form reading measure */
+
+  /* ------------------------------
+     SHELL STRUCTURAL TOKENS
+     ------------------------------ */
+  --header-height: 4rem;          /* 64px — desktop/mobile unified sticky header height */
+
   /* ------------------------------
      BORDERS & RADIUS
      ------------------------------ */
@@ -2426,6 +2440,11 @@ textarea.form-input {
     --z-overlay: 500;
     --z-modal: 600;
     --z-toast: 700;
+
+    /* Shell z-index tokens (header/mega/mobile-nav relationships) */
+    --z-header: 100;        /* sticky site header */
+    --z-mega: 90;           /* mega menu + dropdown panels — under header border, above page content */
+    --z-mobile-nav: 95;     /* mobile nav panel — between mega and header */
 
     /* ====================================
        BREAKPOINTS (reference values)
