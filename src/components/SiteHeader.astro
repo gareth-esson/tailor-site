@@ -14,10 +14,16 @@ import TopicsMegaMenu from './TopicsMegaMenu.astro';
 import SearchBar from './SearchBar.astro';
 
 const rseDeliveryLinks = [
-  { title: 'RSE for primary schools', href: '/services/rse-primary' },
-  { title: 'RSE for secondary schools', href: '/services/rse-secondary' },
-  { title: 'RSE for SEND & alternative provision (Circuits)', href: '/services/rse-send' },
-  { title: 'Direct RSE delivery', href: '/services/delivery' },
+  { title: 'RSE for Primary Schools', href: '/services/rse-primary' },
+  { title: 'RSE for Secondary Schools', href: '/services/rse-secondary' },
+  { title: 'RSE for SEND & AP (Circuits)', href: '/services/rse-send' },
+  { title: 'Direct RSE Delivery', href: '/services/delivery' },
+  { title: 'Drop Days', href: '/services/drop-days' },
+];
+
+const rseTrainingLinks = [
+  { title: 'RSE Training', href: '/rse-training' },
+  { title: 'RSE Policy & Curriculum Planning', href: '/services/rse-policy-curriculum-planning' },
 ];
 ---
 
@@ -80,11 +86,31 @@ const rseDeliveryLinks = [
             </ul>
           </div>
         </li>
-        <li class="site-header__nav-item">
-          <a href="/rse-training" class="site-header__nav-link">Training</a>
-        </li>
-        <li class="site-header__nav-item">
-          <a href="/services" class="site-header__nav-link">Services</a>
+        <li class="site-header__nav-item site-header__nav-item--has-dropdown relative">
+          <button
+            class="site-header__nav-link site-header__dropdown-trigger"
+            aria-expanded="false"
+            aria-controls="rse-training-menu"
+            type="button"
+          >
+            RSE Training &amp; Support
+            <svg class="site-header__chevron" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+              <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div
+            id="rse-training-menu"
+            class="site-header__dropdown absolute top-full left-0 mt-1 min-w-[16rem] py-2 z-[var(--z-mega)]"
+            aria-hidden="true"
+          >
+            <ul role="list" class="list-none p-0 m-0">
+              {rseTrainingLinks.map((link) => (
+                <li>
+                  <a href={link.href} class="site-header__dropdown-link block">{link.title}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
         </li>
         <li class="site-header__nav-item">
           <a href="/blog/" class="site-header__nav-link">Blog</a>
@@ -165,10 +191,24 @@ const rseDeliveryLinks = [
           </div>
         </li>
         <li class="mobile-nav__item">
-          <a href="/rse-training" class="mobile-nav__link flex items-center justify-between w-full py-3">Training</a>
-        </li>
-        <li class="mobile-nav__item">
-          <a href="/services" class="mobile-nav__link flex items-center justify-between w-full py-3">Services</a>
+          <button
+            class="mobile-nav__link mobile-nav__accordion-trigger flex items-center justify-between w-full py-3 border-0 bg-transparent cursor-pointer"
+            aria-expanded="false"
+            aria-controls="mobile-rse-training-panel"
+            type="button"
+          >
+            RSE Training &amp; Support
+            <svg class="mobile-nav__chevron" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+              <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div id="mobile-rse-training-panel" class="mobile-nav__accordion-panel pb-[var(--space-global-sm)]" aria-hidden="true">
+            <ul class="list-none p-0 m-0 pl-[var(--space-global-sm)] flex flex-col gap-0.5" role="list">
+              {rseTrainingLinks.map((link) => (
+                <li><a href={link.href} class="mobile-nav__sub-link block">{link.title}</a></li>
+              ))}
+            </ul>
+          </div>
         </li>
         <li class="mobile-nav__item">
           <a href="/blog/" class="mobile-nav__link flex items-center justify-between w-full py-3">Blog</a>
