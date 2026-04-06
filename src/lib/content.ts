@@ -93,7 +93,7 @@ async function _loadAllContentImpl(): Promise<void> {
   }
 
   function toQuestionRef(q: Question): QuestionRef {
-    return { id: q.id, question: q.question, slug: q.slug, contentTags: q.contentTags };
+    return { id: q.id, question: q.question, slug: q.slug, okayToAskCategory: q.okayToAskCategory, contentTags: q.contentTags };
   }
 
   function toLandingPageRef(lp: LandingPage): LandingPageRef {

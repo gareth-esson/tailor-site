@@ -78,7 +78,7 @@ export async function fetchQuestions(): Promise<Question[]> {
       glossaryTerms: [], // resolved later
       relatedQuestionIds: getRelationIds(p['Related Questions']),
       relatedQuestions: [], // resolved later
-      okayToAskCategory: getSelectValue(p['Okay to Ask Category']),
+      okayToAskCategory: getSelectValue(p['Category']),
       metaTitle: getRichTextValue(p['Meta Title']),
       metaDescription: getRichTextValue(p['Meta Description']),
       signposting: getMultiSelectValues(p['Signposting']),

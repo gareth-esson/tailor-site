@@ -577,9 +577,9 @@ Blog posts (C4) have author bylines (the team member who wrote it). The book cre
 
 7. **End-of-answer panel (A17)** — three-panel CTA block: "Get the book" / "Explore how to teach this topic" / "Bring RSE into your school". Serves all three audiences.
 
-8. **Related questions (A15, question variant)** — 3–5 related question cards.
+8. **Related questions (A15, question variant)** — 3–5 related question cards. Each card displays Content Tags as inline chip/badge elements for scannability. Content tags are also clickable, linking to tag archive pages at `/questions/tag/{slug}`.
 
-9. **Topic tags (A16)** — links to parent landing page(s).
+*A16 (topic tags) removed from C1. The content tags on question cards serve this purpose better — they show topic relevance in context on each related question, rather than as an orphaned section at the bottom of the page.*
 
 ---
 

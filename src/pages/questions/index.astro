@@ -2,19 +2,29 @@
 /**
  * Okay to Ask landing page [B8] — /questions/
  * The front door for young people. Uses OtA layer.
- * Browse all questions with client-side category filtering.
+ * Browse all questions with client-side category filtering + pagination.
  * 7 OtA categories: Anatomy, Puberty, Relationships, Sex, Sexual Health, Sex & the Law, Contraception & Pregnancy.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GlossaryTooltips from '../../components/GlossaryTooltips.astro';
+import QuestionCard from '../../components/QuestionCard.astro';
+import SignpostingBlock from '../../components/SignpostingBlock.astro';
 import { getQuestions } from '../../lib/content';
+import type { QuestionRef } from '../../lib/types';
 
 const allQuestions = await getQuestions();
 
-// Only published questions with answers
-const questions = allQuestions
+// Only published questions with answers, mapped to QuestionRef
+const questions: QuestionRef[] = allQuestions
   .filter((q) => q.body.length > 0)
-  .sort((a, b) => a.question.localeCompare(b.question));
+  .sort((a, b) => a.question.localeCompare(b.question))
+  .map((q) => ({
+    id: q.id,
+    question: q.question,
+    slug: q.slug,
+    okayToAskCategory: q.okayToAskCategory,
+    contentTags: q.contentTags,
+  }));
 
 // The 7 OtA browsing categories
 const otaCategories = [
@@ -26,20 +36,6 @@ const otaCategories = [
   { name: 'Sex & the Law', token: 'law' },
   { name: 'Contraception & Pregnancy', token: 'contraception' },
 ];
-
-// Map OtA category to badge class
-function otaBadgeClass(cat: string | null): string {
-  const map: Record<string, string> = {
-    'Anatomy': 'badge--ota-anatomy',
-    'Puberty': 'badge--ota-puberty',
-    'Relationships': 'badge--ota-relationships',
-    'Sex': 'badge--ota-sex',
-    'Sexual Health': 'badge--ota-sexual-health',
-    'Sex & the Law': 'badge--ota-law',
-    'Contraception & Pregnancy': 'badge--ota-contraception',
-  };
-  return map[cat || ''] || '';
-}
 ---
 
 <BaseLayout
@@ -49,89 +45,102 @@ function otaBadgeClass(cat: string | null): string {
   layer="ota"
 >
   <div class="ota-landing">
-    <!-- 1. Hero -->
-    <section class="ota-hero surface--ota">
-      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-2xl)]">
-        <img src="/assets/ota-wordmark-dark.svg" alt="Okay to Ask" class="ota-hero__wordmark" width="280" height="48" />
-        <h1 class="ota-hero__title">Real questions from real young people. Answered honestly.</h1>
-        <p class="ota-hero__subtitle">
+
+    {/* ── §1 Hero ── */}
+    <section class="surface--ota w-full py-[var(--space-global-2xl)] px-[var(--space-global-gutter)]">
+      <div class="mx-auto w-full max-w-[var(--container-max-reading-wide)] text-center">
+        <img
+          src="/assets/ota-wordmark-dark.svg"
+          alt="Okay to Ask"
+          class="ota-hero__wordmark mx-auto mb-[var(--space-global-md)]"
+          width="280"
+          height="48"
+        />
+        <h1 class="ota-hero__title mb-[var(--space-global-sm)]">
+          Real questions from real young people. Answered honestly.
+        </h1>
+        <p class="ota-hero__subtitle mx-auto">
           Every question here was written anonymously by a young person. No judgement, no awkwardness — just honest answers.
         </p>
       </div>
     </section>
 
-    <!-- 2. Book promotion -->
-    <section class="ota-book surface--ota-alt">
-      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-        <div class="ota-book__card">
-          <div class="ota-book__content">
-            <h2 class="ota-book__title">The Okay to Ask book</h2>
-            <p class="ota-book__text">
+    {/* ── §2 Book promotion ── */}
+    <section class="w-full px-[var(--space-global-gutter)]">
+      <div class="mx-auto w-full max-w-[var(--container-max-reading-wide)]">
+        <div class="b8-book-panel">
+          <img
+            src="/images/ota-book-hero.webp"
+            alt="The Okay to Ask book — closed cover and open spread showing post-it questions and honest answers"
+            class="ota-book__img"
+            width="800"
+            height="533"
+            loading="lazy"
+          />
+          <div class="ota-book__body">
+            <h2 class="ota-book__title mb-[var(--space-global-xs)]">The Okay to Ask book</h2>
+            <p class="ota-book__text mb-[var(--space-global-md)]">
               Real questions, honest answers, post-it notes and all. The physical book for your home, school, or staff room.
             </p>
             <a href="/book" class="btn btn--std btn--primary has-icon-hover">Get the book</a>
-          </div>
-          <div class="ota-book__image">
-            <!-- Book cover placeholder -->
-            <div class="ota-book__placeholder" aria-hidden="true">
-              <span>Book cover</span>
-            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 3. Browse by category + 4. Question list -->
-    <section class="ota-questions surface--ota" id="questions-section">
-      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-        <h2 class="ota-questions__heading">Browse questions</h2>
+    {/* ── §3 Category filter + question card grid ── */}
+    <section class="surface--ota w-full py-[var(--space-struct-y-base)] px-[var(--space-global-gutter)]" id="questions-section">
+      <div class="mx-auto w-full max-w-[var(--container-max-reading-wide)]">
+        <h2 class="ota-questions__heading text-center mb-[var(--space-global-md)]">Browse questions</h2>
 
-        <!-- Category filter buttons -->
-        <div class="ota-filters" role="group" aria-label="Filter by category">
+        {/* Category filter buttons */}
+        <div class="ota-filters flex flex-wrap justify-center gap-[var(--space-global-xs)] mb-[var(--space-global-lg)]" role="group" aria-label="Filter by category">
           <button
             class="ota-filter btn btn--sm btn--tint is-active"
             data-category="all"
             type="button"
+            aria-pressed="true"
           >
             All
           </button>
           {otaCategories.map((cat) => (
             <button
-              class={`ota-filter badge badge--pill ${`badge--ota-${cat.token}`}`}
+              class={`ota-filter badge badge--pill badge--ota-${cat.token}`}
               data-category={cat.name}
               type="button"
+              aria-pressed="false"
             >
               {cat.name}
             </button>
           ))}
         </div>
 
-        <!-- Question list -->
-        <ul class="ota-question-list" role="list" id="question-list">
+        {/* Question card grid */}
+        <ul class="list-none p-0 m-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[var(--space-global-md)]" role="list" id="question-grid">
           {questions.map((q) => (
-            <li class="ota-question-list__item" data-category={q.okayToAskCategory || ''}>
-              <a href={`/anonymous_question/${q.slug}`} class="ota-question-list__link">
-                {q.question}
-              </a>
-              {q.okayToAskCategory && (
-                <span class={`badge badge--pill ${otaBadgeClass(q.okayToAskCategory)}`}>
-                  {q.okayToAskCategory}
-                </span>
-              )}
+            <li data-category={q.okayToAskCategory || ''}>
+              <QuestionCard question={q} />
             </li>
           ))}
         </ul>
 
-        <p class="ota-question-count" id="question-count" aria-live="polite">
+        {/* Pagination controls */}
+        <div class="flex justify-center items-center gap-[var(--space-global-sm)] mt-[var(--space-global-lg)]" id="pagination-controls">
+          <button class="btn btn--sm btn--tint" id="pagination-prev" type="button" disabled>Previous</button>
+          <span id="pagination-indicator" class="b8-pagination-indicator">Page 1 of 1</span>
+          <button class="btn btn--sm btn--tint" id="pagination-next" type="button">Next</button>
+        </div>
+
+        <p id="question-count" aria-live="polite" class="b8-question-count text-center mt-[var(--space-global-sm)]">
           {questions.length} questions
         </p>
       </div>
     </section>
 
-    <!-- 5. What is Okay to Ask? -->
-    <section class="ota-about surface--ota-alt">
-      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-        <h2 class="ota-about__title">What is Okay to Ask?</h2>
+    {/* ── §4 What is Okay to Ask? ── */}
+    <section class="surface--ota-alt w-full py-[var(--space-struct-y-base)] px-[var(--space-global-gutter)]">
+      <div class="mx-auto w-full max-w-[var(--container-max-prose)]">
+        <h2 class="ota-about__title text-center mb-[var(--space-global-sm)]">What is Okay to Ask?</h2>
         <p class="ota-about__text">
           Okay to Ask started with anonymous question boxes in schools. Young people wrote down whatever they wanted to know about relationships, sex, their bodies, and growing up. No names, no judgement. We collected those questions and answered every single one honestly.
         </p>
@@ -141,71 +150,111 @@ function otaBadgeClass(cat: string | null): string {
       </div>
     </section>
 
-    <!-- 6. General signposting -->
-    <section class="ota-signpost surface--ota">
-      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-        <div class="alert alert--support">
-          <div class="alert__content">
-            <div class="alert__title">Need to talk to someone?</div>
-            <div class="alert__body">
-              <p>
-                <strong>Childline</strong> — free, confidential support for young people.
-                Call <a href="tel:08001111">0800 1111</a> or visit
-                <a href="https://www.childline.org.uk" target="_blank" rel="noopener noreferrer">childline.org.uk</a>
-              </p>
-              <p>
-                <strong>Brook</strong> — sexual health and wellbeing for under 25s.
-                Visit <a href="https://www.brook.org.uk" target="_blank" rel="noopener noreferrer">brook.org.uk</a>
-              </p>
-              <p>
-                <strong>The Mix</strong> — support for under 25s on any issue.
-                Call <a href="tel:08088084994">0808 808 4994</a> or visit
-                <a href="https://www.themix.org.uk" target="_blank" rel="noopener noreferrer">themix.org.uk</a>
-              </p>
-            </div>
-          </div>
-        </div>
+    {/* ── §5 Signposting ── */}
+    <section
+      class="w-full py-[var(--space-struct-y-base)] px-[var(--space-global-gutter)]"
+      style="background: var(--safeguarding-support-bg);"
+      role="complementary"
+      aria-label="Support services"
+    >
+      <div class="mx-auto w-full max-w-[var(--container-max-reading-wide)]">
+        <SignpostingBlock services={['Childline', 'Brook', 'The Mix']} />
       </div>
     </section>
+
   </div>
 
   <GlossaryTooltips />
 </BaseLayout>
 
 <script>
-  function initFilters() {
-    const filters = document.querySelectorAll('.ota-filter');
-    const questionList = document.getElementById('question-list');
-    const countEl = document.getElementById('question-count');
-    if (!questionList || !countEl) return;
+  const PAGE_SIZE = 12;
 
-    const items = questionList.querySelectorAll('.ota-question-list__item');
+  function initB8() {
+    const filters = document.querySelectorAll<HTMLButtonElement>('.ota-filter');
+    const grid = document.getElementById('question-grid');
+    const countEl = document.getElementById('question-count');
+    const prevBtn = document.getElementById('pagination-prev') as HTMLButtonElement | null;
+    const nextBtn = document.getElementById('pagination-next') as HTMLButtonElement | null;
+    const indicator = document.getElementById('pagination-indicator');
+    const sectionHeading = document.querySelector('#questions-section h2');
+
+    if (!grid || !countEl || !prevBtn || !nextBtn || !indicator) return;
+
+    const allItems = Array.from(grid.querySelectorAll<HTMLLIElement>(':scope > li'));
+    let filteredItems: HTMLLIElement[] = [];
+    let currentPage = 1;
+    let totalPages = 1;
+
+    function applyFilter(category: string) {
+      filteredItems = category === 'all'
+        ? [...allItems]
+        : allItems.filter((li) => li.dataset.category === category);
+      currentPage = 1;
+      totalPages = Math.max(1, Math.ceil(filteredItems.length / PAGE_SIZE));
+      renderPage();
+      countEl!.textContent = `${filteredItems.length} question${filteredItems.length !== 1 ? 's' : ''}`;
+    }
+
+    function renderPage() {
+      const start = (currentPage - 1) * PAGE_SIZE;
+      const end = start + PAGE_SIZE;
+
+      allItems.forEach((li) => { li.style.display = 'none'; });
+
+      filteredItems.forEach((li, i) => {
+        li.style.display = (i >= start && i < end) ? '' : 'none';
+      });
+
+      indicator!.textContent = `Page ${currentPage} of ${totalPages}`;
+
+      prevBtn!.disabled = currentPage <= 1;
+      prevBtn!.style.opacity = currentPage <= 1 ? '0.4' : '';
+      prevBtn!.style.pointerEvents = currentPage <= 1 ? 'none' : '';
+
+      nextBtn!.disabled = currentPage >= totalPages;
+      nextBtn!.style.opacity = currentPage >= totalPages ? '0.4' : '';
+      nextBtn!.style.pointerEvents = currentPage >= totalPages ? 'none' : '';
+
+      const paginationContainer = document.getElementById('pagination-controls');
+      if (paginationContainer) {
+        paginationContainer.style.display = totalPages <= 1 ? 'none' : '';
+      }
+    }
 
     filters.forEach((btn) => {
       btn.addEventListener('click', () => {
-        const category = (btn as HTMLElement).dataset.category;
-
-        // Update active state
-        filters.forEach((f) => f.classList.remove('is-active'));
-        btn.classList.add('is-active');
-
-        // Filter items
-        let visible = 0;
-        items.forEach((item) => {
-          const itemCat = (item as HTMLElement).dataset.category;
-          const show = category === 'all' || itemCat === category;
-          (item as HTMLElement).style.display = show ? '' : 'none';
-          if (show) visible++;
+        filters.forEach((f) => {
+          f.classList.remove('is-active');
+          f.setAttribute('aria-pressed', 'false');
         });
-
-        // Update count
-        countEl.textContent = `${visible} question${visible !== 1 ? 's' : ''}`;
+        btn.classList.add('is-active');
+        btn.setAttribute('aria-pressed', 'true');
+        applyFilter(btn.dataset.category || 'all');
       });
     });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage--;
+        renderPage();
+        sectionHeading?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentPage < totalPages) {
+        currentPage++;
+        renderPage();
+        sectionHeading?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    applyFilter('all');
   }
 
-  initFilters();
-  document.addEventListener('astro:after-swap', initFilters);
+  initB8();
+  document.addEventListener('astro:after-swap', initB8);
 </script>
 
 <style>
@@ -213,24 +262,18 @@ function otaBadgeClass(cat: string | null): string {
      Okay to Ask landing [B8]
      ======================================== */
   .ota-landing {
-    background: var(--bg-ota-surface);
+    background: var(--bg-page);
   }
 
   /* --- Hero --- */
-  .ota-hero {
-    text-align: center;
-  }
-
   .ota-hero__wordmark {
     height: 3rem;
     width: auto;
-    margin-bottom: var(--space-global-md);
   }
 
   .ota-hero__title {
     font-size: var(--text-display-size-h1);
     color: var(--text-ota-heading);
-    margin: 0 0 var(--space-global-sm);
     line-height: 1.15;
   }
 
@@ -238,59 +281,51 @@ function otaBadgeClass(cat: string | null): string {
     font-size: var(--text-prose-size-body);
     color: var(--text-ota-muted);
     max-width: 32rem;
-    margin: 0 auto;
     line-height: 1.6;
   }
 
   /* --- Book promotion --- */
-  .ota-book__card {
-    display: grid;
-    gap: var(--space-global-md);
-    padding: var(--space-global-lg);
-    background: var(--bg-surface);
+  .b8-book-panel {
+    background: #eae6e1;
     border-radius: var(--radius-lg);
-    border: var(--border-width-xs) solid var(--border-subtle);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    margin-top: var(--space-global-lg);
+    margin-bottom: var(--space-global-lg);
   }
 
   .ota-book__title {
     font-size: var(--text-prose-size-h2);
     color: var(--text-ota-heading);
-    margin: 0 0 var(--space-global-xs);
   }
 
   .ota-book__text {
     font-size: var(--text-prose-size-body);
     color: var(--text-ota-body);
-    margin: 0 0 var(--space-global-md);
     line-height: 1.6;
   }
 
-  .ota-book__placeholder {
+  .ota-book__img {
     width: 100%;
-    aspect-ratio: 3/4;
-    max-width: 12rem;
-    background: var(--surface-ota-postit-soft);
-    border: 2px dashed var(--surface-ota-postit);
-    border-radius: var(--radius-sm);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--text-card-size-body);
-    color: var(--text-body-muted);
+    height: auto;
+    display: block;
+  }
+
+  .ota-book__body {
+    padding: var(--space-global-lg) var(--space-global-xl) var(--space-global-xl);
+    text-align: center;
+  }
+
+  @media (max-width: 767px) {
+    .ota-book__body {
+      padding: var(--space-global-md) var(--space-global-lg) var(--space-global-lg);
+    }
   }
 
   /* --- Questions section --- */
   .ota-questions__heading {
     font-size: var(--text-prose-size-h2);
     color: var(--text-ota-heading);
-    margin: 0 0 var(--space-global-md);
-  }
-
-  .ota-filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: var(--space-global-md);
   }
 
   .ota-filter {
@@ -299,62 +334,30 @@ function otaBadgeClass(cat: string | null): string {
   }
 
   .ota-filter:not(.is-active) {
-    opacity: 0.6;
+    opacity: 0.55;
   }
 
   .ota-filter.is-active {
     opacity: 1;
-    outline: 2px solid var(--brand-accent);
-    outline-offset: 2px;
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
   }
 
-  .ota-question-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.375rem;
-  }
-
-  .ota-question-list__item {
-    display: flex;
-    align-items: baseline;
-    gap: var(--space-global-xs);
-    padding: 0.75rem 1rem;
-    background: var(--bg-surface);
-    border: var(--border-width-xs) solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    transition: border-color var(--transition-duration) var(--transition-easing);
-  }
-
-  .ota-question-list__item:hover {
-    border-color: var(--brand-accent);
-  }
-
-  .ota-question-list__link {
-    flex: 1;
-    font-size: var(--text-prose-size-body);
-    color: var(--link-ota-contextual);
-    text-decoration: none;
-    font-weight: 500;
-  }
-
-  .ota-question-list__link:hover {
-    text-decoration: underline;
-  }
-
-  .ota-question-count {
+  /* --- Pagination --- */
+  .b8-pagination-indicator {
     font-size: var(--text-card-size-body);
     color: var(--text-ota-muted);
-    margin-top: var(--space-global-sm);
+  }
+
+  .b8-question-count {
+    font-size: var(--text-card-size-body);
+    color: var(--text-ota-muted);
   }
 
   /* --- About --- */
   .ota-about__title {
     font-size: var(--text-prose-size-h2);
     color: var(--text-ota-heading);
-    margin: 0 0 var(--space-global-sm);
   }
 
   .ota-about__text {
@@ -367,13 +370,5 @@ function otaBadgeClass(cat: string | null): string {
 
   .ota-about__text:last-child {
     margin-bottom: 0;
-  }
-
-  /* --- Responsive --- */
-  @media (min-width: 768px) {
-    .ota-book__card {
-      grid-template-columns: 1fr auto;
-      align-items: center;
-    }
   }
 </style>

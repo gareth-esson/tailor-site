@@ -390,7 +390,7 @@ This section was originally spec'd as §7, with the end-of-answer panel before i
 - `<h2>` text: "Other questions young people ask"
 - Tailwind: `mb-[var(--space-global-lg)]`
 - Size: `--text-prose-size-h2`, Fraunces, weight `--heading-ota-weight-h2`, colour `--text-ota-heading`
-- Left-aligned (not centred — the related-questions grid reads as a browsing list, and left-alignment makes the scanning rhythm right).
+- Centred (`text-align: center`), consistent with the OtA heading pattern used across all OtA sections.
 
 **Card grid.** 3–5 cards in a responsive grid.
 - Tailwind: `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[var(--space-global-md)]`
