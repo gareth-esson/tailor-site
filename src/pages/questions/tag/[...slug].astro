@@ -1,0 +1,105 @@
+---
+/**
+ * Content tag archive page — /questions/tag/{slug}
+ *
+ * Lists all questions that have a given content tag.
+ * Content tags come from the Notion "Content Tags" multi-select field.
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import QuestionCard from '../../../components/QuestionCard.astro';
+import { getQuestions } from '../../../lib/content';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  function slugify(text: string): string {
+    return text
+      .toLowerCase()
+      .replace(/[&]/g, 'and')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '');
+  }
+
+  const questions = await getQuestions();
+
+  // Collect all unique content tags across all questions
+  const tagMap = new Map<string, { label: string; slug: string }>();
+  for (const q of questions) {
+    for (const tag of q.contentTags) {
+      const slug = slugify(tag);
+      if (!tagMap.has(slug)) {
+        tagMap.set(slug, { label: tag, slug });
+      }
+    }
+  }
+
+  return Array.from(tagMap.values()).map(({ label, slug }) => ({
+    params: { slug },
+    props: {
+      tagLabel: label,
+      tagSlug: slug,
+      questions: questions
+        .filter((q) => q.contentTags.includes(label))
+        .map((q) => ({
+          id: q.id,
+          question: q.question,
+          slug: q.slug,
+          okayToAskCategory: q.okayToAskCategory,
+          contentTags: q.contentTags,
+        })),
+    },
+  }));
+}
+
+import type { QuestionRef } from '../../../lib/types';
+
+interface Props {
+  tagLabel: string;
+  tagSlug: string;
+  questions: QuestionRef[];
+}
+
+const { tagLabel, tagSlug, questions } = Astro.props;
+---
+
+<BaseLayout
+  title={`Questions tagged "${tagLabel}" | Okay to Ask`}
+  description={`Browse anonymous questions tagged "${tagLabel}" — honest, age-appropriate RSE from Okay to Ask.`}
+  canonicalPath={`/questions/tag/${tagSlug}/`}
+  layer="ota"
+>
+  <section class="w-full py-[var(--space-struct-y-base)] px-[var(--space-global-gutter)]">
+    <div class="mx-auto w-full max-w-[var(--container-max-reading-wide)]">
+
+      <h1 class="tag-archive__heading mb-[var(--space-global-lg)]">
+        Questions tagged <span class="tag-archive__label">"{tagLabel}"</span>
+      </h1>
+
+      <ul
+        class="list-none p-0 m-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[var(--space-global-md)]"
+        role="list"
+      >
+        {questions.map((q) => (
+          <li>
+            <QuestionCard question={q} />
+          </li>
+        ))}
+      </ul>
+
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .tag-archive__heading {
+    font-family: var(--font-ota-heading-stack, inherit);
+    font-size: var(--text-display-size-h2);
+    font-weight: var(--heading-ota-weight-h2, 600);
+    color: var(--text-ota-heading);
+    line-height: 1.2;
+  }
+
+  .tag-archive__label {
+    color: var(--brand-accent-text);
+  }
+</style>

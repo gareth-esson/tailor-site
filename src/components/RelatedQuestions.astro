@@ -1,9 +1,12 @@
 ---
 /**
- * Related questions [A15] — question variant.
- * Shows 3–5 related question cards with links.
+ * Related questions [A15] — question grid for C1.
+ *
+ * 3–5 related question cards. Delegates card rendering to QuestionCard.
+ * The outer section wrapper lives in the page template.
  */
 import type { QuestionRef } from '../lib/types';
+import QuestionCard from './QuestionCard.astro';
 
 interface Props {
   questions: QuestionRef[];
@@ -14,21 +17,27 @@ const { questions } = Astro.props;
 if (questions.length === 0) return;
 ---
 
-<section class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-  <h2>Related questions</h2>
-  <ul class="grid gap-[var(--space-global-sm)]" style="list-style: none; padding: 0;">
-    {questions.map((q) => (
-      <li>
-        <a
-          href={`/anonymous_question/${q.slug}`}
-          class="link-action"
-          style={`display: block; padding: var(--space-global-sm); background: var(--bg-surface); border-radius: var(--radius-md); border: var(--border-width-xs) solid var(--border-subtle); text-decoration: none;`}
-          data-analytics-event="related_question_click"
-          data-analytics-target-slug={q.slug}
-        >
-          {q.question}
-        </a>
-      </li>
-    ))}
-  </ul>
-</section>
+<h2 class="related__heading mb-[var(--space-global-lg)]">
+  Other questions young people ask
+</h2>
+
+<ul
+  class="list-none p-0 m-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[var(--space-global-md)]"
+  role="list"
+>
+  {questions.map((q) => (
+    <li>
+      <QuestionCard question={q} />
+    </li>
+  ))}
+</ul>
+
+<style>
+  .related__heading {
+    font-family: var(--font-ota-heading-stack, inherit);
+    font-size: var(--text-prose-size-h2);
+    font-weight: var(--heading-ota-weight-h2, 600);
+    color: var(--text-ota-heading);
+    line-height: 1.2;
+  }
+</style>

@@ -21,6 +21,13 @@ export interface QuestionRef {
   id: string;
   question: string;
   slug: string;
+  /**
+   * Okay to Ask category name (e.g. "Puberty", "Relationships").
+   * Optional because not every consumer needs it — C1's related-questions
+   * grid uses it to colour the card eyebrow per OtA category.
+   */
+  okayToAskCategory?: string | null;
+  contentTags?: string[];
 }
 
 export interface LandingPageRef {

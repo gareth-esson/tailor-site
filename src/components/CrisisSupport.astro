@@ -1,9 +1,13 @@
 ---
 /**
- * Crisis support component [A9].
- * Renders when a question's topic is in Safety & Safeguarding,
- * or content sensitivity tags trigger it.
- * Not dismissable. Uses .alert--crisis class.
+ * Crisis support component [A9] — C1 question page.
+ *
+ * Renders the hero-sized crisis alert. The surrounding section wrapper
+ * (56rem reading-wide column, top padding) lives in the page template so
+ * it can be shared with AgeFlag [D1] when both are present.
+ *
+ * Not dismissable. Uses .alert--crisis with the C1-only .alert--crisis-hero
+ * modifier that promotes the title to --text-prose-size-h5.
  */
 import { SUPPORT_SERVICES } from '../lib/support-services';
 
@@ -17,7 +21,11 @@ const service = crisisService ? SUPPORT_SERVICES[crisisService] : SUPPORT_SERVIC
 if (!service) return;
 ---
 
-<div class="alert alert--crisis">
+<div
+  class="alert alert--crisis alert--crisis-hero p-[var(--space-global-lg)] md:p-[var(--space-global-lg)]"
+  role="complementary"
+  aria-labelledby="crisis-alert-title"
+>
   <div class="alert__icon">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
@@ -26,7 +34,7 @@ if (!service) return;
     </svg>
   </div>
   <div class="alert__content">
-    <div class="alert__title">Need support right now?</div>
+    <div class="alert__title" id="crisis-alert-title">Need support right now?</div>
     <div class="alert__body">
       <p>{service.description}</p>
       <p>
@@ -47,3 +55,14 @@ if (!service) return;
     </div>
   </div>
 </div>
+
+<style>
+  /* Mobile drop back to the alert's own default padding — the hero padding
+     override is a desktop decision; on narrow viewports the alert should
+     not dominate the viewport. */
+  @media (max-width: 768px) {
+    .alert--crisis-hero {
+      padding: var(--alert-padding-y) var(--alert-padding-x) !important;
+    }
+  }
+</style>

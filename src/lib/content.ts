@@ -5,6 +5,7 @@ import {
   fetchLandingPages,
   fetchBlogPosts,
 } from './fetchers';
+import { cached } from './notion-cache';
 import type {
   Question,
   GlossaryTerm,
@@ -27,21 +28,46 @@ let _landingPages: LandingPage[] | null = null;
 let _blogPosts: BlogPost[] | null = null;
 let _glossaryIndex: GlossaryIndex | null = null;
 
+// Promise-singleton guard. Without this, Astro dev — which fires many
+// getStaticPaths calls concurrently on first load — will race N callers
+// past the `_topics === null` check and N parallel Notion fetches will
+// run, trip the rate-limiter, and poison subsequent requests. We must
+// only ever hold one in-flight load at a time.
+let _loadPromise: Promise<void> | null = null;
+
 /**
  * Load all content from Notion and resolve relations.
  * Called once at build time; subsequent calls return cached data.
  */
 async function loadAllContent(): Promise<void> {
   if (_topics !== null) return; // already loaded
+  if (_loadPromise) return _loadPromise; // already loading — join the existing call
 
+  _loadPromise = (async () => {
+    await _loadAllContentImpl();
+  })();
+
+  try {
+    await _loadPromise;
+  } finally {
+    // Keep _loadPromise around only while the first pass is in flight.
+    // Once it resolves, subsequent callers see the populated `_topics`
+    // and short-circuit above.
+  }
+}
+
+async function _loadAllContentImpl(): Promise<void> {
   console.log('\n=== Loading content from Notion ===\n');
 
-  // Fetch databases sequentially to avoid Notion API rate limits
-  const topics = await fetchTopics();
-  const glossaryTerms = await fetchGlossaryTerms();
-  const questions = await fetchQuestions();
-  const landingPages = await fetchLandingPages();
-  const blogPosts = await fetchBlogPosts();
+  // Fetch databases sequentially to avoid Notion API rate limits.
+  // Each call is wrapped in the disk cache (`.cache/notion/*.json`) so
+  // subsequent dev-server starts read from disk instead of hitting the
+  // API. Delete .cache/notion or set NOTION_CACHE_REFRESH=1 to refetch.
+  const topics = await cached('topics', fetchTopics);
+  const glossaryTerms = await cached('glossary-terms', fetchGlossaryTerms);
+  const questions = await cached('questions', fetchQuestions);
+  const landingPages = await cached('landing-pages', fetchLandingPages);
+  const blogPosts = await cached('blog-posts', fetchBlogPosts);
 
   // Build lookup maps
   const topicMap = new Map<string, Topic>(topics.map((t) => [t.id, t]));
@@ -67,7 +93,7 @@ async function loadAllContent(): Promise<void> {
   }
 
   function toQuestionRef(q: Question): QuestionRef {
-    return { id: q.id, question: q.question, slug: q.slug };
+    return { id: q.id, question: q.question, slug: q.slug, contentTags: q.contentTags };
   }
 
   function toLandingPageRef(lp: LandingPage): LandingPageRef {

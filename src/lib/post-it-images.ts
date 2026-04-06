@@ -1,22 +1,25 @@
 /**
  * Post-it image lookup.
- * The image-map.json maps original filenames → question slugs.
- * We invert it to get slug → filename for template use.
+ *
+ * Files in public/images/post-it-scans/ are stored with slug-based names
+ * (e.g. `are-you-a-slag-if-you-get-an-std.jpeg`). The original handwritten
+ * filenames contained characters — notably `?` — that Vite's static server
+ * will not serve from a URL path even when percent-encoded, so we rename
+ * to slug on ingest and index the extensions in `slug-map.json`.
+ *
+ * If a question has no matching scan, this returns null and the template
+ * omits the post-it figure entirely.
  */
-import imageMapRaw from '../../images/post-it-scans/image-map.json';
+import slugMapRaw from '../../public/images/post-it-scans/slug-map.json';
 
-// Invert the map: { filename: slug } → { slug: filename }
-const slugToFilename: Record<string, string> = {};
-for (const [filename, slug] of Object.entries(imageMapRaw)) {
-  slugToFilename[slug as string] = filename;
-}
+const slugToExt = slugMapRaw as Record<string, string>;
 
 /**
  * Get the public URL path for a question's post-it scan image.
  * Returns null if no image exists for this slug.
  */
 export function getPostItImagePath(slug: string): string | null {
-  const filename = slugToFilename[slug];
-  if (!filename) return null;
-  return `/images/post-it-scans/${encodeURIComponent(filename)}`;
+  const ext = slugToExt[slug];
+  if (!ext) return null;
+  return `/images/post-it-scans/${slug}${ext}`;
 }

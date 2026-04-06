@@ -114,7 +114,7 @@ These are the teacher-facing website landing pages that sit on top of the 87 gra
 
 **Cross-cutting service/audience pages — nav placement resolved:**
 
-These pages use a service/audience template (variant of C3 or C5) and sit in the "RSE Delivery" dropdown in the main nav, except where noted.
+These pages use a service/audience template (variant of C3 or C5) and sit in either the "RSE Delivery" or "RSE Training & Support" dropdown in the main nav.
 
 | Page title | Slug | Nav location | Notes |
 |-----------|------|-------------|-------|
@@ -122,8 +122,9 @@ These pages use a service/audience template (variant of C3 or C5) and sit in the
 | RSE for secondary schools | rse-for-secondary-schools | RSE Delivery dropdown | Key stage entry point |
 | RSE for SEND & alternative provision (Circuits) | rse-for-send-and-alternative-provision | RSE Delivery dropdown | Circuits: workbook-based, self-paced lessons for SEND/AP settings. Simplified keynotes, doodle/game space in workbooks. A distinct product line, not an afterthought. Deserves its own dedicated page. |
 | Direct RSE delivery | delivery | RSE Delivery dropdown | Also accessible via `/services/delivery` |
-| RSE policy and curriculum planning | rse-policy-and-curriculum-planning | Under RSE policy & curriculum planning on `/services` | Consultancy pathway — not in the RSE Delivery dropdown |
-| Training | training | Top-level nav item (`/rse-training`, B4) | Already exists. Not in the RSE Delivery dropdown — it's its own nav item. |
+| Drop days | drop-days | RSE Delivery dropdown | Also accessible via `/services/drop-days` |
+| RSE Training | rse-training | RSE Training & Support dropdown | B4. Highest-traffic service page (app funnels here). |
+| RSE Policy & Curriculum Planning | rse-policy-and-curriculum-planning | RSE Training & Support dropdown | Also accessible via `/services/rse-policy-curriculum-planning` |
 
 ---
 

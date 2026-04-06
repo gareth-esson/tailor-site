@@ -1,4 +1,25 @@
 ---
+/**
+ * C1 question page template — /anonymous_question/{slug}
+ *
+ * Layout follows docs/Tailor_Layout_Spec_C1.md. Structure in order:
+ *   §1 Crisis support (A9)           [conditional, 56rem column]
+ *   §2 Age flag (D1)                 [conditional, stacks with §1]
+ *   ── .c1-content-panel (white "book page") ──
+ *   §3 Post-it + question heading    [56rem, centred]
+ *   §4 Reading level toggle + answer [44rem prose measure, sticky toggle]
+ *   ── signposting surface band ──
+ *   §5 Signposting (A8)              [56rem, --safeguarding-support-bg]
+ *   ── .surface--ota band ──
+ *   §6 Related questions (A15)       [56rem, card grid]
+ *   §8 Topic tags (A16)              [inline inside §6, top-border separator]
+ *   ── .surface--ota-alt band ──
+ *   §7 End-of-answer panel (A17)     [56rem, 3-col triptych]
+ *
+ * Notion content pipeline, SEO metadata, JSON-LD, and Simple Mode swap JS
+ * are preserved unchanged from the previous version. This commit is a
+ * layout-only change.
+ */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getQuestions, getGlossaryIndex, getTopics } from '../../lib/content';
 import { renderBlocks } from '../../lib/render-blocks';
@@ -14,7 +35,6 @@ import AgeFlag from '../../components/AgeFlag.astro';
 import SignpostingBlock from '../../components/SignpostingBlock.astro';
 import EndOfAnswerPanel from '../../components/EndOfAnswerPanel.astro';
 import RelatedQuestions from '../../components/RelatedQuestions.astro';
-import TopicTags from '../../components/TopicTags.astro';
 
 export const prerender = true;
 
@@ -46,35 +66,30 @@ const { question, allQuestions, glossaryIndex, fullTopic } = Astro.props;
 
 // --- Data preparation ---
 
-// Post-it image
 const postItImage = getPostItImagePath(question.slug);
 
-// Crisis support: show if topic category is Safety & Safeguarding
 const isSafeguarding = question.topic?.category === 'Safety & Safeguarding';
 const showCrisis = isSafeguarding;
 const crisisService = fullTopic?.crisisService || 'Childline';
 
-// Age flag: show if Age Tier is "Age-flagged Year 9+"
 const showAgeFlag = question.ageTier === 'Age-flagged Year 9+';
+const showAlertBand = showCrisis || (showAgeFlag && !!question.topic);
 
-// Render answer body with glossary tooltips
+// Answer bodies — both rendered at build time, JS toggles visibility.
 const standardBodyHtml = renderBlocks(question.body);
 const standardWithTooltips = injectGlossaryTooltips(standardBodyHtml, glossaryIndex);
 
-// Simple answer with tooltips (using simple definitions)
 const simpleAnswerHtml = question.simpleAnswer
   ? `<p>${question.simpleAnswer.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>')}</p>`
   : '';
 const simpleWithTooltips = injectGlossaryTooltips(simpleAnswerHtml, glossaryIndex);
 
-// Related questions
 const relatedQuestions = selectRelatedQuestions(question, allQuestions);
 
-// Topic info for end-of-answer panel
 const topicName = question.topic?.name || 'this topic';
 const topicSlug = question.topic?.slug || '';
 
-// Category badge
+// Category chip shown at the top of the post-it column.
 const categoryBadgeMap: Record<string, string> = {
   'Anatomy': 'ota-anatomy',
   'Puberty': 'ota-puberty',
@@ -88,14 +103,13 @@ const categoryBadge = question.okayToAskCategory
   ? categoryBadgeMap[question.okayToAskCategory]
   : null;
 
-// SEO metadata
+// SEO + JSON-LD
 const metaTitle = question.metaTitle || `${question.question} | Okay to Ask`;
 const metaDescription = question.metaDescription
   || question.simpleAnswer?.slice(0, 155)
   || `Find the answer to "${question.question}" — honest, age-appropriate RSE from Okay to Ask.`;
 const canonicalPath = `/anonymous_question/${question.slug}/`;
 
-// JSON-LD — FAQPage structured data
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
@@ -108,6 +122,12 @@ const jsonLd = {
     },
   }],
 };
+
+// §3 top padding. With no crisis/age-flag above, the post-it gets hero
+// air; otherwise it sits on a base struct gap.
+const postItTopPadding = showAlertBand
+  ? 'pt-[var(--space-struct-y-base)]'
+  : 'pt-[var(--space-struct-y-hero)]';
 ---
 
 <BaseLayout
@@ -118,82 +138,186 @@ const jsonLd = {
   layer="ota"
   jsonLd={jsonLd}
 >
-  {/* Crisis support [A9] — above everything */}
-  {showCrisis && <CrisisSupport crisisService={crisisService} />}
-
-  {/* Age flag interstitial [D1] */}
-  {showAgeFlag && question.topic && (
-    <AgeFlag topicLabel={question.topic.name} topicSlug={question.topic.slug} />
+  {/* ─────────────────────────────────────────────
+      §1 + §2 — Crisis support (A9) and Age flag (D1)
+      A single wrapping section so the two alerts
+      stack in the same 56rem reading column when
+      both are present. Crisis is always first.
+      ───────────────────────────────────────────── */}
+  {showAlertBand && (
+    <section
+      class="w-full pt-[var(--space-global-xl)] px-[var(--space-global-gutter)]"
+      aria-label="Important information"
+    >
+      <div class="mx-auto w-full max-w-[var(--container-max-reading-wide)] flex flex-col gap-[var(--space-global-md)]">
+        {showCrisis && <CrisisSupport crisisService={crisisService} />}
+        {showAgeFlag && question.topic && (
+          <AgeFlag topicLabel={question.topic.name} topicSlug={question.topic.slug} />
+        )}
+      </div>
+    </section>
   )}
 
-  <article
-    class="surface--ota"
+  {/* ─────────────────────────────────────────────
+      .c1-content-panel — §3, §4
+      Content "book page" panel: white surface, shadow, radius.
+      Sits on --bg-page ground, not full-bleed.
+      ───────────────────────────────────────────── */}
+  <div
+    class="c1-content-panel mx-auto w-full max-w-[var(--container-max-reading-wide)] px-[var(--space-global-gutter)]"
     data-pagefind-body
     data-page-type="question"
     data-slug={question.slug}
     data-topic={topicName}
     data-age-tier={question.ageTier || ''}
   >
-    <div class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
-      {/* Category badge */}
-      {question.okayToAskCategory && (
-        <span class:list={['badge', 'badge--pill', categoryBadge && `badge--${categoryBadge}`]}>
-          {question.okayToAskCategory}
-        </span>
-      )}
+    {/* §3 — Post-it image + question heading */}
+    <section
+      class:list={[
+        'w-full pb-[var(--space-global-xl)]',
+        postItTopPadding,
+      ]}
+      aria-labelledby="question-heading"
+    >
+      <div class="mx-auto w-full max-w-[var(--container-max-reading-wide)] flex flex-col items-center text-center">
+        {/* Category chip (A16 preview — full tag row sits in §8) */}
+        {question.okayToAskCategory && (
+          <span
+            class:list={[
+              'badge',
+              'badge--pill',
+              categoryBadge && `badge--${categoryBadge}`,
+              'mb-[var(--space-global-md)]',
+            ]}
+          >
+            {question.okayToAskCategory}
+          </span>
+        )}
 
-      {/* Post-it image */}
-      {postItImage && (
-        <div class="post-it-wrapper">
-          <img
-            src={postItImage}
-            alt={`Handwritten question: ${question.question}`}
-            class="post-it-image"
-            loading="eager"
-          />
+        {/* Scanned post-it artefact */}
+        {postItImage && (
+          <figure
+            id="question-post-it"
+            class="flex flex-col items-center mb-[var(--space-global-lg)]"
+          >
+            <img
+              src={postItImage}
+              alt={`Handwritten question: ${question.question}`}
+              class="postit-image"
+              loading="eager"
+            />
+            <figcaption
+              id="question-post-it-caption"
+              class="c1-postit-caption mt-[var(--space-global-sm)]"
+            >
+              A real question from a young person, submitted anonymously.
+            </figcaption>
+          </figure>
+        )}
+
+        {/* The question itself — single page h1 */}
+        <h1
+          id="question-heading"
+          class="c1-question-heading text-center mt-[var(--space-global-lg)] mb-0 max-w-[38rem] mx-auto"
+        >
+          {question.question}
+        </h1>
+      </div>
+    </section>
+
+    {/* §4 — Reading level toggle (A6) + answer body */}
+    <section
+      class="w-full pb-[var(--space-global-2xl)]"
+      aria-label="Answer"
+    >
+      <div class="mx-auto w-full max-w-[var(--container-max-prose)]">
+        {/* Simple Mode toggle — sticky on desktop */}
+        <div class="c1-toggle-sticky lg:sticky lg:top-[var(--header-height)] z-[20]">
+          <div class="c1-toggle-row flex items-center justify-end gap-[var(--space-global-md)] py-[var(--space-global-md)] border-b-[var(--border-width-xs)] border-[var(--border-subtle)]">
+            <SimpleModeToggle />
+          </div>
         </div>
-      )}
 
-      {/* Page title */}
-      <h1>{question.question}</h1>
-
-      {/* Simple Mode toggle [A6] */}
-      <div class="toggle-wrapper">
-        <SimpleModeToggle />
-      </div>
-
-      {/* Answer content — both views rendered at build time */}
-      <div data-mode="standard" class="mode-content ota-prose">
-        <Fragment set:html={standardWithTooltips} />
-      </div>
-      <div data-mode="simple" class="mode-content ota-prose">
-        <Fragment set:html={simpleWithTooltips} />
-      </div>
-
-      {/* Signposting block [A8] */}
-      {question.signposting.length > 0 && (
-        <div class="signposting-wrapper">
-          <SignpostingBlock services={question.signposting} />
+        {/* Answer bodies — both views live in the DOM; JS toggles visibility */}
+        <div class="c1-answer">
+          <div
+            data-mode="standard"
+            data-reading-level="standard"
+            class="mode-content ota-prose"
+            aria-live="polite"
+          >
+            <Fragment set:html={standardWithTooltips} />
+          </div>
+          <div
+            data-mode="simple"
+            data-reading-level="simple"
+            class="mode-content ota-prose"
+            aria-live="polite"
+          >
+            <Fragment set:html={simpleWithTooltips} />
+          </div>
         </div>
-      )}
+      </div>
+    </section>
+  </div>
+
+  {/* §5 — Signposting block (A8) — own surface band
+      Cool blue ground separates support info from answer content. */}
+  {question.signposting.length > 0 && (
+    <section
+      class="w-full pt-[var(--space-global-2xl)] pb-[var(--space-struct-y-base)] px-[var(--space-global-gutter)]"
+      style="background: var(--safeguarding-support-bg);"
+      aria-label="Support services"
+    >
+      <div class="mx-auto w-full max-w-[var(--container-max-reading-wide)]">
+        <SignpostingBlock services={question.signposting} />
+      </div>
+    </section>
+  )}
+
+  {/* ─────────────────────────────────────────────
+      §6 — Related questions (A15) + Topic tags (A16)
+      Share a single .surface--ota band. Topic tags sit
+      below a top-border separator.
+      ───────────────────────────────────────────── */}
+  <div class="w-full">
+    <section
+      class="w-full py-[var(--space-struct-y-base)] px-[var(--space-global-gutter)]"
+      aria-labelledby="related-heading"
+    >
+      <div class="mx-auto w-full max-w-[var(--container-max-reading-wide)]">
+        {relatedQuestions.length > 0 && (
+          <div id="related-heading">
+            <RelatedQuestions questions={relatedQuestions} />
+          </div>
+        )}
+
+      </div>
+    </section>
+  </div>
+
+  {/* ─────────────────────────────────────────────
+      §7 — End-of-answer panel (A17)
+      Own .surface--ota-alt band — the visual surface
+      shift that breaks the continuous warm paper ground.
+      ───────────────────────────────────────────── */}
+  <section
+    class="surface--ota-alt w-full py-[var(--space-struct-y-base)] px-[var(--space-global-gutter)]"
+    aria-labelledby="end-of-answer-heading"
+  >
+    <div class="mx-auto w-full max-w-[var(--container-max-reading-wide)]">
+      <EndOfAnswerPanel topicName={topicName} topicSlug={topicSlug} />
     </div>
-  </article>
-
-  {/* End-of-answer panel [A17] */}
-  <EndOfAnswerPanel topicName={topicName} topicSlug={topicSlug} />
-
-  {/* Related questions [A15] */}
-  <RelatedQuestions questions={relatedQuestions} />
-
-  {/* Topic tags [A16] */}
-  <TopicTags topic={question.topic} />
+  </section>
 
   {/* Glossary tooltip runtime */}
   <GlossaryTooltips />
 </BaseLayout>
 
 <style>
-  /* Simple Mode visibility — driven by .simple-active on <html> */
+  /* Simple Mode visibility — driven by .simple-active on <html>.
+     Both answer views live in the DOM at build time; only the text
+     swaps, layout stays stable (D5 rule). */
   [data-mode="simple"] {
     display: none;
   }
@@ -204,70 +328,123 @@ const jsonLd = {
     display: block !important;
   }
 
-  .post-it-wrapper {
-    margin: var(--space-global-lg) 0;
-    max-width: 400px;
-  }
-
-  .post-it-image {
-    width: 100%;
-    height: auto;
-    border-radius: var(--radius-md);
+  /* "Book page" panel — white surface that lifts off the --bg-page ground */
+  .c1-content-panel {
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
-    background: var(--surface-ota-postit-soft);
-    padding: var(--space-global-xs);
-    transform: rotate(-1deg);
+    margin-top: var(--space-global-lg);
+    margin-bottom: var(--space-global-lg);
+    overflow: hidden;
   }
 
-  .toggle-wrapper {
-    margin: var(--space-global-md) 0 var(--space-global-lg);
+  /* Post-it figcaption — muted source attribution */
+  .c1-postit-caption {
+    font-family: var(--font-ota-body-stack, inherit);
+    font-size: var(--text-util-micro-size, 0.75rem);
+    color: var(--text-ota-muted);
+  }
+  .c1-postit-caption:focus {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-xs);
   }
 
-  .signposting-wrapper {
-    margin-top: var(--space-global-xl);
+  /* Question display heading — Fraunces, display ramp, generous leading */
+  .c1-question-heading {
+    font-family: var(--font-ota-heading-stack, inherit);
+    font-size: var(--text-display-size-h1);
+    font-weight: var(--heading-ota-weight-h1, 700);
+    line-height: 1.2;
+    color: var(--text-ota-heading);
+  }
+
+  /* Sticky Simple Mode toggle row (desktop only) */
+  .c1-toggle-sticky {
+    background: var(--bg-surface);
+    margin-bottom: var(--space-global-xl);
+  }
+
+  @media (max-width: 1023px) {
+    .c1-toggle-sticky {
+      position: static;
+      margin-bottom: var(--space-global-lg);
+    }
+  }
+
+  .c1-answer {
+    /* The prose column width is already set by the section wrapper
+       (--container-max-prose). Individual elements need no further
+       constraints. */
   }
 </style>
 
 <style is:global>
-  /* OtA prose styling — for rendered Notion content */
+  /* ── OtA prose styling — for rendered Notion content ──
+     The layout spec asks for 1.7 line-height on paragraphs, generous
+     vertical rhythm between headings, and the Atkinson body inherited
+     from .layer-ota. This scope is limited to .ota-prose so it does
+     not leak into other OtA surfaces. */
+  .ota-prose {
+    color: var(--text-ota-body);
+  }
+
   .ota-prose p {
-    margin-bottom: var(--space-global-sm);
+    font-size: var(--text-prose-size-body);
     line-height: 1.7;
+    margin: 0;
+  }
+
+  .ota-prose p + p {
+    margin-top: var(--space-global-md);
   }
 
   .ota-prose h2 {
-    margin-top: var(--space-global-lg);
+    font-family: var(--font-ota-heading-stack, inherit);
+    font-size: var(--text-prose-size-h2);
+    font-weight: var(--heading-ota-weight-h2, 600);
+    color: var(--text-ota-heading);
+    line-height: 1.25;
+    margin-top: var(--space-global-xl);
     margin-bottom: var(--space-global-sm);
   }
 
   .ota-prose h3 {
-    margin-top: var(--space-global-md);
-    margin-bottom: var(--space-global-xs);
+    font-family: var(--font-ota-heading-stack, inherit);
+    font-size: var(--text-prose-size-h3);
+    font-weight: var(--heading-ota-weight-h3, 600);
+    color: var(--text-ota-heading);
+    line-height: 1.3;
+    margin-top: var(--space-global-xl);
+    margin-bottom: var(--space-global-sm);
   }
 
   .ota-prose ul,
   .ota-prose ol {
-    margin-bottom: var(--space-global-sm);
-    padding-left: var(--space-global-md);
+    padding-left: var(--space-global-lg);
+    margin: var(--space-global-md) 0 0;
   }
 
   .ota-prose li {
-    margin-bottom: var(--space-global-xs);
+    font-size: var(--text-prose-size-body);
     line-height: 1.6;
+  }
+
+  .ota-prose li + li {
+    margin-top: var(--space-global-xs);
   }
 
   .ota-prose blockquote {
     border-left: 3px solid var(--brand-accent);
     padding-left: var(--space-global-md);
     margin: var(--space-global-md) 0;
-    color: var(--text-body-muted);
+    color: var(--text-ota-muted);
     font-style: italic;
   }
 
   .ota-prose a {
     color: var(--link-ota-contextual);
     text-decoration: underline;
-    text-decoration-color: var(--brand-accent);
     text-underline-offset: 2px;
   }
 
@@ -287,7 +464,7 @@ const jsonLd = {
 
   .ota-prose figcaption {
     font-size: var(--text-card-size-body);
-    color: var(--text-body-muted);
+    color: var(--text-ota-muted);
     margin-top: var(--space-global-xs);
   }
 

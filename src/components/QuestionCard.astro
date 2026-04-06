@@ -1,0 +1,184 @@
+---
+/**
+ * QuestionCard — reusable question card used in related questions,
+ * tag archives, and anywhere a question grid appears.
+ *
+ * Shows: post-it image, category eyebrow, question title, content tags,
+ * and "Read the answer" link. Hover: subtle lift + image saturation boost.
+ * Tags are clickable (JS intercept navigates to tag archive page).
+ */
+import type { QuestionRef } from '../lib/types';
+import { getPostItImagePath } from '../lib/post-it-images';
+
+interface Props {
+  question: QuestionRef;
+}
+
+const { question: q } = Astro.props;
+
+const postItImage = getPostItImagePath(q.slug);
+
+// Map OtA category names to the --ota-cat-* token suffix for eyebrow colour.
+const categoryTokenMap: Record<string, string> = {
+  'Anatomy': 'anatomy',
+  'Puberty': 'puberty',
+  'Relationships': 'relationships',
+  'Sex': 'sex',
+  'Sexual Health': 'sexual-health',
+  'Sex & the Law': 'law',
+  'Contraception': 'contraception',
+};
+
+function eyebrowStyle(category: string | null | undefined): string | undefined {
+  if (!category) return undefined;
+  const slug = categoryTokenMap[category];
+  if (!slug) return undefined;
+  return `--card-eyebrow-color: var(--ota-cat-${slug})`;
+}
+
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[&]/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+function renderTagsHtml(tags: string[]): string {
+  return tags.map((tag, i) =>
+    (i > 0 ? '<span class="qcard__tags-sep" aria-hidden="true"> \u00b7 </span>' : '') +
+    `<span class="qcard__tag-link" data-tag-href="/questions/tag/${slugify(tag)}">${tag}</span>`
+  ).join('');
+}
+---
+
+<a
+  href={`/anonymous_question/${q.slug}`}
+  class="card qcard no-underline flex flex-col"
+  data-analytics-event="question_card_click"
+  data-analytics-target-slug={q.slug}
+>
+  {postItImage && (
+    <div class="qcard__image">
+      <img
+        src={postItImage}
+        alt=""
+        class="qcard__img"
+        loading="lazy"
+      />
+    </div>
+  )}
+  <div class="card__body flex flex-col">
+    {q.okayToAskCategory && (
+      <div class="card__eyebrow" style={eyebrowStyle(q.okayToAskCategory)}>
+        {q.okayToAskCategory}
+      </div>
+    )}
+    <div class="card__title qcard__title">{q.question}</div>
+    {q.contentTags && q.contentTags.length > 0 ? (
+      <p class="qcard__tags" set:html={renderTagsHtml(q.contentTags)} />
+    ) : null}
+    <span class="card__link">Read the answer</span>
+  </div>
+</a>
+
+<style>
+  .qcard {
+    box-shadow: var(--shadow-none);
+    border-color: transparent;
+    transform: translateY(0);
+    transition:
+      transform var(--transition-duration, 0.15s) var(--transition-easing, ease),
+      border-color var(--transition-duration, 0.15s) var(--transition-easing, ease);
+  }
+
+  .qcard:hover {
+    transform: translateY(-3px);
+    border-color: var(--border-subtle);
+  }
+
+  .qcard:hover .qcard__img {
+    filter: saturate(1.2);
+  }
+
+  .qcard:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--card-radius, var(--radius-md));
+  }
+
+  .qcard__image {
+    overflow: hidden;
+    border-radius: var(--card-radius, var(--radius-md)) var(--card-radius, var(--radius-md)) 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-global-sm);
+    height: 10rem;
+  }
+
+  .qcard__img {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    transform: rotate(var(--postit-rotation, -1.5deg));
+    border-radius: var(--radius-sm);
+    mix-blend-mode: multiply;
+    filter: saturate(0.85);
+    transition: filter var(--transition-duration, 0.15s) var(--transition-easing, ease);
+  }
+
+  .qcard__title {
+    font-family: var(--font-ota-heading-stack, inherit);
+    font-size: var(--text-card-size-h3);
+    font-weight: var(--heading-ota-weight-h3, 600);
+    line-height: 1.3;
+  }
+
+  .qcard__tags {
+    font-size: var(--text-util-micro-size, 0.75rem);
+    line-height: 1.4;
+    color: var(--text-ota-muted);
+    margin-top: 0.35rem;
+    margin-bottom: 0;
+  }
+
+  .qcard__tags :global(.qcard__tag-link) {
+    color: var(--text-ota-muted);
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 2px;
+    transition:
+      color var(--transition-duration, 0.15s) var(--transition-easing, ease),
+      text-decoration-color var(--transition-duration, 0.15s) var(--transition-easing, ease);
+  }
+
+  .qcard__tags :global(.qcard__tag-link:hover) {
+    color: var(--brand-accent-text);
+    text-decoration-color: var(--brand-accent-text);
+  }
+
+  .qcard__tags :global(.qcard__tags-sep) {
+    color: var(--text-ota-muted);
+    opacity: 0.5;
+  }
+</style>
+
+<script>
+  // Event-delegated tag link handler — registered once globally.
+  function initTagLinks() {
+    document.addEventListener('click', (e) => {
+      const el = (e.target as HTMLElement).closest('.qcard__tag-link[data-tag-href]') as HTMLElement | null;
+      if (!el) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const href = el.dataset.tagHref;
+      if (href) window.location.href = href;
+    });
+  }
+  initTagLinks();
+</script>

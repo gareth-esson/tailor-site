@@ -49,13 +49,15 @@ The persistent top-level navigation bar on every page.
 **Primary navigation items:**
 - Topics (→ mega menu D8 showing 22 landing pages grouped by 7 app categories)
 - Okay to Ask (→ `/questions/`)
-- RSE Delivery (→ dropdown/mega containing:)
+- RSE Delivery (→ dropdown containing:)
   - RSE for primary schools
   - RSE for secondary schools
   - RSE for SEND & alternative provision (Circuits)
   - Direct RSE delivery
-- RSE Training (→ `/rse-training`)
-- Services (→ `/services` — hub page linking to delivery, drop-days, RSE policy & curriculum planning)
+  - Drop days
+- RSE Training & Support (→ dropdown containing:)
+  - RSE Training (→ `/rse-training`)
+  - RSE Policy & Curriculum Planning (→ `/services/rse-policy-curriculum-planning`)
 - Blog (→ `/blog/`)
 - About (→ `/about`)
 - Contact (→ `/contact`)

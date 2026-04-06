@@ -76,17 +76,20 @@ export async function fetchPageBlocks(pageId: string): Promise<BlockObjectRespon
  */
 async function retryWithBackoff<T>(
   fn: () => Promise<T>,
-  maxRetries = 3,
-  baseDelay = 1000,
+  maxRetries = 8,
+  baseDelay = 3000,
 ): Promise<T> {
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       return await fn();
     } catch (error: unknown) {
+      // The Notion SDK surfaces rate limits as `code: 'rate_limited'`
+      // on the error object, NOT as `status: 429`. Check both so the
+      // handler works regardless of which error shape the SDK version
+      // happens to emit.
+      const err = error as { code?: string; status?: number } | null;
       const isRateLimit =
-        error instanceof Object &&
-        'status' in error &&
-        (error as { status: number }).status === 429;
+        !!err && (err.code === 'rate_limited' || err.status === 429);
       const isLastAttempt = attempt === maxRetries;
 
       if (!isRateLimit || isLastAttempt) {
@@ -94,7 +97,7 @@ async function retryWithBackoff<T>(
       }
 
       const delay = baseDelay * Math.pow(2, attempt);
-      console.warn(`Rate limited by Notion API, retrying in ${delay}ms...`);
+      console.warn(`Rate limited by Notion API, retrying in ${delay}ms…`);
       await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }

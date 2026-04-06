@@ -1,10 +1,16 @@
 ---
 /**
- * End-of-answer panel [A17].
- * Three CTAs on every question page:
- * 1. Get the book → /book
- * 2. Explore how to teach this topic → /topics/{slug}
- * 3. Bring RSE into your school → /services or /training
+ * End-of-answer panel [A17] — C1 question page.
+ *
+ * Three CTA panels as a triptych: young-people/parents (book), teachers
+ * (topic hub), school leaders (services). Must feel like a continuation
+ * of help, not a conversion block. The three-surface shift (warm → white
+ * → dark) is the whole point of the component.
+ *
+ * Lives on a .surface--ota-alt band; the page template owns the outer
+ * section/background. This component owns the heading + the panel grid.
+ *
+ * All visual values resolve to tokens in tailor-site-v2.css.
  */
 interface Props {
   topicName: string;
@@ -14,41 +20,180 @@ interface Props {
 const { topicName, topicSlug } = Astro.props;
 ---
 
-<section class="surface--ota-alt">
-  <div class="mx-auto max-w-5xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
-    <div class="grid gap-[var(--space-global-md)] md:grid-cols-3">
-      <div class="card">
-        <div class="card__body">
-          <div class="card__eyebrow">For parents</div>
-          <div class="card__title">Get the book</div>
-          <p class="card__text">
-            The Okay to Ask book gives parents and carers the words to answer real questions from real young people.
-          </p>
-          <a href="/book" class="link-action card__link">Find out more</a>
-        </div>
-      </div>
+<header class="end-panel__header text-center mb-[var(--space-global-xl)]">
+  <h2 class="end-panel__title">Where to go from here</h2>
+  <p class="end-panel__subtitle max-w-[30rem] mx-auto mt-[var(--space-global-sm)]">
+    Three places this answer connects to — pick what you need next.
+  </p>
+</header>
 
-      <div class="card">
-        <div class="card__body">
-          <div class="card__eyebrow">For teachers</div>
-          <div class="card__title">Explore how to teach this topic</div>
-          <p class="card__text">
-            Curriculum guidance, lesson ideas, and key terms for teaching {topicName}.
-          </p>
-          <a href={`/topics/${topicSlug}`} class="link-action card__link">Explore topic</a>
-        </div>
-      </div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-[var(--space-global-md)] md:gap-[var(--space-global-lg)]">
+  <!-- Panel 1 — Get the book -->
+  <a
+    href="/book"
+    class="end-panel end-panel--book block no-underline h-full flex flex-col rounded-[var(--panel-radius)] p-[var(--panel-padding)]"
+    data-analytics-event="end_panel_click"
+    data-analytics-panel="book"
+  >
+    <div class="end-panel__eyebrow">For readers</div>
+    <div class="end-panel__heading">Get the Okay to Ask book</div>
+    <p class="end-panel__body">
+      The book that answers the questions young people really ask — written for parents, carers and educators.
+    </p>
+    <span class="end-panel__action mt-auto">Buy the book &rarr;</span>
+  </a>
 
-      <div class="card">
-        <div class="card__body">
-          <div class="card__eyebrow">For schools</div>
-          <div class="card__title">Bring RSE into your school</div>
-          <p class="card__text">
-            Expert-led RSE delivery, training, and curriculum planning for your school.
-          </p>
-          <a href="/services" class="link-action card__link">View services</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+  <!-- Panel 2 — Explore how to teach this topic -->
+  <a
+    href={`/topics/${topicSlug}`}
+    class="end-panel end-panel--topic block no-underline h-full flex flex-col rounded-[var(--panel-radius)] p-[var(--panel-padding)] border-[var(--border-width-xs)] border-[var(--border-subtle)]"
+    data-analytics-event="end_panel_click"
+    data-analytics-panel="topic"
+    data-analytics-topic-slug={topicSlug}
+  >
+    <div class="end-panel__eyebrow">For teachers</div>
+    <div class="end-panel__heading">Explore how to teach {topicName}</div>
+    <p class="end-panel__body">
+      Curriculum guidance, lesson ideas and key terms to teach this topic with confidence.
+    </p>
+    <span class="end-panel__action mt-auto">See the topic hub &rarr;</span>
+  </a>
+
+  <!-- Panel 3 — Bring RSE into your school -->
+  <a
+    href="/services"
+    class="end-panel end-panel--services block no-underline h-full flex flex-col rounded-[var(--panel-radius)] p-[var(--panel-padding)]"
+    data-analytics-event="end_panel_click"
+    data-analytics-panel="services"
+  >
+    <div class="end-panel__eyebrow">For school leaders</div>
+    <div class="end-panel__heading">Bring RSE into your school</div>
+    <p class="end-panel__body">
+      Expert-led delivery, training and curriculum planning from the team behind Okay to Ask.
+    </p>
+    <span class="end-panel__action mt-auto">See our services &rarr;</span>
+  </a>
+</div>
+
+<style>
+  /* ── Section heading ── */
+  .end-panel__title {
+    font-family: var(--font-ota-heading-stack, inherit);
+    font-size: var(--text-prose-size-h2);
+    font-weight: var(--heading-ota-weight-h2, 600);
+    color: var(--text-ota-heading);
+    line-height: 1.2;
+  }
+
+  .end-panel__subtitle {
+    font-family: var(--font-ota-body-stack, inherit);
+    font-size: var(--text-util-lede-size, var(--text-prose-size-body));
+    color: var(--text-ota-muted);
+    line-height: 1.5;
+  }
+
+  /* ── Shared panel base ── */
+  .end-panel {
+    transition:
+      transform var(--transition-duration) var(--transition-easing),
+      box-shadow var(--transition-duration) var(--transition-easing);
+  }
+
+  .end-panel__eyebrow {
+    font-family: var(--font-ota-body-stack, inherit);
+    font-size: var(--text-util-preheader-size, 0.75rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: var(--card-eyebrow-ls, 0.08em);
+    margin-bottom: var(--space-global-xs);
+  }
+
+  .end-panel__heading {
+    font-family: var(--font-ota-heading-stack, inherit);
+    font-size: var(--text-card-size-h3);
+    font-weight: var(--heading-ota-weight-h3, 600);
+    line-height: 1.25;
+  }
+
+  .end-panel__body {
+    font-family: var(--font-ota-body-stack, inherit);
+    font-size: var(--text-card-size-body);
+    line-height: 1.55;
+    margin-top: var(--space-global-sm);
+  }
+
+  .end-panel__action {
+    display: inline-block;
+    margin-top: var(--space-global-md);
+    padding-top: var(--space-global-sm);
+    font-family: var(--font-ota-body-stack, inherit);
+    font-size: var(--text-card-size-body);
+    font-weight: 700;
+  }
+
+  /* ── Panel 1 — book (post-it soft yellow) ── */
+  .end-panel--book {
+    background: var(--panel-book-bg);
+    color: var(--text-ota-body);
+  }
+  .end-panel--book .end-panel__eyebrow {
+    color: var(--text-ota-muted);
+  }
+  .end-panel--book .end-panel__heading {
+    color: var(--text-ota-heading);
+  }
+  .end-panel--book .end-panel__action {
+    color: var(--link-ota-contextual);
+  }
+
+  /* ── Panel 2 — topic hub (crisp white, lifts on hover) ── */
+  .end-panel--topic {
+    background: var(--panel-topic-bg);
+    color: var(--text-body);
+    box-shadow: var(--shadow-sm);
+  }
+  .end-panel--topic:hover {
+    transform: translateY(var(--card-lift-distance, -2px));
+    box-shadow: var(--shadow-md);
+  }
+  .end-panel--topic .end-panel__eyebrow {
+    color: var(--text-ota-muted);
+  }
+  .end-panel--topic .end-panel__heading {
+    color: var(--text-heading);
+  }
+  .end-panel--topic .end-panel__action {
+    color: var(--link-ota-contextual);
+  }
+
+  /* ── Panel 3 — school services (dark authority) ── */
+  .end-panel--services {
+    background: var(--panel-services-bg);
+    color: var(--text-on-dark);
+  }
+  .end-panel--services .end-panel__eyebrow {
+    color: var(--text-muted-on-dark);
+  }
+  .end-panel--services .end-panel__heading {
+    color: var(--text-heading-on-dark);
+  }
+  .end-panel--services .end-panel__body {
+    color: var(--text-muted-on-dark);
+  }
+  .end-panel--services .end-panel__action {
+    color: var(--link-action-color-on-dark);
+  }
+  .end-panel--services:hover .end-panel__action {
+    color: var(--link-action-color-on-dark-hover);
+  }
+
+  /* ── Focus rings ── */
+  .end-panel:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--panel-radius);
+  }
+  .end-panel--services:focus-visible {
+    outline-color: var(--focus-ring-on-dark);
+  }
+</style>

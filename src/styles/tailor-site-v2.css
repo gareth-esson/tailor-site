@@ -363,6 +363,37 @@
   --surface-ota-postit: #F5E58A;
   --surface-ota-postit-soft: #FBF4C7;
 
+  /* Post-it framing (C1 scanned artefact) */
+  --postit-rotation: -1.5deg;          /* subtle hand-placed tilt; never 0, never >3 */
+  --postit-max-width: 22rem;           /* 352px — capped width on desktop */
+  --postit-shadow:
+    0 12px 28px rgba(27, 26, 23, 0.08),
+    0 4px 10px rgba(27, 26, 23, 0.06);
+
+  /* ── GLOSSARY TOOLTIP (A7) ── */
+  --tooltip-bg: var(--bg-surface);
+  --tooltip-text: var(--text-body);
+  --tooltip-border: var(--border-subtle);
+  --tooltip-border-width: var(--border-width-xs);
+  --tooltip-radius: var(--radius-md);
+  --tooltip-shadow: var(--shadow-lg);
+  --tooltip-padding-y: var(--space-global-sm);
+  --tooltip-padding-x: var(--space-global-md);
+  --tooltip-max-width: 20rem;
+  --tooltip-arrow-size: 8px;
+  --glossary-underline: 2px dotted var(--link-ota-contextual, var(--brand-accent-text));
+  --glossary-underline-offset: 0.2em;
+
+  /* ── END-OF-ANSWER PANEL (A17) ── */
+  --panel-book-bg: var(--surface-ota-postit-soft);
+  --panel-topic-bg: var(--bg-surface);
+  --panel-services-bg: var(--bg-emphasis);
+  --panel-radius: var(--radius-lg);
+  --panel-padding: var(--space-global-lg);
+
+  /* ── TOPIC TAG ROW (A16) ── */
+  --topic-tag-gap: var(--space-global-xs);
+
   /* ── OKAY TO ASK TEXT ALIASES ──
      Insurance tokens — resolve to base values now,
      give a clean override seam for tuning the OtA
@@ -531,6 +562,7 @@
      ------------------------------ */
   --container-max-shell: 72rem;   /* 1152px — outer wrapper on header/footer/page sections */
   --container-max-prose: 44rem;   /* 704px — long-form reading measure */
+  --container-max-reading-wide: 56rem; /* 896px — post-it metadata band, end-of-answer panel, related questions */
 
   /* ------------------------------
      SHELL STRUCTURAL TOKENS
@@ -1791,6 +1823,18 @@ textarea.form-input {
     color: var(--safeguarding-crisis-icon);
 }
 
+/* C1-specific crisis alert modifier — promotes the title to a hero size
+   because on the question page the crisis block is the opening statement
+   of care, not a generic utility alert. */
+.alert--crisis-hero .alert__title {
+    font-size: var(--text-prose-size-h5);
+}
+.alert--crisis-hero .alert__content a:focus-visible {
+    outline: var(--focus-ring-width) solid var(--safeguarding-crisis-icon);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-xs);
+}
+
 .alert--ageflag {
     background: var(--safeguarding-ageflag-bg);
     border-color: var(--safeguarding-ageflag-border);
@@ -1962,7 +2006,7 @@ textarea.form-input {
     font-weight: 700;
     letter-spacing: var(--card-eyebrow-ls);
     text-transform: uppercase;
-    color: var(--brand-accent-text);
+    color: var(--card-eyebrow-color, var(--brand-accent-text));
 }
 .card__title {
     font-size: var(--text-card-size-h5);
@@ -2575,4 +2619,54 @@ textarea.form-input {
 .surface--dark .table--bordered tbody td,
 .surface--dark .table--bordered tfoot td {
     border-color: var(--border-subtle-on-dark);
+}
+
+/* =========================================
+   POST-IT IMAGE (C1)
+   -----------------------------------------
+   Scanned handwritten question artefact.
+   The one place on the question page where
+   tactile personality is allowed to lead.
+   ========================================= */
+.postit-image {
+    display: block;
+    max-width: var(--postit-max-width);
+    width: 100%;
+    height: auto;
+    transform: rotate(var(--postit-rotation));
+    border-radius: var(--radius-sm);
+    mix-blend-mode: multiply;
+    background: var(--bg-surface);
+}
+@media (max-width: 768px) {
+    .postit-image {
+        max-width: 16rem;
+    }
+}
+
+/* =========================================
+   GLOSSARY TRIGGER (A7)
+   -----------------------------------------
+   Inline prose button that opens a tooltip.
+   Dotted underline distinguishes it from
+   navigational links (which are solid).
+   ========================================= */
+.glossary-trigger {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: help;
+    text-decoration: var(--glossary-underline);
+    text-underline-offset: var(--glossary-underline-offset);
+}
+.glossary-trigger:hover,
+.glossary-trigger:focus-visible {
+    color: var(--link-ota-contextual);
+}
+.glossary-trigger:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-xs);
 }

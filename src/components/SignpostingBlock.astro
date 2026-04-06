@@ -1,9 +1,10 @@
 ---
 /**
- * Signposting block [A8].
- * Always present on question pages, not dismissable.
- * Shows services from the Signposting multi-select field.
- * Uses .alert--support class.
+ * Signposting block [A8] — C1 question page.
+ *
+ * Persistent list of relevant support services. Not dismissable.
+ * Renders a heading + an .alert--support alert whose body is a 2-col
+ * grid of service entries on md+, 1-col on mobile.
  */
 import { SUPPORT_SERVICES } from '../lib/support-services';
 
@@ -13,7 +14,6 @@ interface Props {
 
 const { services } = Astro.props;
 
-// Resolve service names to full service data
 const resolvedServices = services
   .map((name) => SUPPORT_SERVICES[name])
   .filter(Boolean);
@@ -21,30 +21,89 @@ const resolvedServices = services
 if (resolvedServices.length === 0) return;
 ---
 
-<div class="alert alert--support">
-  <div class="alert__icon">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-    </svg>
-  </div>
+<h2 class="signposting__heading mb-[var(--space-global-md)] text-center" id="signposting-title">
+  Need to talk to someone?
+</h2>
+
+<div
+  class="alert alert--support"
+  role="complementary"
+  aria-labelledby="signposting-title"
+>
   <div class="alert__content">
-    <div class="alert__title">Need to talk to someone?</div>
     <div class="alert__body">
-      {resolvedServices.map((svc) => (
-        <p>
-          <strong>{svc.name}</strong> — {svc.description}
-          {svc.phone && (
-            <> Call free: <a href={`tel:${svc.phone.replace(/\s/g, '')}`}>{svc.phone}</a>.</>
-          )}
-          {' '}<a
-            href={svc.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-analytics-event="signposting_click"
-            data-analytics-service-name={svc.name}
-          >{svc.urlLabel}</a>
-        </p>
-      ))}
+      <ul class="signposting__list list-none p-0 m-0 grid grid-cols-1 md:grid-cols-2 gap-[var(--space-global-md)] mt-[var(--space-global-sm)]" role="list">
+        {resolvedServices.map((svc) => (
+          <li class="signposting__item">
+            <div class="signposting__name">{svc.name}</div>
+            <div class="signposting__desc">{svc.description}</div>
+            <div class="signposting__contact">
+              {svc.phone && (
+                <>
+                  <a href={`tel:${svc.phone.replace(/\s/g, '')}`} class="signposting__link">
+                    {svc.phone}
+                  </a>
+                  {' · '}
+                </>
+              )}
+              <a
+                href={svc.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="signposting__link"
+                data-analytics-event="signposting_click"
+                data-analytics-service-name={svc.name}
+              >
+                {svc.urlLabel}
+              </a>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   </div>
 </div>
+
+<style>
+  .signposting__heading {
+    font-family: var(--font-ota-heading-stack, inherit);
+    font-size: var(--text-prose-size-h3);
+    font-weight: var(--heading-ota-weight-h3, 600);
+    color: var(--text-ota-heading);
+    line-height: 1.25;
+  }
+
+  .signposting__name {
+    font-size: var(--text-prose-size-body);
+    font-weight: 700;
+    color: inherit;
+  }
+
+  .signposting__desc {
+    font-size: var(--text-card-size-body);
+    color: var(--safeguarding-support-text, inherit);
+    margin-top: 0.15rem;
+    line-height: 1.5;
+  }
+
+  .signposting__contact {
+    font-size: var(--text-card-size-body);
+    margin-top: 0.35rem;
+  }
+
+  .signposting__link {
+    color: var(--safeguarding-support-icon);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .signposting__link:hover {
+    text-decoration: none;
+  }
+
+  .signposting__link:focus-visible {
+    outline: var(--focus-ring-width) solid var(--safeguarding-support-icon);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-xs);
+  }
+</style>

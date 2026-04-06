@@ -1,12 +1,14 @@
 ---
 /**
- * Age flag interstitial [D1].
- * Renders when Age Tier = "Age-flagged Year 9+".
- * Not a hard gate — the answer is always in the HTML.
- * Uses .alert--ageflag class.
+ * Age flag interstitial [D1] — C1 question page.
+ *
+ * Renders when Age Tier = "Age-flagged Year 9+". Honest signpost, not a gate.
+ * The surrounding section wrapper (56rem column) lives in the page template
+ * so it can be shared with CrisisSupport [A9] when both are present.
+ *
+ * Uses .alert.alert--ageflag. Not dismissable. "Continue to the answer"
+ * scrolls to the post-it figure and moves focus to its caption.
  */
-import type { TopicRef } from '../lib/types';
-
 interface Props {
   topicLabel: string;
   topicSlug: string;
@@ -15,10 +17,17 @@ interface Props {
 const { topicLabel, topicSlug } = Astro.props;
 ---
 
-<div class="alert alert--ageflag" id="age-flag">
+<div
+  class="alert alert--ageflag"
+  id="age-flag"
+  role="complementary"
+  aria-labelledby="age-flag-title"
+>
   <script is:inline>
     if (typeof window.trackEvent === 'function') {
-      window.trackEvent('age_flag_shown', { question_slug: window.location.pathname.split('/').filter(Boolean).pop() || '' });
+      window.trackEvent('age_flag_shown', {
+        question_slug: window.location.pathname.split('/').filter(Boolean).pop() || '',
+      });
     }
   </script>
   <div class="alert__icon">
@@ -29,30 +38,45 @@ const { topicLabel, topicSlug } = Astro.props;
     </svg>
   </div>
   <div class="alert__content">
-    <div class="alert__title">This content is aimed at Year 9+</div>
+    <div class="alert__title" id="age-flag-title">
+      {topicLabel}: this content is aimed at Year 9+
+    </div>
     <div class="alert__body">
       <p>
-        This answer covers <strong>{topicLabel}</strong> in a way that's suitable for students in Year 9 and above.
-        If you're looking for foundational content, try <a href={`/topics/${topicSlug}`}>exploring the {topicLabel} topic page</a>.
+        This answer covers <strong>{topicLabel}</strong> in a way suitable for students in Year 9 and above.
+        {' '}
+        <a href={`/topics/${topicSlug}`}>Read a foundational answer first &rarr;</a>
       </p>
-      <div class="flex gap-[var(--space-global-sm)] flex-wrap">
+      <div class="mt-[var(--space-global-sm)]">
         <button
           type="button"
           class="btn btn--sm btn--outline"
+          data-ageflag-continue
           data-analytics-event="age_flag_continue"
-          onclick="document.getElementById('age-flag')?.remove()"
         >
-          Continue to answer
+          Continue to the answer
         </button>
-        <a
-          href={`/topics/${topicSlug}`}
-          class="btn btn--sm btn--tint"
-          data-analytics-event="age_flag_redirect"
-          data-analytics-redirect-slug={topicSlug}
-        >
-          Explore {topicLabel} instead
-        </a>
       </div>
     </div>
   </div>
 </div>
+
+<script is:inline>
+  (function initAgeFlagContinue() {
+    var btn = document.querySelector('[data-ageflag-continue]');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      var target = document.getElementById('question-post-it');
+      var caption = document.getElementById('question-post-it-caption');
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      if (caption) {
+        caption.setAttribute('tabindex', '-1');
+        // Delay focus until after the smooth scroll has begun so the
+        // assistive-tech reading cursor lands cleanly on the caption.
+        setTimeout(function () { caption.focus(); }, 350);
+      }
+    });
+  })();
+</script>

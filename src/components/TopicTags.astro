@@ -1,7 +1,13 @@
 ---
 /**
- * Topic tags [A16].
- * Links to parent landing page(s) for a question or glossary term.
+ * Topic tags [A16] — C1 question page.
+ *
+ * End-of-page wayfinding: which topic landing page(s) this question
+ * belongs to. Each chip is a .badge.badge--pill.badge--ota-{category}
+ * link. Composition is pure — no visual overrides.
+ *
+ * The outer section wrapper (.surface--ota band, 56rem container) and
+ * the top border/separator live in the page template.
  */
 import type { TopicRef } from '../lib/types';
 
@@ -13,7 +19,7 @@ const { topic } = Astro.props;
 
 if (!topic) return;
 
-// Map OtA category names to badge class suffixes
+// Map OtA category names to badge class suffixes.
 const categoryBadgeMap: Record<string, string> = {
   'Anatomy': 'ota-anatomy',
   'Puberty': 'ota-puberty',
@@ -27,16 +33,43 @@ const categoryBadgeMap: Record<string, string> = {
 const badgeSuffix = topic.category ? categoryBadgeMap[topic.category] : null;
 ---
 
-<section class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-md)]">
-  <div class="flex flex-wrap gap-[var(--space-global-xs)]">
+<div class="topic-tags">
+  <div class="topic-tags__label mb-[var(--space-global-sm)]">
+    This question is part of
+  </div>
+  <div class="topic-tags__row flex flex-wrap gap-[var(--topic-tag-gap)]">
     <a
       href={`/topics/${topic.slug}`}
-      class:list={['badge', 'badge--pill', badgeSuffix && `badge--${badgeSuffix}`]}
-      style="text-decoration: none;"
+      class:list={[
+        'badge',
+        'badge--pill',
+        badgeSuffix && `badge--${badgeSuffix}`,
+        'topic-tags__chip',
+      ]}
       data-analytics-event="question_to_topic_click"
       data-analytics-topic-slug={topic.slug}
     >
       {topic.name}
     </a>
   </div>
-</section>
+</div>
+
+<style>
+  .topic-tags__label {
+    font-family: var(--font-ota-body-stack, inherit);
+    font-size: var(--text-util-preheader-size, 0.75rem);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: var(--text-util-preheader-ls, 0.08em);
+    color: var(--text-ota-muted);
+  }
+
+  .topic-tags__chip {
+    text-decoration: none;
+  }
+
+  .topic-tags__chip:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+  }
+</style>

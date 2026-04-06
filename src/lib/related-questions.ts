@@ -17,13 +17,21 @@ export function selectRelatedQuestions(
   const results: QuestionRef[] = [];
   const seen = new Set<string>([current.id]);
 
+  const toRef = (q: Question): QuestionRef => ({
+    id: q.id,
+    question: q.question,
+    slug: q.slug,
+    okayToAskCategory: q.okayToAskCategory,
+    contentTags: q.contentTags,
+  });
+
   // 1. Same primary topic
   if (current.topicIds.length > 0) {
     const primaryTopicId = current.topicIds[0];
     for (const q of allQuestions) {
       if (seen.has(q.id)) continue;
       if (q.topicIds.includes(primaryTopicId)) {
-        results.push({ id: q.id, question: q.question, slug: q.slug });
+        results.push(toRef(q));
         seen.add(q.id);
         if (results.length >= maxResults) return results;
       }
@@ -35,7 +43,7 @@ export function selectRelatedQuestions(
     for (const q of allQuestions) {
       if (seen.has(q.id)) continue;
       if (q.okayToAskCategory === current.okayToAskCategory) {
-        results.push({ id: q.id, question: q.question, slug: q.slug });
+        results.push(toRef(q));
         seen.add(q.id);
         if (results.length >= maxResults) return results;
       }
@@ -48,7 +56,7 @@ export function selectRelatedQuestions(
     for (const q of allQuestions) {
       if (seen.has(q.id)) continue;
       if (q.contentTags.some((t) => tags.has(t))) {
-        results.push({ id: q.id, question: q.question, slug: q.slug });
+        results.push(toRef(q));
         seen.add(q.id);
         if (results.length >= maxResults) return results;
       }
