@@ -180,20 +180,6 @@ const postItTopPadding = showAlertBand
       aria-labelledby="question-heading"
     >
       <div class="mx-auto w-full max-w-[var(--container-max-reading-wide)] flex flex-col items-center text-center">
-        {/* Category chip (A16 preview — full tag row sits in §8) */}
-        {question.okayToAskCategory && (
-          <span
-            class:list={[
-              'badge',
-              'badge--pill',
-              categoryBadge && `badge--${categoryBadge}`,
-              'mb-[var(--space-global-md)]',
-            ]}
-          >
-            {question.okayToAskCategory}
-          </span>
-        )}
-
         {/* Scanned post-it artefact */}
         {postItImage && (
           <figure
@@ -233,7 +219,15 @@ const postItTopPadding = showAlertBand
       <div class="mx-auto w-full max-w-[var(--container-max-prose)]">
         {/* Simple Mode toggle — sticky on desktop */}
         <div class="c1-toggle-sticky lg:sticky lg:top-[var(--header-height)] z-[20]">
-          <div class="c1-toggle-row flex items-center justify-end gap-[var(--space-global-md)] py-[var(--space-global-md)] border-b-[var(--border-width-xs)] border-[var(--border-subtle)]">
+          <div class="c1-toggle-row flex items-center justify-between gap-[var(--space-global-md)] py-[var(--space-global-md)] border-b-[var(--border-width-xs)] border-[var(--border-subtle)]">
+            {question.okayToAskCategory ? (
+              <span
+                class="c1-category-eyebrow"
+                style={categoryBadge ? `color: var(--ota-cat-${categoryBadge.replace('ota-', '')})` : undefined}
+              >
+                {question.okayToAskCategory}
+              </span>
+            ) : <span />}
             <SimpleModeToggle />
           </div>
         </div>
@@ -369,6 +363,14 @@ const postItTopPadding = showAlertBand
       position: static;
       margin-bottom: var(--space-global-lg);
     }
+  }
+
+  .c1-category-eyebrow {
+    font-size: var(--text-util-micro-size, 0.75rem);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-ota-muted);
   }
 
   .c1-answer {
