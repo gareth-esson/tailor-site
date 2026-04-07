@@ -103,7 +103,7 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'drop-days');
 <style>
   .service-page { background: var(--bg-page); }
   .service-page__header { background: var(--bg-surface); border-bottom: var(--border-width-xs) solid var(--border-subtle); }
-  .service-page__eyebrow { display: inline-block; font-family: var(--font-tailor-body-stack); font-size: var(--text-card-size-body); font-weight: 600; color: var(--brand-accent-text); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+  .service-page__eyebrow { display: inline-block; font-family: var(--font-tailor-body-stack); font-size: var(--text-card-size-body); font-weight: var(--font-weight-semibold); color: var(--brand-accent-text); text-transform: uppercase; letter-spacing: var(--text-eyebrow-ls); margin-bottom: 0.5rem; }
   .service-page__title { font-family: var(--font-tailor-heading-stack); font-size: var(--text-display-size-h1); font-weight: var(--heading-weight-h1); color: var(--text-heading); margin: 0 0 var(--space-global-sm); line-height: 1.15; }
   .service-page__subtitle { font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); color: var(--text-body-muted); max-width: 36rem; margin: 0; line-height: 1.6; }
   .service-page__content { font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); color: var(--text-body); line-height: 1.7; }
@@ -115,7 +115,7 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'drop-days');
   .testimonial-card { padding: var(--space-global-lg); margin: 0; border-left: 4px solid var(--brand-accent); }
   .testimonial-card__quote { font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); font-style: italic; color: var(--text-body); line-height: 1.7; margin: 0 0 var(--space-global-sm); }
   .testimonial-card__source { display: flex; flex-wrap: wrap; gap: var(--space-global-sm); align-items: baseline; }
-  .testimonial-card__name { font-family: var(--font-tailor-body-stack); font-size: var(--text-card-size-body); font-weight: 600; color: var(--text-heading); }
+  .testimonial-card__name { font-family: var(--font-tailor-body-stack); font-size: var(--text-card-size-body); font-weight: var(--font-weight-semibold); color: var(--text-heading); }
   .testimonial-card__link { font-size: var(--text-card-size-body); color: var(--brand-accent-text); }
   .service-page__blog { border-top: var(--border-width-xs) solid var(--border-subtle); }
   .service-page__blog-grid { display: grid; gap: var(--space-global-sm); }

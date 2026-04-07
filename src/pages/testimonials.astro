@@ -52,15 +52,15 @@ const testimonials = [
 <style>
   .testimonials-page { background: var(--bg-page); }
   .testimonials-page__title { font-family: var(--font-tailor-heading-stack); font-size: var(--text-display-size-h1); font-weight: var(--heading-weight-h1); color: var(--text-heading); margin: 0 0 var(--space-global-sm); }
-  .testimonials-page__intro { font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); color: var(--text-body-muted); max-width: 36rem; margin: 0 0 var(--space-global-xl); line-height: 1.6; }
+  .testimonials-page__intro { font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); color: var(--text-body-muted); max-width: 36rem; margin: 0 0 var(--space-global-xl); line-height: var(--lh-body); }
 
   .testimonials-grid { display: grid; gap: var(--space-global-md); margin-bottom: var(--space-global-xl); }
   .testimonial-card { padding: var(--space-global-lg); margin: 0; background: var(--bg-surface); border: var(--border-width-xs) solid var(--border-subtle); border-radius: var(--radius-lg); border-left: 4px solid var(--brand-accent); }
-  .testimonial-card__quote { font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); font-style: italic; color: var(--text-body); line-height: 1.7; margin: 0 0 var(--space-global-sm); }
+  .testimonial-card__quote { font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); font-style: italic; color: var(--text-body); line-height: var(--lh-prose); margin: 0 0 var(--space-global-sm); }
   .testimonial-card__footer { display: flex; flex-direction: column; gap: 0.125rem; }
-  .testimonial-card__name { font-size: var(--text-card-size-body); font-weight: 600; color: var(--text-heading); }
+  .testimonial-card__name { font-size: var(--text-card-size-body); font-weight: var(--font-weight-semibold); color: var(--text-heading); }
   .testimonial-card__school { font-size: var(--text-card-size-body); color: var(--text-body-muted); }
-  .testimonial-card__service { font-size: var(--text-card-size-body); color: var(--brand-accent-text); font-weight: 500; }
+  .testimonial-card__service { font-size: var(--text-card-size-body); color: var(--brand-accent-text); font-weight: var(--font-weight-medium); }
 
   .testimonials-cta { text-align: center; display: flex; flex-wrap: wrap; gap: var(--space-global-sm); justify-content: center; align-items: center; }
   .testimonials-cta__text { font-size: var(--text-prose-size-body); color: var(--text-body-muted); margin: 0; width: 100%; margin-bottom: var(--space-global-xs); }

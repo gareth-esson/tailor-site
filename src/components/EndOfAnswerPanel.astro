@@ -82,7 +82,7 @@ const { topicName, topicSlug } = Astro.props;
     font-size: var(--text-prose-size-h2);
     font-weight: var(--heading-ota-weight-h2, 600);
     color: var(--text-ota-heading);
-    line-height: 1.2;
+    line-height: var(--lh-heading);
   }
 
   .end-panel__subtitle {
@@ -102,7 +102,7 @@ const { topicName, topicSlug } = Astro.props;
   .end-panel__eyebrow {
     font-family: var(--font-ota-body-stack, inherit);
     font-size: var(--text-util-preheader-size, 0.75rem);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     text-transform: uppercase;
     letter-spacing: var(--card-eyebrow-ls, 0.08em);
     margin-bottom: var(--space-global-xs);
@@ -128,7 +128,7 @@ const { topicName, topicSlug } = Astro.props;
     padding-top: var(--space-global-sm);
     font-family: var(--font-ota-body-stack, inherit);
     font-size: var(--text-card-size-body);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
   }
 
   /* ── Panel 1 — book (post-it soft yellow) ── */

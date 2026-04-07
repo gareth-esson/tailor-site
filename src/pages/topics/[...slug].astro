@@ -283,10 +283,10 @@ function otaCategoryClass(cat: string | null): string {
     display: inline-block;
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-card-size-body);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--cat-color, var(--text-body-muted));
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: var(--text-eyebrow-ls);
     margin-bottom: 0.5rem;
   }
 
@@ -392,7 +392,7 @@ function otaCategoryClass(cat: string | null): string {
     font-size: var(--text-prose-size-body);
     color: var(--brand-accent-text);
     text-decoration: none;
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
   }
 
   .question-list__link:hover {
@@ -415,7 +415,7 @@ function otaCategoryClass(cat: string | null): string {
 
   .glossary-grid__term {
     font-family: var(--font-tailor-body-stack);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--text-heading);
     margin-bottom: 0.25rem;
   }
@@ -468,7 +468,7 @@ function otaCategoryClass(cat: string | null): string {
     border-radius: var(--radius-pill);
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-card-size-body);
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
     color: var(--text-body);
     text-decoration: none;
     transition: border-color var(--transition-duration) var(--transition-easing),

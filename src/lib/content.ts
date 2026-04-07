@@ -159,10 +159,21 @@ async function _loadAllContentImpl(): Promise<void> {
       .map(toLandingPageRef);
   }
 
-  // Build glossary index for tooltip matching
+  // Build glossary index for tooltip matching.
+  // Compound terms like "Pregnant / Pregnancy" are split so each
+  // variant ("pregnant", "pregnancy") maps to the same ref.
   const glossaryIndex: GlossaryIndex = {};
   for (const g of glossaryTerms) {
-    glossaryIndex[g.term.toLowerCase()] = toGlossaryRef(g);
+    const ref = toGlossaryRef(g);
+    const termLower = g.term.toLowerCase();
+    if (termLower.includes(' / ')) {
+      for (const variant of termLower.split(' / ')) {
+        const trimmed = variant.trim();
+        if (trimmed) glossaryIndex[trimmed] = ref;
+      }
+    } else {
+      glossaryIndex[termLower] = ref;
+    }
   }
 
   // Cache everything

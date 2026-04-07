@@ -136,7 +136,7 @@ const sampleQuestions = allQuestions
 
   .book-audiences { display: grid; gap: var(--space-global-md); }
   .book-audience { padding: var(--space-global-md); background: var(--bg-surface); border-radius: var(--radius-lg); border: var(--border-width-xs) solid var(--border-subtle); }
-  .book-audience__title { font-size: var(--text-card-size-h3); font-weight: 600; color: var(--text-ota-heading); margin: 0 0 0.25rem; }
+  .book-audience__title { font-size: var(--text-card-size-h3); font-weight: var(--font-weight-semibold); color: var(--text-ota-heading); margin: 0 0 0.25rem; }
   .book-audience__text { font-size: var(--text-card-size-body); color: var(--text-ota-muted); margin: 0; line-height: 1.5; }
 
   .book-purchase__card { text-align: center; padding: var(--space-global-xl); background: var(--bg-surface); border-radius: var(--radius-lg); border: var(--border-width-xs) solid var(--border-subtle); }
@@ -147,9 +147,9 @@ const sampleQuestions = allQuestions
   .book-sample-card { display: flex; flex-direction: column; gap: var(--space-global-xs); padding: var(--space-global-md); background: var(--bg-surface); border-radius: var(--radius-lg); border: var(--border-width-xs) solid var(--border-subtle); text-decoration: none; transition: border-color var(--transition-duration) var(--transition-easing); }
   .book-sample-card:hover { border-color: var(--brand-accent); }
   .book-sample-card__image { width: 100%; max-width: 10rem; height: auto; border-radius: var(--radius-sm); }
-  .book-sample-card__text { font-size: var(--text-prose-size-body); font-weight: 500; color: var(--brand-accent-text); }
+  .book-sample-card__text { font-size: var(--text-prose-size-body); font-weight: var(--font-weight-medium); color: var(--brand-accent-text); }
 
-  .book-trust__text { font-size: var(--text-prose-size-body); color: var(--text-ota-muted); text-align: center; margin: 0; line-height: 1.6; }
+  .book-trust__text { font-size: var(--text-prose-size-body); color: var(--text-ota-muted); text-align: center; margin: 0; line-height: var(--lh-body); }
 
   @media (min-width: 768px) {
     .book-hero__inner { grid-template-columns: 1fr auto; align-items: center; }

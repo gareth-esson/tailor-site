@@ -184,7 +184,7 @@ const bodyWithTooltips = injectGlossaryTooltips(bodyHtml, glossaryIndex, undefin
     font-weight: var(--heading-weight-h1);
     color: var(--text-heading);
     margin: 0 0 var(--space-global-sm);
-    line-height: 1.15;
+    line-height: var(--lh-display);
   }
 
   .blog-post__meta {
@@ -201,7 +201,7 @@ const bodyWithTooltips = injectGlossaryTooltips(bodyHtml, glossaryIndex, undefin
     padding: 0.125rem 0.5rem;
     background: var(--bg-surface-alt);
     border-radius: var(--radius-pill);
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
   }
 
   .blog-post__tags {
@@ -217,7 +217,7 @@ const bodyWithTooltips = injectGlossaryTooltips(bodyHtml, glossaryIndex, undefin
     border-radius: var(--radius-pill);
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-card-size-body);
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
     color: var(--brand-accent-text);
     text-decoration: none;
     transition: background var(--transition-duration) var(--transition-easing);
@@ -242,7 +242,7 @@ const bodyWithTooltips = injectGlossaryTooltips(bodyHtml, glossaryIndex, undefin
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-prose-size-body);
     color: var(--text-body);
-    line-height: 1.7;
+    line-height: var(--lh-prose);
   }
 
   .blog-post__body :global(.prose h2) {

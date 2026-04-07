@@ -144,7 +144,7 @@ const query = Astro.url.searchParams.get('q') || '';
           var groupId = 'group-' + type;
 
           html += '<div style="margin-bottom: var(--space-global-lg);">';
-          html += '<h2 style="font-family: var(--font-tailor-heading-stack); font-size: var(--text-prose-size-h3); font-weight: var(--heading-weight-h3); color: var(--text-heading); margin-bottom: var(--space-global-sm); padding-bottom: var(--space-global-xs); border-bottom: var(--border-width-xs) solid var(--border-subtle);">' + label + ' <span style="font-weight: 400; color: var(--text-body-muted); font-size: var(--text-card-size-body);">(' + items.length + ')</span></h2>';
+          html += '<h2 style="font-family: var(--font-tailor-heading-stack); font-size: var(--text-prose-size-h3); font-weight: var(--heading-weight-h3); color: var(--text-heading); margin-bottom: var(--space-global-sm); padding-bottom: var(--space-global-xs); border-bottom: var(--border-width-xs) solid var(--border-subtle);">' + label + ' <span style="font-weight: var(--font-weight-regular); color: var(--text-body-muted); font-size: var(--text-card-size-body);">(' + items.length + ')</span></h2>';
 
           for (var j = 0; j < items.length; j++) {
             var item = items[j];
@@ -152,13 +152,13 @@ const query = Astro.url.searchParams.get('q') || '';
             html += '<a href="' + item.url + '" class="search-page__result" ' + hiddenAttr
               + ' data-query="' + query + '" data-type="' + type + '" data-position="' + (j + 1) + '"'
               + ' style="display: block; padding: var(--space-global-sm) 0; border-bottom: var(--border-width-xs) solid var(--border-subtle); text-decoration: none; color: var(--text-body);">'
-              + '<span style="display: block; font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); font-weight: 500; color: var(--text-heading);">' + ((item.meta && item.meta.title) || item.url) + '</span>'
+              + '<span style="display: block; font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); font-weight: var(--font-weight-medium); color: var(--text-heading);">' + ((item.meta && item.meta.title) || item.url) + '</span>'
               + '<span style="display: block; font-size: var(--text-card-size-body); color: var(--text-body-muted); margin-top: 0.25rem;">' + (item.excerpt || '') + '</span>'
               + '</a>';
           }
 
           if (hasMore) {
-            html += '<button type="button" data-toggle="' + groupId + '" style="margin-top: var(--space-global-sm); font-family: var(--font-shell-body-stack); font-size: var(--text-card-size-body); font-weight: 500; color: var(--link-action-color); background: none; border: none; cursor: pointer; padding: 0;">Show all ' + items.length + ' results</button>';
+            html += '<button type="button" data-toggle="' + groupId + '" style="margin-top: var(--space-global-sm); font-family: var(--font-shell-body-stack); font-size: var(--text-card-size-body); font-weight: var(--font-weight-medium); color: var(--link-action-color); background: none; border: none; cursor: pointer; padding: 0;">Show all ' + items.length + ' results</button>';
           }
 
           html += '</div>';

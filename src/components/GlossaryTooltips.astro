@@ -114,8 +114,12 @@
 
 <style is:global>
   .glossary-term {
-    text-decoration: var(--glossary-underline);
-    text-underline-offset: var(--glossary-underline-offset);
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--glossary-underline-color, var(--brand-accent-text));
+    text-underline-offset: var(--glossary-underline-offset, 0.2em);
+    font-weight: var(--font-weight-semibold);
     cursor: help;
     position: relative;
   }
@@ -138,19 +142,22 @@
     padding: var(--tooltip-padding-y) var(--tooltip-padding-x);
     min-width: 14rem;
     max-width: var(--tooltip-max-width);
-    font-size: var(--text-card-size-body);
-    line-height: 1.5;
+    font-size: var(--text-card-size-body, 14px);
+    line-height: 1.35;
     color: var(--tooltip-text);
+    font-weight: var(--font-weight-regular);
   }
 
-  .glossary-tooltip__content p {
+  .glossary-tooltip .glossary-tooltip__content p {
+    font-size: var(--text-card-size-body, 14px);
+    line-height: 1.35;
     margin: 0 0 var(--space-global-xs);
   }
 
   .glossary-tooltip__link {
     color: var(--brand-accent-text);
     font-size: var(--text-card-size-h6);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     text-decoration: none;
   }
 

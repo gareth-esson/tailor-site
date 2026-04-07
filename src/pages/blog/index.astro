@@ -130,7 +130,7 @@ const audiences = [...new Set(posts.map((p) => p.targetAudience).filter(Boolean)
     color: var(--text-body-muted);
     max-width: 36rem;
     margin: 0 0 var(--space-global-lg);
-    line-height: 1.6;
+    line-height: var(--lh-body);
   }
 
   .blog-filters {
@@ -160,7 +160,7 @@ const audiences = [...new Set(posts.map((p) => p.targetAudience).filter(Boolean)
   .blog-list__topic {
     font-size: var(--text-card-size-body);
     color: var(--brand-accent-text);
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
   }
 
   .blog-list__topic:not(:last-child)::after {
