@@ -2,158 +2,506 @@
 /**
  * Book page [B11] — /book
  * Okay to Ask book. OtA visual identity. Destination for A17 book panels.
+ * Surface rhythm: warm → ground → warm → book-panel → ground → deeper-warm
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getQuestions } from '../lib/content';
+import { getPostItImagePath } from '../lib/post-it-images';
 
+// Purchase configuration
+const isOnSale = false;
+const bookPrice = '14.99';
+const stripeCheckoutUrl = import.meta.env.BOOK_STRIPE_URL || null;
 
 const allQuestions = await getQuestions();
-// Sample 3 questions with post-it scans for the preview section
+
+// Sample 3 questions with post-it scans and answers for the preview section
 const sampleQuestions = allQuestions
-  .filter((q) => q.body.length > 0 && q.hasPostItScan)
+  .filter((q) => q.body.length > 0 && q.hasPostItScan && q.simpleAnswer?.length > 0)
+  .sort(() => 0.5 - Math.random())
   .slice(0, 3);
+
+// Interior spread images — conditionally rendered
+const interiorSpread1 = null as string | null;
+const interiorSpread2 = null as string | null;
+
+// Testimonial — conditionally rendered
+const testimonial = null as { quote: string; cite: string } | null;
 ---
 
 <BaseLayout
   title="The Okay to Ask Book — Tailor Education"
-  description="The Okay to Ask book — honest answers to real questions about relationships, sex, and growing up."
+  description="Real questions from real young people, answered honestly. Post-it notes and all. The Okay to Ask book by Tailor Education."
   canonicalPath="/book"
   layer="ota"
 >
-  <article class="book-page">
-    <!-- 1. Hero -->
-    <section class="book-hero surface--ota">
-      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-2xl)]">
-        <div class="book-hero__inner">
-          <div class="book-hero__content">
-            <img src="/assets/ota-wordmark-dark.svg" alt="Okay to Ask" class="book-hero__wordmark" width="220" height="38" />
-            <h1 class="book-hero__title">The Okay to Ask book</h1>
-            <p class="book-hero__text">
-              Real questions from real young people, answered honestly. Post-it notes and all.
-            </p>
-            <!-- Purchase CTA — placeholder until sales URL confirmed -->
-            <a href="#" class="btn btn--std btn--primary has-icon-hover">Get the book</a>
-          </div>
-          <div class="book-hero__cover">
-            <div class="book-hero__placeholder" aria-hidden="true">
-              <span>Book cover</span>
-            </div>
-          </div>
+  <!-- ═══ §1 HERO ═══ -->
+  <section class="book-hero surface--ota" aria-labelledby="book-heading">
+    <div class="book-hero__outer">
+      <div class="book-hero__inner">
+        <div class="book-hero__cover">
+          <img
+            src="/images/ota-book-cover.webp"
+            alt="Okay to Ask book cover — a square orange book with a handwritten post-it note and the Okay to Ask wordmark"
+            class="book-hero__cover-img"
+            loading="eager"
+          />
+        </div>
+        <div class="book-hero__content">
+          <h1 id="book-heading" class="book-hero__title">
+            Real questions from real young people, answered honestly
+          </h1>
+          <p class="book-hero__pitch">
+            152 anonymous questions written by young people in schools — each answered with honesty, care, and no judgement. Post-it notes and all.
+          </p>
+          {isOnSale && stripeCheckoutUrl ? (
+            <a
+              href={stripeCheckoutUrl}
+              class="btn btn--std btn--primary has-icon-hover"
+              target="_blank"
+              rel="noopener"
+              aria-label={`Buy the Okay to Ask book — £${bookPrice} — opens Stripe checkout`}
+            >
+              Buy the book — £{bookPrice}
+            </a>
+          ) : (
+            <a href="/contact?service=Other" class="btn btn--std btn--primary has-icon-hover">
+              Register your interest
+            </a>
+          )}
+          <p class="book-hero__info">
+            210×210mm square format · Free UK delivery
+          </p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- 2. What's inside -->
-    <section class="book-section surface--ota-alt">
-      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-        <h2 class="book-section__title">What's inside</h2>
-        <p class="book-section__text">
+  <!-- ═══ §2 WHAT'S INSIDE ═══ -->
+  <section class="book-inside" aria-labelledby="inside-heading">
+    <div class="book-inside__outer">
+      <h2 id="inside-heading" class="book-inside__title">What's inside</h2>
+      <div class="book-inside__prose ota-prose">
+        <p>
           Over 150 real questions written anonymously by young people in schools — about relationships, sex, their bodies, and growing up. Each question comes with the original handwritten post-it note and an honest, expert-written answer.
         </p>
-        <p class="book-section__text">
-          No euphemisms, no evasion — just the answers young people actually want.
+        <p>
+          No euphemisms, no evasion — just the answers young people actually want. The book covers consent, puberty, sexual health, identity, contraception, online safety, and everything in between.
+        </p>
+        <p>
+          Produced in a distinctive 210×210mm square format, the Okay to Ask book is designed to be picked up, flicked through, and left on a table for anyone who needs it.
         </p>
       </div>
-    </section>
+      <img
+        src="/images/ota-book-hero.webp"
+        alt="The Okay to Ask book — closed cover alongside an open spread showing a handwritten post-it question and its answer"
+        class="book-inside__hero-img"
+        loading="lazy"
+      />
+    </div>
+  </section>
 
-    <!-- 3. Who it's for -->
-    <section class="book-section surface--ota">
-      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-        <h2 class="book-section__title">Who it's for</h2>
-        <div class="book-audiences">
-          <div class="book-audience">
-            <h3 class="book-audience__title">Parents and carers</h3>
-            <p class="book-audience__text">A conversation starter for home. See the questions young people are really asking, and how to answer them.</p>
-          </div>
-          <div class="book-audience">
-            <h3 class="book-audience__title">School staff rooms</h3>
-            <p class="book-audience__text">A reference that's always on the shelf. Quick, honest answers for when students ask unexpected questions.</p>
-          </div>
-          <div class="book-audience">
-            <h3 class="book-audience__title">Training and conferences</h3>
-            <p class="book-audience__text">A credibility artefact for RSE training events and professional development sessions.</p>
-          </div>
-          <div class="book-audience">
-            <h3 class="book-audience__title">Young people</h3>
-            <p class="book-audience__text">A book that treats them with respect. The questions they've always wanted to ask, answered without judgement.</p>
-          </div>
+  <!-- ═══ §3 WHO IT'S FOR ═══ -->
+  <section class="book-audiences surface--ota" aria-labelledby="audiences-heading">
+    <div class="book-audiences__outer">
+      <h2 id="audiences-heading" class="book-audiences__title">Who is this book for?</h2>
+      <div class="book-audiences__grid">
+        <div class="book-audience">
+          <h3 class="book-audience__label">For parents and carers</h3>
+          <p class="book-audience__desc">A conversation starter for home. See the questions young people are really asking, and how to answer them.</p>
+        </div>
+        <div class="book-audience">
+          <h3 class="book-audience__label">For schools</h3>
+          <p class="book-audience__desc">A reference that's always on the shelf. Quick, honest answers for when students ask unexpected questions — in the staff room, the library, or the PSHE cupboard.</p>
+        </div>
+        <div class="book-audience">
+          <h3 class="book-audience__label">For young people</h3>
+          <p class="book-audience__desc">A book that treats them with respect. The questions they've always wanted to ask, answered without judgement.</p>
+        </div>
+        <div class="book-audience">
+          <h3 class="book-audience__label">For everyone</h3>
+          <p class="book-audience__desc">A coffee table book, a gift, a training resource. Designed to be picked up, flicked through, and left somewhere for anyone who needs it.</p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- 4. Purchase CTA -->
-    <section class="book-purchase surface--ota-alt">
-      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
-        <div class="book-purchase__card">
-          <h2 class="book-purchase__title">Get your copy</h2>
-          <p class="book-purchase__text">Purchase link coming soon. Register your interest below.</p>
-          <a href="/contact?service=Other" class="btn btn--std btn--primary has-icon-hover">Register interest</a>
-        </div>
-      </div>
-    </section>
+  <!-- ═══ §4 PURCHASE CTA ═══ -->
+  <section class="book-purchase" aria-labelledby="purchase-heading">
+    <div class="book-purchase__outer">
+      <h2 id="purchase-heading" class="book-purchase__title">Get your copy</h2>
+      {isOnSale ? (
+        <Fragment>
+          <p class="book-purchase__price">£{bookPrice}</p>
+          <a
+            href={stripeCheckoutUrl || '/contact?service=Other'}
+            class="btn btn--std btn--primary has-icon-hover book-purchase__btn"
+            target={stripeCheckoutUrl ? '_blank' : undefined}
+            rel={stripeCheckoutUrl ? 'noopener' : undefined}
+            aria-label="Buy the Okay to Ask book — opens Stripe checkout"
+          >
+            Buy the book
+          </a>
+        </Fragment>
+      ) : (
+        <Fragment>
+          <p class="book-purchase__price-coming">Coming soon — £{bookPrice}</p>
+          <a href="/contact?service=Other" class="btn btn--std btn--primary has-icon-hover book-purchase__btn">
+            Register your interest
+          </a>
+        </Fragment>
+      )}
+      <p class="book-purchase__info">
+        Free UK delivery · Dispatched within 2 working days · 210×210mm square format
+      </p>
+    </div>
+  </section>
 
-    <!-- 5. Sample content -->
-    {sampleQuestions.length > 0 && (
-      <section class="book-samples surface--ota">
-        <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-          <h2 class="book-section__title">A taste of what's inside</h2>
-          <div class="book-samples__grid">
-            {sampleQuestions.map((q) => (
-              <a href={`/anonymous_question/${q.slug}`} class="book-sample-card">
-                {q.imageUrl && (
-                  <img src={q.imageUrl} alt="" class="book-sample-card__image" loading="lazy" />
+  <!-- ═══ §5 SAMPLE CONTENT ═══ -->
+  {sampleQuestions.length > 0 && (
+    <section class="book-samples" aria-labelledby="samples-heading">
+      <div class="book-samples__outer">
+        <h2 id="samples-heading" class="book-samples__title">A taste of what's inside</h2>
+        <p class="book-samples__sub">
+          Every question in the book is answered on this site too. Here are a few to try.
+        </p>
+        <div class="book-samples__stack">
+          {sampleQuestions.map((q) => {
+            const postItImage = getPostItImagePath(q.slug);
+            return (
+              <a href={`/anonymous_question/${q.slug}`} class="b11-sample-card">
+                {postItImage && (
+                  <img
+                    src={postItImage}
+                    alt=""
+                    class="b11-sample-card__postit"
+                    loading="lazy"
+                  />
                 )}
-                <span class="book-sample-card__text">{q.question}</span>
+                <div class="b11-sample-card__body">
+                  {q.okayToAskCategory && (
+                    <span class="b11-sample-card__eyebrow">{q.okayToAskCategory}</span>
+                  )}
+                  <div class="b11-sample-card__question">{q.question}</div>
+                  {q.simpleAnswer && (
+                    <p class="b11-sample-card__excerpt">{q.simpleAnswer}</p>
+                  )}
+                  <span class="b11-sample-card__link">Read the full answer</span>
+                </div>
               </a>
-            ))}
-          </div>
+            );
+          })}
         </div>
-      </section>
-    )}
-
-    <!-- 6. Trust signal -->
-    <section class="book-trust surface--ota-alt">
-      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-        <p class="book-trust__text">
-          Written by the Tailor Education team. All content aligned to DfE statutory guidance and the PSHE Association framework.
-        </p>
+        <div class="book-samples__more">
+          <a href="/questions/" class="btn btn--std btn--outline has-icon-hover">
+            Browse all 152 questions
+          </a>
+        </div>
       </div>
     </section>
-  </article>
+  )}
+
+  <!-- ═══ §6 TRUST SIGNAL ═══ -->
+  <section class="book-trust surface--ota-alt" aria-labelledby="trust-heading">
+    <div class="book-trust__outer">
+      {testimonial ? (
+        <Fragment>
+          <blockquote class="book-trust__quote">
+            <p class="book-trust__quote-text">"{testimonial.quote}"</p>
+          </blockquote>
+          <cite class="book-trust__cite">{testimonial.cite}</cite>
+        </Fragment>
+      ) : (
+        <Fragment>
+          <p id="trust-heading" class="book-trust__statement">
+            Written and produced by the Tailor Education team. All content aligned to DfE statutory guidance and the PSHE Association framework.
+          </p>
+          <a href="/our-approach" class="link-action book-trust__link">About Tailor Education</a>
+        </Fragment>
+      )}
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
-  .book-page { background: var(--bg-ota-surface); }
+  /* ========================================
+     Book page [B11] — Layout
+     Surface rhythm: warm → ground → warm → book-panel → ground → deeper-warm
+     ======================================== */
 
-  .book-hero__inner { display: grid; gap: var(--space-global-lg); }
-  .book-hero__wordmark { height: 2.5rem; width: auto; margin-bottom: var(--space-global-sm); }
-  .book-hero__title { font-size: var(--text-display-size-h1); color: var(--text-ota-heading); margin: 0 0 var(--space-global-sm); line-height: 1.15; }
-  .book-hero__text { font-size: var(--text-prose-size-body); color: var(--text-ota-body); margin: 0 0 var(--space-global-md); line-height: 1.6; }
-  .book-hero__placeholder { width: 100%; aspect-ratio: 3/4; max-width: 14rem; background: var(--surface-ota-postit-soft); border: 2px dashed var(--surface-ota-postit); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: var(--text-card-size-body); color: var(--text-body-muted); }
+  /* --- §1 Hero --- */
+  .book-hero {
+    padding: var(--space-struct-y-hero) var(--space-global-gutter) var(--space-struct-y-base);
+  }
 
-  .book-section__title { font-size: var(--text-prose-size-h2); color: var(--text-ota-heading); margin: 0 0 var(--space-global-sm); }
-  .book-section__text { font-size: var(--text-prose-size-body); color: var(--text-ota-body); line-height: 1.7; max-width: 36rem; margin: 0 0 var(--space-global-sm); }
+  .book-hero__outer {
+    max-width: var(--container-max-reading-wide);
+    margin: 0 auto;
+    width: 100%;
+  }
 
-  .book-audiences { display: grid; gap: var(--space-global-md); }
-  .book-audience { padding: var(--space-global-md); background: var(--bg-surface); border-radius: var(--radius-lg); border: var(--border-width-xs) solid var(--border-subtle); }
-  .book-audience__title { font-size: var(--text-card-size-h3); font-weight: var(--font-weight-semibold); color: var(--text-ota-heading); margin: 0 0 0.25rem; }
-  .book-audience__text { font-size: var(--text-card-size-body); color: var(--text-ota-muted); margin: 0; line-height: 1.5; }
+  .book-hero__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-global-xl);
+  }
 
-  .book-purchase__card { text-align: center; padding: var(--space-global-xl); background: var(--bg-surface); border-radius: var(--radius-lg); border: var(--border-width-xs) solid var(--border-subtle); }
-  .book-purchase__title { font-size: var(--text-display-size-h3); color: var(--text-ota-heading); margin: 0 0 var(--space-global-xs); }
-  .book-purchase__text { font-size: var(--text-prose-size-body); color: var(--text-ota-muted); margin: 0 0 var(--space-global-md); }
+  .book-hero__cover {
+    flex-shrink: 0;
+  }
 
-  .book-samples__grid { display: grid; gap: var(--space-global-md); }
-  .book-sample-card { display: flex; flex-direction: column; gap: var(--space-global-xs); padding: var(--space-global-md); background: var(--bg-surface); border-radius: var(--radius-lg); border: var(--border-width-xs) solid var(--border-subtle); text-decoration: none; transition: border-color var(--transition-duration) var(--transition-easing); }
-  .book-sample-card:hover { border-color: var(--brand-accent); }
-  .book-sample-card__image { width: 100%; max-width: 10rem; height: auto; border-radius: var(--radius-sm); }
-  .book-sample-card__text { font-size: var(--text-prose-size-body); font-weight: var(--font-weight-medium); color: var(--brand-accent-text); }
+  .book-hero__cover-img {
+    width: 100%;
+    max-width: 16rem;
+    height: auto;
+    box-shadow: var(--book-cover-shadow);
+  }
 
-  .book-trust__text { font-size: var(--text-prose-size-body); color: var(--text-ota-muted); text-align: center; margin: 0; line-height: var(--lh-body); }
+  .book-hero__title {
+    font-size: var(--text-display-size-h1);
+    font-weight: var(--heading-ota-weight-h1, 700);
+    line-height: var(--lh-display);
+    color: var(--text-ota-heading);
+    margin: 0 0 var(--space-global-md);
+  }
 
+  .book-hero__pitch {
+    font-size: var(--text-util-hero-subhead-size);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-heading-sub);
+    color: var(--text-ota-muted);
+    margin: 0 0 var(--space-global-lg);
+  }
+
+  .book-hero__info {
+    font-size: var(--text-card-size-body);
+    color: var(--text-ota-muted);
+    margin: var(--space-global-sm) 0 0;
+  }
+
+  /* --- §2 What's inside --- */
+  .book-inside {
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+  }
+
+  .book-inside__outer {
+    max-width: var(--container-max-reading-wide);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .book-inside__title {
+    font-size: var(--text-display-size-h3);
+    font-weight: var(--heading-ota-weight-h2, 700);
+    line-height: var(--lh-heading);
+    color: var(--text-ota-heading);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .book-inside__prose {
+    max-width: var(--container-max-prose);
+    margin-bottom: var(--space-global-xl);
+  }
+
+  .book-inside__hero-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+  }
+
+  /* --- §3 Who it's for --- */
+  .book-audiences {
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+  }
+
+  .book-audiences__outer {
+    max-width: var(--container-max-reading-wide);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .book-audiences__title {
+    font-size: var(--text-display-size-h3);
+    font-weight: var(--heading-ota-weight-h2, 700);
+    line-height: var(--lh-heading);
+    color: var(--text-ota-heading);
+    text-align: center;
+    margin: 0 0 var(--space-global-xl);
+  }
+
+  .book-audiences__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-global-md);
+  }
+
+  .book-audience {
+    padding: var(--space-global-lg);
+    border-radius: var(--radius-lg);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    background: transparent;
+  }
+
+  .book-audience__label {
+    font-size: var(--text-card-size-h3);
+    font-weight: var(--heading-ota-weight-h3, 600);
+    line-height: var(--lh-heading);
+    color: var(--text-ota-heading);
+    margin: 0 0 var(--space-global-xs);
+  }
+
+  .book-audience__desc {
+    font-size: var(--text-card-size-body);
+    color: var(--text-ota-muted);
+    line-height: var(--lh-body);
+    margin: 0;
+  }
+
+  /* --- §4 Purchase CTA --- */
+  .book-purchase {
+    background: var(--bg-ota-book-panel);
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+  }
+
+  .book-purchase__outer {
+    max-width: 40rem;
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+  }
+
+  .book-purchase__title {
+    font-size: var(--text-display-size-h3);
+    font-weight: var(--heading-ota-weight-h2, 700);
+    line-height: var(--lh-heading);
+    color: var(--text-ota-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .book-purchase__price {
+    font-size: var(--text-display-size-h2);
+    font-weight: var(--heading-ota-weight-h2, 700);
+    line-height: var(--lh-heading);
+    color: var(--text-ota-heading);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .book-purchase__price-coming {
+    font-size: var(--text-display-size-h3);
+    font-weight: var(--heading-ota-weight-h2, 700);
+    line-height: var(--lh-heading);
+    color: var(--text-ota-heading);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .book-purchase__btn {
+    padding: var(--space-global-md) var(--space-global-xl);
+  }
+
+  .book-purchase__info {
+    font-size: var(--text-card-size-body);
+    color: var(--text-ota-muted);
+    margin: var(--space-global-md) 0 0;
+  }
+
+  /* --- §5 Sample content --- */
+  .book-samples {
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+  }
+
+  .book-samples__outer {
+    max-width: var(--container-max-reading-wide);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .book-samples__title {
+    font-size: var(--text-display-size-h3);
+    font-weight: var(--heading-ota-weight-h2, 700);
+    line-height: var(--lh-heading);
+    color: var(--text-ota-heading);
+    text-align: center;
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .book-samples__sub {
+    font-size: var(--text-display-size-body);
+    color: var(--text-ota-muted);
+    text-align: center;
+    margin: 0 auto var(--space-global-xl);
+  }
+
+  .book-samples__stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-md);
+  }
+
+  .book-samples__more {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-global-xl);
+  }
+
+  /* --- §6 Trust signal --- */
+  .book-trust {
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+  }
+
+  .book-trust__outer {
+    max-width: var(--container-max-prose);
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+  }
+
+  .book-trust__quote {
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .book-trust__quote-text {
+    font-style: italic;
+    font-size: var(--text-display-size-h3);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-heading-sub);
+    color: var(--text-ota-heading);
+    margin: 0;
+  }
+
+  .book-trust__cite {
+    display: block;
+    font-style: normal;
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-ota-muted);
+  }
+
+  .book-trust__statement {
+    font-size: var(--text-prose-size-body);
+    color: var(--text-ota-muted);
+    line-height: var(--lh-body);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .book-trust__link {
+    display: inline-flex;
+  }
+
+  /* --- Responsive --- */
   @media (min-width: 768px) {
-    .book-hero__inner { grid-template-columns: 1fr auto; align-items: center; }
-    .book-audiences { grid-template-columns: repeat(2, 1fr); }
-    .book-samples__grid { grid-template-columns: repeat(3, 1fr); }
+    .book-hero__inner {
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .book-hero__cover-img {
+      max-width: 22rem;
+    }
+
+    .book-audiences__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 </style>
