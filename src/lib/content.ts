@@ -133,9 +133,11 @@ async function _loadAllContentImpl(): Promise<void> {
       .filter((rt): rt is GlossaryTerm => rt !== undefined)
       .map(toGlossaryRef);
 
-    g.referencedIn = g.referencedInIds
-      .map((id) => questionMap.get(id))
-      .filter((q): q is Question => q !== undefined)
+    // Build referencedIn from the questions side (more reliable than
+    // Notion's reverse relation property which can be empty).
+    // A question references this glossary term if its glossaryTermIds includes g.id.
+    g.referencedIn = questions
+      .filter((q) => q.glossaryTermIds.includes(g.id))
       .map(toQuestionRef);
   }
 

@@ -86,6 +86,19 @@ const referencedQuestions = term.referencedIn.slice(0, 6);
   {/* §1–§2 white content panel on .surface--ota ground */}
   <div class="surface--ota w-full" data-pagefind-body>
     <div class="pt-[var(--space-struct-y-hero)] pb-[var(--space-struct-y-base)] px-[var(--space-global-gutter)]">
+
+      {/* Back link — smart: returns to referring question, or falls back to Okay to Ask */}
+      <nav class="mx-auto w-full max-w-[var(--container-max-reading-wide)] mb-[var(--space-global-sm)]" aria-label="Back">
+        <a
+          id="glossary-back-link"
+          href="/questions/"
+          class="inline-flex items-center gap-[0.35em] text-[var(--text-card-size-body)] text-[var(--text-ota-muted)] hover:text-[var(--brand-accent-text)] transition-colors no-underline"
+        >
+          <span aria-hidden="true">&larr;</span>
+          <span id="glossary-back-label">Okay to Ask</span>
+        </a>
+      </nav>
+
       <div class="c2-content-panel mx-auto w-full max-w-[var(--container-max-reading-wide)]">
 
         {/* §1 — Term heading + definition */}
@@ -233,3 +246,19 @@ const referencedQuestions = term.referencedIn.slice(0, 6);
     color: var(--brand-accent-text);
   }
 </style>
+
+<script>
+  // Upgrade the back link if the user arrived from a specific question page
+  const link = document.getElementById('glossary-back-link') as HTMLAnchorElement | null;
+  const label = document.getElementById('glossary-back-label');
+  if (link && label) {
+    const ref = document.referrer;
+    try {
+      const url = ref ? new URL(ref) : null;
+      if (url && url.origin === window.location.origin && url.pathname.startsWith('/questions/') && url.pathname !== '/questions/') {
+        link.href = url.pathname;
+        label.textContent = 'Back to question';
+      }
+    } catch { /* ignore malformed referrer */ }
+  }
+</script>
