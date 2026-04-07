@@ -1,0 +1,35 @@
+---
+/**
+ * Glossary term card (A15 glossary variant) — C2 glossary page.
+ *
+ * A quiet, reference-style card linking to a related glossary term.
+ * Shows term name, 2-line definition preview, and "Read more" link.
+ * Card heading uses --brand-accent-text teal.
+ * Supports Simple Mode: swaps short definition for simple definition.
+ *
+ * All visual styling owned by .glossary-term-card in tailor-site-v2.css.
+ */
+import type { GlossaryRef } from '../lib/types';
+
+interface Props {
+  term: GlossaryRef;
+}
+
+const { term } = Astro.props;
+
+---
+
+<a
+  href={`/glossary/${term.slug}`}
+  class="glossary-term-card"
+  aria-label={`${term.term} — ${term.shortDefinition || ''}`}
+>
+  <div class="glossary-term-card__term">{term.term}</div>
+  {term.shortDefinition && (
+    <div class="glossary-term-card__def" data-mode="standard">{term.shortDefinition}</div>
+  )}
+  {term.simpleDefinition && (
+    <div class="glossary-term-card__def" data-mode="simple">{term.simpleDefinition}</div>
+  )}
+  <span class="glossary-term-card__link" aria-hidden="true">Read more</span>
+</a>

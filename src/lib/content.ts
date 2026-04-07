@@ -89,6 +89,7 @@ async function _loadAllContentImpl(): Promise<void> {
       slug: g.slug,
       shortDefinition: g.shortDefinition,
       simpleDefinition: g.simpleDefinition,
+      category: g.topic?.category || null,
     };
   }
 

@@ -13,9 +13,10 @@ import type { TopicRef } from '../lib/types';
 
 interface Props {
   topic: TopicRef | null;
+  label?: string;
 }
 
-const { topic } = Astro.props;
+const { topic, label = 'This question is part of' } = Astro.props;
 
 if (!topic) return;
 
@@ -35,7 +36,7 @@ const badgeSuffix = topic.category ? categoryBadgeMap[topic.category] : null;
 
 <div class="topic-tags">
   <div class="topic-tags__label mb-[var(--space-global-sm)]">
-    This question is part of
+    {label}
   </div>
   <div class="topic-tags__row flex flex-wrap gap-[var(--topic-tag-gap)]">
     <a

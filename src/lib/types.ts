@@ -15,6 +15,7 @@ export interface GlossaryRef {
   slug: string;
   shortDefinition: string;
   simpleDefinition: string;
+  category: string | null;
 }
 
 export interface QuestionRef {

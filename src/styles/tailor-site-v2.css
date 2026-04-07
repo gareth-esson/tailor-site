@@ -389,6 +389,15 @@
   --glossary-underline-color: var(--link-ota-contextual, var(--brand-accent-text));
   --glossary-underline-offset: 0.2em;
 
+  /* ── GLOSSARY TERM CARD (A15 glossary variant) ── */
+  --glossary-card-accent: var(--brand-accent);
+  --glossary-card-bg: var(--bg-surface);
+  --glossary-card-border: var(--border-width-xs) solid var(--border-subtle);
+  --glossary-card-radius: var(--radius-md);
+  --glossary-card-padding: var(--space-global-md);
+  --glossary-card-shadow: var(--shadow-xs);
+  --glossary-card-shadow-hover: var(--shadow-sm);
+
   /* ── END-OF-ANSWER PANEL (A17) ── */
   --panel-book-bg: var(--surface-ota-postit-soft);
   --panel-topic-bg: var(--bg-surface);
@@ -2813,4 +2822,119 @@ textarea.form-input {
     height: 100%;
     border: 0;
     border-radius: var(--radius-md);
+}
+
+/* =========================================
+   Glossary Content Panel (C2)
+   White "book page" surface that lifts off
+   the warm --bg-ota-surface ground.
+   Same metaphor as C1's .c1-content-panel.
+   ========================================= */
+.c2-content-panel {
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+/* =========================================
+   Glossary Definition (C2)
+   Dictionary-style italic Fraunces definition.
+   No container, no border — typography is the
+   treatment.
+   ========================================= */
+.c2-definition {
+    font-family: var(--font-ota-heading-stack);
+    font-size: var(--text-display-size-h4);
+    font-weight: var(--font-weight-regular);
+    font-style: italic;
+    font-variation-settings: 'opsz' var(--font-ota-heading-opsz), 'WONK' var(--font-ota-heading-wonk);
+    line-height: var(--lh-heading-sub);
+    color: var(--text-ota-heading);
+    text-align: center;
+    max-width: 36rem;
+    margin: var(--space-global-md) auto 0;
+}
+
+.c2-divider {
+    width: 3rem;
+    border: none;
+    border-top: var(--border-width-sm) solid var(--brand-accent);
+    opacity: 0.4;
+}
+
+/* =========================================
+   Glossary Term Card (A15 glossary variant)
+   Lighter, quieter card for related terms.
+   ========================================= */
+.glossary-term-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-xs);
+    background: var(--glossary-card-bg);
+    border: var(--glossary-card-border);
+    border-radius: var(--glossary-card-radius);
+    padding: var(--glossary-card-padding);
+    box-shadow: var(--glossary-card-shadow);
+    text-decoration: none;
+    color: inherit;
+    transition:
+        box-shadow var(--transition-duration) var(--transition-easing),
+        transform var(--transition-duration) var(--transition-easing);
+}
+
+.glossary-term-card:hover {
+    box-shadow: var(--glossary-card-shadow-hover);
+    transform: translateY(-1px);
+}
+
+.glossary-term-card:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--glossary-card-radius);
+}
+
+.glossary-term-card__term {
+    font-family: var(--font-ota-heading-stack);
+    font-size: var(--text-card-size-h4);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--lh-card);
+    color: var(--brand-accent-text);
+    font-variation-settings: 'opsz' var(--font-ota-heading-opsz), 'WONK' var(--font-ota-heading-wonk);
+}
+
+.glossary-term-card__def {
+    font-size: var(--text-card-size-body);
+    line-height: var(--lh-body);
+    color: var(--text-ota-muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.glossary-term-card__link {
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-bold);
+    color: var(--link-action-color);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--link-action-gap);
+    margin-top: auto;
+    padding-top: var(--space-global-xs);
+    transition: color var(--transition-duration) var(--transition-easing);
+}
+
+.glossary-term-card__link::after {
+    content: "\2192" / "";
+    display: inline-block;
+    transition: transform var(--transition-duration) var(--transition-easing);
+}
+
+.glossary-term-card:hover .glossary-term-card__link {
+    color: var(--link-action-color-hover);
+}
+
+.glossary-term-card:hover .glossary-term-card__link::after {
+    transform: translateX(var(--link-action-arrow-nudge));
 }

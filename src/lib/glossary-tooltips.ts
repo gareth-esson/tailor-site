@@ -46,7 +46,16 @@ export function injectGlossaryTooltips(
     // including common inflected forms (plurals, -ing, -ed, -er, -est)
     // but NOT inside HTML tags, headings, or existing tooltip spans
     const escaped = termLower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const regex = new RegExp(`\\b(${escaped}(?:s|es|ing|ed|er|est)?)\\b`, 'i');
+    // If the term itself is plural (ends in s/es), also match the singular stem.
+    // e.g. "hormones" → match "hormone", "hormones"
+    // e.g. "consent" → match "consent", "consents", "consenting", "consented"
+    let stem = escaped;
+    if (/es$/i.test(termLower)) {
+      stem = escaped.slice(0, -2); // remove "es"
+    } else if (/s$/i.test(termLower) && !/ss$/i.test(termLower)) {
+      stem = escaped.slice(0, -1); // remove trailing "s" (but not "ss" like "stress")
+    }
+    const regex = new RegExp(`\\b(${stem}(?:s|es|ing|ed|er|est)?)\\b`, 'i');
 
     // Split HTML into segments: tags vs text
     // We only want to match in text segments outside of:

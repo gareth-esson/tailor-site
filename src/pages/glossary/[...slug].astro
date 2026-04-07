@@ -1,4 +1,9 @@
 ---
+/**
+ * Glossary term page [C2] — /glossary/{slug}
+ * Reference page: dictionary entry feel. Definition is the hero.
+ * OtA visual identity. Atkinson body, Fraunces headings.
+ */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getGlossaryTerms, getGlossaryIndex } from '../../lib/content';
 import { renderBlocks } from '../../lib/render-blocks';
@@ -7,10 +12,9 @@ import type { GlossaryTerm, GlossaryIndex } from '../../lib/types';
 
 import SimpleModeToggle from '../../components/SimpleModeToggle.astro';
 import GlossaryTooltips from '../../components/GlossaryTooltips.astro';
+import GlossaryTermCard from '../../components/GlossaryTermCard.astro';
 import SignpostingBlock from '../../components/SignpostingBlock.astro';
-import RelatedTerms from '../../components/RelatedTerms.astro';
-import RelatedQuestions from '../../components/RelatedQuestions.astro';
-import TopicTags from '../../components/TopicTags.astro';
+import QuestionCard from '../../components/QuestionCard.astro';
 
 export const prerender = true;
 
@@ -47,7 +51,6 @@ const jsonLd = {
 // --- Data preparation ---
 
 // Render standard explainer body with glossary tooltips
-// Exclude this term from tooltipping on its own page
 const standardBodyHtml = renderBlocks(term.body);
 const standardWithTooltips = injectGlossaryTooltips(
   standardBodyHtml,
@@ -55,8 +58,7 @@ const standardWithTooltips = injectGlossaryTooltips(
   term.slug
 );
 
-// Simple explainer — from the Simple Explainer rich text field in Notion
-// Falls back to the standard body if no simple explainer is set
+// Simple explainer — from Notion field, falls back to standard
 const simpleExplainerHtml = term.simpleExplainer
   ? `<p>${term.simpleExplainer.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>')}</p>`
   : standardBodyHtml;
@@ -69,6 +71,9 @@ const simpleWithTooltips = injectGlossaryTooltips(
 // Topic info for CTA
 const topicName = term.topic?.name || '';
 const topicSlug = term.topic?.slug || '';
+
+// Limit referencing questions to 6
+const referencedQuestions = term.referencedIn.slice(0, 6);
 ---
 
 <BaseLayout
@@ -78,86 +83,133 @@ const topicSlug = term.topic?.slug || '';
   layer="ota"
   jsonLd={jsonLd}
 >
-  <article class="surface--ota" data-pagefind-body>
-    <div class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
-      {/* Term heading */}
-      <h1>{term.term}</h1>
+  {/* §1–§2 white content panel on .surface--ota ground */}
+  <div class="surface--ota w-full" data-pagefind-body>
+    <div class="pt-[var(--space-struct-y-hero)] pb-[var(--space-struct-y-base)] px-[var(--space-global-gutter)]">
+      <div class="c2-content-panel mx-auto w-full max-w-[var(--container-max-reading-wide)]">
 
-      {/* Simple Mode toggle [A6] */}
-      <div class="toggle-wrapper">
-        <SimpleModeToggle />
-      </div>
-
-      {/* Definition — prominent */}
-      <div data-mode="standard" class="mode-content">
-        <div class="definition-block">
-          <p class="definition-text">{term.shortDefinition}</p>
-        </div>
-      </div>
-      <div data-mode="simple" class="mode-content">
-        <div class="definition-block">
-          <p class="definition-text">{term.simpleDefinition}</p>
-        </div>
-      </div>
-
-      {/* Full explainer — with glossary tooltips */}
-      {term.body.length > 0 && (
-        <>
-          <div data-mode="standard" class="mode-content ota-prose explainer-section">
-            <Fragment set:html={standardWithTooltips} />
-          </div>
-          <div data-mode="simple" class="mode-content ota-prose explainer-section">
-            <Fragment set:html={simpleWithTooltips} />
-          </div>
-        </>
-      )}
-    </div>
-  </article>
-
-  {/* Related glossary terms [A15] */}
-  <RelatedTerms terms={term.relatedTerms} />
-
-  {/* Questions that reference this term [A15] */}
-  {term.referencedIn.length > 0 && (
-    <section class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-md)]">
-      <h2>Questions about this term</h2>
-      <ul class="grid gap-[var(--space-global-sm)]" style="list-style: none; padding: 0;">
-        {term.referencedIn.map((q) => (
-          <li>
-            <a
-              href={`/anonymous_question/${q.slug}`}
-              class="link-action"
-              style={`display: block; padding: var(--space-global-sm); background: var(--bg-surface); border-radius: var(--radius-md); border: var(--border-width-xs) solid var(--border-subtle); text-decoration: none;`}
+        {/* §1 — Term heading + definition */}
+        <section aria-labelledby="term-heading">
+          <div class="mx-auto w-full max-w-[var(--container-max-prose)] pt-[var(--space-global-2xl)] px-[var(--space-global-lg)]">
+            <h1
+              id="term-heading"
+              class="text-center mb-[var(--space-global-lg)]"
+              style={`font-size: var(--text-display-size-h1); font-weight: var(--heading-ota-weight-h1); line-height: var(--lh-heading); color: var(--text-ota-heading);`}
             >
-              {q.question}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
-  )}
+              {term.term}
+            </h1>
 
-  {/* Signposting block [A8] — if relevant to the term's topic */}
-  {term.topic && (
-    <div class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-md)]">
-      {/* Signposting shows Childline as default for any topic-linked term */}
-      <SignpostingBlock services={['Childline']} />
+            {/* Definition — standard (italic Fraunces, dictionary style) */}
+            <p class="c2-definition" data-mode="standard">{term.shortDefinition}</p>
+            {/* Definition — simple */}
+            <p class="c2-definition" data-mode="simple">{term.simpleDefinition || term.shortDefinition}</p>
+
+            {/* Decorative divider */}
+            <hr class="c2-divider mx-auto mt-[var(--space-global-xl)] mb-0" />
+          </div>
+        </section>
+
+        {/* §2 — Toggle + explainer */}
+        <section aria-labelledby="explainer-heading">
+          <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-lg)] pb-[var(--space-global-2xl)]">
+            {/* Toggle row */}
+            <div class="flex items-center justify-end gap-[var(--space-global-md)] mb-[var(--space-global-lg)] pt-[var(--space-global-lg)] pb-[var(--space-global-md)] border-b-[var(--border-width-xs)] border-[var(--border-subtle)]">
+              <SimpleModeToggle />
+            </div>
+
+            {/* Explainer body */}
+            {term.body.length > 0 && (
+              <>
+                <div data-mode="standard" class="mode-content ota-prose">
+                  <Fragment set:html={standardWithTooltips} />
+                </div>
+                <div data-mode="simple" class="mode-content ota-prose">
+                  <Fragment set:html={simpleWithTooltips} />
+                </div>
+              </>
+            )}
+          </div>
+        </section>
+
+      </div>
     </div>
-  )}
+  </div>
 
-  {/* CTA — Explore topic */}
-  {topicName && topicSlug && (
-    <section class="surface--ota-alt">
-      <div class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]" style="text-align: center;">
-        <a href={`/topics/${topicSlug}`} class="link-action" style="font-size: var(--text-card-size-h4);">
-          Explore {topicName}
-        </a>
+  {/* §3 — Related glossary terms */}
+  {term.relatedTerms.length > 0 && (
+    <section class="w-full py-[var(--space-struct-y-base)] px-[var(--space-global-gutter)]" aria-labelledby="related-terms-heading">
+      <div class="mx-auto w-full max-w-[var(--container-max-reading-wide)]">
+        <h2
+          id="related-terms-heading"
+          class="text-center mb-[var(--space-global-lg)]"
+          style={`font-size: var(--text-prose-size-h2); font-weight: var(--heading-ota-weight-h2); color: var(--text-ota-heading);`}
+        >
+          Related terms
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[var(--space-global-md)]">
+          {term.relatedTerms.map((t) => (
+            <GlossaryTermCard term={t} />
+          ))}
+        </div>
       </div>
     </section>
   )}
 
-  {/* Topic tags [A16] */}
-  <TopicTags topic={term.topic} />
+  {/* §4 — Questions that reference this term */}
+  {referencedQuestions.length > 0 && (
+    <section class="w-full py-[var(--space-struct-y-base)] px-[var(--space-global-gutter)]" aria-labelledby="referencing-questions-heading">
+      <div class="mx-auto w-full max-w-[var(--container-max-reading-wide)]">
+        <h2
+          id="referencing-questions-heading"
+          class="text-center mb-[var(--space-global-lg)]"
+          style={`font-size: var(--text-prose-size-h2); font-weight: var(--heading-ota-weight-h2); color: var(--text-ota-heading);`}
+        >
+          Questions about this
+        </h2>
+        <ul class="list-none p-0 m-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[var(--space-global-md)]" role="list">
+          {referencedQuestions.map((q) => (
+            <li>
+              <QuestionCard question={q} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  {/* §5 — Signposting (conditional) */}
+  {term.topic && (
+    <section
+      class="w-full pt-[var(--space-global-2xl)] pb-[var(--space-struct-y-base)] px-[var(--space-global-gutter)]"
+      style="background-color: var(--safeguarding-support-bg);"
+      aria-labelledby="signposting-title"
+    >
+      <div class="mx-auto w-full max-w-[var(--container-max-reading-wide)]">
+        <SignpostingBlock services={['Childline']} />
+      </div>
+    </section>
+  )}
+
+  {/* §6 — CTA */}
+  {topicName && topicSlug && (
+    <section class="surface--ota-alt w-full py-[var(--space-struct-y-base)] px-[var(--space-global-gutter)]" aria-labelledby="cta-heading">
+      <div class="mx-auto w-full max-w-[var(--container-max-reading-wide)] text-center">
+        <p class="text-[var(--text-card-size-body)] font-[var(--font-weight-semibold)] uppercase tracking-[0.08em] text-[var(--text-ota-muted)] mb-[var(--space-global-xs)]">For Teachers</p>
+        <h2
+          id="cta-heading"
+          class="mb-[var(--space-global-md)]"
+          style={`font-size: var(--text-prose-size-h3); font-weight: var(--heading-ota-weight-h3); color: var(--text-ota-heading);`}
+        >
+          Explore {topicName}
+        </h2>
+        <div class="flex justify-center mt-[var(--space-global-md)]">
+          <a href={`/topics/${topicSlug}`} class="btn btn--outline btn--std has-icon-hover">
+            See everything on {topicName}
+          </a>
+        </div>
+      </div>
+    </section>
+  )}
 
   {/* Glossary tooltip runtime */}
   <GlossaryTooltips />
@@ -175,26 +227,9 @@ const topicSlug = term.topic?.slug || '';
     display: block !important;
   }
 
-  .toggle-wrapper {
-    margin: var(--space-global-md) 0 var(--space-global-lg);
-  }
-
-  .definition-block {
-    background: var(--bg-surface);
-    border-left: 4px solid var(--brand-accent);
-    border-radius: var(--radius-md);
-    padding: var(--space-global-md) var(--space-global-lg);
-    margin-bottom: var(--space-global-lg);
-  }
-
-  .definition-text {
-    font-size: var(--text-prose-size-h4);
-    line-height: 1.6;
-    margin: 0;
-    color: var(--text-body);
-  }
-
-  .explainer-section {
-    margin-top: var(--space-global-md);
+  /* Teal accent on prose headings within the glossary explainer */
+  :global(.ota-prose h2),
+  :global(.ota-prose h3) {
+    color: var(--brand-accent-text);
   }
 </style>

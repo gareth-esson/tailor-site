@@ -8,21 +8,74 @@
 
 ## The system in one paragraph
 
-This is a token-based design system with two emotional layers expressed through one structural shell. The **Tailor layer** (showcase, services, training, topic hubs, blog) uses Lexend for all typography and the brand teal for actions. The **Okay to Ask layer** (question pages, glossary pages, /questions/ landing) uses Atkinson Hyperlegible for body text, Fraunces for headings, warmer surfaces, and its own category colour palette. The navigation shell (header, footer) always stays in the Tailor layer regardless of which page the reader is on. All visual values come from CSS custom properties — never hardcode hex values, font sizes, or spacing values in component markup.
+This is a token-based design system with two emotional layers expressed through one structural shell. The **Tailor layer** (showcase, services, training, topic hubs, blog) uses Lexend for all typography and the brand teal for actions. The **Okay to Ask layer** (question pages, glossary pages, /questions/ landing) uses Atkinson Hyperlegible for body text, Fraunces for headings, warmer surfaces, and its own category colour palette. The navigation shell (header, footer) always stays in the Tailor layer regardless of which page the reader is on. All visual values come from CSS custom properties — never hardcode hex values, font sizes, spacing values, font weights, or line heights in component markup.
 
 ---
 
 ## Critical rules
 
-1. **Never hardcode colours, fonts, sizes, or spacing in components.** Every visual value must reference a `--token`. If you need a value that doesn't exist as a token, flag it — don't invent an inline value.
+1. **Never hardcode colours, fonts, sizes, spacing, weights, or line heights in components.** Every visual value must reference a `--token`. If you need a value that doesn't exist as a token, flag it — don't invent an inline value.
 
-2. **The `.layer-ota` class goes on `<main>`, not on `<body>`.** This is what creates the typographic split. The header and footer sit outside `<main>` and inherit Lexend from the body rule. Everything inside `<main>` on an OtA page gets Atkinson Hyperlegible (body) and Fraunces (headings).
+2. **Use the typography tokens for weights and line heights.** Never write a raw `font-weight: 600` or `line-height: 1.6` in a component. Use `var(--font-weight-semibold)` and `var(--lh-body)` instead. The system has four weight tokens and six line-height tokens — these cover every use case. If a component genuinely needs a weight or line height that doesn't map to an existing token, flag it.
 
-3. **The OtA category colours (`--ota-cat-*`) and the app category colours (`--cat-*`) are separate systems.** The `--cat-*` tokens are the Tailor app's 7 RSHE categories (used in the mega menu groupings). The `--ota-cat-*` tokens are the Okay to Ask book/browsing categories (used on question pages, /questions/ landing filters, category badges). Never use one where the other belongs.
+3. **Use the nav and footer text size tokens.** Never hardcode `font-size: 0.9rem` in the shell. Use `var(--text-nav-size)` for nav links, `var(--text-nav-size-sm)` for smaller nav text, `var(--text-footer-size)` for footer text, and `var(--text-footer-size-sm)` for smaller footer text.
 
-4. **The safeguarding tokens (`--safeguarding-*`) are not the UI state tokens (`--state-*`).** Use `--state-success/warning/error/info` for form validation, system alerts, and generic UI feedback. Use `--safeguarding-support/ageflag/crisis` for components A8 (signposting), D1 (age flag), and A9 (crisis support). These have different emotional calibrations.
+4. **The `.layer-ota` class goes on `<main>`, not on `<body>`.** This is what creates the typographic split. The header and footer sit outside `<main>` and inherit Lexend from the body rule. Everything inside `<main>` on an OtA page gets Atkinson Hyperlegible (body) and Fraunces (headings).
 
-5. **The crisis support component (A9) and signposting block (A8) must never have a dismiss button.** This is a safeguarding requirement, not a design preference. Do not add `.alert__dismiss` to these components.
+5. **The OtA category colours (`--ota-cat-*`) and the app category colours (`--cat-*`) are separate systems.** The `--cat-*` tokens are the Tailor app's 7 RSHE categories (used in the mega menu groupings). The `--ota-cat-*` tokens are the Okay to Ask book/browsing categories (used on question pages, /questions/ landing filters, category badges). Never use one where the other belongs.
+
+6. **The safeguarding tokens (`--safeguarding-*`) are not the UI state tokens (`--state-*`).** Use `--state-success/warning/error/info` for form validation, system alerts, and generic UI feedback. Use `--safeguarding-support/ageflag/crisis` for components A8 (signposting), D1 (age flag), and A9 (crisis support). These have different emotional calibrations.
+
+7. **The crisis support component (A9) and signposting block (A8) must never have a dismiss button.** This is a safeguarding requirement, not a design preference. Do not add `.alert__dismiss` to these components.
+
+---
+
+## Typography tokens
+
+### Font weight tokens
+
+Use these instead of raw numbers. Every weight in the codebase maps to one of these four:
+
+| Token | Value | Use for |
+|---|---|---|
+| `--font-weight-regular` | 400 | Body text, default weight |
+| `--font-weight-medium` | 500 | Subtle emphasis, nav links |
+| `--font-weight-semibold` | 600 | Headings, eyebrow labels, glossary terms, card titles |
+| `--font-weight-bold` | 700 | Strong emphasis, primary headings |
+
+The system also has heading-level weights (`--heading-weight-h1` etc.) and a button weight (`--btn-font-weight`). Those are component-specific — the four tokens above are the general-purpose set.
+
+### Line-height tokens
+
+Use these instead of raw numbers. The six tokens form a scale from tight (display type) to generous (prose reading):
+
+| Token | Value | Use for |
+|---|---|---|
+| `--lh-display` | 1.15 | Display headings (h1, hero) |
+| `--lh-heading` | 1.2 | Section headings (h2, h3) |
+| `--lh-heading-sub` | 1.3 | Subheadings, card titles |
+| `--lh-card` | 1.4 | Card body text, compact layouts |
+| `--lh-body` | 1.6 | Default body text |
+| `--lh-prose` | 1.7 | Long-form reading (`.ota-prose` answer text) |
+
+The utility text classes have their own line-height tokens (`--text-util-preheader-lh` etc.) — those stay as-is. The six tokens above are for everything else.
+
+### Nav and footer text sizes
+
+| Token | Value | Use for |
+|---|---|---|
+| `--text-nav-size` | 0.9rem | Primary nav links, mega menu links |
+| `--text-nav-size-sm` | 0.85rem | Secondary nav text, mega menu category labels |
+| `--text-footer-size` | 0.9rem | Footer links and body text |
+| `--text-footer-size-sm` | 0.8rem | Footer fine print, copyright |
+
+### Eyebrow letter-spacing
+
+| Token | Value | Use for |
+|---|---|---|
+| `--text-eyebrow-ls` | 0.05em | Category eyebrows, section labels, tight-tracked uppercase text |
+
+The system also has `--card-eyebrow-ls` (0.1em) for card contexts and `--text-util-preheader-ls` (0.15em) for looser preheaders. `--text-eyebrow-ls` fills the gap for the tighter tracking used on page-level eyebrow elements.
 
 ---
 
@@ -106,6 +159,8 @@ Use these tokens/classes for background surfaces, in order of visual weight:
 | Authority band | `--bg-emphasis` / `.surface--dark` | #1E2A3A | Dark section bands, footer background, hero overlays |
 | OtA warm ground | `.surface--ota` | #F7F5F0 | Main content area on OtA pages |
 | OtA section band | `.surface--ota-alt` | #F0EDE5 | Alternating sections within OtA pages |
+| OtA book panel | `--bg-ota-book-panel` | #eae6e1 | Book promo panel on /questions/ landing |
+| On-dark overlay | `--overlay-on-dark` | rgba(255, 255, 255, 0.15) | Translucent white on dark backgrounds |
 
 ---
 
@@ -238,9 +293,15 @@ All three are the same hue (168) and saturation (71%). The system keeps them vis
 | `--font-tailor-*` | Tailor layer font stacks |
 | `--font-ota-*` | Okay to Ask layer font stacks |
 | `--font-shell-*` | Shell (header/footer) font stacks |
+| `--font-weight-*` | General-purpose font weights (regular, medium, semibold, bold) |
+| `--lh-*` | General-purpose line heights (display, heading, heading-sub, card, body, prose) |
+| `--text-nav-*` | Navigation text sizes |
+| `--text-footer-*` | Footer text sizes |
+| `--text-eyebrow-*` | Eyebrow/label letter-spacing |
 | `--text-ota-*` | Okay to Ask text colour aliases |
-| `--bg-ota-*` | Okay to Ask surface colours |
+| `--bg-ota-*` | Okay to Ask surface colours (including book panel) |
 | `--surface-ota-*` | Okay to Ask motif colours (post-it) |
+| `--overlay-*` | Overlay colours (on-dark translucent) |
 | `--link-ota-*` | Okay to Ask link colour overrides |
 | `--toggle-mode-*` | Simple Mode toggle styling |
 | `--btn-*` | Button tokens |
@@ -265,4 +326,4 @@ All three are the same hue (168) and saturation (71%). The system keeps them vis
 
 ---
 
-*Document version: 1.0 | Date: 3 April 2026*
+*Document version: 1.1 | Date: 7 April 2026 | Updated with font weight tokens, line-height tokens, nav/footer text size tokens, eyebrow letter-spacing token, book panel surface token, overlay token, and expanded token naming table.*
