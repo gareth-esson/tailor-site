@@ -88,7 +88,6 @@ function renderTagsHtml(tags: string[]): string {
     background: transparent;
     box-shadow: var(--shadow-none);
     border-color: transparent;
-    transform: translateY(0);
     transition:
       transform var(--transition-duration, 0.15s) var(--transition-easing, ease),
       border-color var(--transition-duration, 0.15s) var(--transition-easing, ease);
@@ -97,10 +96,6 @@ function renderTagsHtml(tags: string[]): string {
   .qcard:hover {
     transform: translateY(-3px);
     border-color: var(--border-subtle);
-  }
-
-  .qcard:hover .qcard__img {
-    filter: saturate(1.2);
   }
 
   .qcard:focus-visible {
@@ -117,6 +112,7 @@ function renderTagsHtml(tags: string[]): string {
     justify-content: center;
     padding: var(--space-global-sm);
     height: 10rem;
+    background: var(--surface-bg, var(--bg-page));
   }
 
   .qcard__img {
@@ -129,7 +125,6 @@ function renderTagsHtml(tags: string[]): string {
     transform: rotate(var(--postit-rotation, -1.5deg));
     border-radius: var(--radius-sm);
     mix-blend-mode: multiply;
-    filter: saturate(0.85);
     transition: filter var(--transition-duration, 0.15s) var(--transition-easing, ease);
   }
 

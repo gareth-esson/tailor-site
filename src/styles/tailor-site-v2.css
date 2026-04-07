@@ -101,7 +101,7 @@
   --text-heading: #1E2A3A;
   --text-heading-muted: hsl(213, 15%, 40%);
   /* Text on dark backgrounds */
-  --text-on-dark: #f4f3ef;
+  --text-on-dark: #f3f4f5;
   --text-heading-on-dark: #ffffff;
   /* Text on dark — muted */
   --text-muted-on-dark: rgba(255, 255, 255, 0.6);
@@ -210,29 +210,29 @@
   --btn-text-color-hover: var(--brand-accent-strong);
 
   /* 6. DISABLED STATE */
-  --btn-disabled-bg: #e5e4de;          /* warm neutral */
-  --btn-disabled-text: #a5a29a;        /* warm neutral */
+  --btn-disabled-bg: #e4e5e7;          /* cool neutral */
+  --btn-disabled-text: #a0a3a8;        /* cool neutral */
   /* ====================================
      NEUTRALS & BACKGROUNDS (SHARED ACROSS SITES)
      ==================================== */
-  --neutral-100: #f4f3ef;
-  --neutral-200: #e5e4de;
-  --neutral-300: #d6d4ce;
-  --neutral-400: #a5a29a;
-  --neutral-500: #7a7771;
-  --neutral-700: #46443e;
+  --neutral-100: #f3f4f5;
+  --neutral-200: #e4e5e7;
+  --neutral-300: #d4d5d8;
+  --neutral-400: #a0a3a8;
+  --neutral-500: #767a7f;
+  --neutral-700: #3e4347;
   --neutral-900: #1E2A3A;
-  --bg-page: #FAFAF7;
+  --bg-page: #F8F9FA;
   --bg-surface: #FFFFFF;
-  --bg-surface-alt: #f0efeb;
-  --bg-subtle: #e5e4de;                /* warm neutral */
-  --bg-canvas: #FAFAF7;
+  --bg-surface-alt: #eef0f1;
+  --bg-subtle: #e4e5e7;                /* cool neutral */
+  --bg-canvas: #F8F9FA;
   --bg-tinted: hsla(var(--brand-accent-h), var(--brand-accent-s), var(--brand-accent-l), 0.04);
   --bg-emphasis: var(--brand-secondary);
-  --border-subtle: #e5e4de;            /* warm neutral */
-  --border-strong: #a5a29a;            /* warm neutral */
-  --border-subtle-on-dark: #4a4844;    /* warm dark */
-  --border-strong-on-dark: #e5e4de;    /* warm neutral */
+  --border-subtle: #e4e5e7;            /* cool neutral */
+  --border-strong: #a0a3a8;            /* cool neutral */
+  --border-subtle-on-dark: #444a4e;    /* cool dark */
+  --border-strong-on-dark: #e4e5e7;    /* cool neutral */
   /* ====================================
      STATES / FEEDBACK (STATIC SYSTEM)
      ==================================== */
@@ -708,6 +708,13 @@
   --card-eyebrow-ls: 0.1em;
   --text-eyebrow-ls: 0.05em;
 
+  /* ── HOMEPAGE HERO (B1) ── */
+  --hero-tailor-bg: var(--bg-emphasis);   /* #1E2A3A — dark authority */
+  --trust-icon-size: 3rem;               /* 48px — framework badge marks */
+
+  /* ── SPOT ILLUSTRATION (editorial, larger than spot-icon) ── */
+  --spot-illus-size: 6rem;               /* 96px — editorial illustration */
+
   /* ── SPOT ICON (decorative card/feature illustrations) ── */
   --spot-icon-size: 48px;
   --spot-icon-size-sm: 36px;
@@ -839,9 +846,11 @@ h6 { font-weight: var(--heading-weight-h6); }
 
 .surface--ota {
     background: var(--bg-ota-surface);
+    --surface-bg: var(--bg-ota-surface);
 }
 .surface--ota-alt {
     background: var(--bg-ota-surface-alt);
+    --surface-bg: var(--bg-ota-surface-alt);
 }
 /* =========================================
    BUTTON COMPONENT CLASSES
@@ -1739,6 +1748,45 @@ textarea.form-input {
 .badge--ota-law            { background: var(--ota-cat-law-soft);            color: hsl(var(--ota-cat-law-h), var(--ota-cat-law-s), 28%);            border-color: var(--ota-cat-law); }
 .badge--ota-contraception  { background: var(--ota-cat-contraception-soft);  color: hsl(var(--ota-cat-contraception-h), var(--ota-cat-contraception-s), 28%); border-color: var(--ota-cat-contraception); }
 
+/* ── Hero photo overlay (B1 §1) ── */
+.hero-photo-wrap {
+    position: relative;
+    display: block;
+}
+
+.hero-photo-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-lg);
+    background: var(--brand-secondary);
+    opacity: 0.08;
+    pointer-events: none;
+}
+
+/* ── Trust Signal Badge (B1 §5) ── */
+.trust-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-global-xs);
+    width: 7rem;
+}
+
+.trust-badge img {
+    width: var(--trust-icon-size);
+    height: var(--trust-icon-size);
+    object-fit: contain;
+}
+
+.trust-badge span {
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-body-muted);
+    text-align: center;
+    line-height: var(--lh-card);
+}
+
 
 /* =========================================
    ALERTS / NOTIFICATIONS
@@ -2264,12 +2312,15 @@ textarea.form-input {
 /* ── Background variants ── */
 .surface--light {
     background: var(--bg-surface);
+    --surface-bg: var(--bg-surface);
 }
 .surface--alt {
     background: var(--bg-surface-alt);
+    --surface-bg: var(--bg-surface-alt);
 }
 .surface--dark {
     background: var(--neutral-900, #18181b);
+    --surface-bg: var(--neutral-900, #18181b);
     color: var(--text-on-dark);
 }
 .surface--dark h1,

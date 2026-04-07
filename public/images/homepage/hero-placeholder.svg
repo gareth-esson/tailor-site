@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect fill="#2a3a4a" width="800" height="600" rx="16"/>
+  <rect fill="#344a5a" x="40" y="40" width="720" height="520" rx="12"/>
+  <text x="400" y="280" text-anchor="middle" fill="#8899aa" font-family="system-ui" font-size="24" font-weight="600">Classroom workshop photo</text>
+  <text x="400" y="320" text-anchor="middle" fill="#667788" font-family="system-ui" font-size="16">800 x 600</text>
+</svg>

@@ -1,172 +1,343 @@
 ---
 /**
  * Homepage [B1] — /
- * The front door for the site. Dual pathway: teachers + young people.
- * Tailor layer shell, with OtA-styled section for young person pathway.
+ * v2: Teacher-first. 8 sections, 1 layer switch.
+ * Surface rhythm: dark → white → alt → white → alt → warm → ground → dark
+ * Layer rhythm:   T → T → T → T → T → OtA → T → T
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TopicsOverviewGrid from '../components/TopicsOverviewGrid.astro';
+import QuestionCard from '../components/QuestionCard.astro';
 import { getQuestions } from '../lib/content';
+import type { QuestionRef } from '../lib/types';
 
 const allQuestions = await getQuestions();
 
-// Featured questions: pick 5 answered questions with post-it scans, spread across categories
-const answered = allQuestions.filter((q) => q.body.length > 0 && q.hasPostItScan);
-const featured = answered.slice(0, 5);
+// Featured questions: pick 3 answered questions with post-it scans
+const answered = allQuestions.filter((q) => q.body.length > 0 && q.hasPostItScan)
+  .sort(() => 0.5 - Math.random());
+const featured: QuestionRef[] = answered.slice(0, 3).map((q) => ({
+  id: q.id,
+  question: q.question,
+  slug: q.slug,
+  okayToAskCategory: q.okayToAskCategory,
+  contentTags: q.contentTags,
+}));
+
+// Hero photograph — conditionally rendered
+const heroPhoto = '/images/homepage/hero-placeholder.svg' as string | null;
+
+// §2 product screenshot — conditionally rendered
+const appScreenshot = '/images/homepage/app-placeholder.svg' as string | null;
+
+// §3 delivery photograph — conditionally rendered
+const deliveryPhoto = '/images/homepage/delivery-placeholder.svg' as string | null;
+
+// §4 training photograph — conditionally rendered
+const trainingPhoto = '/images/homepage/training-placeholder.svg' as string | null;
+
 ---
 
 <BaseLayout
   title="Tailor Education — Expert RSE for schools"
-  description="Expert RSE resources, training and support for schools. Explore topics, questions from young people, and professional development — from Tailor Education."
+  description="Expert RSE resources, training and delivery for schools. Curriculum-aligned lessons, CPD, and the Okay to Ask project — from Tailor Education."
   canonicalPath="/"
 >
-  <!-- 1. Teacher pathway hero -->
-  <section class="hero-teacher">
-    <div class="mx-auto max-w-5xl px-[var(--space-global-gutter)] py-[var(--space-global-2xl)]">
-      <h1 class="hero-teacher__title">Expert RSE lessons, ready to teach</h1>
-      <p class="hero-teacher__subtitle">
-        Curriculum-aligned relationships and sex education for UK schools. Written by specialists, built for teachers.
-      </p>
-      <div class="hero-teacher__actions">
+  <!-- ═══ §1 TEACHER HERO ═══ -->
+  <section class="hero-teacher surface--dark" aria-labelledby="hero-heading">
+    <div class="hero-teacher__inner">
+      <div class={heroPhoto ? '' : 'hero-teacher__text-only'}>
+        <p class="preheader hero-teacher__eyebrow">Tailor Education</p>
+        <h1 id="hero-heading" class="hero-teacher__title">Expert RSE lessons and training for schools</h1>
+        <p class="hero-teacher__subtitle">
+          Curriculum-aligned relationships and sex education for UK schools. Written by specialists, built for teachers.
+        </p>
+        <div class="hero-teacher__actions">
+          <a href="/topics" class="btn btn--std btn--primary has-icon-hover">
+            Explore RSE lessons
+          </a>
+          <a href="/services" class="btn btn--std btn--white-outline has-icon-hover">
+            Bring Tailor to your school
+          </a>
+        </div>
+      </div>
+      {heroPhoto && (
+        <div class="hero-photo-wrap hidden lg:block">
+          <img src={heroPhoto} alt="A classroom workshop session" class="hero-photo" loading="eager" />
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- ═══ §2 PLATFORM / TAILOR TEACH ═══ -->
+  <section class="home-platform" aria-labelledby="platform-heading">
+    <div class="home-platform__inner">
+      <div class={appScreenshot ? '' : 'home-platform__text-only'}>
+        <span class="preheader home-platform__preheader">Tailor Teach</span>
+        <h2 id="platform-heading" class="home-platform__title">Expert-authored RSE lessons, ready to teach</h2>
+        <p class="home-platform__intro">
+          The Tailor Teach app gives your team structured, curriculum-aligned RSE lessons written by subject specialists. Every lesson is ready to deliver — no preparation needed.
+        </p>
+        <ul class="home-platform__features">
+          <li>Expert-authored, curriculum-aligned content</li>
+          <li>Structured by topic and key stage</li>
+          <li>Built for teacher confidence</li>
+          <li>Simple Mode and accessibility built in</li>
+        </ul>
         <a href="/topics" class="btn btn--std btn--primary has-icon-hover">
-          Explore RSE lessons
+          Explore the lesson library
         </a>
-        <a href="/services" class="btn btn--std btn--outline">
-          Training and services for schools
+      </div>
+      {appScreenshot && (
+        <div class="hidden lg:block">
+          <img
+            src={appScreenshot}
+            alt="Screenshot of the Tailor Teach lesson interface"
+            class="home-platform__screenshot"
+            loading="lazy"
+          />
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- ═══ §3 DELIVERY ═══ -->
+  <section class="home-delivery surface--alt" aria-labelledby="delivery-heading">
+    <div class="home-delivery__inner">
+      {deliveryPhoto && (
+        <div class="hidden lg:block">
+          <img
+            src={deliveryPhoto}
+            alt="Tailor team delivering RSE in a school"
+            class="home-delivery__photo"
+            loading="lazy"
+          />
+        </div>
+      )}
+      <div class={deliveryPhoto ? '' : 'home-delivery__text-only'}>
+        <span class="preheader home-delivery__preheader">In-school delivery</span>
+        <h2 id="delivery-heading" class="home-delivery__title">We deliver RSE in your school</h2>
+        <p class="home-delivery__desc">
+          Our qualified facilitators come to your school and deliver curriculum-aligned RSE directly. Expert-led, sensitive, age-appropriate. Your school gets lesson delivery, teacher guidance, parent communication, and follow-up.
+        </p>
+        <div class="home-delivery__steps">
+          <div class="home-delivery__step">
+            <span class="home-delivery__step-num">1</span>
+            <span class="home-delivery__step-text">Get in touch and tell us what you need</span>
+          </div>
+          <div class="home-delivery__step">
+            <span class="home-delivery__step-num">2</span>
+            <span class="home-delivery__step-text">We plan together around your school context</span>
+          </div>
+          <div class="home-delivery__step">
+            <span class="home-delivery__step-num">3</span>
+            <span class="home-delivery__step-text">We deliver — and follow up afterwards</span>
+          </div>
+        </div>
+        <a href="/services/consultancy" class="btn btn--std btn--primary has-icon-hover">
+          Enquire about delivery
         </a>
       </div>
     </div>
   </section>
 
-  <!-- 2. Young person pathway (Okay to Ask) -->
-  <section class="hero-ota">
-    <div class="mx-auto max-w-5xl px-[var(--space-global-gutter)] py-[var(--space-global-2xl)]">
-      <div class="hero-ota__inner">
-        <div class="hero-ota__content">
-          <img src="/assets/ota-wordmark-dark.svg" alt="Okay to Ask" class="hero-ota__wordmark" width="220" height="38" />
-          <h2 class="hero-ota__title">Got a question? Okay to Ask.</h2>
-          <p class="hero-ota__text">
-            Real questions from real young people, answered honestly. No judgement, no awkwardness.
-          </p>
-          <a href="/questions/" class="btn btn--std btn--primary has-icon-hover">
-            Browse questions
+  <!-- ═══ §4 TRAINING & SUPPORT ═══ -->
+  <section class="home-training" aria-labelledby="training-heading">
+    <div class="home-training__inner">
+      <div class={trainingPhoto ? '' : 'home-training__text-only'}>
+        <span class="preheader home-training__preheader">CPD &amp; support</span>
+        <h2 id="training-heading" class="home-training__title">Training and support for your RSE team</h2>
+        <p class="home-training__intro">
+          We don't just provide resources — we help your team feel confident, compliant, and supported in delivering RSE.
+        </p>
+        <p class="home-training__detail">
+          CPD workshops, RSE policy development, curriculum mapping across key stages, and DfE statutory alignment — in-school or online.
+        </p>
+        <div class="home-training__actions">
+          <a href="/training" class="btn btn--std btn--primary has-icon-hover">
+            Explore training options
+          </a>
+          <a href="/contact" class="btn btn--std btn--outline has-icon-hover">
+            Talk to us about support
           </a>
         </div>
+      </div>
+      {trainingPhoto && (
+        <div class="hidden lg:block">
+          <img
+            src={trainingPhoto}
+            alt="Teachers in a CPD workshop session"
+            class="home-training__photo"
+            loading="lazy"
+          />
+        </div>
+      )}
+    </div>
+  </section>
 
-        <!-- 3. Book promotion -->
-        <div class="hero-ota__book">
-          <div class="hero-ota__book-card">
-            <h3 class="hero-ota__book-title">The Okay to Ask book</h3>
-            <p class="hero-ota__book-text">
-              Real questions, honest answers, post-it notes and all.
-            </p>
-            <a href="/book" class="btn btn--sm btn--outline">Get the book</a>
+  <!-- ═══ §5 TRUST SIGNALS ═══ -->
+  <section class="home-trust surface--alt" aria-labelledby="trust-heading">
+    <div class="home-trust__inner">
+      <div class="home-trust__badges-wrap">
+        <span class="preheader home-trust__preheader">Frameworks &amp; standards</span>
+        <h2 id="trust-heading" class="home-trust__title">Aligned with national and international frameworks</h2>
+        <div class="home-trust__badges">
+          <div class="trust-badge">
+            <span>DfE Statutory RSE Guidance</span>
+          </div>
+          <div class="trust-badge">
+            <span>PSHE Association Programme of Study</span>
+          </div>
+          <div class="trust-badge">
+            <span>UNESCO International Technical Guidance</span>
+          </div>
+          <div class="trust-badge">
+            <span>WHO Standards for Sexuality Education</span>
           </div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- 4. What Tailor Education does -->
-  <section class="home-what">
-    <div class="mx-auto max-w-5xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
-      <h2 class="home-what__title">What we do</h2>
-      <div class="home-what__grid">
-        <div class="home-what__item">
-          <h3 class="home-what__item-title">Expert-authored RSE lessons</h3>
-          <p class="home-what__item-text">Ready-to-teach lessons in the Tailor app, covering every statutory RSE topic.</p>
-          <a href="/topics" class="link-action">Explore topics</a>
-        </div>
-        <div class="home-what__item">
-          <h3 class="home-what__item-title">RSE training for teachers</h3>
-          <p class="home-what__item-text">Build your team's confidence to deliver RSE with CPD training linked to lesson content.</p>
-          <a href="/training" class="link-action">About training</a>
-        </div>
-        <div class="home-what__item">
-          <h3 class="home-what__item-title">Delivery and consultancy</h3>
-          <p class="home-what__item-text">Direct RSE delivery in your school, drop days, and policy and curriculum support.</p>
-          <a href="/services" class="link-action">View services</a>
+      <div class="home-trust__quote-wrap">
+        <blockquote class="home-trust__quote">
+          <p class="home-trust__quote-text">
+            "Tailor Education's content is some of the best RSE material I've seen. Thoughtful, inclusive, and genuinely useful."
+          </p>
+          <div class="home-trust__attribution">
+            <cite class="home-trust__cite">PSHE Coordinator</cite>
+          </div>
+        </blockquote>
+        <div class="home-trust__action">
+          <a href="/our-approach" class="link-action">See our approach</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 5. Featured questions -->
-  {featured.length > 0 && (
-    <section class="home-questions">
-      <div class="mx-auto max-w-5xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
-        <h2 class="home-questions__title">Questions young people ask</h2>
-        <div class="home-questions__grid">
-          {featured.map((q) => (
-            <a href={`/anonymous_question/${q.slug}`} class="home-question-card">
-              {q.imageUrl && (
-                <img src={q.imageUrl} alt="" class="home-question-card__image" loading="lazy" />
-              )}
-              <span class="home-question-card__text">{q.question}</span>
-            </a>
-          ))}
+  <!-- ═══ §6 OKAY TO ASK (single OtA layer switch) ═══ -->
+  <div class="layer-ota">
+    <section class="home-ota surface--ota" aria-labelledby="ota-heading">
+      <div class="home-ota__inner">
+        <!-- Beat 1: OtA introduction -->
+        <div class="home-ota__intro">
+          <img
+            src="/assets/ota-wordmark-dark.svg"
+            alt="Okay to Ask"
+            class="home-ota__wordmark"
+            width="160"
+            height="28"
+          />
+          <h2 id="ota-heading" class="home-ota__title">Okay to Ask — honest answers for young people</h2>
+          <p class="home-ota__text">
+            Real questions from real young people, answered honestly. No judgement, no awkwardness. A free resource from Tailor Education.
+          </p>
         </div>
-        <div class="home-questions__more">
-          <a href="/questions/" class="btn btn--std btn--outline">See all questions</a>
+
+        <!-- Beat 2: Featured question cards -->
+        {featured.length > 0 && (
+          <div class="home-ota__questions">
+            <div class="home-ota__questions-grid">
+              {featured.map((q) => (
+                <QuestionCard question={q} />
+              ))}
+            </div>
+            <div class="home-ota__questions-more">
+              <a href="/questions/" class="btn btn--std btn--outline has-icon-hover w-full sm:w-auto">
+                See all questions
+              </a>
+            </div>
+          </div>
+        )}
+
+        <!-- Beat 3: Book promotion panel -->
+        <div class="home-ota__book-wrap">
+          <a href="/book" class="home-ota__book-panel">
+            <img
+              src="/images/ota-book-cover.webp"
+              alt="Okay to Ask book cover"
+              class="home-ota__book-cover"
+              loading="lazy"
+            />
+            <div class="home-ota__book-text">
+              <span class="home-ota__book-eyebrow">The Okay to Ask book</span>
+              <h3 class="home-ota__book-title">The book that answers the questions young people really ask</h3>
+              <p class="home-ota__book-desc">Real questions, honest answers, post-it notes and all.</p>
+              <span class="link-action">Buy the book</span>
+            </div>
+          </a>
         </div>
       </div>
     </section>
-  )}
+  </div>
 
-  <!-- 6. Trust signals -->
-  <section class="home-trust">
-    <div class="mx-auto max-w-5xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
-      <h2 class="home-trust__title">Trusted by schools</h2>
-      <div class="home-trust__content">
-        <div class="home-trust__frameworks">
-          <p class="home-trust__text">All content is aligned to:</p>
-          <ul class="home-trust__list">
-            <li>DfE statutory RSE guidance</li>
-            <li>PSHE Association Programme of Study</li>
-            <li>UNESCO International Technical Guidance</li>
-            <li>WHO Standards for Sexuality Education in Europe</li>
-          </ul>
-        </div>
-        <blockquote class="home-trust__quote">
-          <p>"Tailor Education's content is some of the best RSE material I've seen. Thoughtful, inclusive, and genuinely useful."</p>
-          <footer class="home-trust__source">PSHE Coordinator</footer>
-        </blockquote>
-      </div>
-      <a href="/our-approach" class="link-action">Read about our approach</a>
+  <!-- ═══ §7 TOPICS OVERVIEW ═══ -->
+  <section class="home-topics" aria-labelledby="topics-heading">
+    <div class="home-topics__inner">
+      <TopicsOverviewGrid />
     </div>
   </section>
 
-  <!-- 7. Topics overview -->
-  <TopicsOverviewGrid />
+  <!-- ═══ §8 CLOSING CTA ═══ -->
+  <section class="home-cta surface--dark" aria-labelledby="cta-heading">
+    <div class="home-cta__inner">
+      <h2 id="cta-heading" class="home-cta__title">Ready to bring expert RSE to your school?</h2>
+      <p class="home-cta__subtitle">
+        Whether you need lessons, training, or delivery — we're here to help.
+      </p>
+      <div class="home-cta__actions">
+        <a href="/contact" class="btn btn--std btn--primary has-icon-hover">
+          Get in touch
+        </a>
+        <a href="/topics" class="btn btn--std btn--white-outline has-icon-hover">
+          Explore lessons
+        </a>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
   /* ========================================
-     Homepage [B1]
+     Homepage [B1] — Layout Spec v2.0
+     Teacher-first. 8 sections. 1 layer switch.
      ======================================== */
 
-  /* --- Teacher hero --- */
+  /* --- §1 Teacher hero --- */
   .hero-teacher {
-    background: var(--bg-emphasis);
+    background-color: var(--hero-tailor-bg);
+    padding: var(--space-struct-y-hero) var(--space-global-gutter);
+  }
+
+  .hero-teacher__inner {
+    max-width: var(--container-max-shell);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .hero-teacher__text-only {
+    max-width: 38rem;
+  }
+
+  .hero-teacher__eyebrow {
+    color: var(--text-on-dark-strapline);
+    margin: 0 0 var(--space-global-sm);
   }
 
   .hero-teacher__title {
     font-family: var(--font-tailor-heading-stack);
     font-size: var(--text-display-size-h1);
     font-weight: var(--heading-weight-h1);
-    color: var(--text-on-dark);
+    line-height: var(--lh-display);
+    color: var(--text-heading-on-dark);
     margin: 0 0 var(--space-global-md);
-    line-height: 1.1;
-    max-width: 36rem;
   }
 
   .hero-teacher__subtitle {
     font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-prose-size-body);
-    color: var(--text-muted-on-dark);
-    max-width: 32rem;
+    font-size: var(--text-util-hero-subhead-size);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-heading-sub);
+    color: var(--text-on-dark-strapline);
     margin: 0 0 var(--space-global-lg);
-    line-height: 1.6;
   }
 
   .hero-teacher__actions {
@@ -175,262 +346,560 @@ const featured = answered.slice(0, 5);
     gap: var(--space-global-sm);
   }
 
-  /* White outline button on dark bg */
-  .hero-teacher__actions .btn--outline {
-    color: var(--text-on-dark);
-    border-color: var(--text-muted-on-dark);
-  }
-
-  .hero-teacher__actions .btn--outline:hover {
-    background: var(--btn-outline-bg-on-dark-hover);
-    border-color: var(--btn-outline-border-on-dark-hover);
-  }
-
-  /* --- OtA hero --- */
-  .hero-ota {
-    background: var(--bg-ota-surface);
-    border-top: 4px solid var(--surface-ota-postit);
-  }
-
-  .hero-ota__inner {
-    display: grid;
-    gap: var(--space-global-lg);
-  }
-
-  .hero-ota__wordmark {
-    height: 2.5rem;
-    width: auto;
-    margin-bottom: var(--space-global-sm);
-  }
-
-  .hero-ota__title {
-    font-family: var(--font-ota-heading-stack);
-    font-size: var(--text-display-size-h2);
-    font-weight: var(--heading-ota-weight-h2);
-    color: var(--text-ota-heading);
-    margin: 0 0 var(--space-global-xs);
-    line-height: 1.2;
-  }
-
-  .hero-ota__text {
-    font-family: var(--font-ota-body-stack);
-    font-size: var(--text-prose-size-body);
-    color: var(--text-ota-body);
-    margin: 0 0 var(--space-global-md);
-    line-height: 1.6;
-  }
-
-  .hero-ota__book-card {
-    padding: var(--space-global-md);
-    background: var(--bg-surface);
+  .hero-photo {
+    width: 100%;
+    height: auto;
     border-radius: var(--radius-lg);
-    border: var(--border-width-xs) solid var(--border-subtle);
-    border-left: 4px solid var(--surface-ota-postit);
+    box-shadow: var(--shadow-lg);
   }
 
-  .hero-ota__book-title {
-    font-family: var(--font-ota-heading-stack);
-    font-size: var(--text-prose-size-h3);
-    color: var(--text-ota-heading);
-    margin: 0 0 var(--space-global-xs);
+  /* --- §2 Platform --- */
+  .home-platform {
+    background: var(--bg-surface);
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
   }
 
-  .hero-ota__book-text {
-    font-family: var(--font-ota-body-stack);
-    font-size: var(--text-card-size-body);
-    color: var(--text-ota-muted);
-    margin: 0 0 var(--space-global-sm);
-    line-height: 1.5;
+  .home-platform__inner {
+    max-width: var(--container-max-shell);
+    margin: 0 auto;
+    width: 100%;
   }
 
-  /* --- What we do --- */
-  .home-what {
-    background: var(--bg-page);
+  .home-platform__text-only {
+    max-width: 38rem;
   }
 
-  .home-what__title {
+  .home-platform__preheader {
+    color: var(--text-heading-muted);
+    margin-bottom: var(--space-global-md);
+  }
+
+  .home-platform__title {
     font-family: var(--font-tailor-heading-stack);
     font-size: var(--text-display-size-h2);
     font-weight: var(--heading-weight-h2);
+    line-height: var(--lh-heading);
     color: var(--text-heading);
-    margin: 0 0 var(--space-global-lg);
+    margin: 0 0 var(--space-global-md);
   }
 
-  .home-what__grid {
-    display: grid;
-    gap: var(--space-global-md);
-  }
-
-  .home-what__item {
-    padding: var(--space-global-md);
-    background: var(--bg-surface);
-    border: var(--border-width-xs) solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-  }
-
-  .home-what__item-title {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-prose-size-h3);
-    font-weight: var(--heading-weight-h3);
-    color: var(--text-heading);
-    margin: 0 0 var(--space-global-xs);
-  }
-
-  .home-what__item-text {
+  .home-platform__intro {
     font-size: var(--text-prose-size-body);
     color: var(--text-body-muted);
-    margin: 0 0 var(--space-global-sm);
-    line-height: 1.6;
+    line-height: var(--lh-body);
+    max-width: 36rem;
+    margin: 0 0 var(--space-global-md);
   }
 
-  /* --- Featured questions --- */
-  .home-questions {
-    background: var(--bg-ota-surface);
-    border-top: 4px solid var(--surface-ota-postit);
-  }
-
-  .home-questions__title {
-    font-family: var(--font-ota-heading-stack);
-    font-size: var(--text-display-size-h2);
-    color: var(--text-ota-heading);
+  .home-platform__features {
+    list-style: none;
+    padding: 0;
     margin: 0 0 var(--space-global-lg);
-  }
-
-  .home-questions__grid {
-    display: grid;
-    gap: var(--space-global-md);
-  }
-
-  .home-question-card {
     display: flex;
     flex-direction: column;
     gap: var(--space-global-xs);
-    padding: var(--space-global-md);
-    background: var(--bg-surface);
-    border: var(--border-width-xs) solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    text-decoration: none;
-    transition: border-color var(--transition-duration) var(--transition-easing);
   }
 
-  .home-question-card:hover {
-    border-color: var(--brand-accent);
-  }
-
-  .home-question-card__image {
-    width: 100%;
-    max-width: 10rem;
-    height: auto;
-    border-radius: var(--radius-sm);
-  }
-
-  .home-question-card__text {
-    font-family: var(--font-ota-body-stack);
+  .home-platform__features li {
+    padding-left: 1.5rem;
+    position: relative;
     font-size: var(--text-prose-size-body);
-    font-weight: var(--font-weight-medium);
-    color: var(--brand-accent-text);
-    line-height: 1.4;
+    color: var(--text-body);
+    line-height: var(--lh-body);
   }
 
-  .home-questions__more {
-    text-align: center;
-    margin-top: var(--space-global-lg);
+  .home-platform__features li::before {
+    content: '\2713';
+    position: absolute;
+    left: 0;
+    color: var(--brand-primary);
+    font-weight: var(--font-weight-bold);
   }
 
-  /* --- Trust signals --- */
+  .home-platform__screenshot {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    border: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  /* --- §3 Delivery --- */
+  .home-delivery {
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+  }
+
+  .home-delivery__inner {
+    max-width: var(--container-max-shell);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .home-delivery__text-only {
+    max-width: 38rem;
+  }
+
+  .home-delivery__photo {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+  }
+
+  .home-delivery__preheader {
+    color: var(--text-heading-muted);
+    margin-bottom: var(--space-global-xs);
+  }
+
+  .home-delivery__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h2);
+    font-weight: var(--heading-weight-h2);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .home-delivery__desc {
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body-muted);
+    line-height: var(--lh-body);
+    max-width: 34rem;
+    margin: 0 0 var(--space-global-lg);
+  }
+
+  .home-delivery__steps {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-md);
+    margin-bottom: var(--space-global-lg);
+  }
+
+  .home-delivery__step {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-global-sm);
+  }
+
+  .home-delivery__step-num {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background: var(--brand-primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    font-weight: var(--font-weight-bold);
+  }
+
+  .home-delivery__step-text {
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+  }
+
+  /* --- §4 Training & support --- */
+  .home-training {
+    background: var(--bg-surface);
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+  }
+
+  .home-training__inner {
+    max-width: var(--container-max-shell);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .home-training__text-only {
+    max-width: 38rem;
+  }
+
+  .home-training__preheader {
+    color: var(--text-heading-muted);
+    margin-bottom: var(--space-global-xs);
+  }
+
+  .home-training__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h2);
+    font-weight: var(--heading-weight-h2);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .home-training__intro {
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body-muted);
+    line-height: var(--lh-body);
+    max-width: 34rem;
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .home-training__detail {
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+    line-height: var(--lh-body);
+    max-width: 34rem;
+    margin: 0 0 var(--space-global-lg);
+  }
+
+  .home-training__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-global-sm);
+  }
+
+  .home-training__photo {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* --- §5 Trust signals --- */
   .home-trust {
-    background: var(--bg-surface-alt);
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+  }
+
+  .home-trust__inner {
+    max-width: var(--container-max-shell);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .home-trust__badges-wrap {
+    text-align: center;
+    margin-bottom: var(--space-global-xl);
+  }
+
+  .home-trust__preheader {
+    color: var(--text-heading-muted);
+    margin-bottom: var(--space-global-xs);
   }
 
   .home-trust__title {
     font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-display-size-h2);
+    font-size: var(--text-display-size-h3);
     font-weight: var(--heading-weight-h2);
+    line-height: var(--lh-heading);
     color: var(--text-heading);
     margin: 0 0 var(--space-global-lg);
   }
 
-  .home-trust__content {
-    display: grid;
-    gap: var(--space-global-lg);
-    margin-bottom: var(--space-global-md);
-  }
-
-  .home-trust__text {
-    font-size: var(--text-prose-size-body);
-    color: var(--text-body);
-    margin: 0 0 var(--space-global-xs);
-  }
-
-  .home-trust__list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  .home-trust__badges {
     display: flex;
-    flex-direction: column;
-    gap: 0.375rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-global-xl);
   }
 
-  .home-trust__list li {
-    font-size: var(--text-prose-size-body);
-    color: var(--text-body);
-    padding-left: 1.25rem;
-    position: relative;
-  }
-
-  .home-trust__list li::before {
-    content: '\2713';
-    position: absolute;
-    left: 0;
-    color: var(--brand-accent);
-    font-weight: var(--font-weight-bold);
+  .home-trust__quote-wrap {
+    max-width: var(--container-max-prose);
+    margin: var(--space-global-xl) auto 0;
+    text-align: center;
   }
 
   .home-trust__quote {
-    padding: var(--space-global-md);
-    border-left: 4px solid var(--brand-accent);
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .home-trust__quote-text {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-display-size-quote);
+    font-weight: var(--font-weight-regular);
+    font-style: italic;
+    line-height: var(--lh-heading-sub);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .home-trust__attribution {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-global-sm);
+  }
+
+  .home-trust__cite {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-body-muted);
+    font-style: normal;
+  }
+
+  .home-trust__action {
+    margin-top: var(--space-global-lg);
+  }
+
+  /* --- §6 Okay to Ask --- */
+  .home-ota {
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid var(--border-strong);
+    border-bottom: 1px solid var(--border-strong);
+  }
+
+  .home-ota__inner {
+    max-width: var(--container-max-reading-wide);
+    margin: 0 auto;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+  }
+
+  .home-ota__intro {
+    text-align: center;
+    margin-bottom: var(--space-global-2xl);
+  }
+
+  .home-ota__wordmark {
+    display: block;
+    width: 10rem;
+    height: auto;
+    margin: 0 auto var(--space-global-lg);
+  }
+
+  .home-ota__title {
+    font-family: var(--font-ota-heading-stack);
+    font-size: var(--text-display-size-h2);
+    font-weight: var(--heading-ota-weight-h2);
+    line-height: var(--lh-heading);
+    color: var(--text-ota-heading);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .home-ota__text {
+    font-family: var(--font-ota-body-stack);
+    font-size: var(--text-display-size-body);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-body);
+    color: var(--text-ota-muted);
+    margin: 0 auto;
+  }
+
+  /* Book panel */
+  .home-ota__book-wrap {
+    margin-bottom: 0;
+  }
+
+  .home-ota__book-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-global-xl);
+    padding: var(--space-global-xl);
+    background: var(--bg-ota-book-panel);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow var(--transition-duration) var(--transition-easing),
+                transform var(--transition-duration) var(--transition-easing);
+  }
+
+  .home-ota__book-panel:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+  }
+
+  .home-ota__book-cover {
+    flex-shrink: 0;
+    width: 10rem;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .home-ota__book-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-sm);
+    text-align: center;
+  }
+
+  .home-ota__book-eyebrow {
+    font-size: var(--text-util-preheader-size);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--text-util-preheader-ls);
+    text-transform: uppercase;
+    color: var(--text-ota-muted);
+  }
+
+  .home-ota__book-title {
+    font-family: var(--font-ota-heading-stack);
+    font-size: var(--text-card-size-h2);
+    font-weight: var(--heading-ota-weight-h2);
+    line-height: var(--lh-heading-sub);
+    color: var(--text-ota-heading);
     margin: 0;
   }
 
-  .home-trust__quote p {
-    font-family: var(--font-tailor-body-stack);
+  .home-ota__book-desc {
+    font-family: var(--font-ota-body-stack);
     font-size: var(--text-prose-size-body);
-    font-style: italic;
-    color: var(--text-body);
-    line-height: 1.7;
-    margin: 0 0 var(--space-global-xs);
+    line-height: var(--lh-body);
+    color: var(--text-ota-muted);
+    margin: 0;
   }
 
-  .home-trust__source {
-    font-size: var(--text-card-size-body);
-    font-weight: var(--font-weight-semibold);
-    color: var(--text-heading);
+  /* Featured questions */
+  .home-ota__questions-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-global-md);
+  }
+
+  .home-ota__questions-more {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-global-xl);
+    margin-bottom: var(--space-global-2xl);
+  }
+
+  /* --- §7 Topics overview --- */
+  .home-topics {
+    background: var(--bg-page);
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+  }
+
+  .home-topics__inner {
+    max-width: var(--container-max-shell);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* --- §8 Closing CTA --- */
+  .home-cta {
+    background-color: var(--hero-tailor-bg);
+    padding: var(--space-global-2xl) var(--space-global-gutter);
+  }
+
+  .home-cta__inner {
+    max-width: 40rem;
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+  }
+
+  .home-cta__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h2);
+    font-weight: var(--heading-weight-h2);
+    line-height: var(--lh-heading);
+    color: var(--text-heading-on-dark);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .home-cta__subtitle {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-util-hero-subhead-size);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-heading-sub);
+    color: var(--text-on-dark-strapline);
+    margin: 0 auto var(--space-global-lg);
+  }
+
+  .home-cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-global-sm);
   }
 
   /* --- Responsive --- */
-  @media (min-width: 768px) {
-    .hero-ota__inner {
-      grid-template-columns: 1fr auto;
-      align-items: start;
-    }
-
-    .home-what__grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    .home-questions__grid {
+  @media (min-width: 640px) {
+    .home-ota__questions-grid {
       grid-template-columns: repeat(2, 1fr);
     }
 
-    .home-trust__content {
-      grid-template-columns: 1fr 1fr;
-      align-items: start;
+    .home-delivery__steps {
+      flex-direction: row;
     }
   }
 
+  @media (min-width: 768px) {
+    .home-ota__book-panel {
+      flex-direction: row;
+    }
+
+    .home-ota__book-cover {
+      width: 10rem;
+    }
+
+    .home-ota__book-text {
+      text-align: left;
+    }
+
+  }
+
   @media (min-width: 1024px) {
-    .home-questions__grid {
+    .hero-teacher__inner {
+      display: grid;
+      grid-template-columns: 1fr 0.9fr;
+      gap: var(--space-global-xl);
+      align-items: center;
+    }
+
+    .home-platform__inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-global-xl);
+      align-items: center;
+    }
+
+    .home-delivery__inner {
+      display: grid;
+      grid-template-columns: 0.9fr 1fr;
+      gap: var(--space-global-xl);
+      align-items: center;
+    }
+
+    .home-training__inner {
+      display: grid;
+      grid-template-columns: 1fr 0.9fr;
+      gap: var(--space-global-xl);
+      align-items: center;
+    }
+
+    .home-ota__questions-grid {
       grid-template-columns: repeat(3, 1fr);
+    }
+
+    .home-ota__book-cover {
+      width: 12rem;
+    }
+  }
+
+  /* Mobile overrides */
+  @media (max-width: 767px) {
+    .hero-teacher {
+      padding-top: var(--space-global-2xl);
+      padding-bottom: var(--space-global-2xl);
+    }
+
+    .hero-teacher__actions .btn,
+    .home-training__actions .btn,
+    .home-cta__actions .btn {
+      width: 100%;
+    }
+
+    .home-ota__book-panel {
+      padding: var(--space-global-lg);
+    }
+
+    .home-cta {
+      padding: var(--space-global-xl) var(--space-global-gutter);
+    }
+
+    .home-trust__badges {
+      gap: var(--space-global-lg);
     }
   }
 </style>
