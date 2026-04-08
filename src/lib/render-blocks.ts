@@ -47,9 +47,23 @@ function escapeAttr(str: string): string {
   return str.replace(/"/g, '&quot;').replace(/&/g, '&amp;');
 }
 
-export function renderBlocks(blocks: BlockObjectResponse[]): string {
+/**
+ * @param blocks  Notion block objects to render.
+ * @param options.headingOffset  How many levels to shift Notion headings down.
+ *   Default `1`: heading_1→h2, heading_2→h3, heading_3→h4.
+ *   Use `0` when the prose sits directly under an h1 (e.g. C3 landing pages)
+ *   so that heading_1→h1, heading_2→h2, heading_3→h3.
+ */
+export function renderBlocks(
+  blocks: BlockObjectResponse[],
+  options: { headingOffset?: number } = {},
+): string {
+  const offset = options.headingOffset ?? 1;
   const parts: string[] = [];
   let listType: 'ul' | 'ol' | null = null;
+
+  // Clamp heading level to 1–6
+  const h = (notionLevel: number) => `h${Math.min(notionLevel + offset, 6)}`;
 
   for (const block of blocks) {
     const type = block.type;
@@ -69,17 +83,20 @@ export function renderBlocks(blocks: BlockObjectResponse[]): string {
       }
       case 'heading_1': {
         const rt = (block as any).heading_1.rich_text;
-        parts.push(`<h2>${renderRichText(rt)}</h2>`);
+        const tag = h(1);
+        parts.push(`<${tag}>${renderRichText(rt)}</${tag}>`);
         break;
       }
       case 'heading_2': {
         const rt = (block as any).heading_2.rich_text;
-        parts.push(`<h3>${renderRichText(rt)}</h3>`);
+        const tag = h(2);
+        parts.push(`<${tag}>${renderRichText(rt)}</${tag}>`);
         break;
       }
       case 'heading_3': {
         const rt = (block as any).heading_3.rich_text;
-        parts.push(`<h4>${renderRichText(rt)}</h4>`);
+        const tag = h(3);
+        parts.push(`<${tag}>${renderRichText(rt)}</${tag}>`);
         break;
       }
       case 'bulleted_list_item': {

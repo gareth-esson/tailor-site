@@ -213,7 +213,7 @@ On mobile, RSE Training & Support uses the same accordion pattern as RSE Deliver
 ## D8 — Topics mega menu
 
 ### Role
-Expands from the "Topics" primary nav item on desktop. Shows all 22 landing pages grouped by the 7 app categories. On mobile, renders inside D3 as an expandable section.
+Expands from the "Topics" primary nav item on desktop. Shows all 23 landing pages grouped by the 7 app categories. On mobile, renders inside D3 as an expandable section.
 
 ### Desktop
 

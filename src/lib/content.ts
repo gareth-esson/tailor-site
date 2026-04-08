@@ -4,6 +4,7 @@ import {
   fetchTopics,
   fetchLandingPages,
   fetchBlogPosts,
+  fetchCurriculumStatements,
 } from './fetchers';
 import { cached } from './notion-cache';
 import type {
@@ -12,6 +13,7 @@ import type {
   Topic,
   LandingPage,
   BlogPost,
+  CurriculumStatement,
   TopicRef,
   GlossaryRef,
   QuestionRef,
@@ -26,6 +28,7 @@ let _glossaryTerms: GlossaryTerm[] | null = null;
 let _topics: Topic[] | null = null;
 let _landingPages: LandingPage[] | null = null;
 let _blogPosts: BlogPost[] | null = null;
+let _curriculumStatements: CurriculumStatement[] | null = null;
 let _glossaryIndex: GlossaryIndex | null = null;
 
 // Promise-singleton guard. Without this, Astro dev — which fires many
@@ -68,6 +71,7 @@ async function _loadAllContentImpl(): Promise<void> {
   const questions = await cached('questions', fetchQuestions);
   const landingPages = await cached('landing-pages', fetchLandingPages);
   const blogPosts = await cached('blog-posts', fetchBlogPosts);
+  const curriculumStatements = await cached('curriculum-statements', fetchCurriculumStatements);
 
   // Build lookup maps
   const topicMap = new Map<string, Topic>(topics.map((t) => [t.id, t]));
@@ -185,6 +189,7 @@ async function _loadAllContentImpl(): Promise<void> {
   _questions = questions;
   _landingPages = landingPages;
   _blogPosts = blogPosts;
+  _curriculumStatements = curriculumStatements;
   _glossaryIndex = glossaryIndex;
 
   console.log('\n=== Content loaded and relations resolved ===\n');
@@ -215,6 +220,11 @@ export async function getLandingPages(): Promise<LandingPage[]> {
 export async function getBlogPosts(): Promise<BlogPost[]> {
   await loadAllContent();
   return _blogPosts!;
+}
+
+export async function getCurriculumStatements(): Promise<CurriculumStatement[]> {
+  await loadAllContent();
+  return _curriculumStatements!;
 }
 
 export async function getGlossaryIndex(): Promise<GlossaryIndex> {

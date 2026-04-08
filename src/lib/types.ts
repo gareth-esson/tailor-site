@@ -131,6 +131,15 @@ export interface BlogPost {
   body: BlockObjectResponse[];
 }
 
+export interface CurriculumStatement {
+  id: string;
+  statement: string;
+  source: string;
+  sectionReference: string;
+  keyStages: string[];
+  topicIds: string[];
+}
+
 // --- Glossary index for tooltip matching ---
 
 export interface GlossaryIndex {

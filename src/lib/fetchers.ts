@@ -9,13 +9,14 @@ import {
   getCheckboxValue,
   getNumberValue,
 } from './notion';
-import type { Question, GlossaryTerm, Topic, LandingPage, BlogPost } from './types';
+import type { Question, GlossaryTerm, Topic, LandingPage, BlogPost, CurriculumStatement } from './types';
 
 // --- Data source IDs (Notion SDK v5 uses data source IDs, not database IDs) ---
 
 const QUESTIONS_DB = 'cd6d5a28-64a7-4809-84e1-483e4a4ac259';
 const GLOSSARY_DB = 'c844695c-a72f-496f-9fef-3e72cdf25f02';
 const TOPICS_DB = '16dde54c-a2e1-47c2-8c84-f84fa602f6e9';
+const CURRICULUM_DB = '9bcde5b1-3837-4321-bc12-b026b45a528b';
 
 function getLandingPagesDb(): string | null {
   return import.meta.env.NOTION_LANDING_PAGES_DB || null;
@@ -231,6 +232,31 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
     return blogPosts;
   } catch (error) {
     console.warn(`  ⚠ Could not fetch blog posts (database may not be shared with integration yet):`, (error as Error).message);
+    return [];
+  }
+}
+
+export async function fetchCurriculumStatements(): Promise<CurriculumStatement[]> {
+  console.log('Fetching curriculum statements...');
+  try {
+    const pages = await queryDatabase(CURRICULUM_DB);
+
+    const statements: CurriculumStatement[] = pages.map((page) => {
+      const p = page.properties;
+      return {
+        id: page.id,
+        statement: getTitleValue(p['Statement']),
+        source: getSelectValue(p['Source']) || '',
+        sectionReference: getRichTextValue(p['Section Reference']),
+        keyStages: getMultiSelectValues(p['Key Stage']),
+        topicIds: getRelationIds(p['Topics']),
+      };
+    });
+
+    console.log(`  ✓ ${statements.length} curriculum statements fetched`);
+    return statements;
+  } catch (error) {
+    console.warn(`  ⚠ Could not fetch curriculum statements:`, (error as Error).message);
     return [];
   }
 }

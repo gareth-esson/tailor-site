@@ -1,17 +1,18 @@
 ---
 /**
  * Landing page template [C3] — /topics/{slug}
- * 22 instances. Teacher-facing topic landing pages.
+ * 23 instances. Teacher-facing topic landing pages.
  * Aggregates questions, glossary terms, and blog posts from underlying granular topics.
  * Uses Tailor layer (default — Lexend, neutral surfaces, teal accent).
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaExploreLessons from '../../components/CtaExploreLessons.astro';
 import CtaBringToSchool from '../../components/CtaBringToSchool.astro';
-import { getLandingPages, getQuestions, getGlossaryTerms, getBlogPosts, getGlossaryIndex } from '../../lib/content';
+import { getLandingPages, getQuestions, getGlossaryTerms, getBlogPosts, getGlossaryIndex, getCurriculumStatements } from '../../lib/content';
 import { renderBlocks } from '../../lib/render-blocks';
 import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
-import type { LandingPage, Question, GlossaryTerm, BlogPost } from '../../lib/types';
+import { getPostItImagePath } from '../../lib/post-it-images';
+import type { LandingPage, Question, GlossaryTerm, BlogPost, CurriculumStatement } from '../../lib/types';
 import topicAliases from '../../../docs/topic-aliases.json';
 
 export const prerender = true;
@@ -21,6 +22,7 @@ export async function getStaticPaths() {
   const allQuestions = await getQuestions();
   const allGlossary = await getGlossaryTerms();
   const allBlog = await getBlogPosts();
+  const allCurriculum = await getCurriculumStatements();
   const glossaryIndex = await getGlossaryIndex();
 
   return landingPages.map((lp) => {
@@ -52,6 +54,18 @@ export async function getStaticPaths() {
       })
       .sort((a, b) => b.title.localeCompare(a.title)); // placeholder sort — dates not yet in type
 
+    // Aggregate curriculum statements: where any of the statement's topicIds
+    // match any of the landing page's granularTopicIds. Deduplicate by id.
+    const seen = new Set<string>();
+    const curriculumStatements = allCurriculum
+      .filter((cs) => {
+        if (seen.has(cs.id)) return false;
+        const matches = cs.topicIds.some((tid) => granularTopicIds.has(tid));
+        if (matches) seen.add(cs.id);
+        return matches;
+      })
+      .sort((a, b) => a.source.localeCompare(b.source) || a.statement.localeCompare(b.statement));
+
     // Related landing pages: same category, excluding self
     const relatedPages = landingPages
       .filter((other) => other.id !== lp.id && other.category === lp.category)
@@ -66,6 +80,7 @@ export async function getStaticPaths() {
         blogPosts,
         relatedPages,
         glossaryIndex,
+        curriculumStatements,
       },
     };
   });
@@ -78,13 +93,24 @@ interface Props {
   blogPosts: BlogPost[];
   relatedPages: { title: string; slug: string; category: string | null }[];
   glossaryIndex: Record<string, any>;
+  curriculumStatements: CurriculumStatement[];
 }
 
-const { landingPage, questions, glossary, blogPosts, relatedPages, glossaryIndex } = Astro.props;
+const { landingPage, questions, glossary, blogPosts, relatedPages, glossaryIndex, curriculumStatements } = Astro.props;
+
+// Topic illustration
+import { getTopicIllustrationPath } from '../../lib/topic-illustrations';
+const illustrationSrc = getTopicIllustrationPath(landingPage.slug);
 
 // Render body content (overview, curriculum mapping, learning objectives)
-const bodyHtml = renderBlocks(landingPage.body);
+const bodyHtml = renderBlocks(landingPage.body, { headingOffset: 0 });
 const bodyWithTooltips = injectGlossaryTooltips(bodyHtml, glossaryIndex, undefined);
+
+// Curriculum mapping: group by source and build summary
+const safeStatements = curriculumStatements ?? [];
+const dfeStatements = safeStatements.filter(s => s.source.startsWith('DfE'));
+const psheStatements = safeStatements.filter(s => s.source.startsWith('PSHE'));
+const allKeyStages = [...new Set(safeStatements.flatMap(s => s.keyStages))].sort();
 
 // Build granular topic slugs for the CTA URL
 const topicSlugs = landingPage.granularTopics.map((t) => t.slug);
@@ -127,19 +153,11 @@ const jsonLd = {
   },
 };
 
-// Map OtA category on questions to badge class
-function otaCategoryClass(cat: string | null): string {
-  const map: Record<string, string> = {
-    'Anatomy': 'badge--ota-anatomy',
-    'Puberty': 'badge--ota-puberty',
-    'Relationships': 'badge--ota-relationships',
-    'Sex': 'badge--ota-sex',
-    'Sexual Health': 'badge--ota-sexual-health',
-    'Sex & the Law': 'badge--ota-law',
-    'Contraception & Pregnancy': 'badge--ota-contraception',
-  };
-  return map[cat || ''] || '';
-}
+// Questions: limit to 6 with post-it + simpleAnswer for b11-sample-card display
+const displayQuestions = questions
+  .filter((q) => q.body.length > 0 && q.hasPostItScan && q.simpleAnswer?.length > 0)
+  .slice(0, 6);
+
 ---
 
 <BaseLayout
@@ -149,9 +167,14 @@ function otaCategoryClass(cat: string | null): string {
   jsonLd={jsonLd}
 >
   <div class="landing-page" data-pagefind-body>
-    <!-- 1. Page title + category label -->
+    <!-- §1 Hero -->
     <section class="landing-hero">
-      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+        {illustrationSrc && (
+          <div class="landing-hero__illustration">
+            <img src={illustrationSrc} alt="" class="landing-hero__illustration-img" />
+          </div>
+        )}
         <span class="landing-hero__category" style={`--cat-color: var(--cat-${catToken})`}>
           {landingPage.category}
         </span>
@@ -166,66 +189,130 @@ function otaCategoryClass(cat: string | null): string {
       </div>
     </section>
 
-    <!-- 2–4. Topic overview, curriculum mapping, learning objectives (from Notion body) -->
+    <!-- §2 Topic overview (body prose) -->
     {bodyWithTooltips && (
       <section class="landing-body">
-        <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-          <div class="prose" set:html={bodyWithTooltips} />
+        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+          <div class="prose" style="max-width: var(--container-max-prose);" set:html={bodyWithTooltips} />
         </div>
       </section>
     )}
 
-    <!-- 5. CTA [A11] — mid-page -->
+    <!-- §3 Curriculum mapping (auto-generated) -->
+    {safeStatements.length > 0 && (
+      <section class="landing-curriculum" style="background: var(--bg-surface-alt);">
+        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+          <h2 class="landing-section__title">Curriculum alignment</h2>
+          <p class="landing-curriculum__summary">
+            This topic addresses
+            {dfeStatements.length > 0 && (
+              <>{` ${dfeStatements.length} requirement${dfeStatements.length === 1 ? '' : 's'} from the DfE statutory RSE guidance`}</>
+            )}
+            {dfeStatements.length > 0 && psheStatements.length > 0 && ' and'}
+            {psheStatements.length > 0 && (
+              <>{` ${psheStatements.length} learning outcome${psheStatements.length === 1 ? '' : 's'} from the PSHE Association Programme of Study`}</>
+            )}
+            {allKeyStages.length > 0 && (
+              <>{`, across ${allKeyStages.join(', ')}`}</>
+            )}.
+          </p>
+          <details class="curriculum-detail">
+            <summary class="curriculum-detail__toggle">
+              View all curriculum references
+            </summary>
+            <div class="curriculum-detail__content">
+              {dfeStatements.length > 0 && (
+                <>
+                  <h3>{dfeStatements[0].source}</h3>
+                  <ul>
+                    {dfeStatements.map((s) => (
+                      <li>
+                        <span class="curriculum-statement__text">"{s.statement}"</span>
+                        {(s.sectionReference || s.keyStages.length > 0) && (
+                          <span class="curriculum-statement__ref">
+                            {[s.sectionReference, s.keyStages.length > 0 ? s.keyStages.join(', ') : ''].filter(Boolean).join(' · ')}
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+              {psheStatements.length > 0 && (
+                <>
+                  <h3>{psheStatements[0].source}</h3>
+                  <ul>
+                    {psheStatements.map((s) => (
+                      <li>
+                        <span class="curriculum-statement__text">"{s.statement}"</span>
+                        {(s.sectionReference || s.keyStages.length > 0) && (
+                          <span class="curriculum-statement__ref">
+                            {[s.sectionReference, s.keyStages.length > 0 ? s.keyStages.join(', ') : ''].filter(Boolean).join(' · ')}
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </div>
+          </details>
+        </div>
+      </section>
+    )}
+
+    <!-- §4 CTA [A11] — mid-page -->
     <CtaExploreLessons topicTitle={landingPage.title} topicSlugs={topicSlugs} />
 
-    <!-- 6. Questions young people ask -->
-    {questions.length > 0 && (
-      <section class="landing-section">
-        <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+    <!-- §5 Questions young people ask -->
+    {displayQuestions.length > 0 && (
+      <section class="landing-questions">
+        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
           <h2 class="landing-section__title">Questions young people ask</h2>
-          <ul class="question-list" role="list">
-            {questions.map((q) => (
-              <li class="question-list__item">
-                <a href={`/anonymous_question/${q.slug}`} class="question-list__link">
-                  {q.question}
+          <div class="landing-questions__stack">
+            {displayQuestions.map((q) => {
+              const postItImage = getPostItImagePath(q.slug);
+              return (
+                <a href={`/anonymous_question/${q.slug}`} class="b11-sample-card">
+                  {postItImage && (
+                    <img
+                      src={postItImage}
+                      alt=""
+                      class="b11-sample-card__postit"
+                      loading="lazy"
+                    />
+                  )}
+                  <div class="b11-sample-card__body">
+                    {q.okayToAskCategory && (
+                      <span class="b11-sample-card__eyebrow">{q.okayToAskCategory}</span>
+                    )}
+                    <div class="b11-sample-card__question">{q.question}</div>
+                    {q.simpleAnswer && (
+                      <p class="b11-sample-card__excerpt">{q.simpleAnswer}</p>
+                    )}
+                    <span class="b11-sample-card__link">Read the full answer</span>
+                  </div>
                 </a>
-                {q.okayToAskCategory && (
-                  <span class={`badge badge--pill ${otaCategoryClass(q.okayToAskCategory)}`}>
-                    {q.okayToAskCategory}
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
+              );
+            })}
+          </div>
+          {questions.length > 6 && (
+            <div class="landing-questions__more">
+              <a href="/questions/" class="btn btn--sm btn--outline has-icon-hover">
+                See all {questions.length} questions
+              </a>
+            </div>
+          )}
         </div>
       </section>
     )}
 
-    <!-- 7. Key terms -->
-    {glossary.length > 0 && (
-      <section class="landing-section landing-section--alt">
-        <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-          <h2 class="landing-section__title">Key terms</h2>
-          <dl class="glossary-grid">
-            {glossary.map((g) => (
-              <div class="glossary-grid__item">
-                <dt class="glossary-grid__term">
-                  <a href={`/glossary/${g.slug}`}>{g.term}</a>
-                </dt>
-                <dd class="glossary-grid__def">{g.shortDefinition}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </section>
-    )}
-
-    <!-- 8. For teachers: further reading (conditional) -->
+    <!-- §6 For teachers: further reading (conditional) -->
     {blogPosts.length > 0 && (
-      <section class="landing-section">
-        <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+      <section class="landing-blog" style="background: var(--bg-surface-alt);">
+        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
           <h2 class="landing-section__title">For teachers: further reading</h2>
-          <div class="blog-cards">
+          <div class="landing-blog__grid">
             {blogPosts.map((bp) => (
               <a href={`/blog/${bp.slug}`} class="card blog-card">
                 <div class="card__body">
@@ -244,14 +331,14 @@ function otaCategoryClass(cat: string | null): string {
       </section>
     )}
 
-    <!-- 9. Related landing pages -->
+    <!-- §7 Related landing pages -->
     {relatedPages.length > 0 && (
-      <section class="landing-section landing-section--alt">
-        <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+      <section class="landing-related">
+        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
           <h2 class="landing-section__title">Related topics</h2>
-          <div class="related-topics">
+          <div class="landing-related__pills">
             {relatedPages.map((rp) => (
-              <a href={`/topics/${rp.slug}`} class="related-topics__link">
+              <a href={`/topics/${rp.slug}`} class="landing-pill">
                 {rp.title}
               </a>
             ))}
@@ -260,7 +347,7 @@ function otaCategoryClass(cat: string | null): string {
       </section>
     )}
 
-    <!-- 10. CTA [A12] — bottom of page -->
+    <!-- §8 CTA [A12] — bottom of page  -->
     <CtaBringToSchool topicTitle={landingPage.title} serviceTarget={landingPage.serviceCtaTarget} />
   </div>
 </BaseLayout>
@@ -273,10 +360,39 @@ function otaCategoryClass(cat: string | null): string {
     background: var(--bg-page);
   }
 
-  /* --- Hero --- */
+  /* --- §1 Hero --- */
   .landing-hero {
     background: var(--bg-surface);
     border-bottom: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  .landing-hero__illustration {
+    margin-bottom: var(--space-global-xs);
+    width: fit-content;
+    background: var(--bg-surface-alt);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .landing-hero__illustration-img {
+    width: 10rem;
+    height: 10rem;
+    object-fit: contain;
+    display: block;
+  }
+
+  @media (min-width: 640px) {
+    .landing-hero__illustration-img {
+      width: 12rem;
+      height: 12rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .landing-hero__illustration-img {
+      width: 14rem;
+      height: 14rem;
+    }
   }
 
   .landing-hero__category {
@@ -287,7 +403,7 @@ function otaCategoryClass(cat: string | null): string {
     color: var(--cat-color, var(--text-body-muted));
     text-transform: uppercase;
     letter-spacing: var(--text-eyebrow-ls);
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--space-global-xs);
   }
 
   .landing-hero__title {
@@ -296,22 +412,22 @@ function otaCategoryClass(cat: string | null): string {
     font-weight: var(--heading-weight-h1);
     color: var(--text-heading);
     margin: 0;
-    line-height: 1.15;
+    line-height: var(--lh-display);
   }
 
-  /* --- Body (overview / curriculum / objectives) --- */
+  /* --- §2 Body (overview / curriculum / objectives) --- */
   .landing-body :global(.prose) {
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-prose-size-body);
     color: var(--text-body);
-    line-height: 1.7;
+    line-height: var(--lh-prose);
   }
 
   .landing-body :global(.prose h2) {
     font-family: var(--font-tailor-heading-stack);
     font-size: var(--text-prose-size-h2);
     font-weight: var(--heading-weight-h2);
-    color: var(--text-heading);
+    color: var(--brand-accent-text);
     margin-top: var(--space-global-lg);
     margin-bottom: var(--space-global-sm);
   }
@@ -344,15 +460,59 @@ function otaCategoryClass(cat: string | null): string {
     text-decoration: underline;
   }
 
-  /* --- Sections --- */
-  .landing-section {
-    border-top: var(--border-width-xs) solid var(--border-subtle);
+  /* --- §3 Curriculum mapping --- */
+  .landing-curriculum__summary {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body);
+    line-height: var(--lh-prose);
+    margin: 0 0 var(--space-global-md);
   }
 
-  .landing-section--alt {
-    background: var(--bg-surface-alt);
+  .curriculum-detail__toggle {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    font-weight: var(--font-weight-semibold);
+    color: var(--brand-accent-text);
+    cursor: pointer;
   }
 
+  .curriculum-detail__content h3 {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h3);
+    font-weight: var(--heading-weight-h3);
+    color: var(--text-heading);
+    margin-top: var(--space-global-md);
+    margin-bottom: var(--space-global-xs);
+  }
+
+  .curriculum-detail__content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .curriculum-detail__content li {
+    margin-bottom: var(--space-global-xs);
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .curriculum-statement__text {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body);
+    font-style: italic;
+  }
+
+  .curriculum-statement__ref {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+  }
+
+  /* --- Shared section title --- */
   .landing-section__title {
     font-family: var(--font-tailor-heading-stack);
     font-size: var(--text-prose-size-h2);
@@ -361,84 +521,23 @@ function otaCategoryClass(cat: string | null): string {
     margin: 0 0 var(--space-global-md);
   }
 
-  /* --- Question list --- */
-  .question-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  /* --- §4 Questions --- */
+  .landing-questions__stack {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--space-global-md);
   }
 
-  .question-list__item {
+  .landing-questions__more {
     display: flex;
-    align-items: baseline;
-    gap: var(--space-global-xs);
-    padding: 0.75rem 1rem;
-    background: var(--bg-surface);
-    border: var(--border-width-xs) solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    transition: border-color var(--transition-duration) var(--transition-easing);
+    justify-content: center;
+    margin-top: var(--space-global-xl);
   }
 
-  .question-list__item:hover {
-    border-color: var(--brand-accent);
-  }
-
-  .question-list__link {
-    flex: 1;
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-prose-size-body);
-    color: var(--brand-accent-text);
-    text-decoration: none;
-    font-weight: var(--font-weight-medium);
-  }
-
-  .question-list__link:hover {
-    text-decoration: underline;
-  }
-
-  /* --- Glossary grid --- */
-  .glossary-grid {
+  /* --- §5 Blog cards --- */
+  .landing-blog__grid {
     display: grid;
-    gap: var(--space-global-sm);
-    margin: 0;
-  }
-
-  .glossary-grid__item {
-    padding: 0.75rem 1rem;
-    background: var(--bg-surface);
-    border: var(--border-width-xs) solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-  }
-
-  .glossary-grid__term {
-    font-family: var(--font-tailor-body-stack);
-    font-weight: var(--font-weight-semibold);
-    color: var(--text-heading);
-    margin-bottom: 0.25rem;
-  }
-
-  .glossary-grid__term a {
-    color: var(--brand-accent-text);
-    text-decoration: none;
-  }
-
-  .glossary-grid__term a:hover {
-    text-decoration: underline;
-  }
-
-  .glossary-grid__def {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-card-size-body);
-    color: var(--text-body-muted);
-    margin: 0;
-  }
-
-  /* --- Blog cards --- */
-  .blog-cards {
-    display: grid;
+    grid-template-columns: 1fr;
     gap: var(--space-global-sm);
   }
 
@@ -450,19 +549,19 @@ function otaCategoryClass(cat: string | null): string {
   .blog-card__author {
     font-size: var(--text-card-size-body);
     color: var(--text-body-muted);
-    margin-top: 0.25rem;
+    margin-top: var(--space-global-xs);
   }
 
-  /* --- Related topics --- */
-  .related-topics {
+  /* --- §7 Related topic pills --- */
+  .landing-related__pills {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-global-xs);
   }
 
-  .related-topics__link {
+  .landing-pill {
     display: inline-block;
-    padding: 0.5rem 1rem;
+    padding: var(--space-global-xs) var(--space-global-sm);
     background: var(--bg-surface);
     border: var(--border-width-xs) solid var(--border-subtle);
     border-radius: var(--radius-pill);
@@ -475,24 +574,20 @@ function otaCategoryClass(cat: string | null): string {
                 color var(--transition-duration) var(--transition-easing);
   }
 
-  .related-topics__link:hover {
+  .landing-pill:hover {
     border-color: var(--brand-accent);
     color: var(--brand-accent-text);
   }
 
   /* --- Responsive --- */
-  @media (min-width: 768px) {
-    .glossary-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .blog-cards {
+  @media (min-width: 640px) {
+    .landing-blog__grid {
       grid-template-columns: repeat(2, 1fr);
     }
   }
 
   @media (min-width: 1024px) {
-    .blog-cards {
+    .landing-blog__grid {
       grid-template-columns: repeat(3, 1fr);
     }
   }
