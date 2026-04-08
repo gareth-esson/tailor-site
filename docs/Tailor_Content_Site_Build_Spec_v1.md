@@ -350,7 +350,7 @@ One page, one URL, two views. Both views are rendered in the HTML at build time.
   Posts where Service Link matches this service type.
 
   Topics overview grid:
-  Selection of the 22 landing pages as browsable cards.
+  Selection of the 23 landing pages as browsable cards.
   Same grid across all service pages — shows breadth.
   Links to /topics/{slug}.
 
@@ -437,7 +437,7 @@ No services CTA on glossary pages. The pathway is: glossary → landing page →
 | Position | CTA | Target | Logic |
 |----------|-----|--------|-------|
 | Below service description | [A13] "Enquire about [service]" | Enquiry form [E1] pre-tagged | Always present — this is the conversion action |
-| Below testimonial/blog section | Topics overview grid | 22 landing pages as browsable cards | Always present — shows breadth |
+| Below testimonial/blog section | Topics overview grid | 23 landing pages as browsable cards | Always present — shows breadth |
 | Bottom of page | [A13] "Enquire about [service]" (repeated) | Enquiry form [E1] pre-tagged | Same CTA repeated at bottom |
 
 ### Homepage [B1]

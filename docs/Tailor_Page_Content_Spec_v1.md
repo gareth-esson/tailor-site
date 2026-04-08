@@ -47,7 +47,7 @@ The persistent top-level navigation bar on every page.
 ### A3 — Navigation
 
 **Primary navigation items:**
-- Topics (→ mega menu D8 showing 22 landing pages grouped by 7 app categories)
+- Topics (→ mega menu D8 showing 23 landing pages grouped by 7 app categories)
 - Okay to Ask (→ `/questions/`)
 - RSE Delivery (→ dropdown containing:)
   - RSE for primary schools
@@ -305,7 +305,7 @@ Blog posts (C4) have author bylines (the team member who wrote it). The book cre
    - Link to `/our-approach`
 
 7. **Topics overview**
-   - The 22 landing pages grouped by the 7 app categories, or a visual browse-by-category element
+   - The 23 landing pages grouped by the 7 app categories, or a visual browse-by-category element
    - Links into `/topics/{slug}` landing pages
    - This is a teacher-facing section — shows the breadth of what Tailor covers
 
@@ -443,7 +443,7 @@ Blog posts (C4) have author bylines (the team member who wrote it). The book cre
 
 2. **Book promotion** — "The Okay to Ask book" — cover image, one-line pitch, purchase CTA → B11. This is a hero-level element, not a sidebar ad. The book is the physical embodiment of the Okay to Ask project and deserves prominent placement on its home page.
 
-3. **Browse by category** — the 7 Okay to Ask categories (Anatomy, Puberty, Relationships, Sex, Sexual Health, Sex & the Law, Contraception & Pregnancy). Each filterable to show questions within. These are the book categories — distinct from the app's 7 categories and the website's 22 landing page groupings.
+3. **Browse by category** — the 7 Okay to Ask categories (Anatomy, Puberty, Relationships, Sex, Sexual Health, Sex & the Law, Contraception & Pregnancy). Each filterable to show questions within. These are the book categories — distinct from the app's 7 categories and the website's 23 landing page groupings.
 
 4. **Question list** — all published questions, filterable by the 7 categories above. Each shows: question title (as a link), category tag. Could also show the post-it image as a thumbnail.
 
@@ -669,7 +669,7 @@ Three instances: `/services/delivery`, `/services/drop-days`, `/services/rse-pol
 
 7. **Related blog posts** — posts where Service Link matches this service type.
 
-8. **Topics overview grid** — a selection of the 22 landing pages as a browsable visual grid. Shows the breadth of what Tailor covers. Not mapped to this specific service — same grid across all service pages. Links to `/topics/{slug}`.
+8. **Topics overview grid** — a selection of the 23 landing pages as a browsable visual grid. Shows the breadth of what Tailor covers. Not mapped to this specific service — same grid across all service pages. Links to `/topics/{slug}`.
 
 9. **CTA: enquiry repeated (A13)** — same CTA as section 5, repeated at the bottom of the page for readers who've scrolled through everything.
 
@@ -754,7 +754,7 @@ Three instances: `/services/delivery`, `/services/drop-days`, `/services/rse-pol
 
 ### D8 — Topics mega menu
 
-**What it is:** A dropdown or flyout panel that expands from the "Topics" item in the main navigation (A3). Shows all 22 topic landing pages grouped by the 7 app categories.
+**What it is:** A dropdown or flyout panel that expands from the "Topics" item in the main navigation (A3). Shows all 23 topic landing pages grouped by the 7 app categories.
 
 **Contains:**
 1. 7 category headings (Relationships, Sex & Sexual Health, Puberty & The Body, Identity & Diversity, Online Safety & Media, Safety & Safeguarding, Health & Wellbeing)
@@ -765,7 +765,7 @@ Three instances: `/services/delivery`, `/services/drop-days`, `/services/rse-pol
 
 **Mobile:** Within the mobile navigation (D3). Either an expandable accordion by category, or a scrollable sub-menu. All 22 pages must be reachable.
 
-**Design note:** The category headings are not clickable pages — they're organisational labels. The clickable items are the 22 landing pages beneath them.
+**Design note:** The category headings are not clickable pages — they're organisational labels. The clickable items are the 23 landing pages beneath them.
 
 ---
 

@@ -51,7 +51,7 @@ tailoreducation.org.uk/
 │   └── /blog/{slug}            → Teacher-facing editorial blog posts
 │
 ├── LANDING PAGE LAYER (audience: teachers — the bridge between showcase and content)
-│   └── /topics/{slug}          → 22 landing pages (see landing pages section)
+│   └── /topics/{slug}          → 23 landing pages (see landing pages section)
 │       ├── Topic overview and why it matters
 │       ├── Aggregates relevant granular topics from the 87-topic app taxonomy
 │       ├── "Questions young people ask" → links to Okay to Ask questions
@@ -330,7 +330,7 @@ Blog posts are not orphans. They link and are linked:
 
 ## Landing pages — the bridge
 
-22 landing pages at `/topics/{slug}` are the structural backbone of the teacher-facing website. They are not the 87 granular app topics — they are a smaller, SEO-driven set of pages determined by keyword research and competitor analysis (documented in Tailor_Landing_Page_Proposal.md).
+23 landing pages at `/topics/{slug}` are the structural backbone of the teacher-facing website. They are not the 87 granular app topics — they are a smaller, SEO-driven set of pages determined by keyword research and competitor analysis (documented in Tailor_Landing_Page_Proposal.md).
 
 Each landing page aggregates one or more of the 87 granular app topics. The 87 topics continue to power the app's filtering system. The landing pages are the public website's navigation and SEO structure that sits on top of that taxonomy.
 
@@ -338,19 +338,19 @@ Each landing page aggregates one or more of the 87 granular app topics. The 87 t
 
 **For young people:** A curated list of real questions other young people have asked about this topic, plus key glossary terms explained in accessible language.
 
-**For SEO:** Each landing page is the canonical authority page for that subject, supported by a cluster of specific question pages, glossary definitions, and blog posts. The 22-page structure targets the terms teachers actually search for, validated by Search Console data and competitor analysis.
+**For SEO:** Each landing page is the canonical authority page for that subject, supported by a cluster of specific question pages, glossary definitions, and blog posts. The 23-page structure targets the terms teachers actually search for, validated by Search Console data and competitor analysis.
 
-The 22 landing pages, grouped by the 7 app categories:
+The 23 landing pages, grouped by the 7 app categories:
 
 | Category | Landing pages |
 |----------|-------------|
-| Relationships | Consent, Healthy relationships, Friendships, Families, Positive sexuality and intimacy |
+| Relationships | Consent, Healthy relationships, Friendships, Families, Sex and intimacy |
 | Sex & Sexual Health | Contraception, STIs and sexual health, Pregnancy and reproductive health, Sex and the law |
-| Puberty & The Body | Puberty, Body image |
-| Identity & Diversity | LGBTQ+ inclusion, Masculinity and misogyny, Stereotypes prejudice and discrimination |
+| Puberty & The Body | Puberty, Body image, Bodies and anatomy |
+| Identity & Diversity | LGBTQ+ inclusion, Masculinity and misogyny, Gender stereotypes and discrimination |
 | Online Safety & Media | Online safety, Sexting and sharing nudes, Pornography and media literacy |
 | Safety & Safeguarding | Abuse exploitation and violence, FGM and harmful practices, Personal safety |
-| Health & Wellbeing | Mental health and wellbeing, Drugs alcohol and vaping |
+| Health & Wellbeing | Mental health and wellbeing, Self-esteem |
 
 These groupings are used in the topics mega menu (D8) in the site navigation.
 
@@ -358,7 +358,7 @@ Five additional cross-cutting service/audience pages also use the landing page t
 
 ### Okay to Ask browsing categories
 
-The Okay to Ask landing page (`/questions/`) uses a separate set of 7 categories for browsing questions: Anatomy, Puberty, Relationships, Sex, Sexual Health, Sex & the Law, Contraception & Pregnancy. These are the book categories — the reader's mental model, not the app's filtering taxonomy. They are distinct from both the 7 app categories and the 22 landing page groupings.
+The Okay to Ask landing page (`/questions/`) uses a separate set of 7 categories for browsing questions: Anatomy, Puberty, Relationships, Sex, Sexual Health, Sex & the Law, Contraception & Pregnancy. These are the book categories — the reader's mental model, not the app's filtering taxonomy. They are distinct from both the 7 app categories and the 23 landing page groupings.
 
 ---
 
@@ -454,7 +454,7 @@ The library browse experience is already publicly accessible without authenticat
 
 ### 2. Topic and landing page alignment
 
-The app's 87 granular topics power filtering in the app. The website's 22 landing pages are the public-facing structure. Each landing page maps to one or more granular app topics. The granular topic slugs are used in the app; the landing page slugs are used on the website. When a landing page links to "Explore ready-made lessons on Consent →", it deep-links to the app's library filtered by the relevant granular topic slug(s). Coordination is needed when granular topic slugs change.
+The app's 87 granular topics power filtering in the app. The website's 23 landing pages are the public-facing structure. Each landing page maps to one or more granular app topics. The granular topic slugs are used in the app; the landing page slugs are used on the website. When a landing page links to "Explore ready-made lessons on Consent →", it deep-links to the app's library filtered by the relevant granular topic slug(s). Coordination is needed when granular topic slugs change.
 
 ### 3. SEO metadata on public app pages
 
@@ -466,7 +466,7 @@ Every publicly accessible app page needs unique titles, meta descriptions, OG ta
 - `tailoreducation.org.uk` → Astro content site
 - `app.tailoreducation.org.uk` → Next.js Tailor app
 
-Two separate Vercel projects. The content site is the SEO engine (152 question pages, 22 landing pages, glossary, blog). The app is a tool behind auth. Keeping them separate means the Astro site builds without touching the existing Next.js codebase, and deployments are independent. Can consolidate to a single domain later if SEO data justifies it.
+Two separate Vercel projects. The content site is the SEO engine (152 question pages, 23 landing pages, glossary, blog). The app is a tool behind auth. Keeping them separate means the Astro site builds without touching the existing Next.js codebase, and deployments are independent. Can consolidate to a single domain later if SEO data justifies it.
 
 **Vanity domains (all redirect, no separate hosting):**
 - `oktoask.co.uk`, `oktoask.org.uk`, `okaytoask.co.uk`, `okaytoask.org.uk` → `tailoreducation.org.uk/questions/`
@@ -550,7 +550,7 @@ Migration requirements are in the build spec.
 | **Stack** | Astro + Notion + Vercel | Same | Same | Next.js + Drizzle + Neon |
 | **Visual identity** | Professional, expert | Warm, informal, post-it motif | Professional (Tailor brand) | Functional, clean |
 
-The website is the public face. Okay to Ask is the emotional front door for young people. The blog builds teacher trust and feeds the services funnel. The app is the professional tool. The 22 landing pages connect the content layer to the services layer. The 87-topic app taxonomy powers filtering in the app and tagging across all content. All contribute to SEO on a single domain.
+The website is the public face. Okay to Ask is the emotional front door for young people. The blog builds teacher trust and feeds the services funnel. The app is the professional tool. The 23 landing pages connect the content layer to the services layer. The 87-topic app taxonomy powers filtering in the app and tagging across all content. All contribute to SEO on a single domain.
 
 ---
 
@@ -559,7 +559,7 @@ The website is the public face. Okay to Ask is the emotional front door for youn
 - **Tailor_Content_Site_Build_Spec_v1.md** — implementation detail: page templates, CTA placement, search, analytics, Notion schemas, content pipeline, SEO infrastructure, 301 redirects
 - **Tailor_Site_Structure_v1.md** — complete component and page inventory with reference codes (A1–A17, B1–B13, C1–C5, D1–D8, E1)
 - **Tailor_Page_Content_Spec_v1.md** — content specification for every page, template, and component
-- **Tailor_Landing_Page_Proposal.md** — research and evidence for the 22 landing pages (Search Console data, keyword research, competitor analysis)
+- **Tailor_Landing_Page_Proposal.md** — research and evidence for the 23 landing pages (Search Console data, keyword research, competitor analysis)
 - **Ok_to_Ask_Writing_Prompt.md** — full editorial voice guidelines, structure rules, Notion workflow
 - **Ok_to_Ask_Approved_Answers.md** — finalised question answers for voice reference
 - **Ok_to_Ask_Meta_Optimisation_v1.md** — SEO meta title/description optimisation for top performing pages
@@ -568,4 +568,4 @@ The website is the public face. Okay to Ask is the emotional front door for youn
 
 ---
 
-*Document version: 4.2 | Date: 4 April 2026 | Status: All question answers launch-ready (standard and simple). Glossary complete (definitions, explainers, simple versions — diagrams post-launch). Blog posts planned (~20). Okay to Ask book complete. 22 landing pages defined and populated. All Notion databases ready. Website build ready to start. Domains secured. App public browse layer confirmed working.*
+*Document version: 4.2 | Date: 4 April 2026 | Status: All question answers launch-ready (standard and simple). Glossary complete (definitions, explainers, simple versions — diagrams post-launch). Blog posts planned (~20). Okay to Ask book complete. 23 landing pages defined and populated. All Notion databases ready. Website build ready to start. Domains secured. App public browse layer confirmed working.*

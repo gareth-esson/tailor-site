@@ -12,9 +12,9 @@ The scanned handwritten question images. Used as hero image on each question pag
 
 ---
 
-## 2. Topic illustrations (EXIST — 22)
+## 2. Topic illustrations (EXIST — 23)
 
-One illustration per landing page. Used as hero/header element on each of the 22 topic landing pages (C3).
+One illustration per landing page. Used as hero/header element on each of the 23 topic landing pages (C3).
 
 **Action needed:** Confirm format, sizing, and whether they work at both full-width hero and smaller card/thumbnail sizes (for the homepage topics overview grid and service page topics grid).
 
@@ -121,7 +121,7 @@ One illustration per landing page. Used as hero/header element on each of the 22
 | **"Key terms"** | Section 7 on all landing pages | The glossary — definitions and vocabulary. **Option A:** An open dictionary or book with a magnifying glass over a word — "understand the language." **Option B:** A lightbulb with the letter "A" or a word inside — illumination, clarity. **Option C:** Building blocks with letters on them — foundational vocabulary being assembled. Should feel accessible and helpful, not academic. |
 | **"For teachers"** | Section 8 on all landing pages | Blog posts and further reading for professional development. **Option A:** An open newspaper or article with a coffee cup beside it — "read this when you have a moment." **Option B:** A bookmark tucked into a page — "save this for later." **Option C:** A pair of reading glasses resting on a document — the professional reader. Should feel inviting, not homework-ish. |
 
-4 illustrations. Reused across all 22 landing pages. They mark section transitions and make the pages feel editorially structured rather than flat.
+4 illustrations. Reused across all 23 landing pages. They mark section transitions and make the pages feel editorially structured rather than flat.
 
 ---
 
@@ -254,7 +254,7 @@ public/images/
 │   ├── consent.webp
 │   ├── healthy-relationships.webp
 │   ├── friendships.webp
-│   └── ... (22 files, named by landing page slug)
+│   └── ... (23 files, named by landing page slug)
 │
 ├── spots/
 │   ├── homepage/
@@ -329,7 +329,7 @@ public/images/
 
 ### Already exist (~176 assets):
 - 152 post-it scans
-- 22 topic illustrations
+- 23 topic illustrations
 - Logos (Tailor, OtA, Guess Design House)
 - Book cover
 

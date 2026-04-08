@@ -48,7 +48,7 @@ Three instances: delivery, drop-days, consultancy. Tailor layer.
 3. **CTA [A13]** — "Enquire about [service]" → enquiry form pre-tagged
 4. **Testimonial** — pull quote (placeholder content for now)
 5. **Related blog posts** — posts where Service Link matches this service type
-6. **Topics overview grid** — 22 landing pages as browsable cards. Same grid on all service pages.
+6. **Topics overview grid** — 23 landing pages as browsable cards. Same grid on all service pages.
 7. **CTA [A13] repeated** — same enquiry CTA at bottom
 
 ## Homepage [B1] (`/`)
@@ -61,7 +61,7 @@ The most important page. Tailor layer for the shell, but the Okay to Ask section
 4. **What Tailor Education does** — 2–3 brief points linking to relevant sections
 5. **Featured questions** — 3–5 question titles with post-it images, linking to question pages
 6. **Trust signals** — framework alignment, testimonial pull quote, link to `/our-approach`
-7. **Topics overview** — 22 landing pages grouped by category, or a browse element
+7. **Topics overview** — 23 landing pages grouped by category, or a browse element
 
 ## Other showcase pages
 

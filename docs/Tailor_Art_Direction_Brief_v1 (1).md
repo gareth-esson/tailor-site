@@ -274,7 +274,7 @@ The end-of-answer panel (A17) should feel like a natural continuation of help, n
 
 ### Topic landing pages (C3)
 
-The 22 landing pages are the bridge between public trust content and practical teacher intent. They should feel the most editorial.
+The 23 landing pages are the bridge between public trust content and practical teacher intent. They should feel the most editorial.
 
 They should feel like: "this is the well-made central page on this subject." Strong hierarchy, rich sectioning, a clear sense of progression, visual confidence that makes the page feel canonical.
 
@@ -312,7 +312,7 @@ Topics and Okay to Ask are the two highest-traffic sections. The same shell must
 
 Navigation should be: calm, obvious, robust, not over-minimal, visually strong enough to orient two audiences.
 
-The mega menu (D8) shows all 22 topic landing pages grouped by the 7 app categories. It should feel like a well-organised knowledge map, not a trendy nav flourish.
+The mega menu (D8) shows all 23 topic landing pages grouped by the 7 app categories. It should feel like a well-organised knowledge map, not a trendy nav flourish.
 
 ---
 

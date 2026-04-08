@@ -6,7 +6,7 @@
 
 ## What you're building
 
-The 22 topic landing pages (C3), the site header with navigation (A1, A3), the topics mega menu (D8), and the Okay to Ask landing page (B8). These are the structural backbone of the teacher-facing site and the front door for young people.
+The 23 topic landing pages (C3), the site header with navigation (A1, A3), the topics mega menu (D8), and the Okay to Ask landing page (B8). These are the structural backbone of the teacher-facing site and the front door for young people.
 
 ## What already exists
 
@@ -21,7 +21,7 @@ Read the existing codebase before making changes.
 ```
 docs/Tailor_Content_Site_Build_Spec_v1.md           — sections 3.3, 4, and 5
 docs/Tailor_Page_Content_Spec_v1.md                  — sections C3, B8, A1, A2, A3, D8
-docs/Tailor_Site_Structure_v1.md                     — full list of 22 landing pages and 5 cross-cutting pages
+docs/Tailor_Site_Structure_v1.md                     — full list of 23 landing pages and 5 cross-cutting pages
 docs/Tailor_Design_System_Implementation_Notes.md    — token reference
 ```
 
@@ -55,7 +55,7 @@ Build in content hierarchy order:
 
 Default layer — Lexend throughout, neutral surfaces, teal accent. No `.layer-ota` on these pages.
 
-## The 22 landing pages
+## The 23 landing pages
 
 | # | Title | Slug | Category |
 |---|-------|------|----------|
@@ -63,24 +63,25 @@ Default layer — Lexend throughout, neutral surfaces, teal accent. No `.layer-o
 | 2 | Healthy relationships | healthy-relationships | Relationships |
 | 3 | Friendships | friendships | Relationships |
 | 4 | Families | families | Relationships |
-| 5 | Positive sexuality and intimacy | positive-sexuality-and-intimacy | Relationships |
+| 5 | Sex and intimacy | sex-and-intimacy | Relationships |
 | 6 | Contraception | contraception | Sex & Sexual Health |
 | 7 | STIs and sexual health | stis-and-sexual-health | Sex & Sexual Health |
 | 8 | Pregnancy and reproductive health | pregnancy-and-reproductive-health | Sex & Sexual Health |
 | 9 | Sex and the law | sex-and-the-law | Sex & Sexual Health |
 | 10 | Puberty | puberty | Puberty & The Body |
 | 11 | Body image | body-image | Puberty & The Body |
-| 12 | LGBTQ+ inclusion | lgbtq-inclusion | Identity & Diversity |
-| 13 | Masculinity and misogyny | masculinity-and-misogyny | Identity & Diversity |
-| 14 | Stereotypes, prejudice and discrimination | stereotypes-prejudice-and-discrimination | Identity & Diversity |
-| 15 | Online safety | online-safety | Online Safety & Media |
-| 16 | Sexting and sharing nudes | sexting-and-sharing-nudes | Online Safety & Media |
-| 17 | Pornography and media literacy | pornography-and-media-literacy | Online Safety & Media |
-| 18 | Abuse, exploitation and violence | abuse-exploitation-and-violence | Safety & Safeguarding |
-| 19 | FGM and harmful practices | fgm-and-harmful-practices | Safety & Safeguarding |
-| 20 | Personal safety | personal-safety | Safety & Safeguarding |
-| 21 | Mental health and wellbeing | mental-health-and-wellbeing | Health & Wellbeing |
-| 22 | Drugs, alcohol and vaping | drugs-alcohol-and-vaping | Health & Wellbeing |
+| 12 | Bodies and anatomy | bodies-and-anatomy | Puberty & The Body |
+| 13 | LGBTQ+ inclusion | lgbtq-inclusion | Identity & Diversity |
+| 14 | Masculinity and misogyny | masculinity-and-misogyny | Identity & Diversity |
+| 15 | Gender stereotypes and discrimination | gender-stereotypes-and-discrimination | Identity & Diversity |
+| 16 | Online safety | online-safety | Online Safety & Media |
+| 17 | Sexting and sharing nudes | sexting-and-sharing-nudes | Online Safety & Media |
+| 18 | Pornography and media literacy | pornography-and-media-literacy | Online Safety & Media |
+| 19 | Abuse, exploitation and violence | abuse-exploitation-and-violence | Safety & Safeguarding |
+| 20 | FGM and harmful practices | fgm-and-harmful-practices | Safety & Safeguarding |
+| 21 | Personal safety | personal-safety | Safety & Safeguarding |
+| 22 | Mental health and wellbeing | mental-health-and-wellbeing | Health & Wellbeing |
+| 23 | Self-esteem | self-esteem | Health & Wellbeing |
 
 ## Site header and navigation [A1, A3]
 
@@ -98,7 +99,7 @@ Build the real header now. It appears on every page and must work for both layer
 
 ## Topics mega menu [D8]
 
-Expands from the "Topics" nav item. Shows all 22 landing pages grouped by the 7 app categories.
+Expands from the "Topics" nav item. Shows all 23 landing pages grouped by the 7 app categories.
 
 **Desktop:** Multi-column layout. Each category is a group heading with its landing pages listed beneath. All 22 visible without scrolling.
 
@@ -125,7 +126,7 @@ Contains: Tailor Education branding, Okay to Ask attribution ("Okay to Ask is a 
 
 ## What "done" looks like
 
-1. All 22 landing pages render with aggregated questions, glossary terms, and (conditional) blog posts
+1. All 23 landing pages render with aggregated questions, glossary terms, and (conditional) blog posts
 2. The mega menu shows all 22 pages grouped correctly by category
 3. The header appears on every page with working navigation links
 4. The footer appears on every page with correct content

@@ -59,7 +59,7 @@ Each of these is a one-off page with its own layout. Not templated.
 | **B5** | Services hub | `/services` | Brief description of each service line with cards linking to individual service pages. Landing page for "RSE services for schools" queries. |
 | **B6** | Testimonials | `/testimonials` | School and teacher testimonials. Attributable where possible (school name, role). Case-study style where available. |
 | **B7** | Contact | `/contact` | May include the enquiry form (E1) inline, or may be a simpler page linking to it. General contact information. |
-| **B8** | Okay to Ask landing | `/questions/` | Browse all questions. The front door for young people. Must feel like Okay to Ask (warm, informal, post-it motif), not the B2B showcase. Filterable by the 7 Okay to Ask categories: Anatomy, Puberty, Relationships, Sex, Sexual Health, Sex & the Law, Contraception & Pregnancy. These are the book categories and the young-person browsing structure — distinct from the app's 87 topics and the website's 22 landing page groupings. Includes a book promotion hero/CTA ("Get the Okay to Ask book" → B11). May include featured/popular questions. |
+| **B8** | Okay to Ask landing | `/questions/` | Browse all questions. The front door for young people. Must feel like Okay to Ask (warm, informal, post-it motif), not the B2B showcase. Filterable by the 7 Okay to Ask categories: Anatomy, Puberty, Relationships, Sex, Sexual Health, Sex & the Law, Contraception & Pregnancy. These are the book categories and the young-person browsing structure — distinct from the app's 87 topics and the website's 23 landing page groupings. Includes a book promotion hero/CTA ("Get the Okay to Ask book" → B11). May include featured/popular questions. |
 | **B9** | Blog index | `/blog/` | List of all blog posts. Filterable by topic, category, or audience. Sorted by date (newest first). |
 | **B10** | Search results | `/search?q={query}` | Full search results page. Results grouped by content type (Questions, Glossary, Topics, Blog, Services). Up to 5 per group with "Show all" toggle. |
 | **B11** | Book page | `/book` | Okay to Ask book — what it is, what's inside, who it's for, purchase CTA. Linked from every question page via the end-of-answer panel (A17). Purchase via Stripe payment link. Okay to Ask visual identity. |
@@ -93,24 +93,25 @@ These are the teacher-facing website landing pages that sit on top of the 87 gra
 | 2 | Healthy relationships | healthy-relationships | Relationships |
 | 3 | Friendships | friendships | Relationships |
 | 4 | Families | families | Relationships |
-| 5 | Positive sexuality and intimacy | positive-sexuality-and-intimacy | Relationships |
+| 5 | Sex and intimacy | sex-and-intimacy | Relationships |
 | 6 | Contraception | contraception | Sex & Sexual Health |
 | 7 | STIs and sexual health | stis-and-sexual-health | Sex & Sexual Health |
 | 8 | Pregnancy and reproductive health | pregnancy-and-reproductive-health | Sex & Sexual Health |
 | 9 | Sex and the law | sex-and-the-law | Sex & Sexual Health |
 | 10 | Puberty | puberty | Puberty & The Body |
 | 11 | Body image | body-image | Puberty & The Body |
-| 12 | LGBTQ+ inclusion | lgbtq-inclusion | Identity & Diversity |
-| 13 | Masculinity and misogyny | masculinity-and-misogyny | Identity & Diversity |
-| 14 | Stereotypes, prejudice and discrimination | stereotypes-prejudice-and-discrimination | Identity & Diversity |
-| 15 | Online safety | online-safety | Online Safety & Media |
-| 16 | Sexting and sharing nudes | sexting-and-sharing-nudes | Online Safety & Media |
-| 17 | Pornography and media literacy | pornography-and-media-literacy | Online Safety & Media |
-| 18 | Abuse, exploitation and violence | abuse-exploitation-and-violence | Safety & Safeguarding |
-| 19 | FGM and harmful practices | fgm-and-harmful-practices | Safety & Safeguarding |
-| 20 | Personal safety | personal-safety | Safety & Safeguarding |
-| 21 | Mental health and wellbeing | mental-health-and-wellbeing | Health & Wellbeing |
-| 22 | Drugs, alcohol and vaping | drugs-alcohol-and-vaping | Health & Wellbeing |
+| 12 | Bodies and anatomy | bodies-and-anatomy | Puberty & The Body |
+| 13 | LGBTQ+ inclusion | lgbtq-inclusion | Identity & Diversity |
+| 14 | Masculinity and misogyny | masculinity-and-misogyny | Identity & Diversity |
+| 15 | Gender stereotypes and discrimination | gender-stereotypes-and-discrimination | Identity & Diversity |
+| 16 | Online safety | online-safety | Online Safety & Media |
+| 17 | Sexting and sharing nudes | sexting-and-sharing-nudes | Online Safety & Media |
+| 18 | Pornography and media literacy | pornography-and-media-literacy | Online Safety & Media |
+| 19 | Abuse, exploitation and violence | abuse-exploitation-and-violence | Safety & Safeguarding |
+| 20 | FGM and harmful practices | fgm-and-harmful-practices | Safety & Safeguarding |
+| 21 | Personal safety | personal-safety | Safety & Safeguarding |
+| 22 | Mental health and wellbeing | mental-health-and-wellbeing | Health & Wellbeing |
+| 23 | Self-esteem | self-esteem | Health & Wellbeing |
 
 **Cross-cutting service/audience pages — nav placement resolved:**
 
@@ -141,7 +142,7 @@ States, modals, and interactive behaviours that need wireframing.
 | **D5** | Simple Mode transition | What happens visually when the reader toggles between Standard and Simple. Swap? Fade? Instant? This is a micro-interaction decision. |
 | **D6** | Enquiry form states | Empty, partially filled, validation errors, success confirmation. |
 | **D7** | Dual-answer layout | For the ~10–15% of questions with two age-differentiated answers on the same page. How are the two answers labelled and laid out? |
-| **D8** | Topics mega menu | Desktop: expands from "Topics" nav item. Shows all 22 topic landing pages grouped by category (5 groups). Mobile: within the mobile nav (D3), either as an expandable section or a sub-menu. |
+| **D8** | Topics mega menu | Desktop: expands from "Topics" nav item. Shows all 23 topic landing pages grouped by category (5 groups). Mobile: within the mobile nav (D3), either as an expandable section or a sub-menu. |
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 /**
- * Topics overview grid — reusable 22-topic browse component.
+ * Topics overview grid — reusable 23-topic browse component.
  * Used on service pages [C5], homepage [B1], and training [B4].
  * Shows all landing pages grouped by 7 app categories.
  */
@@ -14,7 +14,7 @@ const categories = [
       { title: 'Healthy relationships', slug: 'healthy-relationships' },
       { title: 'Friendships', slug: 'friendships' },
       { title: 'Families', slug: 'families' },
-      { title: 'Positive sexuality and intimacy', slug: 'positive-sexuality-and-intimacy' },
+      { title: 'Sex and intimacy', slug: 'sex-and-intimacy' },
     ],
   },
   {
@@ -33,6 +33,7 @@ const categories = [
     pages: [
       { title: 'Puberty', slug: 'puberty' },
       { title: 'Body image', slug: 'body-image' },
+      { title: 'Bodies and anatomy', slug: 'bodies-and-anatomy' },
     ],
   },
   {
@@ -41,7 +42,7 @@ const categories = [
     pages: [
       { title: 'LGBTQ+ inclusion', slug: 'lgbtq-inclusion' },
       { title: 'Masculinity and misogyny', slug: 'masculinity-and-misogyny' },
-      { title: 'Stereotypes, prejudice and discrimination', slug: 'stereotypes-prejudice-and-discrimination' },
+      { title: 'Gender stereotypes and discrimination', slug: 'gender-stereotypes-and-discrimination' },
     ],
   },
   {
@@ -67,7 +68,7 @@ const categories = [
     token: 'wellbeing',
     pages: [
       { title: 'Mental health and wellbeing', slug: 'mental-health-and-wellbeing' },
-      { title: 'Drugs, alcohol and vaping', slug: 'drugs-alcohol-and-vaping' },
+      { title: 'Self-esteem', slug: 'self-esteem' },
     ],
   },
 ];
@@ -77,7 +78,7 @@ const categories = [
   <div class="mx-auto max-w-5xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
     <h2 class="topics-overview__title">Topics we cover</h2>
     <p class="topics-overview__intro">
-      Expert-written RSE content across 22 curriculum-aligned topics.
+      Expert-written RSE content across 23 curriculum-aligned topics.
     </p>
     <div class="topics-overview__grid">
       {categories.map((cat) => (

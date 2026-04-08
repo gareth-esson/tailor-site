@@ -117,5 +117,18 @@ export default defineConfig({
       status: 301,
       destination: '/topics/',
     },
+    // Renamed landing pages (April 2026)
+    '/topics/positive-sexuality-and-intimacy': {
+      status: 301,
+      destination: '/topics/sex-and-intimacy',
+    },
+    '/topics/stereotypes-prejudice-and-discrimination': {
+      status: 301,
+      destination: '/topics/gender-stereotypes-and-discrimination',
+    },
+    '/topics/drugs-alcohol-and-vaping': {
+      status: 301,
+      destination: '/topics/',
+    },
   },
 });
