@@ -1,124 +1,182 @@
 ---
 /**
- * Topics index page — /topics/
- * Browse all 23 topic landing pages grouped by 7 app categories.
- * Tailor layer (default).
+ * Topics hub [B14] — /topics/
+ * Teacher-facing catalogue of all 23 RSHE topic landing pages.
+ * Filterable card grid with SVG illustrations, category filtering,
+ * and curriculum trust signal. Tailor layer (default).
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CtaBringToSchool from '../../components/CtaBringToSchool.astro';
+import { getLandingPages } from '../../lib/content';
+import { getTopicIllustrationPath } from '../../lib/topic-illustrations';
+import type { LandingPage } from '../../lib/types';
 
+const landingPages = await getLandingPages();
 
-/**
- * Same category data as TopicsMegaMenu — keeps them in sync.
- */
-const categories = [
-  {
-    name: 'Relationships',
-    token: 'relationships',
-    pages: [
-      { title: 'Consent', slug: 'consent' },
-      { title: 'Healthy relationships', slug: 'healthy-relationships' },
-      { title: 'Friendships', slug: 'friendships' },
-      { title: 'Families', slug: 'families' },
-      { title: 'Sex and intimacy', slug: 'sex-and-intimacy' },
-    ],
-  },
-  {
-    name: 'Sex & Sexual Health',
-    token: 'sexual-health',
-    pages: [
-      { title: 'Contraception', slug: 'contraception' },
-      { title: 'STIs and sexual health', slug: 'stis-and-sexual-health' },
-      { title: 'Pregnancy and reproductive health', slug: 'pregnancy-and-reproductive-health' },
-      { title: 'Sex and the law', slug: 'sex-and-the-law' },
-    ],
-  },
-  {
-    name: 'Puberty & The Body',
-    token: 'puberty',
-    pages: [
-      { title: 'Puberty', slug: 'puberty' },
-      { title: 'Body image', slug: 'body-image' },
-      { title: 'Bodies and anatomy', slug: 'bodies-and-anatomy' },
-    ],
-  },
-  {
-    name: 'Identity & Diversity',
-    token: 'identity',
-    pages: [
-      { title: 'LGBTQ+ inclusion', slug: 'lgbtq-inclusion' },
-      { title: 'Masculinity and misogyny', slug: 'masculinity-and-misogyny' },
-      { title: 'Gender stereotypes and discrimination', slug: 'gender-stereotypes-and-discrimination' },
-    ],
-  },
-  {
-    name: 'Online Safety & Media',
-    token: 'online-safety',
-    pages: [
-      { title: 'Online safety', slug: 'online-safety' },
-      { title: 'Sexting and sharing nudes', slug: 'sexting-and-sharing-nudes' },
-      { title: 'Pornography and media literacy', slug: 'pornography-and-media-literacy' },
-    ],
-  },
-  {
-    name: 'Safety & Safeguarding',
-    token: 'safety',
-    pages: [
-      { title: 'Abuse, exploitation and violence', slug: 'abuse-exploitation-and-violence' },
-      { title: 'FGM and harmful practices', slug: 'fgm-and-harmful-practices' },
-      { title: 'Personal safety', slug: 'personal-safety' },
-    ],
-  },
-  {
-    name: 'Health & Wellbeing',
-    token: 'wellbeing',
-    pages: [
-      { title: 'Mental health and wellbeing', slug: 'mental-health-and-wellbeing' },
-      { title: 'Self-esteem', slug: 'self-esteem' },
-    ],
-  },
+const categoryTokenMap: Record<string, string> = {
+  'Relationships': 'relationships',
+  'Sex & Sexual Health': 'sexual-health',
+  'Puberty & The Body': 'puberty',
+  'Identity & Diversity': 'identity',
+  'Online Safety & Media': 'online-safety',
+  'Safety & Safeguarding': 'safety',
+  'Health & Wellbeing': 'wellbeing',
+};
+
+// Ordered category list (preserve spec order, not data order)
+const categoryOrder = [
+  'Relationships',
+  'Sex & Sexual Health',
+  'Puberty & The Body',
+  'Identity & Diversity',
+  'Online Safety & Media',
+  'Safety & Safeguarding',
+  'Health & Wellbeing',
 ];
+
+// Sort landing pages by category order, then by their position within each category
+const sortedPages = [...landingPages].sort((a, b) => {
+  const catA = categoryOrder.indexOf(a.category || '');
+  const catB = categoryOrder.indexOf(b.category || '');
+  if (catA !== catB) return catA - catB;
+  return a.title.localeCompare(b.title);
+});
 ---
 
 <BaseLayout
-  title="Topics — Tailor Education"
-  description="Browse all RSE topics — relationships, puberty, sexual health, identity, online safety and more. Teaching resources from Tailor Education."
+  title="RSHE Topics — Tailor Education"
+  description="Browse all RSHE topics — relationships, puberty, sexual health, identity, online safety and more. Curriculum-aligned teaching resources from Tailor Education."
   canonicalPath="/topics/"
 >
-  <section class="topics-index">
-    <div class="mx-auto max-w-5xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
-      <h1 class="topics-index__title">RSE topics</h1>
-      <p class="topics-index__intro">
-        Expert guidance across 23 topics. Curriculum-aligned resources, key terminology, and the questions young people actually ask.
-      </p>
+  <div class="topics-hub">
 
-      <div class="topics-grid">
-        {categories.map((cat) => (
-          <div class="topics-grid__group">
-            <h2 class="topics-grid__heading" style={`--cat-color: var(--cat-${cat.token})`}>
-              {cat.name}
-            </h2>
-            <ul class="topics-grid__list" role="list">
-              {cat.pages.map((page) => (
-                <li>
-                  <a href={`/topics/${page.slug}`} class="topics-grid__link">
-                    {page.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+    <!-- §1 Hero -->
+    <section class="topics-hub__hero">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+        <h1 class="topics-hub__title">RSHE topics</h1>
+        <p class="topics-hub__intro">
+          Expert guidance across {sortedPages.length} curriculum-aligned topics. Resources, key terminology, and the questions young people actually ask — built for teachers, written by specialists.
+        </p>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <!-- §2 Category filter + topic card grid -->
+    <section class="topics-hub__grid-section">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+
+        <!-- Filter bar -->
+        <div class="topics-hub__filters" role="group" aria-label="Filter by category">
+          <button
+            class="topic-filter is-active"
+            data-category="all"
+            aria-pressed="true"
+          >All</button>
+          {categoryOrder.map((cat) => {
+            const token = categoryTokenMap[cat];
+            return (
+              <button
+                class="topic-filter"
+                data-category={cat}
+                style={`--cat-color: var(--cat-${token})`}
+                aria-pressed="false"
+              >{cat}</button>
+            );
+          })}
+        </div>
+
+        <!-- Card grid -->
+        <ul class="topic-hub-grid" role="list">
+          {sortedPages.map((lp) => {
+            const token = categoryTokenMap[lp.category || ''] || 'relationships';
+            const illustrationSrc = getTopicIllustrationPath(lp.slug);
+            return (
+              <li data-category={lp.category}>
+                <a href={`/topics/${lp.slug}`} class="topic-hub-card" style={`--cat-color: var(--cat-${token})`}>
+                  <div class="topic-hub-card__illustration">
+                    {illustrationSrc && (
+                      <img src={illustrationSrc} alt="" loading="lazy" />
+                    )}
+                  </div>
+                  <div class="topic-hub-card__body">
+                    <span class="topic-hub-card__eyebrow">{lp.category}</span>
+                    <h2 class="topic-hub-card__title">{lp.title}</h2>
+                    {lp.metaDescription && (
+                      <p class="topic-hub-card__summary">{lp.metaDescription}</p>
+                    )}
+                    <span class="topic-hub-card__link">Explore topic</span>
+                  </div>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+
+      </div>
+    </section>
+
+    <!-- §3 Curriculum trust signal -->
+    <section class="topics-hub__trust" style="background: var(--bg-surface-alt);">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+        <p class="topics-hub__trust-text">
+          Aligned to DfE statutory RSE guidance and the PSHE Association Programme of Study <span class="topics-hub__trust-sep">·</span> KS1–KS5
+        </p>
+      </div>
+    </section>
+
+    <!-- §4 CTA [A12] -->
+    <CtaBringToSchool topicTitle="RSHE topics" serviceTarget="training" />
+
+  </div>
 </BaseLayout>
 
+<script>
+function initB14() {
+  const filters = document.querySelectorAll<HTMLButtonElement>('.topic-filter');
+  const items = document.querySelectorAll<HTMLLIElement>('.topic-hub-grid > li');
+
+  if (!filters.length || !items.length) return;
+
+  function applyFilter(category: string) {
+    items.forEach((li) => {
+      const match = category === 'all' || li.dataset.category === category;
+      li.style.display = match ? '' : 'none';
+    });
+  }
+
+  filters.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filters.forEach((f) => {
+        f.classList.remove('is-active');
+        f.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('is-active');
+      btn.setAttribute('aria-pressed', 'true');
+      applyFilter(btn.dataset.category || 'all');
+    });
+  });
+
+  applyFilter('all');
+}
+
+document.addEventListener('astro:page-load', initB14);
+document.addEventListener('DOMContentLoaded', initB14);
+</script>
+
 <style>
-  .topics-index {
+  /* ========================================
+     Topics hub [B14] styles
+     ======================================== */
+  .topics-hub {
     background: var(--bg-page);
   }
 
-  .topics-index__title {
+  /* --- §1 Hero --- */
+  .topics-hub__hero {
+    background: var(--bg-surface);
+    border-bottom: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  .topics-hub__title {
     font-family: var(--font-tailor-heading-stack);
     font-size: var(--text-display-size-h1);
     font-weight: var(--heading-weight-h1);
@@ -126,71 +184,169 @@ const categories = [
     margin: 0 0 var(--space-global-sm);
   }
 
-  .topics-index__intro {
+  .topics-hub__intro {
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-prose-size-body);
     color: var(--text-body-muted);
-    max-width: 36rem;
-    margin: 0 0 var(--space-global-xl);
+    max-width: var(--container-max-prose);
+    margin: 0;
     line-height: var(--lh-body);
   }
 
-  .topics-grid {
-    display: grid;
-    gap: var(--space-global-lg);
+  /* --- §2 Filters --- */
+  .topics-hub__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-global-xs);
+    margin-bottom: var(--space-global-lg);
   }
 
-  .topics-grid__group {
-    padding: var(--space-global-md);
+  .topic-filter {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
     background: var(--bg-surface);
-    border-radius: var(--radius-md);
     border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    color: var(--text-body);
+    padding: var(--space-global-xs) var(--space-global-sm);
+    cursor: pointer;
+    transition: border-color var(--transition-duration) var(--transition-easing),
+                color var(--transition-duration) var(--transition-easing),
+                background var(--transition-duration) var(--transition-easing);
   }
 
-  .topics-grid__heading {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-prose-size-h3);
-    font-weight: var(--heading-weight-h3);
-    color: var(--cat-color, var(--text-heading));
-    margin: 0 0 var(--space-global-sm);
-    padding-bottom: 0.375rem;
-    border-bottom: 2px solid var(--cat-color, var(--border-subtle));
+  .topic-filter:hover:not(.is-active) {
+    border-color: var(--cat-color, var(--brand-accent));
+    color: var(--cat-color, var(--brand-accent));
   }
 
-  .topics-grid__list {
+  .topic-filter.is-active {
+    background: var(--cat-color, var(--brand-accent));
+    color: #fff;
+    border-color: var(--cat-color, var(--brand-accent));
+  }
+
+  /* --- §2 Card grid --- */
+  .topic-hub-grid {
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: var(--space-global-md);
   }
 
-  .topics-grid__link {
+  /* --- Topic hub card --- */
+  .topic-hub-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-md);
+    padding: var(--space-global-lg);
+    background: var(--bg-surface);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color var(--transition-duration) var(--transition-easing);
+  }
+
+  .topic-hub-card:hover {
+    border-color: var(--cat-color, var(--brand-accent));
+  }
+
+  @media (min-width: 640px) {
+    .topic-hub-card {
+      flex-direction: row;
+    }
+  }
+
+  /* Illustration slot */
+  .topic-hub-card__illustration {
+    flex-shrink: 0;
+    width: 6rem;
+    height: 6rem;
+    background: var(--bg-surface-alt);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .topic-hub-card__illustration img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
     display: block;
-    padding: 0.4rem 0.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .topic-hub-card__illustration {
+      width: 8rem;
+      height: 8rem;
+    }
+  }
+
+  /* Body slot */
+  .topic-hub-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-xs);
+    justify-content: center;
+  }
+
+  .topic-hub-card__eyebrow {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--text-eyebrow-ls);
+    color: var(--cat-color, var(--text-body-muted));
+  }
+
+  .topic-hub-card__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-card-size-h2);
+    font-weight: var(--heading-weight-h2);
+    color: var(--text-heading);
+    line-height: var(--lh-heading-sub);
+    margin: 0;
+  }
+
+  .topic-hub-card__summary {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+    line-height: var(--lh-body);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .topic-hub-card__link {
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-bold);
+    color: var(--link-action-color);
+  }
+
+  .topic-hub-card__link::after {
+    content: ' →';
+  }
+
+  /* --- §3 Trust signal --- */
+  .topics-hub__trust-text {
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-prose-size-body);
     font-weight: var(--font-weight-medium);
-    color: var(--brand-accent-text);
-    text-decoration: none;
-    border-radius: var(--radius-xs);
-    transition: background var(--transition-duration) var(--transition-easing);
+    color: var(--text-body-muted);
+    text-align: center;
+    margin: 0;
   }
 
-  .topics-grid__link:hover {
-    background: var(--bg-surface-alt);
-  }
-
-  @media (min-width: 768px) {
-    .topics-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .topics-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
+  .topics-hub__trust-sep {
+    padding: 0 var(--space-global-xs);
   }
 </style>
