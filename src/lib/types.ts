@@ -128,6 +128,8 @@ export interface BlogPost {
   targetAudience: string | null;
   serviceLink: string | null;
   author: string;
+  featuredImage: string | null;
+  publishedDate: string | null;
   body: BlockObjectResponse[];
 }
 

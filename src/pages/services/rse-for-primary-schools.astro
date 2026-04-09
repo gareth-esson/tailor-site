@@ -1,7 +1,7 @@
 ---
 /**
- * Service page [C5] — /services/drop-days
- * RSE drop day delivery. Tailor layer.
+ * Service page [C5] — /services/rse-for-primary-schools
+ * RSE delivery for primary schools. Tailor layer.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
@@ -10,18 +10,18 @@ import ServicePageStyles from '../../components/ServicePageStyles.astro';
 import { getBlogPosts } from '../../lib/content';
 
 const allPosts = await getBlogPosts();
-const relatedPosts = allPosts.filter((p) => p.serviceLink === 'drop-days').slice(0, 3);
+const relatedPosts = allPosts.filter((p) => p.serviceLink === 'delivery').slice(0, 3);
 ---
 
 <BaseLayout
-  title="RSE Drop Days — RSE for Schools | Tailor Education"
-  description="A full day of expert RSE delivery across multiple year groups — maximum impact with minimum disruption to your timetable."
-  canonicalPath="/services/drop-days/"
+  title="RSE for Primary Schools — RSE for Schools | Tailor Education"
+  description="Age-appropriate RSE for KS1 and KS2, delivered by a specialist educator who understands primary school settings."
+  canonicalPath="/services/rse-for-primary-schools/"
   jsonLd={{
     '@context': 'https://schema.org',
     '@type': 'Service',
-    name: 'Drop Day Delivery',
-    description: 'A full day of expert RSE delivery across multiple year groups.',
+    name: 'RSE for Primary Schools',
+    description: 'Age-appropriate RSE for KS1 and KS2, delivered by a specialist educator.',
     provider: { '@type': 'Organization', name: 'Tailor Education', url: 'https://tailoreducation.org.uk' },
   }}
 >
@@ -31,9 +31,9 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'drop-days').slice
     <header class="service-page__header">
       <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
         <span class="service-page__eyebrow">Services · RSE Delivery</span>
-        <h1 class="service-page__title">Drop days</h1>
+        <h1 class="service-page__title">RSE for primary schools</h1>
         <p class="service-page__subtitle">
-          A full day of expert RSE delivery across multiple year groups — maximum impact, minimum disruption to your timetable.
+          Expert-led RSE tailored for KS1 and KS2, delivered by a specialist educator who understands primary school settings.
         </p>
       </div>
     </header>
@@ -42,38 +42,39 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'drop-days').slice
     <section class="service-page__detail">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
 
-        <!-- [IMAGE PLACEHOLDER: Drop day in action — multiple sessions, busy school day] -->
+        <!-- [IMAGE PLACEHOLDER: Primary school RSE session — educator with young children in a bright classroom] -->
         <div class="service-page__image-placeholder" style="margin-bottom: var(--space-global-lg)">
-          Image — Drop day in action (educator delivering sessions across a full school day)
+          Image — RSE session in a primary school classroom (educator with KS1/KS2 age children)
         </div>
 
         <div class="service-page__detail-stack">
 
           <div class="service-page__detail-block">
             <h2 class="service-page__section-title">What this service is</h2>
-            <p>A full-day RSE programme delivered to multiple year groups in a single visit. The specialist educator delivers back-to-back sessions throughout the day, each tailored to the age and needs of the year group. Schools get broad coverage across their RSE provision in one focused day.</p>
+            <p>A specialist RSE educator delivers age-appropriate lessons directly to your primary school students. Sessions are designed around the realities of teaching young children about relationships, bodies, boundaries, and staying safe — using language and activities that feel natural for the age group.</p>
+            <p>We cover the topics that primary staff often find hardest to approach: puberty, consent in age-appropriate terms, healthy friendships, and online safety for younger children.</p>
           </div>
 
           <div class="service-page__detail-block">
             <h2 class="service-page__section-title">Who it's for</h2>
-            <p>Schools who want comprehensive RSE coverage without weeks of timetable disruption. Schools booking their annual RSE provision. Schools who want to give every year group a specialist-led session and concentrate the impact into a single event that students and staff remember.</p>
+            <p>Primary schools who want specialist support for RSE delivery. Particularly valued by schools where staff feel uncertain about teaching puberty or relationships topics, where parents need reassurance about what's being taught, or where an external specialist voice helps normalise conversations that children need to have.</p>
           </div>
 
           <div class="service-page__detail-block">
             <h2 class="service-page__section-title">What's included</h2>
             <ul>
-              <li>Full-day visit with back-to-back sessions across year groups</li>
-              <li>Pre-visit planning to agree topics and session order</li>
-              <li>Age-appropriate content for each year group</li>
-              <li>Post-day summary covering all sessions delivered</li>
-              <li>Follow-up resources for staff to build on</li>
-              <li>All content aligned to DfE statutory guidance</li>
+              <li>Pre-visit consultation with your PSHE lead or headteacher</li>
+              <li>Lessons designed for KS1 and KS2 developmental stages</li>
+              <li>Age-appropriate language and activities throughout</li>
+              <li>Topics aligned to the DfE statutory RSE and health education guidance</li>
+              <li>Post-session summary for staff, including talking points for follow-up</li>
+              <li>Parent-facing information available on request</li>
             </ul>
           </div>
 
           <div class="service-page__detail-block">
             <h2 class="service-page__section-title">What schools get</h2>
-            <p>A full day of high-quality RSE delivery that covers multiple year groups in one visit. Efficient, impactful, and memorable. Students get expert-led sessions; staff get a day's worth of RSE covered without having to deliver it themselves. Schools often book drop days termly or annually as part of their RSE calendar.</p>
+            <p>Students who can name body parts accurately, understand what makes a healthy friendship, recognise the difference between appropriate and inappropriate touch, and know how to ask for help. Staff who feel more confident continuing RSE conversations after the session. And parents who can see that the school takes this seriously and handles it well.</p>
           </div>
 
         </div>
@@ -81,15 +82,15 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'drop-days').slice
     </section>
 
     <!-- §4 CTA [A13] — primary -->
-    <CtaServiceEnquiry serviceName="drop day delivery" serviceParam="Drop day delivery" />
+    <CtaServiceEnquiry serviceName="RSE for primary schools" serviceParam="RSE for primary schools" />
 
     <!-- §5 Testimonial -->
     <section class="service-page__testimonial">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
         <blockquote class="testimonial-pullquote">
-          <p class="testimonial-pullquote__text">"We've booked Tailor for a drop day every term for two years now. The students love it, the staff are relieved, and we know the quality is consistently excellent. It's become a highlight of our PSHE calendar."</p>
+          <p class="testimonial-pullquote__text">"The children were completely engaged. The educator pitched it perfectly for our Year 5s — honest and clear without being overwhelming. Several parents commented on how well their children talked about the session at home."</p>
           <footer class="testimonial-pullquote__footer">
-            <span class="testimonial-pullquote__source">— Deputy Head, secondary school</span>
+            <span class="testimonial-pullquote__source">— PSHE Lead, primary school</span>
             <a href="/testimonials" class="testimonial-pullquote__link">Read more testimonials</a>
           </footer>
         </blockquote>
@@ -125,7 +126,7 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'drop-days').slice
     <TopicsOverviewGrid />
 
     <!-- §8 CTA [A13] — repeated -->
-    <CtaServiceEnquiry serviceName="drop day delivery" serviceParam="Drop day delivery" variant="alt" />
+    <CtaServiceEnquiry serviceName="RSE for primary schools" serviceParam="RSE for primary schools" variant="alt" />
 
   </article>
   <ServicePageStyles />

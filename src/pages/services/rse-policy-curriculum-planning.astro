@@ -6,87 +6,115 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
 import TopicsOverviewGrid from '../../components/TopicsOverviewGrid.astro';
+import ServicePageStyles from '../../components/ServicePageStyles.astro';
 import { getBlogPosts } from '../../lib/content';
 
 const allPosts = await getBlogPosts();
-const relatedPosts = allPosts.filter((p) => p.serviceLink === 'rse-policy-curriculum-planning');
+const relatedPosts = allPosts.filter((p) => p.serviceLink === 'rse-policy-curriculum-planning').slice(0, 3);
 ---
 
 <BaseLayout
   title="RSE Policy & Curriculum Planning — RSE for Schools | Tailor Education"
-  description="Expert guidance to develop your RSE policy, plan your curriculum, and communicate your approach to parents."
-  canonicalPath="/services/rse-policy-curriculum-planning"
+  description="Expert support writing your RSE policy and mapping your curriculum — ensuring compliance with DfE statutory guidance and a programme that actually works."
+  canonicalPath="/services/rse-policy-curriculum-planning/"
   jsonLd={{
     '@context': 'https://schema.org',
     '@type': 'Service',
     name: 'RSE Policy & Curriculum Planning',
-    description: 'Expert guidance to develop your RSE policy, plan your curriculum, and communicate your approach to parents.',
+    description: 'Expert support writing your RSE policy and mapping your curriculum.',
     provider: { '@type': 'Organization', name: 'Tailor Education', url: 'https://tailoreducation.org.uk' },
   }}
 >
   <article class="service-page" data-pagefind-body>
+
+    <!-- §1 Hero -->
     <header class="service-page__header">
-      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
         <span class="service-page__eyebrow">Services</span>
         <h1 class="service-page__title">RSE policy & curriculum planning</h1>
         <p class="service-page__subtitle">
-          Strategic support to build an RSE policy, plan your curriculum, and communicate with parents — all aligned to statutory guidance.
+          Expert support writing your RSE policy and mapping your curriculum — ensuring statutory compliance and a programme that works for your school.
         </p>
       </div>
     </header>
 
-    <section class="service-page__content">
-      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-        <div class="service-page__details">
+    <!-- §2 Service detail -->
+    <section class="service-page__detail">
+      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+
+        <!-- [IMAGE PLACEHOLDER: Policy and curriculum work — documents, planning session, school leadership meeting] -->
+        <div class="service-page__image-placeholder" style="margin-bottom: var(--space-global-lg)">
+          Image — RSE policy and curriculum planning (planning documents, leadership meeting, or curriculum mapping session)
+        </div>
+
+        <div class="service-page__detail-stack">
+
           <div class="service-page__detail-block">
-            <h2 class="service-page__section-title">What the service is</h2>
-            <p>Consultancy support to help your school develop a robust RSE policy, plan a coherent curriculum across key stages, and build confidence in communicating your RSE approach to parents and governors.</p>
+            <h2 class="service-page__section-title">What this service is</h2>
+            <p>We help schools write, review, or rewrite their RSE policy and build a curriculum map that meets statutory requirements and actually works in practice. This isn't a template — it's bespoke consultancy that understands your school's context, values, and the communities you serve.</p>
+            <p>Many schools have an RSE policy that's technically compliant but doesn't reflect what happens in the classroom. We fix that gap — creating documentation that staff can use, leaders can defend, and inspectors can see is genuine.</p>
           </div>
 
           <div class="service-page__detail-block">
             <h2 class="service-page__section-title">Who it's for</h2>
-            <p>For headteachers, DSLs, and senior leadership teams who need expert guidance on RSE policy, curriculum design, or parent engagement — especially in light of the 2026 DfE guidance changes.</p>
+            <p>Schools writing or updating their RSE policy to meet the 2026 DfE statutory guidance. Schools whose current policy is out of date, generic, or disconnected from their actual provision. Schools preparing for inspection who need their RSE documentation to stand up to scrutiny. And school leaders who want expert reassurance that their RSE programme is properly structured and defensible.</p>
           </div>
 
           <div class="service-page__detail-block">
             <h2 class="service-page__section-title">What's included</h2>
             <ul>
-              <li>Review of your current RSE policy and provision</li>
-              <li>Policy development or revision aligned to DfE statutory guidance</li>
-              <li>Curriculum mapping across key stages</li>
-              <li>Parent communication strategy and materials</li>
-              <li>Guidance on Ofsted expectations for RSE</li>
-              <li>Ongoing support as needed</li>
+              <li>Review of your current RSE policy and curriculum provision</li>
+              <li>Consultation with SLT, PSHE leads, and governors as needed</li>
+              <li>Bespoke RSE policy document — compliant, practical, and specific to your school</li>
+              <li>Curriculum map showing topic coverage across year groups and key stages</li>
+              <li>Alignment to DfE 2026 statutory guidance and PSHE Association frameworks</li>
+              <li>Guidance on parent consultation and communication</li>
+              <li>Follow-up review to ensure implementation is on track</li>
             </ul>
           </div>
+
+          <div class="service-page__detail-block">
+            <h2 class="service-page__section-title">What schools get</h2>
+            <p>A clear, defensible RSE policy that reflects your school's actual provision. A curriculum map that shows exactly what's taught, when, and why. Documentation that gives SLT, governors, and parents confidence. And the peace of mind that comes from knowing your RSE programme meets every statutory requirement.</p>
+          </div>
+
         </div>
       </div>
     </section>
 
+    <!-- §4 CTA [A13] — primary -->
     <CtaServiceEnquiry serviceName="RSE policy and curriculum planning" serviceParam="RSE policy & curriculum planning" />
 
+    <!-- §5 Testimonial -->
     <section class="service-page__testimonial">
-      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-        <blockquote class="testimonial-card">
-          <p class="testimonial-card__quote">"Gareth helped us develop an RSE policy that our governors, staff, and parents all felt confident about."</p>
-          <footer class="testimonial-card__source">
-            <span class="testimonial-card__name">Headteacher</span>
-            <a href="/testimonials" class="testimonial-card__link">Read more testimonials</a>
+      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <blockquote class="testimonial-pullquote">
+          <p class="testimonial-pullquote__text">"We'd been putting off rewriting our RSE policy for years. Tailor made it straightforward — we now have a document we're genuinely proud of, and the curriculum map has been invaluable for showing governors exactly what we cover and when."</p>
+          <footer class="testimonial-pullquote__footer">
+            <span class="testimonial-pullquote__source">— Headteacher, primary school</span>
+            <a href="/testimonials" class="testimonial-pullquote__link">Read more testimonials</a>
           </footer>
         </blockquote>
       </div>
     </section>
 
+    <!-- §6 Related blog posts -->
     {relatedPosts.length > 0 && (
       <section class="service-page__blog">
-        <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-          <h2 class="service-page__section-title">Related articles</h2>
+        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+          <h2 class="service-page__section-title" style="margin-bottom: var(--space-global-md)">Related articles</h2>
           <div class="service-page__blog-grid">
             {relatedPosts.map((bp) => (
-              <a href={`/blog/${bp.slug}`} class="card">
+              <a href={`/blog/${bp.slug}`} class="card service-blog-card">
+                {bp.featuredImage && (
+                  <div class="service-blog-card__img">
+                    <img src={bp.featuredImage} alt={bp.title} loading="lazy" />
+                  </div>
+                )}
                 <div class="card__body">
                   {bp.targetAudience && <div class="card__eyebrow">{bp.targetAudience}</div>}
                   <div class="card__title">{bp.title}</div>
+                  {bp.author && <div class="service-blog-card__author">By {bp.author}</div>}
                 </div>
               </a>
             ))}
@@ -95,30 +123,12 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'rse-policy-curric
       </section>
     )}
 
+    <!-- §7 Topics overview grid -->
     <TopicsOverviewGrid />
 
+    <!-- §8 CTA [A13] — repeated -->
     <CtaServiceEnquiry serviceName="RSE policy and curriculum planning" serviceParam="RSE policy & curriculum planning" variant="alt" />
-  </article>
-</BaseLayout>
 
-<style>
-  .service-page { background: var(--bg-page); }
-  .service-page__header { background: var(--bg-surface); border-bottom: var(--border-width-xs) solid var(--border-subtle); }
-  .service-page__eyebrow { display: inline-block; font-family: var(--font-tailor-body-stack); font-size: var(--text-card-size-body); font-weight: var(--font-weight-semibold); color: var(--brand-accent-text); text-transform: uppercase; letter-spacing: var(--text-eyebrow-ls); margin-bottom: 0.5rem; }
-  .service-page__title { font-family: var(--font-tailor-heading-stack); font-size: var(--text-display-size-h1); font-weight: var(--heading-weight-h1); color: var(--text-heading); margin: 0 0 var(--space-global-sm); line-height: 1.15; }
-  .service-page__subtitle { font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); color: var(--text-body-muted); max-width: 36rem; margin: 0; line-height: 1.6; }
-  .service-page__content { font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); color: var(--text-body); line-height: 1.7; }
-  .service-page__details { display: flex; flex-direction: column; gap: var(--space-global-lg); }
-  .service-page__section-title { font-family: var(--font-tailor-heading-stack); font-size: var(--text-prose-size-h2); font-weight: var(--heading-weight-h2); color: var(--text-heading); margin: 0 0 var(--space-global-sm); }
-  .service-page__content ul { padding-left: 1.5rem; margin: 0; }
-  .service-page__content li { margin-bottom: 0.375rem; }
-  .service-page__testimonial { background: var(--bg-surface-alt); }
-  .testimonial-card { padding: var(--space-global-lg); margin: 0; border-left: 4px solid var(--brand-accent); }
-  .testimonial-card__quote { font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); font-style: italic; color: var(--text-body); line-height: 1.7; margin: 0 0 var(--space-global-sm); }
-  .testimonial-card__source { display: flex; flex-wrap: wrap; gap: var(--space-global-sm); align-items: baseline; }
-  .testimonial-card__name { font-family: var(--font-tailor-body-stack); font-size: var(--text-card-size-body); font-weight: var(--font-weight-semibold); color: var(--text-heading); }
-  .testimonial-card__link { font-size: var(--text-card-size-body); color: var(--brand-accent-text); }
-  .service-page__blog { border-top: var(--border-width-xs) solid var(--border-subtle); }
-  .service-page__blog-grid { display: grid; gap: var(--space-global-sm); }
-  @media (min-width: 768px) { .service-page__blog-grid { grid-template-columns: repeat(2, 1fr); } }
-</style>
+  </article>
+  <ServicePageStyles />
+</BaseLayout>

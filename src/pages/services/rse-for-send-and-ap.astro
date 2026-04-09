@@ -1,7 +1,8 @@
 ---
 /**
- * Service page [C5] — /services/drop-days
- * RSE drop day delivery. Tailor layer.
+ * Service page [C5] — /services/rse-for-send-and-ap
+ * RSE for SEND & AP (Circuits). Tailor layer.
+ * Distinct workbook-based product line with self-paced delivery.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
@@ -10,18 +11,18 @@ import ServicePageStyles from '../../components/ServicePageStyles.astro';
 import { getBlogPosts } from '../../lib/content';
 
 const allPosts = await getBlogPosts();
-const relatedPosts = allPosts.filter((p) => p.serviceLink === 'drop-days').slice(0, 3);
+const relatedPosts = allPosts.filter((p) => p.serviceLink === 'delivery').slice(0, 3);
 ---
 
 <BaseLayout
-  title="RSE Drop Days — RSE for Schools | Tailor Education"
-  description="A full day of expert RSE delivery across multiple year groups — maximum impact with minimum disruption to your timetable."
-  canonicalPath="/services/drop-days/"
+  title="RSE for SEND & AP (Circuits) — RSE for Schools | Tailor Education"
+  description="Workbook-based RSE designed for SEND and alternative provision settings — self-paced, simplified keynotes, and space for students to process at their own speed."
+  canonicalPath="/services/rse-for-send-and-ap/"
   jsonLd={{
     '@context': 'https://schema.org',
     '@type': 'Service',
-    name: 'Drop Day Delivery',
-    description: 'A full day of expert RSE delivery across multiple year groups.',
+    name: 'RSE for SEND & AP (Circuits)',
+    description: 'Workbook-based RSE designed for SEND and alternative provision settings.',
     provider: { '@type': 'Organization', name: 'Tailor Education', url: 'https://tailoreducation.org.uk' },
   }}
 >
@@ -31,9 +32,9 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'drop-days').slice
     <header class="service-page__header">
       <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
         <span class="service-page__eyebrow">Services · RSE Delivery</span>
-        <h1 class="service-page__title">Drop days</h1>
+        <h1 class="service-page__title">RSE for SEND & alternative provision</h1>
         <p class="service-page__subtitle">
-          A full day of expert RSE delivery across multiple year groups — maximum impact, minimum disruption to your timetable.
+          Circuits — workbook-based RSE designed for SEND and AP settings, where students learn at their own pace with simplified content and space to process.
         </p>
       </div>
     </header>
@@ -42,38 +43,40 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'drop-days').slice
     <section class="service-page__detail">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
 
-        <!-- [IMAGE PLACEHOLDER: Drop day in action — multiple sessions, busy school day] -->
+        <!-- [IMAGE PLACEHOLDER: Circuits workbook — showing the workbook format with doodle/game space, simplified layout] -->
         <div class="service-page__image-placeholder" style="margin-bottom: var(--space-global-lg)">
-          Image — Drop day in action (educator delivering sessions across a full school day)
+          Image — Circuits workbook (showing the physical workbook format with doodle/game space and simplified keynotes)
         </div>
 
         <div class="service-page__detail-stack">
 
           <div class="service-page__detail-block">
             <h2 class="service-page__section-title">What this service is</h2>
-            <p>A full-day RSE programme delivered to multiple year groups in a single visit. The specialist educator delivers back-to-back sessions throughout the day, each tailored to the age and needs of the year group. Schools get broad coverage across their RSE provision in one focused day.</p>
+            <p>Circuits is a workbook-based RSE programme designed specifically for students in SEND and alternative provision settings. It recognises that mainstream RSE delivery doesn't always work for every learner — some students need more time, simpler language, and a format they can engage with at their own speed.</p>
+            <p>Each student receives a physical workbook that guides them through the session content. The workbooks use simplified keynotes, clear visuals, and built-in doodle and game space that gives students a way to process without having to talk or write continuously.</p>
           </div>
 
           <div class="service-page__detail-block">
             <h2 class="service-page__section-title">Who it's for</h2>
-            <p>Schools who want comprehensive RSE coverage without weeks of timetable disruption. Schools booking their annual RSE provision. Schools who want to give every year group a specialist-led session and concentrate the impact into a single event that students and staff remember.</p>
+            <p>Special schools, SEND units within mainstream schools, alternative provision settings, and PRUs. Schools where mainstream RSE resources don't meet the needs of their learners. Settings where students benefit from self-paced delivery, concrete language, and physical materials they can keep and return to.</p>
           </div>
 
           <div class="service-page__detail-block">
             <h2 class="service-page__section-title">What's included</h2>
             <ul>
-              <li>Full-day visit with back-to-back sessions across year groups</li>
-              <li>Pre-visit planning to agree topics and session order</li>
-              <li>Age-appropriate content for each year group</li>
-              <li>Post-day summary covering all sessions delivered</li>
-              <li>Follow-up resources for staff to build on</li>
-              <li>All content aligned to DfE statutory guidance</li>
+              <li>Physical workbooks for every student — designed for accessibility and engagement</li>
+              <li>Simplified keynote presentations for the educator to deliver alongside the workbooks</li>
+              <li>Self-paced delivery — students work through their workbooks at their own speed</li>
+              <li>Built-in doodle and game space for processing and decompression</li>
+              <li>Pre-visit consultation to adapt content to your students' needs and abilities</li>
+              <li>Delivery by a specialist educator experienced in SEND and AP contexts</li>
+              <li>All content aligned to DfE statutory guidance, adapted for accessibility</li>
             </ul>
           </div>
 
           <div class="service-page__detail-block">
             <h2 class="service-page__section-title">What schools get</h2>
-            <p>A full day of high-quality RSE delivery that covers multiple year groups in one visit. Efficient, impactful, and memorable. Students get expert-led sessions; staff get a day's worth of RSE covered without having to deliver it themselves. Schools often book drop days termly or annually as part of their RSE calendar.</p>
+            <p>RSE delivery that actually works for your students. Workbooks students can keep and revisit. A session format that reduces anxiety and sensory overload while still covering essential content. Staff who see how RSE can be delivered effectively in their setting, and a framework they can build on.</p>
           </div>
 
         </div>
@@ -81,15 +84,15 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'drop-days').slice
     </section>
 
     <!-- §4 CTA [A13] — primary -->
-    <CtaServiceEnquiry serviceName="drop day delivery" serviceParam="Drop day delivery" />
+    <CtaServiceEnquiry serviceName="RSE for SEND and AP" serviceParam="RSE for SEND and AP" />
 
     <!-- §5 Testimonial -->
     <section class="service-page__testimonial">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
         <blockquote class="testimonial-pullquote">
-          <p class="testimonial-pullquote__text">"We've booked Tailor for a drop day every term for two years now. The students love it, the staff are relieved, and we know the quality is consistently excellent. It's become a highlight of our PSHE calendar."</p>
+          <p class="testimonial-pullquote__text">"The workbooks were brilliant. Students who normally disengage completely during PSHE were drawing, writing, and asking questions. One student said it was the first lesson where they didn't feel like they were being talked at."</p>
           <footer class="testimonial-pullquote__footer">
-            <span class="testimonial-pullquote__source">— Deputy Head, secondary school</span>
+            <span class="testimonial-pullquote__source">— SENCo, special school</span>
             <a href="/testimonials" class="testimonial-pullquote__link">Read more testimonials</a>
           </footer>
         </blockquote>
@@ -125,7 +128,7 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'drop-days').slice
     <TopicsOverviewGrid />
 
     <!-- §8 CTA [A13] — repeated -->
-    <CtaServiceEnquiry serviceName="drop day delivery" serviceParam="Drop day delivery" variant="alt" />
+    <CtaServiceEnquiry serviceName="RSE for SEND and AP" serviceParam="RSE for SEND and AP" variant="alt" />
 
   </article>
   <ServicePageStyles />

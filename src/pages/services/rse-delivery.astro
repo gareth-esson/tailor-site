@@ -1,0 +1,163 @@
+---
+/**
+ * Service page [C5] — /services/rse-delivery
+ * RSE Delivery hub page. Tailor layer.
+ * Overview of all in-school delivery services with navigation to sub-pages.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TopicsOverviewGrid from '../../components/TopicsOverviewGrid.astro';
+import ServicePageStyles from '../../components/ServicePageStyles.astro';
+import { getBlogPosts } from '../../lib/content';
+
+const allPosts = await getBlogPosts();
+const relatedPosts = allPosts.filter((p) => p.serviceLink === 'delivery').slice(0, 3);
+
+const hubLinks = [
+  {
+    title: 'RSE for Primary Schools',
+    slug: 'rse-for-primary-schools',
+    summary: 'Age-appropriate RSE for KS1 and KS2, delivered by a specialist who understands primary settings.',
+  },
+  {
+    title: 'RSE for Secondary Schools',
+    slug: 'rse-for-secondary-schools',
+    summary: 'Expert-led RSE for KS3 and KS4, covering the topics students are actually thinking about.',
+  },
+  {
+    title: 'RSE for SEND & AP (Circuits)',
+    slug: 'rse-for-send-and-ap',
+    summary: 'Workbook-based RSE designed for SEND and alternative provision settings, with self-paced delivery.',
+  },
+  {
+    title: 'Drop Days',
+    slug: 'drop-days',
+    summary: 'A full day of RSE delivery across multiple year groups — maximum impact, minimum disruption.',
+  },
+];
+---
+
+<BaseLayout
+  title="RSE Delivery — RSE for Schools | Tailor Education"
+  description="Expert RSE delivery in schools — specialist educators working directly with your students across primary, secondary, SEND, and alternative provision."
+  canonicalPath="/services/rse-delivery/"
+  jsonLd={{
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    about: {
+      '@type': 'Service',
+      name: 'RSE Delivery',
+      description: 'Expert RSE delivery in schools by specialist educators.',
+    },
+    publisher: { '@type': 'Organization', name: 'Tailor Education', url: 'https://tailoreducation.org.uk' },
+  }}
+>
+  <article class="service-page" data-pagefind-body>
+
+    <!-- §1 Hero -->
+    <header class="service-page__header">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+        <span class="service-page__eyebrow">Services</span>
+        <h1 class="service-page__title">RSE delivery</h1>
+        <p class="service-page__subtitle">
+          A specialist RSE educator works directly with your students — delivering expert-led lessons tailored to your school, your curriculum, and the topics that matter most.
+        </p>
+      </div>
+    </header>
+
+    <!-- §2 Service detail -->
+    <section class="service-page__detail">
+      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <div class="service-page__detail-stack">
+
+          <div class="service-page__detail-block">
+            <h2 class="service-page__section-title">What this service is</h2>
+            <p>Tailor provides direct RSE delivery in schools across the UK. A specialist educator visits your school and delivers curriculum-aligned lessons to your students — covering the topics staff find hardest to teach, supplementing your existing provision, or delivering a full RSE programme.</p>
+            <p>Every session is tailored to your school's context, ethos, and the specific needs of your students. We work across primary, secondary, SEND, and alternative provision settings.</p>
+          </div>
+
+          <div class="service-page__detail-block">
+            <h2 class="service-page__section-title">Who it's for</h2>
+            <p>Schools who want expert-led RSE delivery — whether that's a single session on a sensitive topic, a programme across multiple year groups, or a full drop day. Particularly valued by schools where staff lack confidence in delivering certain topics, or where an external specialist voice carries more weight with students.</p>
+          </div>
+
+          <div class="service-page__detail-block">
+            <h2 class="service-page__section-title">What's included</h2>
+            <ul>
+              <li>Pre-visit consultation to agree topics, year groups, and approach</li>
+              <li>Curriculum-aligned lesson delivery by a specialist RSE educator</li>
+              <li>Age-appropriate content matched to your students' needs</li>
+              <li>Post-session summary and follow-up resources for staff</li>
+              <li>All content aligned to DfE statutory RSE guidance and PSHE Association frameworks</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- §3 Hub navigation cards -->
+    <section class="service-page__hub-nav">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <h2 class="service-page__section-title" style="margin-bottom: var(--space-global-md)">How we deliver RSE</h2>
+
+        <!-- [IMAGE PLACEHOLDER: Hero image showing RSE delivery in action — educator working with students in a school setting] -->
+        <div class="service-page__image-placeholder" style="margin-bottom: var(--space-global-lg); max-width: var(--container-max-reading-wide)">
+          Hero image — RSE delivery in action (educator with students in a school setting)
+        </div>
+
+        <div class="service-page__hub-nav-grid">
+          {hubLinks.map((link) => (
+            <a href={`/services/${link.slug}`} class="hub-nav-card">
+              <div class="hub-nav-card__title">{link.title}</div>
+              <div class="hub-nav-card__summary">{link.summary}</div>
+              <span class="hub-nav-card__link">Learn more</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- §5 Testimonial -->
+    <section class="service-page__testimonial">
+      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <blockquote class="testimonial-pullquote">
+          <p class="testimonial-pullquote__text">"The sessions were exactly what our students needed. Delivered with sensitivity, honesty, and real expertise — the kind of RSE we want but can't always deliver ourselves."</p>
+          <footer class="testimonial-pullquote__footer">
+            <span class="testimonial-pullquote__source">— Head of PSHE, secondary school</span>
+            <a href="/testimonials" class="testimonial-pullquote__link">Read more testimonials</a>
+          </footer>
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- §6 Related blog posts -->
+    {relatedPosts.length > 0 && (
+      <section class="service-page__blog">
+        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+          <h2 class="service-page__section-title" style="margin-bottom: var(--space-global-md)">Related articles</h2>
+          <div class="service-page__blog-grid">
+            {relatedPosts.map((bp) => (
+              <a href={`/blog/${bp.slug}`} class="card service-blog-card">
+                {bp.featuredImage && (
+                  <div class="service-blog-card__img">
+                    <img src={bp.featuredImage} alt={bp.title} loading="lazy" />
+                  </div>
+                )}
+                <div class="card__body">
+                  {bp.targetAudience && <div class="card__eyebrow">{bp.targetAudience}</div>}
+                  <div class="card__title">{bp.title}</div>
+                  {bp.author && <div class="service-blog-card__author">By {bp.author}</div>}
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- §7 Topics overview grid -->
+    <TopicsOverviewGrid />
+
+  </article>
+  <ServicePageStyles />
+</BaseLayout>

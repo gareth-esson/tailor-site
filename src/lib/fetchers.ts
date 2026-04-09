@@ -11,6 +11,20 @@ import {
 } from './notion';
 import type { Question, GlossaryTerm, Topic, LandingPage, BlogPost, CurriculumStatement } from './types';
 
+// --- Notion property helpers ---
+
+function getFilesUrl(prop: any): string | null {
+  if (prop?.type === 'url') return prop.url ?? null;
+  if (prop?.type !== 'files' || !prop.files?.length) return null;
+  const f = prop.files[0];
+  return f.type === 'external' ? f.external?.url ?? null : f.file?.url ?? null;
+}
+
+function getDateValue(prop: any): string | null {
+  if (prop?.type !== 'date' || !prop.date?.start) return null;
+  return prop.date.start;
+}
+
 // --- Data source IDs (Notion SDK v5 uses data source IDs, not database IDs) ---
 
 const QUESTIONS_DB = 'cd6d5a28-64a7-4809-84e1-483e4a4ac259';
@@ -224,6 +238,8 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
         targetAudience: getSelectValue(p['Target Audience']),
         serviceLink: getSelectValue(p['Service Link']),
         author: getRichTextValue(p['Author']),
+        featuredImage: getFilesUrl(p['Featured Image']),
+        publishedDate: getDateValue(p['Published Date']),
         body,
       };
     });

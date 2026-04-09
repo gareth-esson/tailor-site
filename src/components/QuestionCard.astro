@@ -132,7 +132,7 @@ function renderTagsHtml(tags: string[]): string {
     font-family: var(--font-ota-heading-stack, inherit);
     font-size: var(--text-card-size-h3);
     font-weight: var(--heading-ota-weight-h3, 600);
-    line-height: 1.3;
+    line-height: var(--lh-heading-sub);
   }
 
   .qcard__tags {
@@ -166,6 +166,24 @@ function renderTagsHtml(tags: string[]): string {
 </style>
 
 <script>
+  // Match image container background to nearest opaque ancestor,
+  // so mix-blend-mode: multiply blends correctly on any surface.
+  function syncImageBg() {
+    document.querySelectorAll<HTMLElement>('.qcard__image').forEach((el) => {
+      let parent = el.parentElement;
+      while (parent) {
+        const bg = getComputedStyle(parent).backgroundColor;
+        if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
+          el.style.backgroundColor = bg;
+          break;
+        }
+        parent = parent.parentElement;
+      }
+    });
+  }
+  document.addEventListener('astro:page-load', syncImageBg);
+  document.addEventListener('DOMContentLoaded', syncImageBg);
+
   // Event-delegated tag link handler — registered once globally.
   function initTagLinks() {
     document.addEventListener('click', (e) => {

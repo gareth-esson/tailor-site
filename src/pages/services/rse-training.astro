@@ -1,0 +1,138 @@
+---
+/**
+ * Service page [C5] — /services/rse-training
+ * RSE training for school staff. Tailor layer.
+ * Highest-traffic service page — rich content.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
+import TopicsOverviewGrid from '../../components/TopicsOverviewGrid.astro';
+import ServicePageStyles from '../../components/ServicePageStyles.astro';
+import { getBlogPosts } from '../../lib/content';
+
+const allPosts = await getBlogPosts();
+const relatedPosts = allPosts.filter((p) => p.serviceLink === 'training').slice(0, 3);
+---
+
+<BaseLayout
+  title="RSE Training for Teachers — RSE for Schools | Tailor Education"
+  description="Practical RSE training that builds teacher confidence — from whole-staff INSET days to topic-specific CPD sessions, delivered by an experienced RSE specialist."
+  canonicalPath="/services/rse-training/"
+  jsonLd={{
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: 'RSE Training',
+    description: 'Practical RSE training that builds teacher confidence.',
+    provider: { '@type': 'Organization', name: 'Tailor Education', url: 'https://tailoreducation.org.uk' },
+  }}
+>
+  <article class="service-page" data-pagefind-body>
+
+    <!-- §1 Hero -->
+    <header class="service-page__header">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+        <span class="service-page__eyebrow">Services</span>
+        <h1 class="service-page__title">RSE training</h1>
+        <p class="service-page__subtitle">
+          Practical CPD that builds teacher confidence — equipping your staff to deliver RSE that is honest, age-appropriate, and aligned to statutory guidance.
+        </p>
+      </div>
+    </header>
+
+    <!-- §2 Service detail -->
+    <section class="service-page__detail">
+      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+
+        <!-- [IMAGE PLACEHOLDER: RSE training session — educator presenting to a group of teachers during CPD/INSET] -->
+        <div class="service-page__image-placeholder" style="margin-bottom: var(--space-global-lg)">
+          Image — RSE training session (educator presenting to teachers during INSET/CPD day)
+        </div>
+
+        <div class="service-page__detail-stack">
+
+          <div class="service-page__detail-block">
+            <h2 class="service-page__section-title">What this service is</h2>
+            <p>RSE training for school staff — from whole-staff INSET days to targeted CPD sessions on specific topics. Delivered by an experienced RSE specialist who understands what teachers actually need: practical strategies, not just theory.</p>
+            <p>Training covers subject knowledge, pedagogy, and confidence. Most teachers weren't trained to deliver RSE. Many are uncomfortable with the content, unsure about the boundaries, or worried about parent pushback. This training addresses all of that directly.</p>
+            <p>Sessions can focus on specific topics (consent, online safety, LGBTQ+ inclusion) or provide a broader foundation for schools building or strengthening their RSE programme.</p>
+          </div>
+
+          <div class="service-page__detail-block">
+            <h2 class="service-page__section-title">Who it's for</h2>
+            <p>Schools investing in staff CPD for RSE — whether that's a whole-staff awareness session, targeted training for PSHE leads and form tutors, or specialist CPD for staff delivering sensitive topics. Also for schools preparing for inspection where RSE training is a gap, or schools responding to specific incidents or concerns that highlight a need for better RSE provision.</p>
+          </div>
+
+          <div class="service-page__detail-block">
+            <h2 class="service-page__section-title">What's included</h2>
+            <ul>
+              <li>Pre-training consultation to understand your school's context, concerns, and priorities</li>
+              <li>Whole-staff INSET days or targeted CPD sessions (half-day or twilight options)</li>
+              <li>Subject knowledge development — what the guidance actually says, and what it means in practice</li>
+              <li>Practical teaching strategies — how to handle difficult questions, manage disclosures, and create safe classroom environments</li>
+              <li>Topic-specific deep dives available: consent, online safety, pornography and media literacy, LGBTQ+ inclusion, puberty, and more</li>
+              <li>Guidance on managing parent communication and withdrawal requests</li>
+              <li>Resources and follow-up materials for continued development</li>
+              <li>All training aligned to current DfE statutory guidance</li>
+            </ul>
+          </div>
+
+          <div class="service-page__detail-block">
+            <h2 class="service-page__section-title">What schools get</h2>
+            <p>Teachers who feel genuinely more confident — not just informed, but ready to teach. Staff who understand why RSE matters and have the practical skills to deliver it well. A school that can demonstrate a credible, well-supported RSE provision to inspectors, governors, and parents.</p>
+            <p>The best training changes how teachers think about RSE, not just what they know about it. That's what we aim for.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- §4 CTA [A13] — primary -->
+    <CtaServiceEnquiry serviceName="RSE training" serviceParam="RSE training" />
+
+    <!-- §5 Testimonial -->
+    <section class="service-page__testimonial">
+      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <blockquote class="testimonial-pullquote">
+          <p class="testimonial-pullquote__text">"This was the most useful training I've had in years. I went from dreading RSE lessons to actually looking forward to them. The practical strategies made all the difference — I finally feel like I know what I'm doing."</p>
+          <footer class="testimonial-pullquote__footer">
+            <span class="testimonial-pullquote__source">— Year 9 form tutor, secondary school</span>
+            <a href="/testimonials" class="testimonial-pullquote__link">Read more testimonials</a>
+          </footer>
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- §6 Related blog posts -->
+    {relatedPosts.length > 0 && (
+      <section class="service-page__blog">
+        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+          <h2 class="service-page__section-title" style="margin-bottom: var(--space-global-md)">Related articles</h2>
+          <div class="service-page__blog-grid">
+            {relatedPosts.map((bp) => (
+              <a href={`/blog/${bp.slug}`} class="card service-blog-card">
+                {bp.featuredImage && (
+                  <div class="service-blog-card__img">
+                    <img src={bp.featuredImage} alt={bp.title} loading="lazy" />
+                  </div>
+                )}
+                <div class="card__body">
+                  {bp.targetAudience && <div class="card__eyebrow">{bp.targetAudience}</div>}
+                  <div class="card__title">{bp.title}</div>
+                  {bp.author && <div class="service-blog-card__author">By {bp.author}</div>}
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- §7 Topics overview grid -->
+    <TopicsOverviewGrid />
+
+    <!-- §8 CTA [A13] — repeated -->
+    <CtaServiceEnquiry serviceName="RSE training" serviceParam="RSE training" variant="alt" />
+
+  </article>
+  <ServicePageStyles />
+</BaseLayout>

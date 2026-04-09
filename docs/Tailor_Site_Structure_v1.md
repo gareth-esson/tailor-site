@@ -77,8 +77,8 @@ Each of these is a template applied to many pages. Design the template once.
 | **C1** | Question page | `/anonymous_question/{slug}` | ~152 | Post-it image, answer (standard + simple), glossary tooltips, crisis support (conditional), age flag (conditional), signposting, end-of-answer panel (A17), author attribution. The most complex template. |
 | **C2** | Glossary page | `/glossary/{slug}` | ~80–100 | Term, definition (standard + simple), full explainer (standard + simple), related terms, referencing questions, topic link. Standard/Simple toggle. |
 | **C3** | Landing page | `/topics/{slug}` | 22 | Teacher-facing topic landing page. Aggregates relevant granular topics from the 87-topic app taxonomy. Pulls in related questions, glossary terms, blog posts. CTAs (mid-page "explore lessons" + bottom "bring to school"). The bridge between content and services. See landing page list below. |
-| **C4** | Blog post | `/blog/{slug}` | ~20 at launch | Title, author, date, audience label, body content with glossary tooltips, topic tags, related posts, bottom CTA (service or app). |
-| **C5** | Service page | `/services/{type}` | 3 | What the service is, who it's for, what's included, enquiry CTA, testimonial pull quote, related blog posts, related topics. Three instances: delivery, drop-days, rse-policy-curriculum-planning. |
+| **C4** | Blog post | `/blog/{slug}` | ~20 at launch | Featured image (16:9, conditional), meta line (author · date · audience + share dropdown), body prose with accent-coloured headings, topic tags section after body, related posts grid (with featured images), bottom CTA. Share: native Web Share API on mobile, social dropdown (X, LinkedIn, Facebook, WhatsApp, Email, Copy link) on desktop. JSON-LD Article structured data. |
+| **C5** | Service page | `/services/{type}` | 7 (1 hub + 6 individual) | What the service is, who it's for, what's included, enquiry CTA, testimonial pull quote, related blog posts, topics overview. Hub page (`rse-delivery`) shows navigation cards to sub-pages. Individual pages: `rse-for-primary-schools`, `rse-for-secondary-schools`, `rse-for-send-and-ap`, `rse-training`, `drop-days`, `rse-policy-curriculum-planning`. Shared styles via `ServicePageStyles.astro`. Old `/services/delivery` redirects 301 → `/services/rse-delivery`. |
 | **C6** | Legal page | various | 2 | Simple text page template. Used for B12 (Privacy policy) and B13 (Accessibility & inclusivity). No unique components — just heading, body text, footer. No wireframe needed. |
 
 ### C3 landing pages — the 22 pages
@@ -202,4 +202,77 @@ These exist but are not part of the content site wireframes:
 
 ---
 
-*Document version: 1.0 | Date: 1 April 2026*
+---
+
+## Implementation status (as of 9 April 2026)
+
+### Built and live
+
+| Code | Page / template | Route | Notes |
+|------|----------------|-------|-------|
+| **A1** | Site header | — | Persistent header with navigation, search |
+| **A2** | Site footer | — | Links, branding, Guess Design House credit |
+| **A13** | CTA — service enquiry | — | `CtaServiceEnquiry.astro`, pre-tagged service param |
+| **B1** | Homepage | `/` | Dual-layer (Tailor + OtA), hero, book promo, featured questions, trust signals, topics overview |
+| **B8** | Okay to Ask landing | `/questions/` | Question browse with category filtering |
+| **B9** | Blog index | `/blog/` | Filterable list, sorted newest-first |
+| **B11** | Book page | `/book` | Hero cover, product image, audience cards, purchase CTA |
+| **B14** | Topics hub | `/topics/` | Filterable card grid with topic illustrations, trust signal |
+| **C1** | Question page | `/anonymous_question/{slug}` | Post-it images, categories, content tags, end-of-answer panel |
+| **C3** | Landing page | `/topics/{slug}` | 23 pages — curriculum mapping, topic illustrations, body prose |
+| **C4** | Blog post | `/blog/{slug}` | Full C4 spec — featured image, meta, share, tags, related posts, JSON-LD |
+| **C5** | Service pages | `/services/{type}` | 7 pages (1 hub + 6 individual) — see routes below |
+
+### C5 service page routes
+
+| Route | Type | `serviceLink` filter |
+|-------|------|---------------------|
+| `/services/rse-delivery` | Hub | `delivery` |
+| `/services/rse-for-primary-schools` | Individual | `primary` |
+| `/services/rse-for-secondary-schools` | Individual | `secondary` |
+| `/services/rse-for-send-and-ap` | Individual | `send-ap` |
+| `/services/rse-training` | Individual | `training` |
+| `/services/drop-days` | Individual | `drop-days` |
+| `/services/rse-policy-curriculum-planning` | Individual | `rse-policy-curriculum-planning` |
+| `/services/delivery` | 301 redirect → `/services/rse-delivery` | — |
+
+### Shared components added
+
+| Component | Purpose |
+|-----------|---------|
+| `ServicePageStyles.astro` | Global styles shared by all C5 service pages (hero, detail blocks, hub nav cards, testimonial pullquote, blog grid, image placeholders) |
+| `CtaBlogBottom.astro` | Bottom CTA on blog posts |
+| `TopicsOverviewGrid.astro` | Reusable topic card grid used on homepage, service pages, and topics hub |
+| `QuestionCard.astro` | OtA question card with dynamic background detection for mix-blend-mode: multiply |
+
+### Data layer
+
+- `src/lib/fetchers.ts` — Notion API fetchers for blog posts, questions, glossary
+- `src/lib/types.ts` — `BlogPost` interface includes `featuredImage`, `publishedDate`, `serviceLink`
+- `getFilesUrl()` helper handles both Notion `url` and `files` property types
+- `getDateValue()` helper for date property extraction
+
+### Not yet built
+
+| Code | Page / template | Notes |
+|------|----------------|-------|
+| **A6** | Simple Mode toggle | Pending |
+| **A7** | Glossary tooltip | Pending |
+| **A8** | Signposting block | Pending |
+| **A9** | Crisis support component | Pending |
+| **A17** | End-of-answer panel | Pending |
+| **B2** | About | Not started |
+| **B3** | Our Approach | Not started |
+| **B4** | RSE Training (showcase) | Currently using C5 service page at `/services/rse-training` |
+| **B5** | Services hub | Not started |
+| **B6** | Testimonials | Not started |
+| **B7** | Contact | Not started |
+| **B10** | Search results | Not started |
+| **B12** | Privacy policy | Not started |
+| **B13** | Accessibility | Not started |
+| **C2** | Glossary page | Not started |
+| **C6** | Legal page | Not started |
+| **D1–D8** | Interactive elements | Not started |
+| **E1** | Enquiry form | Not started |
+
+*Document version: 1.1 | Date: 9 April 2026*
