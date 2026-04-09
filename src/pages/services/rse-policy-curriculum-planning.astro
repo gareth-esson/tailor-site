@@ -2,6 +2,7 @@
 /**
  * Service page [C5] — /services/rse-policy-curriculum-planning
  * RSE policy and curriculum planning consultancy. Tailor layer.
+ * Mode: individual — consultancy-shaped service.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
@@ -11,6 +12,31 @@ import { getBlogPosts } from '../../lib/content';
 
 const allPosts = await getBlogPosts();
 const relatedPosts = allPosts.filter((p) => p.serviceLink === 'rse-policy-curriculum-planning').slice(0, 3);
+
+const serviceParam = 'RSE policy and curriculum planning';
+const serviceName = 'RSE policy and curriculum planning';
+
+const trustStats = [
+  { figure: 'DfE 2026', label: 'Statutory guidance aligned' },
+  { figure: 'Bespoke', label: 'Not a template — tailored to your school' },
+  { figure: 'Inspection-ready', label: 'Documentation that stands up' },
+];
+
+const featureCards = [
+  { title: 'Current provision review', description: 'We assess your existing RSE policy and curriculum against statutory requirements and best practice.' },
+  { title: 'SLT, PSHE and governor consultation', description: 'Working with your leadership team to understand your school\'s context, values, and community.' },
+  { title: 'Bespoke RSE policy document', description: 'Compliant, practical, and specific to your school — not a generic template.' },
+  { title: 'Curriculum map', description: 'Topic coverage mapped across year groups and key stages, showing exactly what\'s taught, when, and why.' },
+  { title: 'DfE and PSHE Association alignment', description: 'Full alignment to 2026 statutory guidance and PSHE Association frameworks.' },
+  { title: 'Parent consultation guidance', description: 'Support for managing parent communication and withdrawal requests confidently.' },
+  { title: 'Follow-up implementation review', description: 'A review session to ensure implementation is on track and documentation reflects practice.' },
+];
+
+const processSteps = [
+  { number: 1, title: 'We review what you have', description: 'Assessment of your current RSE policy, curriculum provision, and any gaps or concerns.' },
+  { number: 2, title: 'We write it with you', description: 'Bespoke policy and curriculum map, developed in consultation with your leadership team.' },
+  { number: 3, title: 'We check it\'s working', description: 'Follow-up review to ensure the documentation reflects what\'s actually happening in school.' },
+];
 ---
 
 <BaseLayout
@@ -28,87 +54,124 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'rse-policy-curric
   <article class="service-page" data-pagefind-body>
 
     <!-- §1 Hero -->
-    <header class="service-page__header">
-      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
-        <span class="service-page__eyebrow">Services</span>
-        <h1 class="service-page__title">RSE policy & curriculum planning</h1>
-        <p class="service-page__subtitle">
-          Expert support writing your RSE policy and mapping your curriculum — ensuring statutory compliance and a programme that works for your school.
-        </p>
+    <header class="service-hero">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <div class="service-hero__inner service-hero--no-image">
+          <div class="service-hero__text">
+            <span class="service-hero__eyebrow">Services</span>
+            <h1 class="service-hero__title">RSE policy & curriculum planning</h1>
+            <p class="service-hero__subtitle">
+              Expert support writing your RSE policy and mapping your curriculum — ensuring statutory compliance and a programme that works for your school.
+            </p>
+            <a
+              href={`/contact?service=${encodeURIComponent(serviceParam)}`}
+              class="btn btn--std btn--primary has-icon-hover"
+              data-analytics-event="cta_click"
+              data-analytics-cta-type="hero_enquire"
+              data-analytics-service-type={serviceParam}
+            >Enquire now</a>
+          </div>
+        </div>
       </div>
     </header>
 
-    <!-- §2 Service detail -->
-    <section class="service-page__detail">
-      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-
-        <!-- [IMAGE PLACEHOLDER: Policy and curriculum work — documents, planning session, school leadership meeting] -->
-        <div class="service-page__image-placeholder" style="margin-bottom: var(--space-global-lg)">
-          Image — RSE policy and curriculum planning (planning documents, leadership meeting, or curriculum mapping session)
-        </div>
-
-        <div class="service-page__detail-stack">
-
-          <div class="service-page__detail-block">
-            <h2 class="service-page__section-title">What this service is</h2>
-            <p>We help schools write, review, or rewrite their RSE policy and build a curriculum map that meets statutory requirements and actually works in practice. This isn't a template — it's bespoke consultancy that understands your school's context, values, and the communities you serve.</p>
-            <p>Many schools have an RSE policy that's technically compliant but doesn't reflect what happens in the classroom. We fix that gap — creating documentation that staff can use, leaders can defend, and inspectors can see is genuine.</p>
-          </div>
-
-          <div class="service-page__detail-block">
-            <h2 class="service-page__section-title">Who it's for</h2>
-            <p>Schools writing or updating their RSE policy to meet the 2026 DfE statutory guidance. Schools whose current policy is out of date, generic, or disconnected from their actual provision. Schools preparing for inspection who need their RSE documentation to stand up to scrutiny. And school leaders who want expert reassurance that their RSE programme is properly structured and defensible.</p>
-          </div>
-
-          <div class="service-page__detail-block">
-            <h2 class="service-page__section-title">What's included</h2>
-            <ul>
-              <li>Review of your current RSE policy and curriculum provision</li>
-              <li>Consultation with SLT, PSHE leads, and governors as needed</li>
-              <li>Bespoke RSE policy document — compliant, practical, and specific to your school</li>
-              <li>Curriculum map showing topic coverage across year groups and key stages</li>
-              <li>Alignment to DfE 2026 statutory guidance and PSHE Association frameworks</li>
-              <li>Guidance on parent consultation and communication</li>
-              <li>Follow-up review to ensure implementation is on track</li>
-            </ul>
-          </div>
-
-          <div class="service-page__detail-block">
-            <h2 class="service-page__section-title">What schools get</h2>
-            <p>A clear, defensible RSE policy that reflects your school's actual provision. A curriculum map that shows exactly what's taught, when, and why. Documentation that gives SLT, governors, and parents confidence. And the peace of mind that comes from knowing your RSE programme meets every statutory requirement.</p>
-          </div>
-
+    <!-- §2 Trust strip -->
+    <section class="service-trust-strip">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+        <div class="service-trust-strip__inner">
+          {trustStats.map((stat) => (
+            <div class="trust-stat">
+              <div class="trust-stat__figure">{stat.figure}</div>
+              <div class="trust-stat__label">{stat.label}</div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
 
-    <!-- §4 CTA [A13] — primary -->
-    <CtaServiceEnquiry serviceName="RSE policy and curriculum planning" serviceParam="RSE policy & curriculum planning" />
-
-    <!-- §5 Testimonial -->
-    <section class="service-page__testimonial">
+    <!-- §4 Service detail -->
+    <section class="service-detail">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-        <blockquote class="testimonial-pullquote">
-          <p class="testimonial-pullquote__text">"We'd been putting off rewriting our RSE policy for years. Tailor made it straightforward — we now have a document we're genuinely proud of, and the curriculum map has been invaluable for showing governors exactly what we cover and when."</p>
-          <footer class="testimonial-pullquote__footer">
-            <span class="testimonial-pullquote__source">— Headteacher, primary school</span>
-            <a href="/testimonials" class="testimonial-pullquote__link">Read more testimonials</a>
-          </footer>
-        </blockquote>
+
+        <h2 class="service-detail__section-title">What this service is</h2>
+        <p>We help schools write, review, or rewrite their RSE policy and build a curriculum map that meets statutory requirements and actually works in practice. This isn't a template — it's bespoke consultancy that understands your school's context, values, and the communities you serve.</p>
+        <p>Many schools have an RSE policy that's technically compliant but doesn't reflect what happens in the classroom. We fix that gap — creating documentation that staff can use, leaders can defend, and inspectors can see is genuine.</p>
+
+        <div class="service-audience-callout">
+          <span class="service-audience-callout__eyebrow">Who it's for</span>
+          <p class="service-audience-callout__body">Schools writing or updating their RSE policy to meet the 2026 DfE statutory guidance. Schools whose current policy is out of date, generic, or disconnected from their actual provision. Schools preparing for inspection who need their RSE documentation to stand up to scrutiny. And school leaders who want expert reassurance that their RSE programme is properly structured and defensible.</p>
+        </div>
+
+        <h2 class="service-detail__section-title">What schools get</h2>
+        <p>A clear, defensible RSE policy that reflects your school's actual provision. A curriculum map that shows exactly what's taught, when, and why. Documentation that gives SLT, governors, and parents confidence. And the peace of mind that comes from knowing your RSE programme meets every statutory requirement.</p>
+
       </div>
     </section>
 
-    <!-- §6 Related blog posts -->
+    <!-- §5 Feature cards -->
+    <section class="service-features">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <h2 class="service-section-title">What's included</h2>
+        <div class="service-features__grid">
+          {featureCards.map((card) => (
+            <div class="feature-card">
+              <h3 class="feature-card__title">{card.title}</h3>
+              <p class="feature-card__text">{card.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- §6 Process steps -->
+    <section class="service-process">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <h2 class="service-section-title">How it works</h2>
+        <div class="service-process__grid">
+          {processSteps.map((step) => (
+            <div class="process-step">
+              <div class="process-step__number">{step.number}</div>
+              <h3 class="process-step__title">{step.title}</h3>
+              <p class="process-step__text">{step.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- §7 Dark proof band -->
+    <section class="service-proof-band">
+      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <div class="service-proof-band__inner">
+          <blockquote>
+            <p class="service-proof-band__quote">"We'd been putting off rewriting our RSE policy for years. Tailor made it straightforward — we now have a document we're genuinely proud of, and the curriculum map has been invaluable for showing governors exactly what we cover and when."</p>
+          </blockquote>
+          <span class="service-proof-band__source">— Headteacher, primary school</span>
+          <div class="service-proof-band__cta-wrap">
+            <a
+              href={`/contact?service=${encodeURIComponent(serviceParam)}`}
+              class="btn btn--std btn--white-primary has-icon-hover"
+              data-analytics-event="cta_click"
+              data-analytics-cta-type="proof_band_enquire"
+              data-analytics-service-type={serviceParam}
+            >Enquire about {serviceName}</a>
+            <a href="/testimonials" class="service-proof-band__testimonials-link">Read more testimonials →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- §8 Related blog posts -->
     {relatedPosts.length > 0 && (
-      <section class="service-page__blog">
+      <section class="service-blog">
         <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-          <h2 class="service-page__section-title" style="margin-bottom: var(--space-global-md)">Related articles</h2>
-          <div class="service-page__blog-grid">
+          <h2 class="service-section-title">Related articles</h2>
+          <div class="service-blog__grid">
             {relatedPosts.map((bp) => (
               <a href={`/blog/${bp.slug}`} class="card service-blog-card">
                 {bp.featuredImage && (
                   <div class="service-blog-card__img">
-                    <img src={bp.featuredImage} alt={bp.title} loading="lazy" />
+                    <img src={bp.featuredImage} alt="" loading="lazy" />
                   </div>
                 )}
                 <div class="card__body">
@@ -123,11 +186,11 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'rse-policy-curric
       </section>
     )}
 
-    <!-- §7 Topics overview grid -->
+    <!-- §9 Topics overview grid -->
     <TopicsOverviewGrid />
 
-    <!-- §8 CTA [A13] — repeated -->
-    <CtaServiceEnquiry serviceName="RSE policy and curriculum planning" serviceParam="RSE policy & curriculum planning" variant="alt" />
+    <!-- §10 CTA repeated -->
+    <CtaServiceEnquiry serviceName={serviceName} serviceParam={serviceParam} variant="alt" />
 
   </article>
   <ServicePageStyles />

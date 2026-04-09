@@ -2,6 +2,7 @@
 /**
  * Service page [C5] — /services/drop-days
  * RSE drop day delivery. Tailor layer.
+ * Mode: individual — straightforward service, fewer feature cards.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
@@ -11,6 +12,28 @@ import { getBlogPosts } from '../../lib/content';
 
 const allPosts = await getBlogPosts();
 const relatedPosts = allPosts.filter((p) => p.serviceLink === 'drop-days').slice(0, 3);
+
+const serviceParam = 'Drop day delivery';
+const serviceName = 'drop day delivery';
+
+const trustStats = [
+  { figure: 'Full day', label: 'Back-to-back sessions' },
+  { figure: 'All year groups', label: 'One visit, whole school' },
+  { figure: 'DfE 2026', label: 'Statutory guidance aligned' },
+];
+
+const featureCards = [
+  { title: 'Full-day visit', description: 'Back-to-back sessions across year groups throughout the school day.' },
+  { title: 'Pre-visit planning', description: 'We agree topics, session order, and year group priorities with your team in advance.' },
+  { title: 'Age-appropriate content per group', description: 'Each session is tailored to the developmental stage of the year group.' },
+  { title: 'Post-day summary', description: 'Written debrief covering all sessions delivered, with follow-up resources for staff.' },
+];
+
+const processSteps = [
+  { number: 1, title: 'We plan the day', description: 'Pre-visit call to agree which year groups, which topics, and in what order.' },
+  { number: 2, title: 'We deliver all day', description: 'A specialist educator runs back-to-back sessions — each tailored to the year group in the room.' },
+  { number: 3, title: 'You get the debrief', description: 'Post-day summary covering every session, with resources for staff to build on.' },
+];
 ---
 
 <BaseLayout
@@ -28,85 +51,123 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'drop-days').slice
   <article class="service-page" data-pagefind-body>
 
     <!-- §1 Hero -->
-    <header class="service-page__header">
-      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
-        <span class="service-page__eyebrow">Services · RSE Delivery</span>
-        <h1 class="service-page__title">Drop days</h1>
-        <p class="service-page__subtitle">
-          A full day of expert RSE delivery across multiple year groups — maximum impact, minimum disruption to your timetable.
-        </p>
+    <header class="service-hero">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <div class="service-hero__inner service-hero--no-image">
+          <div class="service-hero__text">
+            <span class="service-hero__eyebrow">Services · RSE Delivery</span>
+            <h1 class="service-hero__title">Drop days</h1>
+            <p class="service-hero__subtitle">
+              A full day of expert RSE delivery across multiple year groups — maximum impact, minimum disruption to your timetable.
+            </p>
+            <a
+              href={`/contact?service=${encodeURIComponent(serviceParam)}`}
+              class="btn btn--std btn--primary has-icon-hover"
+              data-analytics-event="cta_click"
+              data-analytics-cta-type="hero_enquire"
+              data-analytics-service-type={serviceParam}
+            >Enquire now</a>
+          </div>
+        </div>
       </div>
     </header>
 
-    <!-- §2 Service detail -->
-    <section class="service-page__detail">
-      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-
-        <!-- [IMAGE PLACEHOLDER: Drop day in action — multiple sessions, busy school day] -->
-        <div class="service-page__image-placeholder" style="margin-bottom: var(--space-global-lg)">
-          Image — Drop day in action (educator delivering sessions across a full school day)
-        </div>
-
-        <div class="service-page__detail-stack">
-
-          <div class="service-page__detail-block">
-            <h2 class="service-page__section-title">What this service is</h2>
-            <p>A full-day RSE programme delivered to multiple year groups in a single visit. The specialist educator delivers back-to-back sessions throughout the day, each tailored to the age and needs of the year group. Schools get broad coverage across their RSE provision in one focused day.</p>
-          </div>
-
-          <div class="service-page__detail-block">
-            <h2 class="service-page__section-title">Who it's for</h2>
-            <p>Schools who want comprehensive RSE coverage without weeks of timetable disruption. Schools booking their annual RSE provision. Schools who want to give every year group a specialist-led session and concentrate the impact into a single event that students and staff remember.</p>
-          </div>
-
-          <div class="service-page__detail-block">
-            <h2 class="service-page__section-title">What's included</h2>
-            <ul>
-              <li>Full-day visit with back-to-back sessions across year groups</li>
-              <li>Pre-visit planning to agree topics and session order</li>
-              <li>Age-appropriate content for each year group</li>
-              <li>Post-day summary covering all sessions delivered</li>
-              <li>Follow-up resources for staff to build on</li>
-              <li>All content aligned to DfE statutory guidance</li>
-            </ul>
-          </div>
-
-          <div class="service-page__detail-block">
-            <h2 class="service-page__section-title">What schools get</h2>
-            <p>A full day of high-quality RSE delivery that covers multiple year groups in one visit. Efficient, impactful, and memorable. Students get expert-led sessions; staff get a day's worth of RSE covered without having to deliver it themselves. Schools often book drop days termly or annually as part of their RSE calendar.</p>
-          </div>
-
+    <!-- §2 Trust strip -->
+    <section class="service-trust-strip">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+        <div class="service-trust-strip__inner">
+          {trustStats.map((stat) => (
+            <div class="trust-stat">
+              <div class="trust-stat__figure">{stat.figure}</div>
+              <div class="trust-stat__label">{stat.label}</div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
 
-    <!-- §4 CTA [A13] — primary -->
-    <CtaServiceEnquiry serviceName="drop day delivery" serviceParam="Drop day delivery" />
-
-    <!-- §5 Testimonial -->
-    <section class="service-page__testimonial">
+    <!-- §4 Service detail -->
+    <section class="service-detail">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-        <blockquote class="testimonial-pullquote">
-          <p class="testimonial-pullquote__text">"We've booked Tailor for a drop day every term for two years now. The students love it, the staff are relieved, and we know the quality is consistently excellent. It's become a highlight of our PSHE calendar."</p>
-          <footer class="testimonial-pullquote__footer">
-            <span class="testimonial-pullquote__source">— Deputy Head, secondary school</span>
-            <a href="/testimonials" class="testimonial-pullquote__link">Read more testimonials</a>
-          </footer>
-        </blockquote>
+
+        <h2 class="service-detail__section-title">What this service is</h2>
+        <p>A full-day RSE programme delivered to multiple year groups in a single visit. The specialist educator delivers back-to-back sessions throughout the day, each tailored to the age and needs of the year group. Schools get broad coverage across their RSE provision in one focused day.</p>
+
+        <div class="service-audience-callout">
+          <span class="service-audience-callout__eyebrow">Who it's for</span>
+          <p class="service-audience-callout__body">Schools who want comprehensive RSE coverage without weeks of timetable disruption. Schools booking their annual RSE provision. Schools who want to give every year group a specialist-led session and concentrate the impact into a single event that students and staff remember.</p>
+        </div>
+
+        <h2 class="service-detail__section-title">What schools get</h2>
+        <p>A full day of high-quality RSE delivery that covers multiple year groups in one visit. Efficient, impactful, and memorable. Students get expert-led sessions; staff get a day's worth of RSE covered without having to deliver it themselves. Schools often book drop days termly or annually as part of their RSE calendar.</p>
+
       </div>
     </section>
 
-    <!-- §6 Related blog posts -->
+    <!-- §5 Feature cards -->
+    <section class="service-features">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <h2 class="service-section-title">What's included</h2>
+        <div class="service-features__grid">
+          {featureCards.map((card) => (
+            <div class="feature-card">
+              <h3 class="feature-card__title">{card.title}</h3>
+              <p class="feature-card__text">{card.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- §6 Process steps -->
+    <section class="service-process">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <h2 class="service-section-title">How it works</h2>
+        <div class="service-process__grid">
+          {processSteps.map((step) => (
+            <div class="process-step">
+              <div class="process-step__number">{step.number}</div>
+              <h3 class="process-step__title">{step.title}</h3>
+              <p class="process-step__text">{step.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- §7 Dark proof band -->
+    <section class="service-proof-band">
+      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <div class="service-proof-band__inner">
+          <blockquote>
+            <p class="service-proof-band__quote">"We've booked Tailor for a drop day every term for two years now. The students love it, the staff are relieved, and we know the quality is consistently excellent. It's become a highlight of our PSHE calendar."</p>
+          </blockquote>
+          <span class="service-proof-band__source">— Deputy Head, secondary school</span>
+          <div class="service-proof-band__cta-wrap">
+            <a
+              href={`/contact?service=${encodeURIComponent(serviceParam)}`}
+              class="btn btn--std btn--white-primary has-icon-hover"
+              data-analytics-event="cta_click"
+              data-analytics-cta-type="proof_band_enquire"
+              data-analytics-service-type={serviceParam}
+            >Enquire about {serviceName}</a>
+            <a href="/testimonials" class="service-proof-band__testimonials-link">Read more testimonials →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- §8 Related blog posts -->
     {relatedPosts.length > 0 && (
-      <section class="service-page__blog">
+      <section class="service-blog">
         <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-          <h2 class="service-page__section-title" style="margin-bottom: var(--space-global-md)">Related articles</h2>
-          <div class="service-page__blog-grid">
+          <h2 class="service-section-title">Related articles</h2>
+          <div class="service-blog__grid">
             {relatedPosts.map((bp) => (
               <a href={`/blog/${bp.slug}`} class="card service-blog-card">
                 {bp.featuredImage && (
                   <div class="service-blog-card__img">
-                    <img src={bp.featuredImage} alt={bp.title} loading="lazy" />
+                    <img src={bp.featuredImage} alt="" loading="lazy" />
                   </div>
                 )}
                 <div class="card__body">
@@ -121,11 +182,11 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'drop-days').slice
       </section>
     )}
 
-    <!-- §7 Topics overview grid -->
+    <!-- §9 Topics overview grid -->
     <TopicsOverviewGrid />
 
-    <!-- §8 CTA [A13] — repeated -->
-    <CtaServiceEnquiry serviceName="drop day delivery" serviceParam="Drop day delivery" variant="alt" />
+    <!-- §10 CTA repeated -->
+    <CtaServiceEnquiry serviceName={serviceName} serviceParam={serviceParam} variant="alt" />
 
   </article>
   <ServicePageStyles />

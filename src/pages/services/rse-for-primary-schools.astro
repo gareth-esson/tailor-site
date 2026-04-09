@@ -2,6 +2,7 @@
 /**
  * Service page [C5] — /services/rse-for-primary-schools
  * RSE delivery for primary schools. Tailor layer.
+ * Mode: individual — full CTA flow.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
@@ -11,6 +12,30 @@ import { getBlogPosts } from '../../lib/content';
 
 const allPosts = await getBlogPosts();
 const relatedPosts = allPosts.filter((p) => p.serviceLink === 'delivery').slice(0, 3);
+
+const serviceParam = 'RSE for primary schools';
+const serviceName = 'RSE for primary schools';
+
+const trustStats = [
+  { figure: 'KS1–KS2', label: 'Key stages covered' },
+  { figure: 'DfE 2026', label: 'Statutory guidance aligned' },
+  { figure: 'Age-appropriate', label: 'Developmentally matched' },
+];
+
+const featureCards = [
+  { title: 'Pre-visit consultation', description: 'Planning call with your PSHE lead or headteacher to agree topics, year groups, and approach.' },
+  { title: 'KS1 and KS2 lesson design', description: 'Sessions designed for primary developmental stages — language and activities that feel natural for the age group.' },
+  { title: 'Age-appropriate delivery', description: 'Content pitched right for young children — honest and clear without being overwhelming.' },
+  { title: 'DfE statutory alignment', description: 'All topics aligned to the DfE statutory RSE and health education guidance.' },
+  { title: 'Post-session staff summary', description: 'Written debrief for staff including talking points for follow-up conversations.' },
+  { title: 'Parent-facing information', description: 'Available on request — helps schools communicate what was covered and why.' },
+];
+
+const processSteps = [
+  { number: 1, title: 'We plan together', description: 'Pre-visit consultation to agree topics, year groups, and the approach that fits your school.' },
+  { number: 2, title: 'We deliver', description: 'A specialist educator delivers age-appropriate sessions directly to your students.' },
+  { number: 3, title: 'You get results', description: 'Staff summary, follow-up resources, and students who can have the conversations that matter.' },
+];
 ---
 
 <BaseLayout
@@ -28,86 +53,124 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'delivery').slice(
   <article class="service-page" data-pagefind-body>
 
     <!-- §1 Hero -->
-    <header class="service-page__header">
-      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
-        <span class="service-page__eyebrow">Services · RSE Delivery</span>
-        <h1 class="service-page__title">RSE for primary schools</h1>
-        <p class="service-page__subtitle">
-          Expert-led RSE tailored for KS1 and KS2, delivered by a specialist educator who understands primary school settings.
-        </p>
+    <header class="service-hero">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <div class="service-hero__inner service-hero--no-image">
+          <div class="service-hero__text">
+            <span class="service-hero__eyebrow">Services · RSE Delivery</span>
+            <h1 class="service-hero__title">RSE for primary schools</h1>
+            <p class="service-hero__subtitle">
+              Expert-led RSE tailored for KS1 and KS2, delivered by a specialist educator who understands primary school settings — using language and activities that feel natural for the age group.
+            </p>
+            <a
+              href={`/contact?service=${encodeURIComponent(serviceParam)}`}
+              class="btn btn--std btn--primary has-icon-hover"
+              data-analytics-event="cta_click"
+              data-analytics-cta-type="hero_enquire"
+              data-analytics-service-type={serviceParam}
+            >Enquire now</a>
+          </div>
+        </div>
       </div>
     </header>
 
-    <!-- §2 Service detail -->
-    <section class="service-page__detail">
-      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-
-        <!-- [IMAGE PLACEHOLDER: Primary school RSE session — educator with young children in a bright classroom] -->
-        <div class="service-page__image-placeholder" style="margin-bottom: var(--space-global-lg)">
-          Image — RSE session in a primary school classroom (educator with KS1/KS2 age children)
-        </div>
-
-        <div class="service-page__detail-stack">
-
-          <div class="service-page__detail-block">
-            <h2 class="service-page__section-title">What this service is</h2>
-            <p>A specialist RSE educator delivers age-appropriate lessons directly to your primary school students. Sessions are designed around the realities of teaching young children about relationships, bodies, boundaries, and staying safe — using language and activities that feel natural for the age group.</p>
-            <p>We cover the topics that primary staff often find hardest to approach: puberty, consent in age-appropriate terms, healthy friendships, and online safety for younger children.</p>
-          </div>
-
-          <div class="service-page__detail-block">
-            <h2 class="service-page__section-title">Who it's for</h2>
-            <p>Primary schools who want specialist support for RSE delivery. Particularly valued by schools where staff feel uncertain about teaching puberty or relationships topics, where parents need reassurance about what's being taught, or where an external specialist voice helps normalise conversations that children need to have.</p>
-          </div>
-
-          <div class="service-page__detail-block">
-            <h2 class="service-page__section-title">What's included</h2>
-            <ul>
-              <li>Pre-visit consultation with your PSHE lead or headteacher</li>
-              <li>Lessons designed for KS1 and KS2 developmental stages</li>
-              <li>Age-appropriate language and activities throughout</li>
-              <li>Topics aligned to the DfE statutory RSE and health education guidance</li>
-              <li>Post-session summary for staff, including talking points for follow-up</li>
-              <li>Parent-facing information available on request</li>
-            </ul>
-          </div>
-
-          <div class="service-page__detail-block">
-            <h2 class="service-page__section-title">What schools get</h2>
-            <p>Students who can name body parts accurately, understand what makes a healthy friendship, recognise the difference between appropriate and inappropriate touch, and know how to ask for help. Staff who feel more confident continuing RSE conversations after the session. And parents who can see that the school takes this seriously and handles it well.</p>
-          </div>
-
+    <!-- §2 Trust strip -->
+    <section class="service-trust-strip">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+        <div class="service-trust-strip__inner">
+          {trustStats.map((stat) => (
+            <div class="trust-stat">
+              <div class="trust-stat__figure">{stat.figure}</div>
+              <div class="trust-stat__label">{stat.label}</div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
 
-    <!-- §4 CTA [A13] — primary -->
-    <CtaServiceEnquiry serviceName="RSE for primary schools" serviceParam="RSE for primary schools" />
-
-    <!-- §5 Testimonial -->
-    <section class="service-page__testimonial">
+    <!-- §4 Service detail -->
+    <section class="service-detail">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-        <blockquote class="testimonial-pullquote">
-          <p class="testimonial-pullquote__text">"The children were completely engaged. The educator pitched it perfectly for our Year 5s — honest and clear without being overwhelming. Several parents commented on how well their children talked about the session at home."</p>
-          <footer class="testimonial-pullquote__footer">
-            <span class="testimonial-pullquote__source">— PSHE Lead, primary school</span>
-            <a href="/testimonials" class="testimonial-pullquote__link">Read more testimonials</a>
-          </footer>
-        </blockquote>
+
+        <h2 class="service-detail__section-title">What this service is</h2>
+        <p>A specialist RSE educator delivers age-appropriate lessons directly to your primary school students. Sessions are designed around the realities of teaching young children about relationships, bodies, boundaries, and staying safe — using language and activities that feel natural for the age group.</p>
+        <p>We cover the topics that primary staff often find hardest to approach: puberty, consent in age-appropriate terms, healthy friendships, and online safety for younger children.</p>
+
+        <div class="service-audience-callout">
+          <span class="service-audience-callout__eyebrow">Who it's for</span>
+          <p class="service-audience-callout__body">Primary schools who want specialist support for RSE delivery. Particularly valued by schools where staff feel uncertain about teaching puberty or relationships topics, where parents need reassurance about what's being taught, or where an external specialist voice helps normalise conversations that children need to have.</p>
+        </div>
+
+        <h2 class="service-detail__section-title">What schools get</h2>
+        <p>Students who can name body parts accurately, understand what makes a healthy friendship, recognise the difference between appropriate and inappropriate touch, and know how to ask for help. Staff who feel more confident continuing RSE conversations after the session. And parents who can see that the school takes this seriously and handles it well.</p>
+
       </div>
     </section>
 
-    <!-- §6 Related blog posts -->
+    <!-- §5 Feature cards -->
+    <section class="service-features">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <h2 class="service-section-title">What's included</h2>
+        <div class="service-features__grid">
+          {featureCards.map((card) => (
+            <div class="feature-card">
+              <h3 class="feature-card__title">{card.title}</h3>
+              <p class="feature-card__text">{card.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- §6 Process steps -->
+    <section class="service-process">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <h2 class="service-section-title">How it works</h2>
+        <div class="service-process__grid">
+          {processSteps.map((step) => (
+            <div class="process-step">
+              <div class="process-step__number">{step.number}</div>
+              <h3 class="process-step__title">{step.title}</h3>
+              <p class="process-step__text">{step.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- §7 Dark proof band -->
+    <section class="service-proof-band">
+      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <div class="service-proof-band__inner">
+          <blockquote>
+            <p class="service-proof-band__quote">"The children were completely engaged. The educator pitched it perfectly for our Year 5s — honest and clear without being overwhelming. Several parents commented on how well their children talked about the session at home."</p>
+          </blockquote>
+          <span class="service-proof-band__source">— PSHE Lead, primary school</span>
+          <div class="service-proof-band__cta-wrap">
+            <a
+              href={`/contact?service=${encodeURIComponent(serviceParam)}`}
+              class="btn btn--std btn--white-primary has-icon-hover"
+              data-analytics-event="cta_click"
+              data-analytics-cta-type="proof_band_enquire"
+              data-analytics-service-type={serviceParam}
+            >Enquire about {serviceName}</a>
+            <a href="/testimonials" class="service-proof-band__testimonials-link">Read more testimonials →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- §8 Related blog posts -->
     {relatedPosts.length > 0 && (
-      <section class="service-page__blog">
+      <section class="service-blog">
         <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-          <h2 class="service-page__section-title" style="margin-bottom: var(--space-global-md)">Related articles</h2>
-          <div class="service-page__blog-grid">
+          <h2 class="service-section-title">Related articles</h2>
+          <div class="service-blog__grid">
             {relatedPosts.map((bp) => (
               <a href={`/blog/${bp.slug}`} class="card service-blog-card">
                 {bp.featuredImage && (
                   <div class="service-blog-card__img">
-                    <img src={bp.featuredImage} alt={bp.title} loading="lazy" />
+                    <img src={bp.featuredImage} alt="" loading="lazy" />
                   </div>
                 )}
                 <div class="card__body">
@@ -122,11 +185,11 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'delivery').slice(
       </section>
     )}
 
-    <!-- §7 Topics overview grid -->
+    <!-- §9 Topics overview grid -->
     <TopicsOverviewGrid />
 
-    <!-- §8 CTA [A13] — repeated -->
-    <CtaServiceEnquiry serviceName="RSE for primary schools" serviceParam="RSE for primary schools" variant="alt" />
+    <!-- §10 CTA repeated -->
+    <CtaServiceEnquiry serviceName={serviceName} serviceParam={serviceParam} variant="alt" />
 
   </article>
   <ServicePageStyles />

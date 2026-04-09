@@ -2,6 +2,7 @@
 /**
  * Service page [C5] — /services/rse-for-secondary-schools
  * RSE delivery for secondary schools. Tailor layer.
+ * Mode: individual — full CTA flow.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
@@ -11,6 +12,30 @@ import { getBlogPosts } from '../../lib/content';
 
 const allPosts = await getBlogPosts();
 const relatedPosts = allPosts.filter((p) => p.serviceLink === 'delivery').slice(0, 3);
+
+const serviceParam = 'RSE for secondary schools';
+const serviceName = 'RSE for secondary schools';
+
+const trustStats = [
+  { figure: 'KS3–KS4', label: 'Key stages covered' },
+  { figure: 'DfE 2026', label: 'Statutory guidance aligned' },
+  { figure: 'Discussion-led', label: 'Interactive delivery' },
+];
+
+const featureCards = [
+  { title: 'Pre-visit consultation', description: 'We agree topics, year groups, and approach with your PSHE lead before the visit.' },
+  { title: 'KS3 and KS4 lesson design', description: 'Sessions designed for secondary developmental stages — going beyond the textbook.' },
+  { title: 'High-demand topic coverage', description: 'Consent, healthy relationships, online safety, pornography and media literacy, sexual health.' },
+  { title: 'Interactive, discussion-based delivery', description: 'Not lecture-based — students engage directly with the material and each other.' },
+  { title: 'Post-session engagement insights', description: 'Summary for PSHE leads including student engagement observations and follow-up recommendations.' },
+  { title: 'DfE and PSHE Association aligned', description: 'All content mapped to current statutory guidance and PSHE Association frameworks.' },
+];
+
+const processSteps = [
+  { number: 1, title: 'We plan together', description: 'Pre-visit consultation to agree topics, year groups, and the approach that fits your school.' },
+  { number: 2, title: 'We deliver', description: 'Expert-led sessions that address the real questions young people have — with honesty and sensitivity.' },
+  { number: 3, title: 'You build on it', description: 'Staff summary, engagement insights, and resources to continue the conversations.' },
+];
 ---
 
 <BaseLayout
@@ -28,86 +53,124 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'delivery').slice(
   <article class="service-page" data-pagefind-body>
 
     <!-- §1 Hero -->
-    <header class="service-page__header">
-      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
-        <span class="service-page__eyebrow">Services · RSE Delivery</span>
-        <h1 class="service-page__title">RSE for secondary schools</h1>
-        <p class="service-page__subtitle">
-          Expert-led RSE for KS3 and KS4, covering the topics students are actually thinking about — delivered with honesty, sensitivity, and real expertise.
-        </p>
+    <header class="service-hero">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <div class="service-hero__inner service-hero--no-image">
+          <div class="service-hero__text">
+            <span class="service-hero__eyebrow">Services · RSE Delivery</span>
+            <h1 class="service-hero__title">RSE for secondary schools</h1>
+            <p class="service-hero__subtitle">
+              Expert-led RSE for KS3 and KS4, covering the topics students are actually thinking about — delivered with honesty, sensitivity, and real expertise.
+            </p>
+            <a
+              href={`/contact?service=${encodeURIComponent(serviceParam)}`}
+              class="btn btn--std btn--primary has-icon-hover"
+              data-analytics-event="cta_click"
+              data-analytics-cta-type="hero_enquire"
+              data-analytics-service-type={serviceParam}
+            >Enquire now</a>
+          </div>
+        </div>
       </div>
     </header>
 
-    <!-- §2 Service detail -->
-    <section class="service-page__detail">
-      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-
-        <!-- [IMAGE PLACEHOLDER: Secondary school RSE session — educator leading discussion with teenagers] -->
-        <div class="service-page__image-placeholder" style="margin-bottom: var(--space-global-lg)">
-          Image — RSE session in a secondary school (educator leading discussion with KS3/KS4 students)
-        </div>
-
-        <div class="service-page__detail-stack">
-
-          <div class="service-page__detail-block">
-            <h2 class="service-page__section-title">What this service is</h2>
-            <p>A specialist RSE educator delivers lessons directly to your secondary students. Sessions go beyond the textbook — addressing the real questions young people have about consent, relationships, pornography, online behaviour, and identity.</p>
-            <p>Students respond differently to an external specialist than they do to their regular teachers. We use that dynamic to create space for the honest, sometimes uncomfortable conversations that RSE needs to include.</p>
-          </div>
-
-          <div class="service-page__detail-block">
-            <h2 class="service-page__section-title">Who it's for</h2>
-            <p>Secondary schools who want expert-led delivery on the topics staff find most challenging. Schools where students have questions that go beyond what the curriculum covers. Schools preparing for inspection where RSE provision needs strengthening. And schools who want to complement their existing programme with specialist sessions on specific topics.</p>
-          </div>
-
-          <div class="service-page__detail-block">
-            <h2 class="service-page__section-title">What's included</h2>
-            <ul>
-              <li>Pre-visit consultation to agree topics, year groups, and approach</li>
-              <li>Lessons designed for KS3 and KS4 developmental stages</li>
-              <li>Coverage of high-demand topics: consent, healthy relationships, online safety, pornography and media literacy, sexual health</li>
-              <li>Interactive delivery — discussion-based, not lecture-based</li>
-              <li>Post-session summary for PSHE leads, including student engagement insights</li>
-              <li>All content aligned to DfE statutory guidance and PSHE Association frameworks</li>
-            </ul>
-          </div>
-
-          <div class="service-page__detail-block">
-            <h2 class="service-page__section-title">What schools get</h2>
-            <p>Students who have had the conversations that matter — not just the ones that are easy. Staff who can build on what was covered. A strengthened RSE provision that stands up to scrutiny and, more importantly, actually makes a difference to the young people in the room.</p>
-          </div>
-
+    <!-- §2 Trust strip -->
+    <section class="service-trust-strip">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+        <div class="service-trust-strip__inner">
+          {trustStats.map((stat) => (
+            <div class="trust-stat">
+              <div class="trust-stat__figure">{stat.figure}</div>
+              <div class="trust-stat__label">{stat.label}</div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
 
-    <!-- §4 CTA [A13] — primary -->
-    <CtaServiceEnquiry serviceName="RSE for secondary schools" serviceParam="RSE for secondary schools" />
-
-    <!-- §5 Testimonial -->
-    <section class="service-page__testimonial">
+    <!-- §4 Service detail -->
+    <section class="service-detail">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-        <blockquote class="testimonial-pullquote">
-          <p class="testimonial-pullquote__text">"Our Year 10s are not easy to engage. Within five minutes, every student was listening. The session on consent went further than anything we could have delivered ourselves — and the students said it was the most useful PSHE lesson they'd had."</p>
-          <footer class="testimonial-pullquote__footer">
-            <span class="testimonial-pullquote__source">— Head of PSHE, secondary school</span>
-            <a href="/testimonials" class="testimonial-pullquote__link">Read more testimonials</a>
-          </footer>
-        </blockquote>
+
+        <h2 class="service-detail__section-title">What this service is</h2>
+        <p>A specialist RSE educator delivers lessons directly to your secondary students. Sessions go beyond the textbook — addressing the real questions young people have about consent, relationships, pornography, online behaviour, and identity.</p>
+        <p>Students respond differently to an external specialist than they do to their regular teachers. We use that dynamic to create space for the honest, sometimes uncomfortable conversations that RSE needs to include.</p>
+
+        <div class="service-audience-callout">
+          <span class="service-audience-callout__eyebrow">Who it's for</span>
+          <p class="service-audience-callout__body">Secondary schools who want expert-led delivery on the topics staff find most challenging. Schools where students have questions that go beyond what the curriculum covers. Schools preparing for inspection where RSE provision needs strengthening. And schools who want to complement their existing programme with specialist sessions on specific topics.</p>
+        </div>
+
+        <h2 class="service-detail__section-title">What schools get</h2>
+        <p>Students who have had the conversations that matter — not just the ones that are easy. Staff who can build on what was covered. A strengthened RSE provision that stands up to scrutiny and, more importantly, actually makes a difference to the young people in the room.</p>
+
       </div>
     </section>
 
-    <!-- §6 Related blog posts -->
+    <!-- §5 Feature cards -->
+    <section class="service-features">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <h2 class="service-section-title">What's included</h2>
+        <div class="service-features__grid">
+          {featureCards.map((card) => (
+            <div class="feature-card">
+              <h3 class="feature-card__title">{card.title}</h3>
+              <p class="feature-card__text">{card.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- §6 Process steps -->
+    <section class="service-process">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <h2 class="service-section-title">How it works</h2>
+        <div class="service-process__grid">
+          {processSteps.map((step) => (
+            <div class="process-step">
+              <div class="process-step__number">{step.number}</div>
+              <h3 class="process-step__title">{step.title}</h3>
+              <p class="process-step__text">{step.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- §7 Dark proof band -->
+    <section class="service-proof-band">
+      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <div class="service-proof-band__inner">
+          <blockquote>
+            <p class="service-proof-band__quote">"Our Year 10s are not easy to engage. Within five minutes, every student was listening. The session on consent went further than anything we could have delivered ourselves — and the students said it was the most useful PSHE lesson they'd had."</p>
+          </blockquote>
+          <span class="service-proof-band__source">— Head of PSHE, secondary school</span>
+          <div class="service-proof-band__cta-wrap">
+            <a
+              href={`/contact?service=${encodeURIComponent(serviceParam)}`}
+              class="btn btn--std btn--white-primary has-icon-hover"
+              data-analytics-event="cta_click"
+              data-analytics-cta-type="proof_band_enquire"
+              data-analytics-service-type={serviceParam}
+            >Enquire about {serviceName}</a>
+            <a href="/testimonials" class="service-proof-band__testimonials-link">Read more testimonials →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- §8 Related blog posts -->
     {relatedPosts.length > 0 && (
-      <section class="service-page__blog">
+      <section class="service-blog">
         <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-          <h2 class="service-page__section-title" style="margin-bottom: var(--space-global-md)">Related articles</h2>
-          <div class="service-page__blog-grid">
+          <h2 class="service-section-title">Related articles</h2>
+          <div class="service-blog__grid">
             {relatedPosts.map((bp) => (
               <a href={`/blog/${bp.slug}`} class="card service-blog-card">
                 {bp.featuredImage && (
                   <div class="service-blog-card__img">
-                    <img src={bp.featuredImage} alt={bp.title} loading="lazy" />
+                    <img src={bp.featuredImage} alt="" loading="lazy" />
                   </div>
                 )}
                 <div class="card__body">
@@ -122,11 +185,11 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'delivery').slice(
       </section>
     )}
 
-    <!-- §7 Topics overview grid -->
+    <!-- §9 Topics overview grid -->
     <TopicsOverviewGrid />
 
-    <!-- §8 CTA [A13] — repeated -->
-    <CtaServiceEnquiry serviceName="RSE for secondary schools" serviceParam="RSE for secondary schools" variant="alt" />
+    <!-- §10 CTA repeated -->
+    <CtaServiceEnquiry serviceName={serviceName} serviceParam={serviceParam} variant="alt" />
 
   </article>
   <ServicePageStyles />

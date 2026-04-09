@@ -2,7 +2,7 @@
 /**
  * Service page [C5] — /services/rse-for-send-and-ap
  * RSE for SEND & AP (Circuits). Tailor layer.
- * Distinct workbook-based product line with self-paced delivery.
+ * Mode: individual — distinct workbook-based product line with self-paced delivery.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
@@ -12,6 +12,30 @@ import { getBlogPosts } from '../../lib/content';
 
 const allPosts = await getBlogPosts();
 const relatedPosts = allPosts.filter((p) => p.serviceLink === 'delivery').slice(0, 3);
+
+const serviceParam = 'RSE for SEND and AP';
+const serviceName = 'RSE for SEND and AP';
+
+const trustStats = [
+  { figure: 'Self-paced', label: 'Workbook-based delivery' },
+  { figure: 'DfE 2026', label: 'Statutory guidance aligned' },
+  { figure: 'SEND specialist', label: 'Experienced educators' },
+];
+
+const featureCards = [
+  { title: 'Physical student workbooks', description: 'Designed for accessibility and engagement — every student gets their own workbook to keep.' },
+  { title: 'Simplified keynote presentations', description: 'For the educator to deliver alongside the workbooks — clear, concrete, no information overload.' },
+  { title: 'Self-paced delivery', description: 'Students work through their workbooks at their own speed — no pressure to keep up with the group.' },
+  { title: 'Built-in doodle and game space', description: 'Processing and decompression space within the workbook — not an afterthought, part of the design.' },
+  { title: 'Pre-visit adaptation', description: 'Content adapted to your students\' specific needs and abilities before we arrive.' },
+  { title: 'SEND and AP specialist delivery', description: 'Delivered by an educator experienced in SEND and alternative provision contexts.' },
+];
+
+const processSteps = [
+  { number: 1, title: 'We adapt together', description: 'Pre-visit consultation to understand your students\' needs and adapt the workbook content accordingly.' },
+  { number: 2, title: 'We deliver at their pace', description: 'Self-paced workbook session with simplified keynotes — students engage in their own way.' },
+  { number: 3, title: 'They keep the workbooks', description: 'Students take their workbooks home — a resource they can revisit on their own terms.' },
+];
 ---
 
 <BaseLayout
@@ -29,87 +53,124 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'delivery').slice(
   <article class="service-page" data-pagefind-body>
 
     <!-- §1 Hero -->
-    <header class="service-page__header">
-      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
-        <span class="service-page__eyebrow">Services · RSE Delivery</span>
-        <h1 class="service-page__title">RSE for SEND & alternative provision</h1>
-        <p class="service-page__subtitle">
-          Circuits — workbook-based RSE designed for SEND and AP settings, where students learn at their own pace with simplified content and space to process.
-        </p>
+    <header class="service-hero">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <div class="service-hero__inner service-hero--no-image">
+          <div class="service-hero__text">
+            <span class="service-hero__eyebrow">Services · RSE Delivery</span>
+            <h1 class="service-hero__title">RSE for SEND & alternative provision</h1>
+            <p class="service-hero__subtitle">
+              Circuits — workbook-based RSE designed for SEND and AP settings, where students learn at their own pace with simplified content and space to process.
+            </p>
+            <a
+              href={`/contact?service=${encodeURIComponent(serviceParam)}`}
+              class="btn btn--std btn--primary has-icon-hover"
+              data-analytics-event="cta_click"
+              data-analytics-cta-type="hero_enquire"
+              data-analytics-service-type={serviceParam}
+            >Enquire now</a>
+          </div>
+        </div>
       </div>
     </header>
 
-    <!-- §2 Service detail -->
-    <section class="service-page__detail">
-      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-
-        <!-- [IMAGE PLACEHOLDER: Circuits workbook — showing the workbook format with doodle/game space, simplified layout] -->
-        <div class="service-page__image-placeholder" style="margin-bottom: var(--space-global-lg)">
-          Image — Circuits workbook (showing the physical workbook format with doodle/game space and simplified keynotes)
-        </div>
-
-        <div class="service-page__detail-stack">
-
-          <div class="service-page__detail-block">
-            <h2 class="service-page__section-title">What this service is</h2>
-            <p>Circuits is a workbook-based RSE programme designed specifically for students in SEND and alternative provision settings. It recognises that mainstream RSE delivery doesn't always work for every learner — some students need more time, simpler language, and a format they can engage with at their own speed.</p>
-            <p>Each student receives a physical workbook that guides them through the session content. The workbooks use simplified keynotes, clear visuals, and built-in doodle and game space that gives students a way to process without having to talk or write continuously.</p>
-          </div>
-
-          <div class="service-page__detail-block">
-            <h2 class="service-page__section-title">Who it's for</h2>
-            <p>Special schools, SEND units within mainstream schools, alternative provision settings, and PRUs. Schools where mainstream RSE resources don't meet the needs of their learners. Settings where students benefit from self-paced delivery, concrete language, and physical materials they can keep and return to.</p>
-          </div>
-
-          <div class="service-page__detail-block">
-            <h2 class="service-page__section-title">What's included</h2>
-            <ul>
-              <li>Physical workbooks for every student — designed for accessibility and engagement</li>
-              <li>Simplified keynote presentations for the educator to deliver alongside the workbooks</li>
-              <li>Self-paced delivery — students work through their workbooks at their own speed</li>
-              <li>Built-in doodle and game space for processing and decompression</li>
-              <li>Pre-visit consultation to adapt content to your students' needs and abilities</li>
-              <li>Delivery by a specialist educator experienced in SEND and AP contexts</li>
-              <li>All content aligned to DfE statutory guidance, adapted for accessibility</li>
-            </ul>
-          </div>
-
-          <div class="service-page__detail-block">
-            <h2 class="service-page__section-title">What schools get</h2>
-            <p>RSE delivery that actually works for your students. Workbooks students can keep and revisit. A session format that reduces anxiety and sensory overload while still covering essential content. Staff who see how RSE can be delivered effectively in their setting, and a framework they can build on.</p>
-          </div>
-
+    <!-- §2 Trust strip -->
+    <section class="service-trust-strip">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+        <div class="service-trust-strip__inner">
+          {trustStats.map((stat) => (
+            <div class="trust-stat">
+              <div class="trust-stat__figure">{stat.figure}</div>
+              <div class="trust-stat__label">{stat.label}</div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
 
-    <!-- §4 CTA [A13] — primary -->
-    <CtaServiceEnquiry serviceName="RSE for SEND and AP" serviceParam="RSE for SEND and AP" />
-
-    <!-- §5 Testimonial -->
-    <section class="service-page__testimonial">
+    <!-- §4 Service detail -->
+    <section class="service-detail">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-        <blockquote class="testimonial-pullquote">
-          <p class="testimonial-pullquote__text">"The workbooks were brilliant. Students who normally disengage completely during PSHE were drawing, writing, and asking questions. One student said it was the first lesson where they didn't feel like they were being talked at."</p>
-          <footer class="testimonial-pullquote__footer">
-            <span class="testimonial-pullquote__source">— SENCo, special school</span>
-            <a href="/testimonials" class="testimonial-pullquote__link">Read more testimonials</a>
-          </footer>
-        </blockquote>
+
+        <h2 class="service-detail__section-title">What this service is</h2>
+        <p>Circuits is a workbook-based RSE programme designed specifically for students in SEND and alternative provision settings. It recognises that mainstream RSE delivery doesn't always work for every learner — some students need more time, simpler language, and a format they can engage with at their own speed.</p>
+        <p>Each student receives a physical workbook that guides them through the session content. The workbooks use simplified keynotes, clear visuals, and built-in doodle and game space that gives students a way to process without having to talk or write continuously.</p>
+
+        <div class="service-audience-callout">
+          <span class="service-audience-callout__eyebrow">Who it's for</span>
+          <p class="service-audience-callout__body">Special schools, SEND units within mainstream schools, alternative provision settings, and PRUs. Schools where mainstream RSE resources don't meet the needs of their learners. Settings where students benefit from self-paced delivery, concrete language, and physical materials they can keep and return to.</p>
+        </div>
+
+        <h2 class="service-detail__section-title">What schools get</h2>
+        <p>RSE delivery that actually works for your students. Workbooks students can keep and revisit. A session format that reduces anxiety and sensory overload while still covering essential content. Staff who see how RSE can be delivered effectively in their setting, and a framework they can build on.</p>
+
       </div>
     </section>
 
-    <!-- §6 Related blog posts -->
+    <!-- §5 Feature cards -->
+    <section class="service-features">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <h2 class="service-section-title">What's included</h2>
+        <div class="service-features__grid">
+          {featureCards.map((card) => (
+            <div class="feature-card">
+              <h3 class="feature-card__title">{card.title}</h3>
+              <p class="feature-card__text">{card.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- §6 Process steps -->
+    <section class="service-process">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <h2 class="service-section-title">How it works</h2>
+        <div class="service-process__grid">
+          {processSteps.map((step) => (
+            <div class="process-step">
+              <div class="process-step__number">{step.number}</div>
+              <h3 class="process-step__title">{step.title}</h3>
+              <p class="process-step__text">{step.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- §7 Dark proof band -->
+    <section class="service-proof-band">
+      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <div class="service-proof-band__inner">
+          <blockquote>
+            <p class="service-proof-band__quote">"The workbooks were brilliant. Students who normally disengage completely during PSHE were drawing, writing, and asking questions. One student said it was the first lesson where they didn't feel like they were being talked at."</p>
+          </blockquote>
+          <span class="service-proof-band__source">— SENCo, special school</span>
+          <div class="service-proof-band__cta-wrap">
+            <a
+              href={`/contact?service=${encodeURIComponent(serviceParam)}`}
+              class="btn btn--std btn--white-primary has-icon-hover"
+              data-analytics-event="cta_click"
+              data-analytics-cta-type="proof_band_enquire"
+              data-analytics-service-type={serviceParam}
+            >Enquire about {serviceName}</a>
+            <a href="/testimonials" class="service-proof-band__testimonials-link">Read more testimonials →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- §8 Related blog posts -->
     {relatedPosts.length > 0 && (
-      <section class="service-page__blog">
+      <section class="service-blog">
         <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-          <h2 class="service-page__section-title" style="margin-bottom: var(--space-global-md)">Related articles</h2>
-          <div class="service-page__blog-grid">
+          <h2 class="service-section-title">Related articles</h2>
+          <div class="service-blog__grid">
             {relatedPosts.map((bp) => (
               <a href={`/blog/${bp.slug}`} class="card service-blog-card">
                 {bp.featuredImage && (
                   <div class="service-blog-card__img">
-                    <img src={bp.featuredImage} alt={bp.title} loading="lazy" />
+                    <img src={bp.featuredImage} alt="" loading="lazy" />
                   </div>
                 )}
                 <div class="card__body">
@@ -124,11 +185,11 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'delivery').slice(
       </section>
     )}
 
-    <!-- §7 Topics overview grid -->
+    <!-- §9 Topics overview grid -->
     <TopicsOverviewGrid />
 
-    <!-- §8 CTA [A13] — repeated -->
-    <CtaServiceEnquiry serviceName="RSE for SEND and AP" serviceParam="RSE for SEND and AP" variant="alt" />
+    <!-- §10 CTA repeated -->
+    <CtaServiceEnquiry serviceName={serviceName} serviceParam={serviceParam} variant="alt" />
 
   </article>
   <ServicePageStyles />

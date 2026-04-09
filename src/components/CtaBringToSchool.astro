@@ -13,8 +13,8 @@ interface Props {
 const { topicTitle, serviceTarget } = Astro.props;
 
 const targetMap: Record<string, { href: string; label: string }> = {
-  delivery: { href: '/services/delivery', label: 'Direct RSE delivery' },
-  training: { href: '/training', label: 'RSE training' },
+  delivery: { href: '/services/rse-delivery', label: 'RSE delivery' },
+  training: { href: '/services/rse-training', label: 'RSE training' },
   'drop-days': { href: '/services/drop-days', label: 'Drop days' },
   consultancy: { href: '/services/rse-policy-curriculum-planning', label: 'RSE policy and curriculum planning' },
   'rse-policy-curriculum-planning': { href: '/services/rse-policy-curriculum-planning', label: 'RSE policy and curriculum planning' },
