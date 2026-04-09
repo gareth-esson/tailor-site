@@ -14,8 +14,12 @@ import type { QuestionRef } from '../lib/types';
 const allQuestions = await getQuestions();
 
 // Featured questions: pick 3 answered questions with post-it scans
-const answered = allQuestions.filter((q) => q.body.length > 0 && q.hasPostItScan)
-  .sort(() => 0.5 - Math.random());
+const answered = allQuestions.filter((q) => q.body.length > 0 && q.hasPostItScan);
+// Fisher-Yates shuffle for unbiased randomisation
+for (let i = answered.length - 1; i > 0; i--) {
+  const j = Math.floor(Math.random() * (i + 1));
+  [answered[i], answered[j]] = [answered[j], answered[i]];
+}
 const featured: QuestionRef[] = answered.slice(0, 3).map((q) => ({
   id: q.id,
   question: q.question,

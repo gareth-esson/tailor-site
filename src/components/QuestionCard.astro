@@ -44,13 +44,6 @@ function slugify(text: string): string {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
 }
-
-function renderTagsHtml(tags: string[]): string {
-  return tags.map((tag, i) =>
-    (i > 0 ? '<span class="qcard__tags-sep" aria-hidden="true"> \u00b7 </span>' : '') +
-    `<span class="qcard__tag-link" data-tag-href="/questions/tag/${slugify(tag)}">${tag}</span>`
-  ).join('');
-}
 ---
 
 <a
@@ -77,7 +70,14 @@ function renderTagsHtml(tags: string[]): string {
     )}
     <div class="card__title qcard__title">{q.question}</div>
     {q.contentTags && q.contentTags.length > 0 ? (
-      <p class="qcard__tags" set:html={renderTagsHtml(q.contentTags)} />
+      <p class="qcard__tags">
+        {q.contentTags.map((tag, i) => (
+          <>
+            {i > 0 && <span class="qcard__tags-sep" aria-hidden="true"> &middot; </span>}
+            <span class="qcard__tag-link" data-tag-href={`/questions/tag/${slugify(tag)}`}>{tag}</span>
+          </>
+        ))}
+      </p>
     ) : null}
     <span class="card__link">Read the answer</span>
   </div>
@@ -101,18 +101,18 @@ function renderTagsHtml(tags: string[]): string {
   .qcard:focus-visible {
     outline: var(--focus-ring-width) solid var(--focus-ring);
     outline-offset: var(--focus-ring-offset);
-    border-radius: var(--card-radius, var(--radius-md));
+    border-radius: var(--radius-md);
   }
 
   .qcard__image {
     overflow: hidden;
-    border-radius: var(--card-radius, var(--radius-md)) var(--card-radius, var(--radius-md)) 0 0;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: var(--space-global-sm);
     height: 10rem;
-    background: var(--surface-bg, var(--bg-page));
+    background: var(--bg-page);
   }
 
   .qcard__img {
