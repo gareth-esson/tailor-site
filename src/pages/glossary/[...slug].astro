@@ -248,16 +248,33 @@ const referencedQuestions = term.referencedIn.slice(0, 6);
 </style>
 
 <script>
-  // Upgrade the back link if the user arrived from a specific question page
+  // Upgrade the back link if the user arrived from an internal page that
+  // embeds glossary tooltips: a question, a topic detail page, or a blog post.
+  // Falls back to the default "Okay to Ask" link for direct visits and
+  // external referrers.
   const link = document.getElementById('glossary-back-link') as HTMLAnchorElement | null;
   const label = document.getElementById('glossary-back-label');
   if (link && label) {
     const ref = document.referrer;
     try {
       const url = ref ? new URL(ref) : null;
-      if (url && url.origin === window.location.origin && url.pathname.startsWith('/questions/') && url.pathname !== '/questions/') {
-        link.href = url.pathname;
-        label.textContent = 'Back to question';
+      if (url && url.origin === window.location.origin) {
+        const path = url.pathname;
+        // Question detail: /anonymous_question/{slug}
+        if (path.startsWith('/anonymous_question/')) {
+          link.href = path;
+          label.textContent = 'Back to question';
+        }
+        // Topic detail: /topics/{slug} (but not the /topics/ index)
+        else if (path.startsWith('/topics/') && path !== '/topics/' && path !== '/topics') {
+          link.href = path;
+          label.textContent = 'Back to topic';
+        }
+        // Blog post: /blog/{slug} (but not the /blog/ index)
+        else if (path.startsWith('/blog/') && path !== '/blog/' && path !== '/blog') {
+          link.href = path;
+          label.textContent = 'Back to article';
+        }
       }
     } catch { /* ignore malformed referrer */ }
   }
