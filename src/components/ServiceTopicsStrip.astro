@@ -1,0 +1,134 @@
+---
+/**
+ * Service topics strip — §8 of C5 service pages.
+ * Compact single-row topic browser: 6 curated topic chips + "See all" link.
+ * Replaces the full TopicsOverviewGrid that v2 used at the bottom of service
+ * pages. Full grid still lives at /topics/; this is a conversion-page nudge.
+ */
+import { getLandingPages } from '../lib/content';
+import type { LandingPage } from '../lib/types';
+
+interface Props {
+  /**
+   * Slugs of landing pages to feature (in order). Falls back to first 6
+   * alphabetically if not provided or if any slugs don't resolve.
+   */
+  featuredSlugs?: string[];
+}
+
+const { featuredSlugs = [] } = Astro.props;
+
+const allLandingPages = await getLandingPages();
+const totalCount = allLandingPages.length;
+
+// Build ordered list of featured topics from slugs, then backfill if short
+const bySlug = new Map<string, LandingPage>(allLandingPages.map((lp) => [lp.slug, lp]));
+const featured: LandingPage[] = [];
+for (const slug of featuredSlugs) {
+  const lp = bySlug.get(slug);
+  if (lp && !featured.includes(lp)) featured.push(lp);
+}
+if (featured.length < 6) {
+  const alphabetical = [...allLandingPages].sort((a, b) => a.title.localeCompare(b.title));
+  for (const lp of alphabetical) {
+    if (featured.length >= 6) break;
+    if (!featured.includes(lp)) featured.push(lp);
+  }
+}
+const topics = featured.slice(0, 6);
+---
+
+<section class="service-topics-strip">
+  <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+    <div class="service-topics-strip__header">
+      <h2 class="service-topics-strip__label">Explore by topic</h2>
+      <a href="/topics/" class="service-topics-strip__see-all">
+        See all {totalCount} topic guides →
+      </a>
+    </div>
+    <div class="service-topics-strip__grid">
+      {topics.map((lp) => (
+        <a href={`/topics/${lp.slug}`} class="topic-chip">
+          {lp.title}
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .service-topics-strip {
+    background: var(--bg-page);
+  }
+
+  .service-topics-strip__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-global-sm);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-global-sm);
+  }
+
+  .service-topics-strip__label {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-card-size-h3);
+    font-weight: var(--heading-weight-h3);
+    color: var(--text-heading);
+    margin: 0;
+  }
+
+  .service-topics-strip__see-all {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    color: var(--link-action-color);
+    text-decoration: none;
+  }
+
+  .service-topics-strip__see-all:hover {
+    text-decoration: underline;
+  }
+
+  .service-topics-strip__grid {
+    display: grid;
+    gap: var(--space-global-xs);
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .topic-chip {
+    display: flex;
+    align-items: center;
+    padding: var(--space-global-sm) var(--space-global-md);
+    background: var(--bg-surface);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-heading);
+    text-decoration: none;
+    transition: border-color var(--transition-duration) var(--transition-easing);
+  }
+
+  .topic-chip:hover {
+    border-color: var(--brand-accent);
+  }
+
+  .topic-chip:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  @media (min-width: 640px) {
+    .service-topics-strip__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .service-topics-strip__grid {
+      grid-template-columns: repeat(6, 1fr);
+    }
+  }
+</style>

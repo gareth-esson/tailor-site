@@ -1,20 +1,19 @@
 ---
 /**
- * ServicePageStyles — shared scoped styles for all C5 service pages (v2).
+ * ServicePageStyles — shared scoped styles for all C5 service pages (v3).
  * Import this component at the bottom of each service page to inject
- * consistent styling without duplicating CSS across 7 files.
+ * consistent styling without duplicating CSS across 6 files.
  *
  * Sections:
- *   §1 Hero (tinted, with image)
- *   §2 Trust strip
- *   §3 Hub navigation cards
- *   §4 Service detail + audience callout
- *   §5 Feature cards
- *   §6 Process steps
- *   §7 Dark proof band (testimonial + CTA)
- *   §8 Related blog posts
- *   (§9 TopicsOverviewGrid — component owns styles)
- *   (§10 CtaServiceEnquiry — component owns styles)
+ *   §1 Hero (tinted, with required image)
+ *   §2 At-a-glance strip
+ *   §3 Service description (pure prose, no h2, no callout)
+ *   §4 Feature cards (no icons)
+ *   §5 Process steps (conditional)
+ *   §6 Dark proof band (testimonial + CTA)
+ *   §7 Related blog posts
+ *   §8 Topics strip — component owns its styles (ServiceTopicsStrip.astro)
+ *   §9 CtaServiceEnquiry — component owns its styles
  */
 ---
 
@@ -24,7 +23,7 @@
   }
 
   /* ----------------------------------------------------------------
-     §1 — Hero (tinted, with image)
+     §1 — Hero (tinted, with required image)
      ---------------------------------------------------------------- */
   .service-hero {
     background: var(--bg-tinted);
@@ -74,154 +73,91 @@
     aspect-ratio: 4 / 3;
   }
 
-  /* No-image fallback: text-only hero */
-  .service-hero--no-image .service-hero__text {
-    max-width: var(--container-max-prose);
-  }
-
   /* ----------------------------------------------------------------
-     §2 — Trust strip
+     §2 — At-a-glance strip
      ---------------------------------------------------------------- */
-  .service-trust-strip {
+  .service-glance {
     background: var(--bg-surface);
     border-bottom: var(--border-width-xs) solid var(--border-subtle);
   }
 
-  .service-trust-strip__inner {
+  .service-glance__inner {
     display: flex;
-    justify-content: center;
-    gap: var(--space-global-xl);
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-global-lg);
     flex-wrap: wrap;
-  }
-
-  .trust-stat {
-    text-align: center;
-    min-width: 8rem;
-  }
-
-  .trust-stat__figure {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-display-size-h3);
-    font-weight: var(--heading-weight-h2);
-    color: var(--text-heading);
-    line-height: var(--lh-heading);
+    list-style: none;
+    padding: 0;
     margin: 0;
   }
 
-  .trust-stat__label {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-card-size-body);
-    color: var(--text-body-muted);
-    margin-top: var(--space-global-xs);
+  .glance-fact {
+    flex: 1 1 auto;
+    min-width: 9rem;
+    text-align: left;
   }
 
-  /* ----------------------------------------------------------------
-     §3 — Hub navigation cards
-     ---------------------------------------------------------------- */
-  .service-hub-nav__grid {
-    display: grid;
-    gap: var(--space-global-sm);
-  }
-
-  .hub-nav-card {
-    display: flex;
-    flex-direction: column;
-    padding: var(--space-global-lg);
-    background: var(--bg-surface);
-    border: var(--border-width-xs) solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    text-decoration: none;
-    color: inherit;
-    transition: border-color var(--transition-duration) var(--transition-easing);
-  }
-
-  .hub-nav-card:hover {
-    border-color: var(--brand-accent);
-  }
-
-  .hub-nav-card__title {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-card-size-h2);
-    font-weight: var(--heading-weight-h2);
-    color: var(--text-heading);
-    line-height: var(--lh-heading-sub);
-    margin: 0 0 var(--space-global-xs);
-  }
-
-  .hub-nav-card__summary {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-card-size-body);
-    color: var(--text-body-muted);
-    line-height: var(--lh-body);
-    margin: 0 0 var(--space-global-sm);
-    flex-grow: 1;
-  }
-
-  .hub-nav-card__link {
-    font-size: var(--text-card-size-body);
-    font-weight: var(--font-weight-bold);
-    color: var(--link-action-color);
-  }
-
-  .hub-nav-card__link::after {
-    content: ' \2192';
-  }
-
-  /* ----------------------------------------------------------------
-     §4 — Service detail + audience callout
-     ---------------------------------------------------------------- */
-  .service-detail {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-prose-size-body);
-    color: var(--text-body);
-    line-height: var(--lh-prose);
-  }
-
-  .service-detail__section-title {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-prose-size-h2);
-    font-weight: var(--heading-weight-h2);
-    color: var(--text-heading);
-    margin: 0 0 var(--space-global-sm);
-  }
-
-  .service-detail p {
-    margin: 0 0 var(--space-global-sm);
-  }
-
-  .service-detail p:last-child {
-    margin-bottom: 0;
-  }
-
-  .service-audience-callout {
-    background: var(--bg-surface);
-    border-left: 4px solid var(--brand-accent);
-    border-radius: 0 var(--radius-md) var(--radius-md) 0;
-    padding: var(--space-global-lg);
-    margin: var(--space-global-lg) 0;
-  }
-
-  .service-audience-callout__eyebrow {
+  .glance-fact__label {
     display: block;
     font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-card-size-body);
+    font-size: var(--text-card-size-small);
     font-weight: var(--font-weight-semibold);
     color: var(--brand-accent-text);
     text-transform: uppercase;
     letter-spacing: var(--text-eyebrow-ls);
-    margin-bottom: var(--space-global-xs);
+    margin: 0 0 var(--space-global-xs);
   }
 
-  .service-audience-callout__body {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-prose-size-body);
-    color: var(--text-body);
-    line-height: var(--lh-body);
+  .glance-fact__value {
+    display: block;
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h4);
+    font-weight: var(--heading-weight-h3);
+    color: var(--text-heading);
+    line-height: var(--lh-heading-sub);
     margin: 0;
   }
 
   /* ----------------------------------------------------------------
-     §5 — Feature cards
+     §3 — Service description (pure prose, no h2, no callout)
+     ---------------------------------------------------------------- */
+  .service-description {
+    font-family: var(--font-tailor-body-stack);
+    color: var(--text-body);
+  }
+
+  .service-description__lead {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-lead);
+    font-weight: var(--font-weight-regular);
+    color: var(--text-body);
+    line-height: var(--lh-prose);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .service-description p {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body);
+    line-height: var(--lh-prose);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .service-description p:last-child {
+    margin-bottom: 0;
+  }
+
+  .service-description__sub-title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h2);
+    font-weight: var(--heading-weight-h2);
+    color: var(--text-heading);
+    margin: var(--space-global-lg) 0 var(--space-global-sm);
+  }
+
+  /* ----------------------------------------------------------------
+     §4 — Feature cards
      ---------------------------------------------------------------- */
   .service-features {
     background: var(--bg-surface-alt);
@@ -257,11 +193,16 @@
   }
 
   /* ----------------------------------------------------------------
-     §6 — Process steps
+     §5 — Process steps
      ---------------------------------------------------------------- */
   .service-process__grid {
     display: grid;
     gap: var(--space-global-md);
+  }
+
+  .process-step {
+    text-align: left;
+    padding: 0;
   }
 
   .process-step__number {
@@ -297,7 +238,7 @@
   }
 
   /* ----------------------------------------------------------------
-     §7 — Dark proof band (testimonial + CTA)
+     §6 — Dark proof band (testimonial + CTA)
      ---------------------------------------------------------------- */
   .service-proof-band {
     background: var(--bg-emphasis);
@@ -349,7 +290,7 @@
   }
 
   /* ----------------------------------------------------------------
-     §8 — Related blog posts
+     §7 — Related blog posts
      ---------------------------------------------------------------- */
   .service-blog__grid {
     display: grid;
@@ -381,7 +322,7 @@
   }
 
   /* ----------------------------------------------------------------
-     Shared section title (used in §3, §5, §6, §8)
+     Shared section title (used in §4, §5, §7)
      ---------------------------------------------------------------- */
   .service-section-title {
     font-family: var(--font-tailor-heading-stack);
@@ -392,16 +333,18 @@
   }
 
   /* ----------------------------------------------------------------
-     Image placeholder (build-phase only)
+     Image placeholder (launch-phase fallback)
+     Hero photography is required per spec — this exists only so
+     pages without a finalised photo still render during build.
      ---------------------------------------------------------------- */
-  .service-page__image-placeholder {
+  .service-hero__image-placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--bg-surface-alt);
     border: 2px dashed var(--border-subtle);
     border-radius: var(--radius-lg);
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 4 / 3;
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-card-size-body);
     color: var(--text-body-muted);
@@ -413,9 +356,6 @@
      Responsive
      ---------------------------------------------------------------- */
   @media (min-width: 640px) {
-    .service-hub-nav__grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
     .service-features__grid {
       grid-template-columns: repeat(2, 1fr);
     }

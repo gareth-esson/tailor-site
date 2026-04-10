@@ -1,7 +1,7 @@
 ---
 /**
- * Redirect: /services/delivery → /services/rse-delivery
- * Old route preserved for backwards compatibility.
+ * Redirect: /services/delivery → /services
+ * Legacy route — preserved for old inbound links.
  */
-return Astro.redirect('/services/rse-delivery', 301);
+return Astro.redirect('/services', 301);
 ---

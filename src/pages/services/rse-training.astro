@@ -1,67 +1,106 @@
 ---
 /**
  * Service page [C5] — /services/rse-training
- * RSE training for school staff. Tailor layer.
- * Mode: individual — highest-traffic service page, richest content.
+ * RSE training for school staff. Tailor layer, v3.
+ * Highest-traffic service page. Richest content.
+ * Replaces the old standalone /rse-training (B4) page.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
-import TopicsOverviewGrid from '../../components/TopicsOverviewGrid.astro';
+import ServiceTopicsStrip from '../../components/ServiceTopicsStrip.astro';
 import ServicePageStyles from '../../components/ServicePageStyles.astro';
 import { getBlogPosts } from '../../lib/content';
 
-const allPosts = await getBlogPosts();
-const relatedPosts = allPosts.filter((p) => p.serviceLink === 'training').slice(0, 3);
-
+// --- Data ----------------------------------------------------------
+const slug = 'rse-training';
+const title = 'RSE training';
 const serviceParam = 'RSE training';
 const serviceName = 'RSE training';
 
-const trustStats = [
-  { figure: 'CPD certified', label: 'Professional development' },
-  { figure: 'DfE 2026', label: 'Statutory guidance aligned' },
-  { figure: 'PSHE mapped', label: 'Association frameworks' },
+const heroSubtitle =
+  'CPD-accredited training that gives your staff the confidence, knowledge, and practical toolkit to deliver RSE well. Half-day, full-day, or bespoke programmes — in person or remote — led by a specialist who has delivered it in hundreds of schools.';
+
+const heroImage: string | null = '/images/services/tailor-education-rse-cpd-workshop-facilitator.webp';
+const heroImageAlt = 'A Tailor facilitator leading a CPD workshop for school staff on RSE delivery';
+
+const glanceFacts = [
+  { label: 'Format', value: 'In person or remote' },
+  { label: 'Duration', value: 'Half or full day' },
+  { label: 'For', value: 'Teachers, PSHE leads, SLT' },
+  { label: 'CPD', value: 'Accredited' },
+  { label: 'Aligned with', value: 'KCSIE, DfE 2026' },
 ];
 
+const descriptionLead =
+  'The biggest barrier to good RSE in most schools isn\'t policy or curriculum — it\'s teacher confidence. Staff are asked to deliver topics they were never trained in, sometimes with a few hours\' notice, often with no clear framework for what to say when a student asks the question they were dreading.';
+
+const descriptionBody = [
+  'Our training is built around that reality. Rather than walking staff through a generic RSE overview, we focus on the specific moments teachers find hardest: managing disclosures, handling unexpected questions, pitching content age-appropriately, navigating parent concerns, and building the personal confidence to hold the room.',
+  'Every session is led by a specialist who has delivered RSE directly to students in hundreds of schools. That matters. The training isn\'t theoretical — it\'s shaped by what actually happens in the classroom, and what actually works.',
+  'We offer half-day, full-day, and multi-session programmes, delivered in person at your school or remotely. All programmes are CPD-accredited and aligned to DfE statutory guidance, KCSIE, and the PSHE Association framework.',
+];
+
+const whatSchoolsGet =
+  'Staff who feel genuinely prepared, not just compliant. A shared vocabulary and framework that the whole RSE team is working from. Concrete scripts for the hardest moments — disclosures, off-topic questions, parent conversations. And a written resource pack staff can return to after the training.';
+
 const featureCards = [
-  { title: 'Pre-training consultation', description: 'We understand your school\'s context, concerns, and priorities before designing the session.' },
-  { title: 'Whole-staff INSET or targeted CPD', description: 'Full-day INSET, half-day sessions, or twilight CPD — whatever fits your calendar.' },
-  { title: 'Subject knowledge development', description: 'What the statutory guidance actually says, and what it means in practice for your classroom.' },
-  { title: 'Practical teaching strategies', description: 'How to handle difficult questions, manage disclosures, and create safe classroom environments.' },
-  { title: 'Topic-specific deep dives', description: 'Consent, online safety, pornography and media literacy, LGBTQ+ inclusion, puberty, and more.' },
-  { title: 'Parent communication guidance', description: 'How to manage parent consultation, communication, and withdrawal requests confidently.' },
+  { title: 'Confidence-building framework', description: 'A concrete toolkit for the moments teachers dread — not generic theory. Built from years of classroom delivery.' },
+  { title: 'Managing disclosures', description: 'How to respond when a student discloses. What to say in the moment. What to do afterwards. Fully KCSIE-aligned.' },
+  { title: 'Handling difficult questions', description: 'The questions students ask that staff most fear. Practical scripts and a framework for any question you haven\'t heard yet.' },
+  { title: 'Age-appropriate pitching', description: 'Matching content to year groups — what to include, what to hold back, how to read a room that isn\'t ready.' },
+  { title: 'Parent and community communication', description: 'How to communicate your RSE approach to parents, answer their concerns, and pre-empt objections with confidence.' },
+  { title: 'CPD certification and resource pack', description: 'All attendees receive CPD accreditation and a written resource pack to reference after the training.' },
 ];
 
 const processSteps = [
-  { number: 1, title: 'We understand your needs', description: 'Pre-training consultation to identify priorities, gaps, and the specific concerns your staff have.' },
-  { number: 2, title: 'We deliver the training', description: 'Practical, engaging CPD that gives teachers real strategies — not just information.' },
-  { number: 3, title: 'Your staff feel ready', description: 'Teachers leave with confidence, resources, and a changed perspective on RSE delivery.' },
+  { number: 1, title: 'We scope together', description: 'Pre-training call to agree focus areas, the balance of topics, and anything specific your staff are struggling with.' },
+  { number: 2, title: 'We train', description: 'Half-day, full-day, or multi-session delivery — in person at your school or remotely, led by a specialist educator.' },
+  { number: 3, title: 'Staff are ready', description: 'CPD certification, a written resource pack, and follow-up support for anything that comes up afterwards.' },
 ];
+
+const testimonialQuote =
+  'Easily the most practical CPD our department has ever had. Staff left with actual phrases and scripts, not just a warm feeling about the importance of RSE. Three months on, our team is still referencing it.';
+const testimonialSource = 'PSHE Coordinator, MAT';
+
+const featuredTopicSlugs = [
+  'consent',
+  'masculinity-and-misogyny',
+  'pornography-and-media-literacy',
+  'lgbtq-inclusion',
+  'abuse-exploitation-and-violence',
+  'sexting-and-sharing-nudes',
+];
+
+// --- Content --------------------------------------------------------
+const allPosts = await getBlogPosts();
+const relatedPosts = allPosts.filter((p) => p.serviceLink === 'training').slice(0, 3);
+
+const metaTitle = `${title} for school staff — RSE for Schools | Tailor Education`;
+const metaDescription = 'CPD-accredited RSE training for school staff, led by specialist educators. Half-day, full-day, or bespoke programmes — in person or remote.';
 ---
 
 <BaseLayout
-  title="RSE Training for Teachers — RSE for Schools | Tailor Education"
-  description="Practical RSE training that builds teacher confidence — from whole-staff INSET days to topic-specific CPD sessions, delivered by an experienced RSE specialist."
-  canonicalPath="/services/rse-training/"
+  title={metaTitle}
+  description={metaDescription}
+  canonicalPath={`/services/${slug}/`}
+  ogImage={heroImage ?? undefined}
   jsonLd={{
     '@context': 'https://schema.org',
     '@type': 'Service',
-    name: 'RSE Training',
-    description: 'Practical RSE training that builds teacher confidence.',
+    name: title,
+    description: metaDescription,
     provider: { '@type': 'Organization', name: 'Tailor Education', url: 'https://tailoreducation.org.uk' },
   }}
 >
   <article class="service-page" data-pagefind-body>
 
-    <!-- §1 Hero -->
     <header class="service-hero">
       <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-        <div class="service-hero__inner service-hero--no-image">
+        <div class="service-hero__inner">
           <div class="service-hero__text">
             <span class="service-hero__eyebrow">Services</span>
-            <h1 class="service-hero__title">RSE training</h1>
-            <p class="service-hero__subtitle">
-              Practical CPD that builds teacher confidence — equipping your staff to deliver RSE that is honest, age-appropriate, and aligned to statutory guidance.
-            </p>
+            <h1 class="service-hero__title">{title}</h1>
+            <p class="service-hero__subtitle">{heroSubtitle}</p>
             <a
               href={`/contact?service=${encodeURIComponent(serviceParam)}`}
               class="btn btn--std btn--primary has-icon-hover"
@@ -70,46 +109,43 @@ const processSteps = [
               data-analytics-service-type={serviceParam}
             >Enquire now</a>
           </div>
+          <div class="service-hero__image">
+            {heroImage ? (
+              <img src={heroImage} alt={heroImageAlt} loading="eager" />
+            ) : (
+              <div class="service-hero__image-placeholder">Hero photography required — source before launch</div>
+            )}
+          </div>
         </div>
       </div>
     </header>
 
-    <!-- §2 Trust strip -->
-    <section class="service-trust-strip">
+    <section class="service-glance" aria-label="Service at a glance">
       <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-        <div class="service-trust-strip__inner">
-          {trustStats.map((stat) => (
-            <div class="trust-stat">
-              <div class="trust-stat__figure">{stat.figure}</div>
-              <div class="trust-stat__label">{stat.label}</div>
+        <dl class="service-glance__inner">
+          {glanceFacts.map((fact) => (
+            <div class="glance-fact">
+              <dt class="glance-fact__label">{fact.label}</dt>
+              <dd class="glance-fact__value">{fact.value}</dd>
             </div>
           ))}
-        </div>
+        </dl>
       </div>
     </section>
 
-    <!-- §4 Service detail -->
-    <section class="service-detail">
+    <section class="service-description">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-
-        <h2 class="service-detail__section-title">What this service is</h2>
-        <p>RSE training for school staff — from whole-staff INSET days to targeted CPD sessions on specific topics. Delivered by an experienced RSE specialist who understands what teachers actually need: practical strategies, not just theory.</p>
-        <p>Training covers subject knowledge, pedagogy, and confidence. Most teachers weren't trained to deliver RSE. Many are uncomfortable with the content, unsure about the boundaries, or worried about parent pushback. This training addresses all of that directly.</p>
-        <p>Sessions can focus on specific topics (consent, online safety, LGBTQ+ inclusion) or provide a broader foundation for schools building or strengthening their RSE programme.</p>
-
-        <div class="service-audience-callout">
-          <span class="service-audience-callout__eyebrow">Who it's for</span>
-          <p class="service-audience-callout__body">Schools investing in staff CPD for RSE — whether that's a whole-staff awareness session, targeted training for PSHE leads and form tutors, or specialist CPD for staff delivering sensitive topics. Also for schools preparing for inspection where RSE training is a gap, or schools responding to specific incidents or concerns that highlight a need for better RSE provision.</p>
-        </div>
-
-        <h2 class="service-detail__section-title">What schools get</h2>
-        <p>Teachers who feel genuinely more confident — not just informed, but ready to teach. Staff who understand why RSE matters and have the practical skills to deliver it well. A school that can demonstrate a credible, well-supported RSE provision to inspectors, governors, and parents.</p>
-        <p>The best training changes how teachers think about RSE, not just what they know about it. That's what we aim for.</p>
-
+        <p class="service-description__lead">{descriptionLead}</p>
+        {descriptionBody.map((para) => (<p>{para}</p>))}
+        {whatSchoolsGet && (
+          <>
+            <h2 class="service-description__sub-title">What schools get</h2>
+            <p>{whatSchoolsGet}</p>
+          </>
+        )}
       </div>
     </section>
 
-    <!-- §5 Feature cards -->
     <section class="service-features">
       <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
         <h2 class="service-section-title">What's included</h2>
@@ -124,30 +160,34 @@ const processSteps = [
       </div>
     </section>
 
-    <!-- §6 Process steps -->
-    <section class="service-process">
-      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-        <h2 class="service-section-title">How it works</h2>
-        <div class="service-process__grid">
-          {processSteps.map((step) => (
-            <div class="process-step">
-              <div class="process-step__number">{step.number}</div>
-              <h3 class="process-step__title">{step.title}</h3>
-              <p class="process-step__text">{step.description}</p>
-            </div>
-          ))}
+    {processSteps && (
+      <section class="service-process">
+        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+          <h2 class="service-section-title">How it works</h2>
+          <div class="service-process__grid">
+            {processSteps.map((step) => (
+              <div class="process-step">
+                <div class="process-step__number">{step.number}</div>
+                <h3 class="process-step__title">{step.title}</h3>
+                <p class="process-step__text">{step.description}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    )}
 
-    <!-- §7 Dark proof band -->
     <section class="service-proof-band">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
         <div class="service-proof-band__inner">
-          <blockquote>
-            <p class="service-proof-band__quote">"This was the most useful training I've had in years. I went from dreading RSE lessons to actually looking forward to them. The practical strategies made all the difference — I finally feel like I know what I'm doing."</p>
-          </blockquote>
-          <span class="service-proof-band__source">— Year 9 form tutor, secondary school</span>
+          {testimonialQuote && (
+            <>
+              <blockquote>
+                <p class="service-proof-band__quote">"{testimonialQuote}"</p>
+              </blockquote>
+              <span class="service-proof-band__source">— {testimonialSource}</span>
+            </>
+          )}
           <div class="service-proof-band__cta-wrap">
             <a
               href={`/contact?service=${encodeURIComponent(serviceParam)}`}
@@ -162,7 +202,6 @@ const processSteps = [
       </div>
     </section>
 
-    <!-- §8 Related blog posts -->
     {relatedPosts.length > 0 && (
       <section class="service-blog">
         <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
@@ -187,10 +226,8 @@ const processSteps = [
       </section>
     )}
 
-    <!-- §9 Topics overview grid -->
-    <TopicsOverviewGrid />
+    <ServiceTopicsStrip featuredSlugs={featuredTopicSlugs} />
 
-    <!-- §10 CTA repeated -->
     <CtaServiceEnquiry serviceName={serviceName} serviceParam={serviceParam} variant="alt" />
 
   </article>

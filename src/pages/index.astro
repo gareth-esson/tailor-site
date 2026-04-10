@@ -29,16 +29,16 @@ const featured: QuestionRef[] = answered.slice(0, 3).map((q) => ({
 }));
 
 // Hero photograph — conditionally rendered
-const heroPhoto = '/images/homepage/hero-placeholder.svg' as string | null;
+const heroPhoto = '/images/services/tailor-education-secondary-rse-group-activity.webp' as string | null;
 
 // §2 product screenshot — conditionally rendered
 const appScreenshot = '/images/homepage/app-placeholder.svg' as string | null;
 
 // §3 delivery photograph — conditionally rendered
-const deliveryPhoto = '/images/homepage/delivery-placeholder.svg' as string | null;
+const deliveryPhoto = '/images/services/tailor-education-primary-rse-discussion-circle.webp' as string | null;
 
 // §4 training photograph — conditionally rendered
-const trainingPhoto = '/images/homepage/training-placeholder.svg' as string | null;
+const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-resources.webp' as string | null;
 
 ---
 
@@ -67,7 +67,7 @@ const trainingPhoto = '/images/homepage/training-placeholder.svg' as string | nu
       </div>
       {heroPhoto && (
         <div class="hero-photo-wrap hidden lg:block">
-          <img src={heroPhoto} alt="A classroom workshop session" class="hero-photo" loading="eager" />
+          <img src={heroPhoto} alt="Secondary students in a Tailor RSE group session" class="hero-photo" loading="eager" />
         </div>
       )}
     </div>
@@ -112,7 +112,7 @@ const trainingPhoto = '/images/homepage/training-placeholder.svg' as string | nu
         <div class="hidden lg:block">
           <img
             src={deliveryPhoto}
-            alt="Tailor team delivering RSE in a school"
+            alt="A Tailor educator leading a primary RSE discussion circle"
             class="home-delivery__photo"
             loading="lazy"
           />
@@ -138,8 +138,8 @@ const trainingPhoto = '/images/homepage/training-placeholder.svg' as string | nu
             <span class="home-delivery__step-text">We deliver — and follow up afterwards</span>
           </div>
         </div>
-        <a href="/services/rse-delivery" class="btn btn--std btn--primary has-icon-hover">
-          Enquire about delivery
+        <a href="/services" class="btn btn--std btn--primary has-icon-hover">
+          Explore delivery options
         </a>
       </div>
     </div>
@@ -170,7 +170,7 @@ const trainingPhoto = '/images/homepage/training-placeholder.svg' as string | nu
         <div class="hidden lg:block">
           <img
             src={trainingPhoto}
-            alt="Teachers in a CPD workshop session"
+            alt="Teachers reviewing RSE resources together during CPD"
             class="home-training__photo"
             loading="lazy"
           />

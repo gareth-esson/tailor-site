@@ -7,19 +7,29 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const services = [
   {
-    title: 'RSE Delivery',
-    description: 'A specialist RSE educator delivers lessons directly to your students, tailored to your school\u2019s needs.',
-    href: '/services/rse-delivery',
+    title: 'RSE for Primary Schools',
+    description: 'Age-appropriate RSE for KS1 and KS2, delivered by a specialist educator who understands primary school settings.',
+    href: '/services/rse-for-primary-schools',
+  },
+  {
+    title: 'RSE for Secondary Schools',
+    description: 'Expert-led RSE for KS3 and KS4 — covering the topics students are actually thinking about, delivered with confidence.',
+    href: '/services/rse-for-secondary-schools',
+  },
+  {
+    title: 'RSE for SEND & AP (Circuits)',
+    description: 'Workbook-based RSE designed for SEND and alternative provision. Self-paced, simplified keynotes, doodle and game space.',
+    href: '/services/rse-for-send-and-ap',
+  },
+  {
+    title: 'Drop Days',
+    description: 'A full day of RSE delivery across multiple year groups — maximum impact, minimum disruption.',
+    href: '/services/drop-days',
   },
   {
     title: 'RSE Training',
-    description: 'Give your staff the confidence and skills to deliver RSE effectively, with access to the Tailor app\u2019s training-recommended content.',
+    description: 'CPD-accredited training that gives your staff the confidence and skills to deliver RSE effectively.',
     href: '/services/rse-training',
-  },
-  {
-    title: 'Drop Day Delivery',
-    description: 'A dedicated day of RSE sessions for an entire year group, designed and delivered by specialists.',
-    href: '/services/drop-days',
   },
   {
     title: 'RSE Policy & Curriculum Planning',
@@ -43,10 +53,21 @@ const services = [
 >
   <section class="services-hub">
     <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
-      <h1 class="services-hub__title">RSE services for schools</h1>
-      <p class="services-hub__intro">
-        Whether you need someone to deliver RSE directly, training for your staff, or support with policy and curriculum — we can help.
-      </p>
+      <div class="services-hub__header">
+        <div class="services-hub__header-text">
+          <h1 class="services-hub__title">RSE services for schools</h1>
+          <p class="services-hub__intro">
+            Whether you need someone to deliver RSE directly, training for your staff, or support with policy and curriculum — we can help.
+          </p>
+        </div>
+        <div class="services-hub__header-photo">
+          <img
+            src="/images/services/tailor-education-rse-consultant-school-corridor.webp"
+            alt="A Tailor consultant arriving at a school to deliver RSE support"
+            loading="eager"
+          />
+        </div>
+      </div>
 
       <div class="services-hub__grid">
         {services.map((s) => (
@@ -81,6 +102,29 @@ const services = [
     background: var(--bg-page);
   }
 
+  .services-hub__header {
+    display: grid;
+    gap: var(--space-global-lg);
+    align-items: center;
+    margin-bottom: var(--space-global-xl);
+  }
+
+  .services-hub__header-photo img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    display: block;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+  }
+
+  @media (min-width: 768px) {
+    .services-hub__header {
+      grid-template-columns: 1.1fr 1fr;
+      gap: var(--space-global-xl);
+    }
+  }
+
   .services-hub__title {
     font-family: var(--font-tailor-heading-stack);
     font-size: var(--text-display-size-h1);
@@ -94,7 +138,7 @@ const services = [
     font-size: var(--text-prose-size-body);
     color: var(--text-body-muted);
     max-width: 36rem;
-    margin: 0 0 var(--space-global-xl);
+    margin: 0;
     line-height: 1.6;
   }
 
