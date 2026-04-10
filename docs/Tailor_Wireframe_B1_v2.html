@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B1 Homepage Wireframe v2 — Tailor Education</title>
+<style>
+  /* ── Reset & base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* Design system colours */
+    --bg-page: #FAFAF7;
+    --bg-surface: #FFFFFF;
+    --bg-surface-alt: #f0efeb;
+    --bg-emphasis: #1E2A3A;
+    --bg-ota-surface: #F7F5F0;
+    --bg-ota-book-panel: #eae6e1;
+    --brand-primary: #1A9E8A;
+    --brand-secondary: #1E2A3A;
+    --text-body: #1E2A3A;
+    --text-muted: hsl(213, 10%, 43%);
+    --text-on-dark: #f4f3ef;
+    --text-on-dark-muted: rgba(255,255,255,0.6);
+    --text-on-dark-strapline: rgba(255,255,255,0.9);
+    --text-ota-muted: #5B6675;
+
+    /* Wireframe-specific */
+    --wf-placeholder: #d1d0cc;
+    --wf-placeholder-dark: #3a4a5c;
+    --wf-section-label: 11px;
+    --wf-gutter: 2rem;
+    --wf-max: 72rem;
+    --wf-reading: 56rem;
+    --wf-prose: 44rem;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: #e8e7e3;
+    color: var(--text-body);
+    line-height: 1.5;
+    padding: 2rem 1rem;
+  }
+
+  /* ── Wireframe chrome ── */
+  .wf-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--bg-page);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  }
+
+  .wf-title-bar {
+    background: #333;
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .wf-title-bar span { opacity: 0.6; }
+
+  /* ── Header/footer shell ── */
+  .wf-header, .wf-footer {
+    background: var(--bg-surface);
+    border-bottom: 1px solid #e0dfdb;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .wf-footer {
+    border-top: 1px solid #e0dfdb;
+    border-bottom: none;
+    padding: 2rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .wf-header-logo {
+    font-weight: 700;
+    color: var(--text-body);
+    font-size: 15px;
+    letter-spacing: -0.02em;
+  }
+  .wf-header-nav { display: flex; gap: 1.5rem; }
+  .wf-header-nav span { cursor: default; }
+
+  /* ── Section shared ── */
+  .wf-section {
+    padding: 3rem var(--wf-gutter);
+    position: relative;
+  }
+  .wf-section-inner {
+    max-width: var(--wf-max);
+    margin: 0 auto;
+  }
+  .wf-section--reading .wf-section-inner { max-width: var(--wf-reading); }
+
+  /* ── Section label ── */
+  .wf-label {
+    position: absolute;
+    top: 0.75rem;
+    right: 1rem;
+    font-size: var(--wf-section-label);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    opacity: 0.5;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .wf-label-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .wf-label-dot--tailor { background: var(--brand-primary); }
+  .wf-label-dot--ota { background: #E8725A; }
+
+  /* ── Layer indicator ── */
+  .wf-layer-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-bottom: 1rem;
+  }
+  .wf-layer-tag--tailor { background: var(--brand-primary); color: #fff; }
+  .wf-layer-tag--ota { background: #E8725A; color: #fff; }
+
+  /* ── Typography placeholders ── */
+  .wf-h1 { font-size: clamp(2rem, 4vw, 3.25rem); font-weight: 700; line-height: 1.15; margin-bottom: 0.75rem; letter-spacing: -0.02em; }
+  .wf-h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 700; line-height: 1.2; margin-bottom: 0.75rem; letter-spacing: -0.01em; }
+  .wf-h3 { font-size: clamp(1.1rem, 2vw, 1.35rem); font-weight: 600; line-height: 1.3; margin-bottom: 0.5rem; }
+  .wf-eyebrow {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    opacity: 0.7;
+  }
+  .wf-body { font-size: 1rem; line-height: 1.6; margin-bottom: 1rem; max-width: 38rem; }
+  .wf-body--muted { color: var(--text-muted); }
+  .wf-body--sm { font-size: 0.875rem; }
+  .wf-subline { font-size: clamp(1.1rem, 2vw, 1.5rem); line-height: 1.35; margin-bottom: 1.25rem; max-width: 32rem; }
+
+  /* ── Buttons ── */
+  .wf-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.65rem 1.5rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: default;
+    border: 2px solid transparent;
+  }
+  .wf-btn--primary { background: var(--brand-primary); color: #fff; }
+  .wf-btn--white-outline { background: transparent; border-color: rgba(255,255,255,0.5); color: #fff; }
+  .wf-btn--outline { background: transparent; border-color: rgba(30,42,58,0.25); color: var(--text-body); }
+  .wf-btn--dark { background: var(--brand-secondary); color: #fff; }
+  .wf-btn-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+  /* ── Image placeholder ── */
+  .wf-img {
+    background: var(--wf-placeholder);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    overflow: hidden;
+    position: relative;
+  }
+  .wf-img--dark {
+    background: var(--wf-placeholder-dark);
+    color: rgba(255,255,255,0.4);
+  }
+  .wf-img-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    text-align: center;
+    padding: 1rem;
+  }
+  .wf-img-label svg { opacity: 0.3; }
+  .wf-img--round { border-radius: 50%; }
+
+  /* ── Grid helpers ── */
+  .wf-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 0.9fr;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  .wf-grid-2--equal { grid-template-columns: 1fr 1fr; }
+  .wf-grid-2--reversed { grid-template-columns: 0.9fr 1fr; }
+  .wf-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  /* ── Cards ── */
+  .wf-card {
+    background: var(--bg-page);
+    border: 1px solid #e0dfdb;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .wf-card--ota {
+    background: transparent;
+    border-color: rgba(0,0,0,0.08);
+  }
+
+  /* ── Specific sections ── */
+
+  /* §1 Hero */
+  .wf-hero {
+    background: var(--bg-emphasis);
+    color: var(--text-on-dark);
+    padding: 4rem var(--wf-gutter) 5rem;
+  }
+  .wf-hero .wf-eyebrow { color: var(--text-on-dark-strapline); }
+  .wf-hero .wf-h1 { color: #fff; }
+  .wf-hero .wf-subline { color: var(--text-on-dark-strapline); }
+  .wf-hero .wf-img {
+    aspect-ratio: 4/3;
+    border-radius: 16px;
+    position: relative;
+  }
+  .wf-hero .wf-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background: var(--brand-secondary);
+    opacity: 0.08;
+  }
+
+  /* §2 Platform */
+  .wf-platform { background: var(--bg-surface); }
+  .wf-platform .wf-img {
+    aspect-ratio: 16/10;
+    background: #e9e8e4;
+    border: 1px solid #d8d7d3;
+    border-radius: 8px;
+  }
+  .wf-feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.25rem 0;
+  }
+  .wf-feature-list li {
+    padding: 0.4rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+    font-size: 0.95rem;
+    color: var(--text-body);
+  }
+  .wf-feature-list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--brand-primary);
+    font-weight: 700;
+  }
+
+  /* §3 Delivery */
+  .wf-delivery { background: var(--bg-surface-alt); }
+  .wf-delivery .wf-img { aspect-ratio: 4/3; }
+  .wf-steps {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0 1.25rem;
+  }
+  .wf-step {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  .wf-step-num {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background: var(--brand-primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* §4 Training */
+  .wf-training { background: var(--bg-surface); }
+  .wf-training .wf-img { aspect-ratio: 4/3; }
+
+  /* Support strand tags */
+  .wf-strand-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .wf-strand-tag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    background: rgba(26, 158, 138, 0.1);
+    color: var(--brand-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* §5 Trust */
+  .wf-trust { background: var(--bg-surface-alt); }
+  .wf-badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .wf-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    width: 7rem;
+  }
+  .wf-badge-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 6px;
+    background: var(--wf-placeholder);
+  }
+  .wf-badge-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    text-align: center;
+  }
+  .wf-quote {
+    max-width: var(--wf-prose);
+    margin: 0 auto;
+    text-align: center;
+  }
+  .wf-quote blockquote {
+    font-size: clamp(1.15rem, 2vw, 1.5rem);
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--text-body);
+    margin-bottom: 1rem;
+  }
+  .wf-quote-attrib {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+  }
+  .wf-quote-headshot {
+    width: 3rem;
+    height: 3rem;
+  }
+  .wf-quote cite {
+    font-size: 0.875rem;
+    font-style: normal;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  /* §6 OtA */
+  .wf-ota { background: var(--bg-ota-surface); }
+  .wf-ota-intro { text-align: center; margin-bottom: 2.5rem; }
+  .wf-wordmark {
+    width: 10rem;
+    height: 2.5rem;
+    margin: 0 auto 1rem;
+    background: var(--wf-placeholder);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #999;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .wf-ota .wf-h2 {
+    font-family: Georgia, 'Times New Roman', serif; /* stand-in for Fraunces */
+  }
+  .wf-ota .wf-body,
+  .wf-ota .wf-body--muted {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif; /* stand-in for Atkinson */
+  }
+  .wf-book-panel {
+    background: var(--bg-ota-book-panel);
+    border-radius: 12px;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+    max-width: var(--wf-reading);
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 2.5rem;
+  }
+  .wf-book-cover {
+    width: 10rem;
+    height: 14rem;
+    flex-shrink: 0;
+    border-radius: 4px;
+  }
+  .wf-book-text { flex: 1; }
+  .wf-book-text .wf-h3 {
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  .wf-link-action {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--brand-primary);
+    text-decoration: none;
+  }
+  .wf-link-action::after { content: ' →'; }
+
+  /* Question cards */
+  .wf-qcard {
+    background: transparent;
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .wf-qcard-postit {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 3px;
+    background: #f5e6a3;
+    opacity: 0.7;
+    transform: rotate(-2deg);
+  }
+  .wf-qcard-cat {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+  }
+  .wf-qcard-title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--text-body);
+  }
+  .wf-qcard-link {
+    font-size: 0.8rem;
+    color: var(--brand-primary);
+    font-weight: 600;
+    margin-top: auto;
+  }
+
+  /* §7 Topics */
+  .wf-topics { background: var(--bg-page); }
+  .wf-topic-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+  .wf-topic-group {
+    background: var(--bg-surface);
+    border: 1px solid #e0dfdb;
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+  .wf-topic-group-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--cat-color, #ccc);
+  }
+  .wf-topic-link {
+    font-size: 0.8rem;
+    color: var(--brand-primary);
+    display: block;
+    padding: 0.2rem 0;
+  }
+
+  /* §8 Closing CTA */
+  .wf-closing {
+    background: var(--bg-emphasis);
+    color: var(--text-on-dark);
+    text-align: center;
+    padding: 3.5rem var(--wf-gutter);
+  }
+  .wf-closing .wf-h2 { color: #fff; }
+  .wf-closing .wf-subline {
+    color: var(--text-on-dark-strapline);
+    max-width: 30rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ── Divider between sections ── */
+  .wf-section + .wf-section { border-top: none; }
+
+  /* ── Annotations ── */
+  .wf-annotation {
+    font-size: 11px;
+    color: #b0766a;
+    font-style: italic;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed rgba(176, 118, 106, 0.3);
+  }
+  .wf-annotation--surface {
+    font-size: 10px;
+    position: absolute;
+    top: 0.75rem;
+    left: 1rem;
+    opacity: 0.5;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-style: normal;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .wf-grid-2, .wf-grid-2--equal, .wf-grid-2--reversed { grid-template-columns: 1fr; }
+    .wf-grid-3 { grid-template-columns: 1fr; }
+    .wf-topic-grid { grid-template-columns: 1fr; }
+    .wf-steps { flex-direction: column; }
+    .wf-book-panel { flex-direction: column; text-align: center; }
+    .wf-book-cover { width: 8rem; height: 11rem; margin: 0 auto; }
+    .wf-badges { gap: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wf-page">
+
+  <!-- Title bar -->
+  <div class="wf-title-bar">
+    <strong>B1 Homepage — Wireframe v2 (Teacher-first)</strong>
+    <span>tailor.education / &nbsp;&nbsp; Desktop ≥ 1200px</span>
+  </div>
+
+  <!-- ═══════ HEADER ═══════ -->
+  <div class="wf-header">
+    <div class="wf-header-logo">Tailor Education</div>
+    <div class="wf-header-nav">
+      <span>Topics</span>
+      <span>Questions</span>
+      <span>Training</span>
+      <span>Services</span>
+      <span>About</span>
+    </div>
+  </div>
+
+  <!-- ═══════ §1 — HERO ═══════ -->
+  <div class="wf-section wf-hero">
+    <div class="wf-annotation--surface">--hero-tailor-bg (#1E2A3A)</div>
+    <div class="wf-label" style="color: rgba(255,255,255,0.4);">
+      <span class="wf-label-dot wf-label-dot--tailor"></span> §1 Hero — Tailor layer
+    </div>
+    <div class="wf-section-inner">
+      <div class="wf-grid-2">
+        <div>
+          <div class="wf-eyebrow">Tailor Education</div>
+          <h1 class="wf-h1">[Headline: Expert RSE for schools]</h1>
+          <p class="wf-subline">[Subline: one-sentence value proposition for teachers and school leaders]</p>
+          <div class="wf-btn-row">
+            <span class="wf-btn wf-btn--primary">Explore RSE lessons →</span>
+            <span class="wf-btn wf-btn--white-outline">Bring Tailor to your school →</span>
+          </div>
+        </div>
+        <div>
+          <div class="wf-img wf-img--dark" style="aspect-ratio: 4/3;">
+            <div class="wf-img-label">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              Editorial photograph<br>Classroom / workshop
+            </div>
+          </div>
+          <p class="wf-annotation">8% brand overlay ties photo to dark surface. Rounded corners + shadow.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ §2 — PLATFORM ═══════ -->
+  <div class="wf-section wf-platform">
+    <div class="wf-annotation--surface">--bg-surface (#FFFFFF)</div>
+    <div class="wf-label">
+      <span class="wf-label-dot wf-label-dot--tailor"></span> §2 Platform — Tailor layer
+    </div>
+    <div class="wf-section-inner">
+      <div class="wf-grid-2--equal" style="display:grid; grid-template-columns: 1fr 1.1fr; gap: 2.5rem; align-items: center;">
+        <div>
+          <div class="wf-layer-tag wf-layer-tag--tailor">Tailor Teach</div>
+          <h2 class="wf-h2">[Expert-authored RSE lessons, ready to teach]</h2>
+          <p class="wf-body wf-body--muted">[Short intro paragraph about the platform — what it is, why it matters, what makes it different]</p>
+          <ul class="wf-feature-list">
+            <li>Expert-authored, curriculum-aligned content</li>
+            <li>Structured by topic and key stage</li>
+            <li>Built for teacher confidence</li>
+            <li>Simple Mode / accessibility built in</li>
+          </ul>
+          <div class="wf-btn-row">
+            <span class="wf-btn wf-btn--primary">Explore the lesson library →</span>
+          </div>
+        </div>
+        <div>
+          <div class="wf-img" style="aspect-ratio: 16/10; background: #e9e8e4; border: 1px solid #d8d7d3; border-radius: 8px;">
+            <div class="wf-img-label">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+              App screenshot<br>Tailor Teach interface
+            </div>
+          </div>
+          <p class="wf-annotation">Real screenshot of the app. Not a mockup if possible — teachers want to see what they'll actually use.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ §3 — DELIVERY ═══════ -->
+  <div class="wf-section wf-delivery">
+    <div class="wf-annotation--surface">--bg-surface-alt (#f0efeb)</div>
+    <div class="wf-label">
+      <span class="wf-label-dot wf-label-dot--tailor"></span> §3 Delivery — Tailor layer
+    </div>
+    <div class="wf-section-inner">
+      <div class="wf-grid-2--reversed" style="display:grid; grid-template-columns: 0.9fr 1fr; gap: 2.5rem; align-items: center;">
+        <div>
+          <div class="wf-img" style="aspect-ratio: 4/3;">
+            <div class="wf-img-label">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              Editorial photograph<br>Delivery in school
+            </div>
+          </div>
+          <p class="wf-annotation">Facilitator working with students. Real, warm, credible. Contained within rounded frame.</p>
+        </div>
+        <div>
+          <h2 class="wf-h2">[We deliver RSE in your school]</h2>
+          <p class="wf-body wf-body--muted">[What delivery means — qualified facilitators come to your school, deliver curriculum-aligned RSE directly to your students. Not supply teachers. Expert-led, sensitive, age-appropriate.]</p>
+          <div class="wf-steps">
+            <div class="wf-step">
+              <span class="wf-step-num">1</span>
+              <span>Get in touch and tell us what you need</span>
+            </div>
+            <div class="wf-step">
+              <span class="wf-step-num">2</span>
+              <span>We plan together around your school context</span>
+            </div>
+            <div class="wf-step">
+              <span class="wf-step-num">3</span>
+              <span>We deliver — and follow up afterwards</span>
+            </div>
+          </div>
+          <div class="wf-btn-row">
+            <span class="wf-btn wf-btn--primary">Enquire about delivery →</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ §4 — TRAINING & SUPPORT ═══════ -->
+  <div class="wf-section wf-training">
+    <div class="wf-annotation--surface">--bg-surface (#FFFFFF)</div>
+    <div class="wf-label">
+      <span class="wf-label-dot wf-label-dot--tailor"></span> §4 Training & Support — Tailor layer
+    </div>
+    <div class="wf-section-inner">
+      <div class="wf-grid-2" style="display:grid; grid-template-columns: 1fr 0.9fr; gap: 2.5rem; align-items: center;">
+        <div>
+          <h2 class="wf-h2">[Training and support for your RSE team]</h2>
+          <p class="wf-body wf-body--muted">[Intro: We don't just provide resources — we help your team feel confident, compliant, and supported. From CPD workshops to policy review and curriculum planning.]</p>
+          <div class="wf-strand-tags">
+            <span class="wf-strand-tag">CPD & Workshops</span>
+            <span class="wf-strand-tag">Policy Guidance</span>
+            <span class="wf-strand-tag">Curriculum Planning</span>
+          </div>
+          <p class="wf-body wf-body--muted wf-body--sm" style="max-width: 34rem;">[Brief expansion: in-school or online workshops, twilight CPD sessions, RSE policy development support, curriculum mapping across key stages, DfE statutory alignment.]</p>
+          <div class="wf-btn-row">
+            <span class="wf-btn wf-btn--primary">Explore training options →</span>
+            <span class="wf-btn wf-btn--outline">Talk to us about support →</span>
+          </div>
+        </div>
+        <div>
+          <div class="wf-img" style="aspect-ratio: 4/3;">
+            <div class="wf-img-label">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              Editorial photograph<br>CPD workshop / teachers engaging
+            </div>
+          </div>
+          <p class="wf-annotation">Option A layout shown (two-column with photo). Reverses §3's image/text orientation for visual rhythm.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ §5 — TRUST SIGNALS ═══════ -->
+  <div class="wf-section wf-trust">
+    <div class="wf-annotation--surface">--bg-surface-alt (#f0efeb)</div>
+    <div class="wf-label">
+      <span class="wf-label-dot wf-label-dot--tailor"></span> §5 Trust Signals — Tailor layer
+    </div>
+    <div class="wf-section-inner" style="text-align: center;">
+      <h2 class="wf-h2" style="text-align: center; margin-bottom: 1.5rem;">[Aligned with national and international frameworks]</h2>
+      <div class="wf-badges">
+        <div class="wf-badge">
+          <div class="wf-badge-icon"></div>
+          <span class="wf-badge-label">DfE Statutory Guidance</span>
+        </div>
+        <div class="wf-badge">
+          <div class="wf-badge-icon"></div>
+          <span class="wf-badge-label">PSHE Association</span>
+        </div>
+        <div class="wf-badge">
+          <div class="wf-badge-icon"></div>
+          <span class="wf-badge-label">UNESCO</span>
+        </div>
+        <div class="wf-badge">
+          <div class="wf-badge-icon"></div>
+          <span class="wf-badge-label">WHO Standards</span>
+        </div>
+      </div>
+      <div class="wf-quote">
+        <blockquote>"[Testimonial quote from a headteacher or PSHE lead about working with Tailor — ideally referencing delivery or training quality]"</blockquote>
+        <div class="wf-quote-attrib">
+          <div class="wf-img wf-img--round wf-quote-headshot" style="width:3rem; height:3rem;">
+            <span style="font-size:9px;">Photo</span>
+          </div>
+          <cite>[Name, Role, School Name]</cite>
+        </div>
+      </div>
+      <p style="margin-top: 1.5rem;"><a class="wf-link-action" href="#" style="text-decoration:none;">See our approach</a></p>
+    </div>
+  </div>
+
+  <!-- ═══════ §6 — OKAY TO ASK ═══════ -->
+  <!-- .layer-ota wrapper starts -->
+  <div class="wf-section wf-ota">
+    <div class="wf-annotation--surface">--bg-ota-surface (#F7F5F0) · .layer-ota scope</div>
+    <div class="wf-label" style="color: rgba(0,0,0,0.4);">
+      <span class="wf-label-dot wf-label-dot--ota"></span> §6 Okay to Ask — OtA layer
+    </div>
+    <div class="wf-section-inner" style="max-width: var(--wf-reading);">
+
+      <!-- OtA intro -->
+      <div class="wf-ota-intro">
+        <div class="wf-wordmark">OtA Wordmark</div>
+        <h2 class="wf-h2" style="text-align:center;">[Okay to Ask — honest answers for young people]</h2>
+        <p class="wf-body wf-body--muted" style="text-align: center; max-width: 30rem; margin: 0 auto 2rem;">[1–2 sentences: what OtA is, who it's for, why it exists. Proof of care and expertise.]</p>
+      </div>
+
+      <!-- Book panel -->
+      <div class="wf-book-panel">
+        <div class="wf-img wf-book-cover">
+          <div class="wf-img-label" style="padding:0.5rem;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+            Book cover
+          </div>
+        </div>
+        <div class="wf-book-text">
+          <div class="wf-eyebrow" style="color: var(--text-ota-muted);">The Okay to Ask book</div>
+          <h3 class="wf-h3">[The book that answers the questions young people really ask]</h3>
+          <p class="wf-body--muted wf-body--sm" style="margin-bottom: 0.75rem;">[One-line pitch about the book]</p>
+          <a class="wf-link-action" href="#" style="text-decoration:none;">Buy the book</a>
+        </div>
+      </div>
+
+      <!-- Featured question cards -->
+      <h3 class="wf-h3" style="text-align: center; margin-bottom: 1.25rem; font-family: Georgia, serif;">[Questions young people really ask]</h3>
+      <div class="wf-grid-3">
+        <div class="wf-qcard">
+          <div class="wf-qcard-postit"></div>
+          <span class="wf-qcard-cat" style="color: #E8725A;">Relationships</span>
+          <span class="wf-qcard-title">[Example question title here?]</span>
+          <span class="wf-qcard-link">Read the answer →</span>
+        </div>
+        <div class="wf-qcard">
+          <div class="wf-qcard-postit" style="transform: rotate(1deg); background: #f5d9a3;"></div>
+          <span class="wf-qcard-cat" style="color: #1E9B8C;">Sex</span>
+          <span class="wf-qcard-title">[Example question title here?]</span>
+          <span class="wf-qcard-link">Read the answer →</span>
+        </div>
+        <div class="wf-qcard">
+          <div class="wf-qcard-postit" style="transform: rotate(-3deg); background: #f5c8d3;"></div>
+          <span class="wf-qcard-cat" style="color: #7B61C4;">Contraception &amp; Pregnancy</span>
+          <span class="wf-qcard-title">[Example question title here?]</span>
+          <span class="wf-qcard-link">Read the answer →</span>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 1.5rem;">
+        <span class="wf-btn wf-btn--outline">See all questions →</span>
+      </div>
+      <p class="wf-annotation" style="text-align: center;">Single .layer-ota wrapper. Fraunces headings + Atkinson body. Optional post-it scatter at 15% opacity (desktop only).</p>
+    </div>
+  </div>
+  <!-- .layer-ota wrapper ends -->
+
+  <!-- ═══════ §7 — TOPICS BREADTH ═══════ -->
+  <div class="wf-section wf-topics">
+    <div class="wf-annotation--surface">--bg-page (#FAFAF7)</div>
+    <div class="wf-label">
+      <span class="wf-label-dot wf-label-dot--tailor"></span> §7 Topics Breadth — Tailor layer
+    </div>
+    <div class="wf-section-inner">
+      <h2 class="wf-h2" style="text-align: center; margin-bottom: 0.5rem;">[Topics we cover]</h2>
+      <p class="wf-body wf-body--muted" style="text-align:center; max-width: 30rem; margin: 0 auto 2rem;">[22 landing pages across 7 categories — the breadth of Tailor's RSE curriculum]</p>
+      <div class="wf-topic-grid">
+        <div class="wf-topic-group" style="--cat-color: #E8725A;">
+          <div class="wf-topic-group-title" style="border-color: #E8725A;">Relationships</div>
+          <span class="wf-topic-link">Healthy relationships</span>
+          <span class="wf-topic-link">Consent</span>
+          <span class="wf-topic-link">Families</span>
+        </div>
+        <div class="wf-topic-group" style="--cat-color: #1E9B8C;">
+          <div class="wf-topic-group-title" style="border-color: #1E9B8C;">Sex &amp; Sexual Health</div>
+          <span class="wf-topic-link">Sex and intimacy</span>
+          <span class="wf-topic-link">Contraception</span>
+          <span class="wf-topic-link">STIs and testing</span>
+        </div>
+        <div class="wf-topic-group" style="--cat-color: #3B6DB5;">
+          <div class="wf-topic-group-title" style="border-color: #3B6DB5;">Puberty &amp; The Body</div>
+          <span class="wf-topic-link">Puberty</span>
+          <span class="wf-topic-link">Body image</span>
+          <span class="wf-topic-link">Anatomy</span>
+        </div>
+        <div class="wf-topic-group" style="--cat-color: #7B61C4;">
+          <div class="wf-topic-group-title" style="border-color: #7B61C4;">Identity &amp; Diversity</div>
+          <span class="wf-topic-link">Gender identity</span>
+          <span class="wf-topic-link">Sexual orientation</span>
+        </div>
+        <div class="wf-topic-group" style="--cat-color: #E84D8A;">
+          <div class="wf-topic-group-title" style="border-color: #E84D8A;">Online Safety &amp; Media</div>
+          <span class="wf-topic-link">Online safety</span>
+          <span class="wf-topic-link">Pornography</span>
+        </div>
+        <div class="wf-topic-group" style="--cat-color: #F0C24E;">
+          <div class="wf-topic-group-title" style="border-color: #F0C24E;">Safety &amp; Safeguarding</div>
+          <span class="wf-topic-link">Abuse</span>
+          <span class="wf-topic-link">Exploitation</span>
+        </div>
+        <div class="wf-topic-group" style="--cat-color: #4DBD6E;">
+          <div class="wf-topic-group-title" style="border-color: #4DBD6E;">Health &amp; Wellbeing</div>
+          <span class="wf-topic-link">Mental health</span>
+          <span class="wf-topic-link">Substance use</span>
+        </div>
+      </div>
+      <p class="wf-annotation" style="text-align: center; margin-top: 1rem;">TopicsOverviewGrid component. 7 app categories, 22 landing pages. --cat-* colour tokens. 3-col desktop, 2-col tablet, 1-col mobile.</p>
+    </div>
+  </div>
+
+  <!-- ═══════ §8 — CLOSING CTA ═══════ -->
+  <div class="wf-section wf-closing">
+    <div class="wf-annotation--surface" style="color: rgba(255,255,255,0.3);">--bg-emphasis (#1E2A3A)</div>
+    <div class="wf-label" style="color: rgba(255,255,255,0.4);">
+      <span class="wf-label-dot wf-label-dot--tailor"></span> §8 Closing CTA — Tailor layer
+    </div>
+    <div class="wf-section-inner" style="max-width: 40rem; text-align: center;">
+      <h2 class="wf-h2">[Ready to bring expert RSE to your school?]</h2>
+      <p class="wf-subline">[One sentence: whether you need lessons, training, or delivery — we're here to help.]</p>
+      <div class="wf-btn-row" style="justify-content: center;">
+        <span class="wf-btn wf-btn--primary">Get in touch →</span>
+        <span class="wf-btn wf-btn--white-outline">Explore lessons →</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ FOOTER ═══════ -->
+  <div class="wf-footer">
+    <span style="font-weight: 600; color: var(--text-body);">Tailor Education</span>
+    <span>Topics · Training · Services · About · Contact · Privacy · Accessibility</span>
+  </div>
+
+</div>
+
+<!-- ═══════ LEGEND ═══════ -->
+<div style="max-width: 1200px; margin: 2rem auto 0; padding: 1.5rem; background: #fff; border-radius: 8px; font-size: 13px; color: #666; display: flex; flex-wrap: wrap; gap: 2rem;">
+  <div>
+    <strong style="color: #333; display: block; margin-bottom: 0.4rem;">Layer key</strong>
+    <span style="display: inline-flex; align-items: center; gap: 0.3rem; margin-right: 1rem;"><span style="width:10px;height:10px;border-radius:50%;background:#1A9E8A;display:inline-block;"></span> Tailor (Lexend)</span>
+    <span style="display: inline-flex; align-items: center; gap: 0.3rem;"><span style="width:10px;height:10px;border-radius:50%;background:#E8725A;display:inline-block;"></span> Okay to Ask (Fraunces + Atkinson)</span>
+  </div>
+  <div>
+    <strong style="color: #333; display: block; margin-bottom: 0.4rem;">Surface rhythm</strong>
+    dark → white → alt → white → alt → <span style="color: #E8725A; font-weight: 600;">warm</span> → ground → dark
+  </div>
+  <div>
+    <strong style="color: #333; display: block; margin-bottom: 0.4rem;">Layer rhythm</strong>
+    T → T → T → T → T → <span style="color: #E8725A; font-weight: 600;">OtA</span> → T → T &nbsp;(1 switch, was 5)
+  </div>
+  <div>
+    <strong style="color: #333; display: block; margin-bottom: 0.4rem;">Photography slots</strong>
+    §1 hero · §3 delivery · §4 training &nbsp;(3 editorial photos)
+  </div>
+</div>
+
+</body>
+</html>
