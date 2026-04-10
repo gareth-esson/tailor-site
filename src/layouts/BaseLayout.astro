@@ -94,7 +94,7 @@ const ga4Id = import.meta.env.GA4_MEASUREMENT_ID || '';
   <body>
     <SiteHeader />
 
-    <main class:list={[layer === 'ota' && 'layer-ota']}>
+    <main id="main" class:list={[layer === 'ota' && 'layer-ota']}>
       <slot />
     </main>
 
