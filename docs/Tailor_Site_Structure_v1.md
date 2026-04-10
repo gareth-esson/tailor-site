@@ -76,12 +76,12 @@ Each of these is a template applied to many pages. Design the template once.
 |------|----------|-------------|---------------|-------|
 | **C1** | Question page | `/anonymous_question/{slug}` | ~152 | Post-it image, answer (standard + simple), glossary tooltips, crisis support (conditional), age flag (conditional), signposting, end-of-answer panel (A17), author attribution. The most complex template. |
 | **C2** | Glossary page | `/glossary/{slug}` | ~80–100 | Term, definition (standard + simple), full explainer (standard + simple), related terms, referencing questions, topic link. Standard/Simple toggle. |
-| **C3** | Landing page | `/topics/{slug}` | 22 | Teacher-facing topic landing page. Aggregates relevant granular topics from the 87-topic app taxonomy. Pulls in related questions, glossary terms, blog posts. CTAs (mid-page "explore lessons" + bottom "bring to school"). The bridge between content and services. See landing page list below. |
+| **C3** | Landing page | `/topics/{slug}` | 23 | Teacher-facing topic landing page. Aggregates relevant granular topics from the 87-topic app taxonomy. Pulls in related questions, glossary terms, blog posts. CTAs (mid-page "explore lessons" + bottom "bring to school"). The bridge between content and services. See landing page list below. |
 | **C4** | Blog post | `/blog/{slug}` | ~20 at launch | Featured image (16:9, conditional), meta line (author · date · audience + share dropdown), body prose with accent-coloured headings, topic tags section after body, related posts grid (with featured images), bottom CTA. Share: native Web Share API on mobile, social dropdown (X, LinkedIn, Facebook, WhatsApp, Email, Copy link) on desktop. JSON-LD Article structured data. |
 | **C5** | Service page | `/services/{type}` | 6 individual pages | v3 template: hero, at-a-glance strip, description, feature cards, optional process steps, testimonial, related blog posts, ServiceTopicsStrip, repeated CTA. Pages: `rse-for-primary-schools`, `rse-for-secondary-schools`, `rse-for-send-and-ap` (Circuits), `rse-training`, `drop-days`, `rse-policy-curriculum-planning`. Hub page lives at `/services` (B5). Shared styles via `ServicePageStyles.astro`. Legacy `/services/delivery` and `/services/rse-delivery` redirect 301 → `/services`. |
 | **C6** | Legal page | various | 2 | Simple text page template. Used for B12 (Privacy policy) and B13 (Accessibility & inclusivity). No unique components — just heading, body text, footer. No wireframe needed. |
 
-### C3 landing pages — the 22 pages
+### C3 landing pages — the 23 pages
 
 These are the teacher-facing website landing pages that sit on top of the 87 granular app topics. They are determined by search demand and competitor analysis (see Tailor_Landing_Page_Proposal.md). The 87 granular topics do not get their own pages on the website — they power the app's filtering system only.
 
@@ -113,19 +113,18 @@ These are the teacher-facing website landing pages that sit on top of the 87 gra
 | 22 | Mental health and wellbeing | mental-health-and-wellbeing | Health & Wellbeing |
 | 23 | Self-esteem | self-esteem | Health & Wellbeing |
 
-**Cross-cutting service/audience pages — nav placement resolved:**
+**Cross-cutting service pages — flat nav (post v3):**
 
-These pages use a service/audience template (variant of C3 or C5) and sit in either the "RSE Delivery" or "RSE Training & Support" dropdown in the main nav.
+All six service lines are siblings under `/services`. The old "RSE Delivery" / "RSE Training & Support" dropdowns and hub variants have been removed — the header exposes the six pages directly. See C5 template notes.
 
-| Page title | Slug | Nav location | Notes |
-|-----------|------|-------------|-------|
-| RSE for primary schools | rse-for-primary-schools | RSE Delivery dropdown | Key stage entry point |
-| RSE for secondary schools | rse-for-secondary-schools | RSE Delivery dropdown | Key stage entry point |
-| RSE for SEND & alternative provision (Circuits) | rse-for-send-and-alternative-provision | RSE Delivery dropdown | Circuits: workbook-based, self-paced lessons for SEND/AP settings. Simplified keynotes, doodle/game space in workbooks. A distinct product line, not an afterthought. Deserves its own dedicated page. |
-| Direct RSE delivery | delivery | RSE Delivery dropdown | Also accessible via `/services/delivery` |
-| Drop days | drop-days | RSE Delivery dropdown | Also accessible via `/services/drop-days` |
-| RSE Training | rse-training | RSE Training & Support dropdown | B4. Highest-traffic service page (app funnels here). |
-| RSE Policy & Curriculum Planning | rse-policy-and-curriculum-planning | RSE Training & Support dropdown | Also accessible via `/services/rse-policy-curriculum-planning` |
+| Page title | Route | Template | Notes |
+|-----------|-------|----------|-------|
+| RSE for primary schools | `/services/rse-for-primary-schools` | C5 v3 | Key stage entry point |
+| RSE for secondary schools | `/services/rse-for-secondary-schools` | C5 v3 | Key stage entry point |
+| RSE for SEND & AP (Circuits) | `/services/rse-for-send-and-ap` | C5 v3 | Circuits: workbook-based, self-paced lessons for SEND/AP settings. Simplified keynotes, doodle/game space in workbooks. A distinct product line, not an afterthought. |
+| Drop days | `/services/drop-days` | C5 v3 (lean) | Whole-day, multi-cohort delivery |
+| RSE Training | `/services/rse-training` | C5 v3 | Replaces standalone B4. Highest-traffic service page (app funnels here). |
+| RSE Policy & Curriculum Planning | `/services/rse-policy-curriculum-planning` | C5 v3 (consultancy) | Policy + curriculum map deliverables |
 
 ---
 
@@ -208,20 +207,42 @@ These exist but are not part of the content site wireframes:
 
 | Code | Page / template | Route | Notes |
 |------|----------------|-------|-------|
-| **A1** | Site header | — | Persistent header with navigation, search |
+| **A1** | Site header | — | Persistent header with navigation, search bar, topics mega menu |
 | **A2** | Site footer | — | Links, branding, Guess Design House credit |
+| **A3** | Navigation | — | Flat service nav post-v3; topics mega menu via `TopicsMegaMenu.astro` |
+| **A4** | Search bar | — | `SearchBar.astro`, header-integrated, Pagefind-backed |
+| **A5** | Search results dropdown | — | Instant results panel, grouped by content type |
+| **A6** | Simple Mode toggle | — | `SimpleModeToggle.astro`, Standard/Simple swap on question and glossary pages |
+| **A7** | Glossary tooltip | — | `GlossaryTooltips.astro`, inline tooltip system |
+| **A8** | Signposting block | — | `SignpostingBlock.astro`, contextual support services on question pages |
+| **A9** | Crisis support | — | `CrisisSupport.astro`, safeguarding-triggered surface above answers |
+| **A11** | CTA — Explore lessons | — | `CtaExploreLessons.astro`, used on landing pages |
+| **A12** | CTA — Bring to school | — | `CtaBringToSchool.astro`, used on landing pages |
 | **A13** | CTA — service enquiry | — | `CtaServiceEnquiry.astro`, pre-tagged via `?service=` param |
+| **A15** | Related content cards | — | `RelatedQuestions.astro`, `RelatedTerms.astro`, blog related-posts grid |
+| **A16** | Topic tag chips | — | `TopicTags.astro`, used on question, glossary and landing pages |
+| **A17** | End-of-answer panel | — | `EndOfAnswerPanel.astro`, three-panel CTA on question pages |
 | **B1** | Homepage v2 | `/` | Teacher-first 8-section layout, single OtA layer switch, hero/delivery/training photography wired |
-| **B5** | Services hub | `/services` | Card grid linking to all 6 individual service pages |
+| **B2** | About | `/about` | Team and organisation page |
+| **B3** | Our Approach | `/our-approach` | Pedagogical approach, framework alignment, safeguarding |
+| **B5** | Services hub | `/services` | Six-card grid + hero photo, linking to all individual service pages |
+| **B6** | Testimonials | `/testimonials` | School and teacher testimonials |
+| **B7** | Contact | `/contact` | Enquiry form (E1) inline, service param pre-fill |
 | **B8** | Okay to Ask landing | `/questions/` | Question browse with category filtering |
 | **B9** | Blog index | `/blog/` | Filterable list, sorted newest-first |
+| **B10** | Search results | `/search` | Full results page, Pagefind-backed |
 | **B11** | Book page | `/book` | Hero cover, product image, audience cards, purchase CTA |
+| **B12** | Privacy policy | `/privacy` | Legal page template (C6) |
+| **B13** | Accessibility & inclusivity | `/accessibility` | Legal page template (C6) |
 | **B14** | Topics hub | `/topics/` | Filterable card grid with topic illustrations, trust signal |
 | **C1** | Question page | `/anonymous_question/{slug}` | Post-it images, categories, content tags, end-of-answer panel |
 | **C2** | Glossary term page | `/glossary/{slug}` | Full layout, tooltip stemming, referenced-in cross-links |
 | **C3** | Landing page | `/topics/{slug}` | 23 pages — curriculum mapping, topic illustrations, body prose |
 | **C4** | Blog post | `/blog/{slug}` | Featured image, meta + share dropdown, tags after body, related posts, JSON-LD Article |
 | **C5** | Service pages | `/services/{type}` | 6 individual pages, all on v3 template — see routes below |
+| **C6** | Legal page | `/privacy`, `/accessibility` | Shared prose layout used by B12 and B13 |
+| **D8** | Topics mega menu | — | `TopicsMegaMenu.astro`, 23 topics grouped in desktop nav |
+| **E1** | Enquiry form | `/contact` | `EnquiryForm.astro`, pre-tags via `?service=`, validation + success state |
 
 ### B1 homepage v2 — section breakdown
 
@@ -244,7 +265,7 @@ All individual service pages share the v3 template — `service-hero`, `service-
 
 | Route | Status | `serviceLink` filter |
 |-------|--------|---------------------|
-| `/services` | Hub (B5, `index.astro`) | — |
+| `/services` | Hub (B5, `index.astro`) — header photo + six-card grid | — |
 | `/services/rse-for-primary-schools` | v3 | `delivery` |
 | `/services/rse-for-secondary-schools` | v3 | `delivery` |
 | `/services/rse-for-send-and-ap` | v3 (Circuits) | `delivery` |
@@ -253,45 +274,68 @@ All individual service pages share the v3 template — `service-hero`, `service-
 | `/services/rse-policy-curriculum-planning` | v3 (consultancy-shaped) | `rse-policy-curriculum-planning` |
 | `/services/delivery` | 301 → `/services` | — |
 | `/services/rse-delivery` | 301 → `/services` (v3 spec removed the hub variant) | — |
-| `/services/consultancy` | Stub — template pending | — |
+| `/training` | 301 → `/services/rse-training` (legacy B4 URL) | — |
+| `/services/consultancy` | Stub — no longer in scope; held for removal | — |
 
 ### Shared components
 
 | Component | Purpose |
 |-----------|---------|
-| `ServicePageStyles.astro` | Global styles shared by all C5 pages (hero, glance, description, feature cards, process steps, testimonial, blog grid) |
-| `ServiceTopicsStrip.astro` | Compact 6-topic chip row for C5 §8. Accepts `featuredSlugs` prop, backfills alphabetically |
-| `QuestionCard.astro` | OtA question card. Astro template for tags (no `set:html`), JS dynamic background detection for `mix-blend-mode: multiply` |
+| `SiteHeader.astro` | A1 — persistent header, flat service nav, topics mega menu entry |
+| `SiteFooter.astro` | A2 — links, Guess Design House credit, legal links |
+| `SearchBar.astro` | A4 — header search input with Pagefind integration |
+| `SimpleModeToggle.astro` | A6 — Standard/Simple switch for question and glossary pages |
+| `GlossaryTooltips.astro` | A7 — inline tooltip system for glossary term references |
+| `SignpostingBlock.astro` | A8 — contextual support services block on question pages |
+| `CrisisSupport.astro` | A9 — prominent "Need support?" surface on safeguarding question pages |
+| `AgeFlag.astro` | D1 — age interstitial on age-flagged question pages |
+| `CtaExploreLessons.astro` | A11 — mid-landing "explore lessons" CTA |
+| `CtaBringToSchool.astro` | A12 — bottom-landing "bring to school" CTA, now points at `/services` |
+| `CtaServiceEnquiry.astro` | A13 — bottom-of-page service CTA, pre-tags enquiry form via `?service=` |
+| `CtaBlogBottom.astro` | A13 variant — bottom-of-post blog CTA |
+| `RelatedQuestions.astro`, `RelatedTerms.astro` | A15 — related content cards |
+| `TopicTags.astro` | A16 — topic tag chips |
+| `EndOfAnswerPanel.astro` | A17 — three-panel CTA at the bottom of question pages |
+| `TopicsMegaMenu.astro` | D8 — desktop topics mega menu (23 landing pages, grouped) |
 | `TopicsOverviewGrid.astro` | Topic card grid — homepage §7 and topics hub |
-| `CtaServiceEnquiry.astro` | Bottom-of-page service CTA, pre-tags enquiry form |
-| `CtaBlogBottom.astro` | Bottom-of-post blog CTA |
-| `GlossaryTooltips.astro` | Tooltip system for glossary term references |
+| `QuestionCard.astro` | OtA question card. Astro template for tags (no `set:html`), JS dynamic background detection for `mix-blend-mode: multiply` |
+| `GlossaryTermCard.astro` | Glossary term card for related-terms panels |
+| `EnquiryForm.astro` | E1 — service enquiry form, validation, success state |
+| `ServicePageStyles.astro` | Global styles shared by all C5 pages (hero, glance, description, feature cards, process steps, testimonial, blog grid) |
+| `ServiceTopicsStrip.astro` | Compact 6-topic chip row for C5 pages. Accepts `featuredSlugs` prop, backfills alphabetically |
+| `Analytics.astro` | GA4 + analytics attribute helpers |
 
 ### Data layer
 
-- `src/lib/fetchers.ts` — Notion API fetchers for blog posts, questions, glossary
-- `src/lib/types.ts` — `BlogPost` includes `featuredImage`, `publishedDate`, `serviceLink`; `LandingPage`, `QuestionRef` types
-- `getFilesUrl()` handles both Notion `url` and `files` property types
-- `getDateValue()` for date property extraction
+- `src/lib/notion.ts` — low-level Notion client + `getFilesUrl()` and `getDateValue()` property helpers
+- `src/lib/notion-cache.ts` — per-build Notion cache
+- `src/lib/fetchers.ts` — Notion API fetchers for blog posts, questions, glossary, landing pages
+- `src/lib/content.ts` — high-level `getBlogPosts()`, `getQuestions()`, `getLandingPages()`, `getGlossaryTerms()` content API used by pages
+- `src/lib/types.ts` — `BlogPost` (includes `featuredImage`, `publishedDate`, `serviceLink`), `LandingPage`, `QuestionRef`, `GlossaryTerm` types
+- `src/lib/related-blog-posts.ts`, `src/lib/related-questions.ts` — related-content resolvers
+- `src/lib/render-blocks.ts` — Notion block → HTML renderer
+- `src/lib/glossary-tooltips.ts` — tooltip stemming and term matching for inline glossary references
+- `src/lib/topic-illustrations.ts` — slug → illustration SVG path map for the 23 landing pages
+- `src/lib/post-it-images.ts` — question post-it image resolution
+- `src/lib/support-services.ts` — signposting and crisis service registry
+
+### Retired or superseded
+
+| Code | Note |
+|------|------|
+| **A10** | Author attribution on question pages — retired (the organisation is the brand) |
+| **A14** | Teacher bridge — superseded by A17 end-of-answer panel |
+| **B4** | Standalone RSE Training showcase — replaced by C5 `/services/rse-training` (v3 spec); `/training` now 301s to the new route |
 
 ### Not yet built
 
 | Code | Page / template | Notes |
 |------|----------------|-------|
-| **A6** | Simple Mode toggle | Pending |
-| **A8** | Signposting block | Pending |
-| **A9** | Crisis support component | Pending |
-| **A17** | End-of-answer panel | Pending |
-| **B2** | About | Not started |
-| **B3** | Our Approach | Not started |
-| **B4** | RSE Training showcase | Replaced by C5 `/services/rse-training` (v3 spec) |
-| **B6** | Testimonials | Not started |
-| **B7** | Contact | Not started |
-| **B10** | Search results | Not started |
-| **B12** | Privacy policy | Not started |
-| **B13** | Accessibility | Not started |
-| **C6** | Legal page | Not started |
-| **D1–D8** | Interactive elements | Not started |
-| **E1** | Enquiry form | Not started |
+| **D2** | Search bar expanded state | Working states live in A4/A5; dedicated wireframe pending |
+| **D3** | Mobile navigation | Mobile nav functional; dedicated wireframe pending |
+| **D4** | Glossary tooltip expanded | Working states live in A7; dedicated wireframe pending |
+| **D5** | Simple Mode transition | Micro-interaction design pending |
+| **D6** | Enquiry form states | Visual states spec pending (form itself is built) |
+| **D7** | Dual-answer layout | For ~10–15% of questions with two age-differentiated answers |
 
-*Document version: 1.2 | Date: 10 April 2026*
+*Document version: 1.3 | Date: 10 April 2026*
