@@ -31,8 +31,9 @@ const serviceOptions = [
       name="name"
       required
       autocomplete="name"
+      aria-describedby="enquiry-name-error"
     />
-    <p class="form-error" role="alert" hidden>Please enter your name</p>
+    <p class="form-error" id="enquiry-name-error" role="alert" hidden>Please enter your name</p>
   </div>
 
   <div class="form-group" data-field="email">
@@ -44,8 +45,9 @@ const serviceOptions = [
       name="email"
       required
       autocomplete="email"
+      aria-describedby="enquiry-email-error"
     />
-    <p class="form-error" role="alert" hidden>Please enter a valid email address</p>
+    <p class="form-error" id="enquiry-email-error" role="alert" hidden>Please enter a valid email address</p>
   </div>
 
   <div class="form-group" data-field="school">
@@ -57,8 +59,9 @@ const serviceOptions = [
       name="school"
       required
       autocomplete="organization"
+      aria-describedby="enquiry-school-error"
     />
-    <p class="form-error" role="alert" hidden>Please enter your school name</p>
+    <p class="form-error" id="enquiry-school-error" role="alert" hidden>Please enter your school name</p>
   </div>
 
   <div class="form-group" data-field="service">
@@ -68,6 +71,7 @@ const serviceOptions = [
       id="enquiry-service"
       name="service"
       required
+      aria-describedby="enquiry-service-error"
     >
       {serviceOptions.map((opt) => (
         <option
@@ -78,7 +82,7 @@ const serviceOptions = [
         </option>
       ))}
     </select>
-    <p class="form-error" role="alert" hidden>Please select a service</p>
+    <p class="form-error" id="enquiry-service-error" role="alert" hidden>Please select a service</p>
   </div>
 
   <div class="form-group" data-field="keystage">

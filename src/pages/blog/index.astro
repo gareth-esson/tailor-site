@@ -33,11 +33,11 @@ const audiences = [...new Set(posts.map((p) => p.targetAudience).filter(Boolean)
       <!-- Audience filter -->
       {audiences.length > 0 && (
         <div class="blog-filters" role="group" aria-label="Filter by audience">
-          <button class="blog-filter btn btn--sm btn--tint is-active" data-audience="all" type="button">
+          <button class="blog-filter btn btn--sm btn--tint is-active" data-audience="all" type="button" aria-pressed="true">
             All
           </button>
           {audiences.map((aud) => (
-            <button class="blog-filter btn btn--sm btn--outline" data-audience={aud} type="button">
+            <button class="blog-filter btn btn--sm btn--outline" data-audience={aud} type="button" aria-pressed="false">
               {aud}
             </button>
           ))}
@@ -45,32 +45,33 @@ const audiences = [...new Set(posts.map((p) => p.targetAudience).filter(Boolean)
       )}
 
       <!-- Post list -->
-      <div class="blog-list" id="blog-list">
+      <ul class="blog-list" id="blog-list" role="list">
         {sortedPosts.map((post) => (
-          <a
-            href={`/blog/${post.slug}`}
-            class="card blog-list__card"
-            data-audience={post.targetAudience || ''}
-          >
-            <div class="card__body">
-              {post.targetAudience && (
-                <div class="card__eyebrow">{post.targetAudience}</div>
-              )}
-              <div class="card__title">{post.title}</div>
-              {post.topics.length > 0 && (
-                <div class="blog-list__topics">
-                  {post.topics.map((t) => (
-                    <span class="blog-list__topic">{t.title}</span>
-                  ))}
-                </div>
-              )}
-              {post.author && (
-                <div class="blog-list__author">By {post.author}</div>
-              )}
-            </div>
-          </a>
+          <li data-audience={post.targetAudience || ''}>
+            <a
+              href={`/blog/${post.slug}`}
+              class="card blog-list__card"
+            >
+              <div class="card__body">
+                {post.targetAudience && (
+                  <div class="card__eyebrow">{post.targetAudience}</div>
+                )}
+                <h3 class="card__title">{post.title}</h3>
+                {post.topics.length > 0 && (
+                  <div class="blog-list__topics">
+                    {post.topics.map((t) => (
+                      <span class="blog-list__topic">{t.title}</span>
+                    ))}
+                  </div>
+                )}
+                {post.author && (
+                  <div class="blog-list__author">By {post.author}</div>
+                )}
+              </div>
+            </a>
+          </li>
         ))}
-      </div>
+      </ul>
 
       {sortedPosts.length === 0 && (
         <p class="blog-index__empty">No blog posts yet. Check back soon.</p>
@@ -81,27 +82,29 @@ const audiences = [...new Set(posts.map((p) => p.targetAudience).filter(Boolean)
 
 <script>
   function initBlogFilters() {
-    const filters = document.querySelectorAll('.blog-filter');
-    const cards = document.querySelectorAll('.blog-list__card');
-    if (!filters.length || !cards.length) return;
+    const filters = document.querySelectorAll<HTMLButtonElement>('.blog-filter');
+    const items = document.querySelectorAll<HTMLLIElement>('.blog-list > li');
+    if (!filters.length || !items.length) return;
 
     filters.forEach((btn) => {
       btn.addEventListener('click', () => {
-        const audience = (btn as HTMLElement).dataset.audience;
+        const audience = btn.dataset.audience;
 
         filters.forEach((f) => {
           f.classList.remove('is-active');
           f.classList.remove('btn--tint');
           f.classList.add('btn--outline');
+          f.setAttribute('aria-pressed', 'false');
         });
         btn.classList.add('is-active');
         btn.classList.remove('btn--outline');
         btn.classList.add('btn--tint');
+        btn.setAttribute('aria-pressed', 'true');
 
-        cards.forEach((card) => {
-          const cardAudience = (card as HTMLElement).dataset.audience;
-          const show = audience === 'all' || cardAudience === audience;
-          (card as HTMLElement).style.display = show ? '' : 'none';
+        items.forEach((li) => {
+          const itemAudience = li.dataset.audience;
+          const show = audience === 'all' || itemAudience === audience;
+          li.style.display = show ? '' : 'none';
         });
       });
     });
@@ -141,11 +144,15 @@ const audiences = [...new Set(posts.map((p) => p.targetAudience).filter(Boolean)
   }
 
   .blog-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
     display: grid;
     gap: var(--space-global-sm);
   }
 
   .blog-list__card {
+    display: block;
     text-decoration: none;
     color: inherit;
   }

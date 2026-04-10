@@ -68,7 +68,7 @@ function slugify(text: string): string {
         {q.okayToAskCategory}
       </div>
     )}
-    <div class="card__title qcard__title">{q.question}</div>
+    <h3 class="card__title qcard__title">{q.question}</h3>
     {q.contentTags && q.contentTags.length > 0 ? (
       <p class="qcard__tags">
         {q.contentTags.map((tag, i) => (

@@ -24,6 +24,18 @@ const rseTrainingLinks = [
   { title: 'RSE Training', href: '/services/rse-training' },
   { title: 'RSE Policy & Curriculum Planning', href: '/services/rse-policy-curriculum-planning' },
 ];
+
+// Active-page detection for aria-current. Strip trailing slash so /blog and /blog/ both match.
+const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
+const startsWith = (prefix: string) => pathname === prefix || pathname.startsWith(prefix + '/');
+
+const isTopics = startsWith('/topics');
+const isQuestions = startsWith('/questions') || startsWith('/anonymous_question');
+const isRseDelivery = rseDeliveryLinks.some((l) => startsWith(l.href));
+const isRseTraining = rseTrainingLinks.some((l) => startsWith(l.href));
+const isBlog = startsWith('/blog');
+const isAbout = pathname === '/about';
+const isContact = pathname === '/contact';
 ---
 
 <header
@@ -47,6 +59,7 @@ const rseTrainingLinks = [
             class="site-header__nav-link site-header__mega-trigger"
             aria-expanded="false"
             aria-controls="mega-menu"
+            aria-current={isTopics ? 'page' : undefined}
             type="button"
           >
             Topics
@@ -57,13 +70,14 @@ const rseTrainingLinks = [
           <TopicsMegaMenu />
         </li>
         <li class="site-header__nav-item">
-          <a href="/questions/" class="site-header__nav-link">Okay to Ask</a>
+          <a href="/questions/" class="site-header__nav-link" aria-current={isQuestions ? 'page' : undefined}>Okay to Ask</a>
         </li>
         <li class="site-header__nav-item site-header__nav-item--has-dropdown relative">
           <button
             class="site-header__nav-link site-header__dropdown-trigger"
             aria-expanded="false"
             aria-controls="rse-delivery-menu"
+            aria-current={isRseDelivery ? 'page' : undefined}
             type="button"
           >
             RSE Delivery
@@ -90,6 +104,7 @@ const rseTrainingLinks = [
             class="site-header__nav-link site-header__dropdown-trigger"
             aria-expanded="false"
             aria-controls="rse-training-menu"
+            aria-current={isRseTraining ? 'page' : undefined}
             type="button"
           >
             RSE Training &amp; Support
@@ -112,13 +127,13 @@ const rseTrainingLinks = [
           </div>
         </li>
         <li class="site-header__nav-item">
-          <a href="/blog/" class="site-header__nav-link">Blog</a>
+          <a href="/blog/" class="site-header__nav-link" aria-current={isBlog ? 'page' : undefined}>Blog</a>
         </li>
         <li class="site-header__nav-item">
-          <a href="/about" class="site-header__nav-link">About</a>
+          <a href="/about" class="site-header__nav-link" aria-current={isAbout ? 'page' : undefined}>About</a>
         </li>
         <li class="site-header__nav-item">
-          <a href="/contact" class="site-header__nav-link">Contact</a>
+          <a href="/contact" class="site-header__nav-link" aria-current={isContact ? 'page' : undefined}>Contact</a>
         </li>
       </ul>
     </nav>
@@ -155,6 +170,7 @@ const rseTrainingLinks = [
             class="mobile-nav__link mobile-nav__accordion-trigger flex items-center justify-between w-full py-3 border-0 bg-transparent cursor-pointer"
             aria-expanded="false"
             aria-controls="mobile-topics-panel"
+            aria-current={isTopics ? 'page' : undefined}
             type="button"
           >
             Topics
@@ -167,13 +183,14 @@ const rseTrainingLinks = [
           </div>
         </li>
         <li class="mobile-nav__item">
-          <a href="/questions/" class="mobile-nav__link flex items-center justify-between w-full py-3">Okay to Ask</a>
+          <a href="/questions/" class="mobile-nav__link flex items-center justify-between w-full py-3" aria-current={isQuestions ? 'page' : undefined}>Okay to Ask</a>
         </li>
         <li class="mobile-nav__item">
           <button
             class="mobile-nav__link mobile-nav__accordion-trigger flex items-center justify-between w-full py-3 border-0 bg-transparent cursor-pointer"
             aria-expanded="false"
             aria-controls="mobile-rse-panel"
+            aria-current={isRseDelivery ? 'page' : undefined}
             type="button"
           >
             RSE Delivery
@@ -194,6 +211,7 @@ const rseTrainingLinks = [
             class="mobile-nav__link mobile-nav__accordion-trigger flex items-center justify-between w-full py-3 border-0 bg-transparent cursor-pointer"
             aria-expanded="false"
             aria-controls="mobile-rse-training-panel"
+            aria-current={isRseTraining ? 'page' : undefined}
             type="button"
           >
             RSE Training &amp; Support
@@ -210,13 +228,13 @@ const rseTrainingLinks = [
           </div>
         </li>
         <li class="mobile-nav__item">
-          <a href="/blog/" class="mobile-nav__link flex items-center justify-between w-full py-3">Blog</a>
+          <a href="/blog/" class="mobile-nav__link flex items-center justify-between w-full py-3" aria-current={isBlog ? 'page' : undefined}>Blog</a>
         </li>
         <li class="mobile-nav__item">
-          <a href="/about" class="mobile-nav__link flex items-center justify-between w-full py-3">About</a>
+          <a href="/about" class="mobile-nav__link flex items-center justify-between w-full py-3" aria-current={isAbout ? 'page' : undefined}>About</a>
         </li>
         <li class="mobile-nav__item">
-          <a href="/contact" class="mobile-nav__link flex items-center justify-between w-full py-3">Contact</a>
+          <a href="/contact" class="mobile-nav__link flex items-center justify-between w-full py-3" aria-current={isContact ? 'page' : undefined}>Contact</a>
         </li>
       </ul>
     </nav>

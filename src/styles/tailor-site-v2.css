@@ -2098,6 +2098,7 @@ textarea.form-input {
     color: var(--card-eyebrow-color, var(--brand-accent-text));
 }
 .card__title {
+    margin: 0;
     font-size: var(--text-card-size-h5);
     font-weight: 700;
     color: var(--text-heading);
