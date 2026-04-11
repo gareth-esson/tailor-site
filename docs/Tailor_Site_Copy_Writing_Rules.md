@@ -90,6 +90,15 @@ competitors invoked as a foil. If you catch yourself writing a sentence whose wh
 job is to be better than an unnamed rival, cut it and write a different sentence
 that stands alone.
 
+Watch for the **stealth version** of this: a memory anchor that works by implying
+"we've seen it done badly elsewhere." Sentences that name Tailor's experience of
+*other people's failures* — "we've sat in rooms where it wasn't honest," "we've
+watched pupils check out of sessions that weren't handled well" — read as
+first-hand authority but actually run on an imagined comparison. They're
+punchdowns wearing the costume of memory. Rewrite as a positive statement about
+what Tailor does, or use a memory that's about what pupils or the team did, not
+about what an unnamed other provider got wrong.
+
 ### Speak from conviction and memory in first-person plural
 
 The authority in Tailor's voice comes from experience, not positioning. A claim
@@ -103,13 +112,22 @@ own work because the underlying experience is real.
 
 - **Weak:** *We believe RSE should be honest.*
 - **Fine:** *RSE has to be honest.*
-- **Also fine (when a memory genuinely sharpens the point):** *We've sat in
-  enough rooms where it wasn't to know what pupils do when they can tell an
-  adult is being evasive.*
+- **Also fine (when a memory genuinely sharpens the point):* *We plan the ground
+  rules for a lesson before we plan the content, because we've learnt which
+  topics derail without them.*
 
-All of the last two pass. The first fails, because "we believe" is positioning —
+Both of the last two pass. The first fails, because "we believe" is positioning —
 the writer is telling you what their stance is instead of speaking from it. Drop
 the hedge and just say the thing.
+
+**Warning: a memory anchor that works by implying "we've seen it done badly
+elsewhere" is a stealth punchdown.** For example, *we've sat in enough rooms
+where it wasn't honest to know what pupils do when they can tell an adult is being
+evasive* reads as memory but actually runs on an imagined comparison with other
+providers. It's the `No imagined bad providers to define against` rule dressed in
+the costume of experience. Memory anchors should be about things Tailor did or
+watched pupils do — not about failures we claim to have witnessed in other
+people's sessions.
 
 The practical bar: if challenged on a claim, the writer should be *able* to
 point to the session or classroom or conversation that produced it. You don't
@@ -370,7 +388,7 @@ change what doesn't sound right.
 
 ---
 
-*Version 1.2.1 · 11 April 2026 · v1.0 codified from voice feedback during the first
+*Version 1.2.2 · 11 April 2026 · v1.0 codified from voice feedback during the first
 three sample drafts (homepage, about, RSE for primary schools). v1.1 resolved two
 open questions into firm C5 conventions: no session length in the at-a-glance
 strip, and Circuits is facilitator-led with workbooks as a pedagogical tool for
@@ -380,4 +398,7 @@ and memory, ground specifics in real failure modes, end on purpose rather than
 contrast. v1.2.1 tightened the "conviction and memory" rule to stop it reading as
 "tack a memory onto every sentence" — most sentences should just speak plainly
 from conviction; explicit memory anchors are for moments where a specific detail
-sharpens the point.*
+sharpens the point. v1.2.2 caught a stealth punchdown in the "memory anchor"
+example (Tailor witnessing other providers' failures is a punchdown in the
+costume of memory) and replaced the example with a self-focused one about our
+own craft.*
