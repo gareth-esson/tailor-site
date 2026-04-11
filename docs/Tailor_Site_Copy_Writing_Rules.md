@@ -170,6 +170,13 @@ Bad: *If our lessons don't fit, we'll come to you.*
 
 Good: *In-school delivery by a Tailor specialist.*
 
+### Service page (C5) conventions
+
+Two hard rules specific to the C5 service page template:
+
+- **Never publish session length in the at-a-glance strip.** Rows like "Session length: 45–60 min" are unreliable (sessions vary by cohort, year group, and topic) and read as weirdly specific marketing detail. The strip should carry Format / Year groups / For / Aligned with, not duration. Gareth removed this row from the primary schools draft in v3.1.
+- **Circuits (SEND & AP) is facilitator-led, not workbook-led.** The workbooks are a pedagogical tool, not the product. Tailor educators teach the sessions; the workbook is what makes it possible to have a room full of students working at completely different speeds, and to keep an ongoing programme running when attendance is variable (a student who missed a week can pick up where they left off instead of being dragged back through the group's current position). When writing about Circuits, say "we teach" confidently, and describe the workbooks as the thing that makes individual pacing and continuity work — not as the thing that replaces teaching.
+
 ### Product positioning must be honest
 
 Don't frame something as the preferred way to work if it isn't what you actually sell
@@ -275,18 +282,16 @@ change what doesn't sound right.
 
 ## Open questions (things I still don't know but should)
 
-- Session length figures (e.g. 45–60 minutes) should probably not appear in
-  at-a-glance strips because they're unreliable and weirdly specific. Gareth removed
-  them from the primary schools draft. Confirm whether this rule holds for all C5
-  service pages.
-- Circuits (SEND/AP) is workbook-led rather than facilitator-led, which may mean
-  "we teach it" needs qualifying on any page that mentions that service line.
 - The book panel tagline on the homepage ("Real questions, honest answers, post-it
-  notes and all") was changed to a plainer description — confirm the book's own
-  page (/book) also needs a prose rewrite or if the book's commercial voice gets a
-  pass.
+  notes and all") was changed to a plainer description during v3.1. Whether the
+  book's own page (`/book`) needs a full prose rewrite, or whether the book's
+  commercial voice gets a pass because it's selling a physical product, is still
+  open.
 
 ---
 
-*Version 1.0 · 11 April 2026 · codified from voice feedback during the first three
-sample drafts (homepage, about, RSE for primary schools).*
+*Version 1.1 · 11 April 2026 · v1.0 codified from voice feedback during the first
+three sample drafts (homepage, about, RSE for primary schools). v1.1 resolved two
+open questions into firm C5 conventions: no session length in the at-a-glance
+strip, and Circuits is facilitator-led with workbooks as a pedagogical tool for
+individual pacing and attendance continuity.*
