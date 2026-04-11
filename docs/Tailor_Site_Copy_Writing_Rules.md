@@ -92,17 +92,30 @@ that stands alone.
 
 ### Speak from conviction and memory in first-person plural
 
-The authority in Tailor's voice comes from experience, not positioning. When you
-write a claim about how something works, it should be grounded in something the team
-has actually done and remembers. "We" is still the subject; the difference is where
-the authority is coming from.
+The authority in Tailor's voice comes from experience, not positioning. A claim
+about how something works should sound like it's coming from someone who's done
+the work, not from someone describing what a good provider would do.
 
-- Weak: *We believe RSE should be honest.*
-- Strong: *We've sat in rooms where it wasn't, and we've watched pupils check out.*
+Important: this doesn't mean every sentence has to cite a memory or name the
+evidence. That would make the copy self-conscious and exhausting to read. Most
+sentences should just speak plainly from conviction, and the conviction does its
+own work because the underlying experience is real.
 
-Not every sentence needs a memory anchor, but the bar is: if challenged on a
-claim, the writer should be able to point to the session or classroom or
-conversation that produced it. If they can't, the claim shouldn't be in the copy.
+- **Weak:** *We believe RSE should be honest.*
+- **Fine:** *RSE has to be honest.*
+- **Also fine (when a memory genuinely sharpens the point):** *We've sat in
+  enough rooms where it wasn't to know what pupils do when they can tell an
+  adult is being evasive.*
+
+All of the last two pass. The first fails, because "we believe" is positioning —
+the writer is telling you what their stance is instead of speaking from it. Drop
+the hedge and just say the thing.
+
+The practical bar: if challenged on a claim, the writer should be *able* to
+point to the session or classroom or conversation that produced it. You don't
+have to cite the evidence in the copy. You just have to actually have it.
+Reserve explicit memory anchors for moments where a specific detail sharpens
+the point — not as a standing requirement on every sentence.
 
 ### Ground specifics in real failure modes that a teacher would recognise
 
@@ -357,11 +370,14 @@ change what doesn't sound right.
 
 ---
 
-*Version 1.2 · 11 April 2026 · v1.0 codified from voice feedback during the first
+*Version 1.2.1 · 11 April 2026 · v1.0 codified from voice feedback during the first
 three sample drafts (homepage, about, RSE for primary schools). v1.1 resolved two
 open questions into firm C5 conventions: no session length in the at-a-glance
 strip, and Circuits is facilitator-led with workbooks as a pedagogical tool for
 individual pacing and attendance continuity. v1.2 added the Stance section: no
 punchdowns, no imagined bad providers to define against, speak from conviction
 and memory, ground specifics in real failure modes, end on purpose rather than
-contrast.*
+contrast. v1.2.1 tightened the "conviction and memory" rule to stop it reading as
+"tack a memory onto every sentence" — most sentences should just speak plainly
+from conviction; explicit memory anchors are for moments where a specific detail
+sharpens the point.*
