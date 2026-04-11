@@ -2,6 +2,8 @@
 
 For use by Claude Code when drafting blog posts for tailoreducation.org.uk. These rules describe how Gareth Esson writes and what the Tailor blog voice sounds like. Follow them to get a draft to 90% — Gareth will do the final 10%.
 
+*For showcase, service and landing page copy — which uses the organisation's "we" voice rather than Gareth's first-person blog voice — see the sibling doc `Tailor_Site_Copy_Writing_Rules.md`.*
+
 ---
 
 ## The golden rule
