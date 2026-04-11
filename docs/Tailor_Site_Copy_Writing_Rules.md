@@ -67,6 +67,73 @@ complexity — don't claim mastery, don't pretend the work is easy.
 
 ---
 
+## Stance
+
+Five rules about where the voice stands in relation to the reader and the rest of
+the industry. These sit above the tic-level rules further down — they're about the
+posture of the writing, not sentence-level fixes. If a draft gets any of these
+wrong, fixing individual sentences won't save it.
+
+### No punchdowns
+
+Never define Tailor by attacking other RSE providers, resources, or approaches. No
+"unlike most RSE resources," no "a lot of providers treat this topic as…", no
+framing Tailor as the answer to someone else's failure. Assume other people in the
+sector are trying, and speak only about the work you're doing yourself.
+
+### No imagined bad providers to define against
+
+A specific sub-case of the punchdown, and a common one. If a sentence is working by
+implying "unlike the bad version of X that we're not going to name" — delete it. No
+straw-man providers. No "a lot of RSE out there treats pupils like…" No unnamed
+competitors invoked as a foil. If you catch yourself writing a sentence whose whole
+job is to be better than an unnamed rival, cut it and write a different sentence
+that stands alone.
+
+### Speak from conviction and memory in first-person plural
+
+The authority in Tailor's voice comes from experience, not positioning. When you
+write a claim about how something works, it should be grounded in something the team
+has actually done and remembers. "We" is still the subject; the difference is where
+the authority is coming from.
+
+- Weak: *We believe RSE should be honest.*
+- Strong: *We've sat in rooms where it wasn't, and we've watched pupils check out.*
+
+Not every sentence needs a memory anchor, but the bar is: if challenged on a
+claim, the writer should be able to point to the session or classroom or
+conversation that produced it. If they can't, the claim shouldn't be in the copy.
+
+### Ground specifics in real failure modes that a teacher would recognise
+
+When giving examples, use real things that go wrong in classrooms. A lesson that
+lost the room because the ground rules weren't set. A disclosure that arrived
+mid-session. A parent email that came in the day after a contentious topic. A
+pupil who'd been online far earlier than the curriculum assumed. A class that
+needed the terminology half a year before the scheme of work expected them to.
+
+A teacher reading should nod in recognition, not be told about unfamiliar scenarios.
+Don't invent composite edge cases. Don't reach for dramatic hypotheticals. The
+credibility of a specific example comes from whether the reader has seen it
+happen.
+
+### End on purpose rather than on contrast
+
+Paragraphs and sections should close on what Tailor is trying to do or be, not on
+what it's avoiding. The last sentence is the one the reader walks away with, and
+it should carry the thing we're building — not the thing we're rejecting.
+
+- Weak closer: *…and that's why we're different from most of what's out there.*
+- Weak closer: *…unlike resources that treat RSE as a tick-box exercise.*
+- Strong closer: *…so the lesson fits the class you've actually got.*
+- Strong closer: *…and the teacher walks out with something they can use on
+  Monday.*
+
+If a paragraph's final sentence is a comparison, rewrite it as a statement of
+purpose. Compare in the middle if you must; don't end there.
+
+---
+
 ## Structural rules
 
 ### Describe the work, not the offering
@@ -290,8 +357,11 @@ change what doesn't sound right.
 
 ---
 
-*Version 1.1 · 11 April 2026 · v1.0 codified from voice feedback during the first
+*Version 1.2 · 11 April 2026 · v1.0 codified from voice feedback during the first
 three sample drafts (homepage, about, RSE for primary schools). v1.1 resolved two
 open questions into firm C5 conventions: no session length in the at-a-glance
 strip, and Circuits is facilitator-led with workbooks as a pedagogical tool for
-individual pacing and attendance continuity.*
+individual pacing and attendance continuity. v1.2 added the Stance section: no
+punchdowns, no imagined bad providers to define against, speak from conviction
+and memory, ground specifics in real failure modes, end on purpose rather than
+contrast.*
