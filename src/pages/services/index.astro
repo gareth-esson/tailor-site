@@ -1,196 +1,250 @@
 ---
 /**
  * Services hub [B5] — /services
- * Card per service line linking to individual pages. Tailor layer.
+ * Layout spec: Tailor_Layout_Spec_B5.md v1.0
+ *
+ * Job one: establish Tailor's RSE delivery philosophy (§2 bridge).
+ * Job two: route to the correct C5 service page (§3 flagship + §4 secondary).
+ *
+ * Surface rhythm: tinted hero → page ground (philosophy) → surface-alt
+ * (flagship + secondary as one continuous services block) → page ground
+ * (framework strip) → optional dark band (testimonial) → surface-alt
+ * (soft planning-call CTA).
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
-const services = [
+// --- Hero ------------------------------------------------------------
+const heroEyebrow = 'Services';
+const heroTitle = 'RSE services for schools';
+const heroSubtitle =
+  'Whether you need someone to deliver RSE directly, training for your staff, or support with policy and curriculum — we can help.';
+const heroImage = '/images/services/tailor-education-rse-consultant-school-corridor.webp';
+const heroImageAlt = 'A Tailor consultant arriving at a school to deliver RSE support';
+
+// --- §2 Philosophy bridge (placeholder slots — voice TBD by Tailor) --
+// Content blocker per spec §10 item 16. Placeholder prose below is the
+// working draft only; replace with Tailor-voiced copy before launch.
+const philosophyLead =
+  'Good RSE is not a compliance exercise. It is the part of a school week where students get to ask the questions they are actually carrying, and trust that the adult in front of them has a plan for what to say back.';
+const philosophyBody = [
+  'We work with schools because the gap between "RSE exists in the curriculum" and "RSE is being delivered well" is wider than most parents realise. Teachers are asked to cover topics they were never trained in, often with a few hours\' notice, and often without a clear framework for the hardest moments — disclosures, off-topic questions, the question a student asks specifically because they think it will make the adult flinch.',
+  'Every service on this page is built around closing that gap. Some schools bring us in to deliver directly. Some bring us in to train their staff to deliver themselves. Some need help with the policy and curriculum that sits behind it all. The shape of the work changes — the belief underneath it does not.',
+];
+const philosophyMoreHref = '/our-approach';
+const philosophyMoreLabel = 'Read more about how we approach RSE delivery';
+
+// --- §3 Flagship services (4 cards, equal weight) --------------------
+const flagshipHeading = 'Our services';
+
+const flagshipServices = [
   {
     title: 'RSE for Primary Schools',
-    description: 'Age-appropriate RSE for KS1 and KS2, delivered by a specialist educator who understands primary school settings.',
+    description:
+      'Age-appropriate RSE for KS1 and KS2, delivered by a specialist educator who understands primary school settings.',
     href: '/services/rse-for-primary-schools',
+    image: '/images/services/tailor-education-primary-rse-circle-time.webp',
+    imageAlt: 'Primary pupils in a circle-time RSE session led by a Tailor educator',
   },
   {
     title: 'RSE for Secondary Schools',
-    description: 'Expert-led RSE for KS3 and KS4 — covering the topics students are actually thinking about, delivered with confidence.',
+    description:
+      'Expert-led RSE for KS3 and KS4 — covering the topics students are actually thinking about, delivered with confidence.',
     href: '/services/rse-for-secondary-schools',
+    image: '/images/services/tailor-education-secondary-students-collaborative-learning.webp',
+    imageAlt: 'Secondary students working collaboratively in a Tailor RSE session',
   },
   {
     title: 'RSE for SEND & AP (Circuits)',
-    description: 'Workbook-based RSE designed for SEND and alternative provision. Self-paced, simplified keynotes, doodle and game space.',
+    description:
+      'Workbook-based RSE designed for SEND and alternative provision. Self-paced, simplified keynotes, doodle and game space.',
     href: '/services/rse-for-send-and-ap',
-  },
-  {
-    title: 'Drop Days',
-    description: 'A full day of RSE delivery across multiple year groups — maximum impact, minimum disruption.',
-    href: '/services/drop-days',
+    image: '/images/services/tailor-education-primary-pupil-rse-worksheet.webp',
+    imageAlt: 'A pupil working through a Circuits RSE workbook at their own pace',
   },
   {
     title: 'RSE Training',
-    description: 'CPD-accredited training that gives your staff the confidence and skills to deliver RSE effectively.',
+    description:
+      'CPD-accredited training that gives your staff the confidence and skills to deliver RSE effectively.',
     href: '/services/rse-training',
+    image: '/images/services/tailor-education-rse-cpd-workshop-facilitator.webp',
+    imageAlt: 'A Tailor facilitator leading a CPD workshop for school staff on RSE',
+  },
+];
+
+// --- §4 Secondary services (2 cards, subordinate but not buried) -----
+const secondaryHeading = 'Also from Tailor';
+
+const secondaryServices = [
+  {
+    title: 'Drop Days',
+    description:
+      'A full day of RSE delivery across multiple year groups — maximum impact, minimum disruption.',
+    href: '/services/drop-days',
+    image: '/images/services/tailor-education-rse-year-group-session-school-hall.webp',
+    imageAlt: 'A whole year group gathered in the school hall for a Tailor drop day',
   },
   {
     title: 'RSE Policy & Curriculum Planning',
-    description: 'Expert guidance to develop your RSE policy, plan your curriculum, and communicate your approach to parents.',
+    description:
+      'Expert guidance to develop your RSE policy, plan your curriculum, and communicate your approach to parents.',
     href: '/services/rse-policy-curriculum-planning',
+    image: '/images/services/tailor-education-teachers-planning-rse-curriculum.webp',
+    imageAlt: 'Teachers and a Tailor consultant planning an RSE curriculum around a table',
   },
 ];
+
+// --- §5 Framework alignment strip (label variant — default) ----------
+const frameworkLabel =
+  'Aligned with DfE statutory guidance, the PSHE Association framework, and international best practice.';
+
+// --- §6 Testimonial (optional — omit cleanly if no quote provided) ---
+// Content slot per spec §10 item 19. Leave `null` to skip the dark band
+// entirely. A Tailor-wide quote belongs here, not a service-specific one.
+const testimonialQuote: string | null = null;
+const testimonialSource: string | null = null;
+
+// --- §7 Soft planning-call CTA ---------------------------------------
+const closingEyebrow = 'Not sure which service fits?';
+const closingTitle = "Let's talk about what your school needs";
+const closingText =
+  'A short call with one of our educators — no commitment, just a conversation about what RSE looks like in your school.';
 ---
 
 <BaseLayout
   title="RSE Services for Schools — Tailor Education"
   description="Expert RSE delivery, training, drop days and curriculum planning for schools. Explore Tailor Education's full range of services."
   canonicalPath="/services/"
+  ogImage={heroImage}
   jsonLd={{
     '@context': 'https://schema.org',
     '@type': 'Service',
     name: 'RSE Services for Schools',
     description: 'Expert RSE delivery, training, drop days and curriculum planning for schools.',
-    provider: { '@type': 'Organization', name: 'Tailor Education', url: 'https://tailoreducation.org.uk' },
+    provider: {
+      '@type': 'Organization',
+      name: 'Tailor Education',
+      url: 'https://tailoreducation.org.uk',
+    },
   }}
 >
-  <section class="services-hub">
-    <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
-      <div class="services-hub__header">
-        <div class="services-hub__header-text">
-          <h1 class="services-hub__title">RSE services for schools</h1>
-          <p class="services-hub__intro">
-            Whether you need someone to deliver RSE directly, training for your staff, or support with policy and curriculum — we can help.
-          </p>
+  {/* §1 — Hero (tinted, 2-col text + image, no CTA) ------------------- */}
+  <header class="services-hero">
+    <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+      <div class="services-hero__inner">
+        <div class="services-hero__text">
+          <span class="services-hero__eyebrow">{heroEyebrow}</span>
+          <h1 class="services-hero__title">{heroTitle}</h1>
+          <p class="services-hero__subtitle">{heroSubtitle}</p>
         </div>
-        <div class="services-hub__header-photo">
-          <img
-            src="/images/services/tailor-education-rse-consultant-school-corridor.webp"
-            alt="A Tailor consultant arriving at a school to deliver RSE support"
-            loading="eager"
-          />
+        <div class="services-hero__image">
+          <img src={heroImage} alt={heroImageAlt} loading="eager" />
         </div>
       </div>
+    </div>
+  </header>
 
-      <div class="services-hub__grid">
-        {services.map((s) => (
-          <a href={s.href} class="card services-hub__card">
-            <div class="card__body">
-              <h3 class="card__title">{s.title}</h3>
-              <p class="card__text">{s.description}</p>
-              <span class="link-action">Learn more</span>
-            </div>
-          </a>
-        ))}
+  {/* §2 — Philosophy bridge ------------------------------------------- */}
+  <section class="services-philosophy">
+    <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+      <p class="services-philosophy__lead">{philosophyLead}</p>
+      {philosophyBody.map((para) => (
+        <p class="services-philosophy__body">{para}</p>
+      ))}
+      {philosophyMoreHref && (
+        <a href={philosophyMoreHref} class="services-philosophy__more">
+          {philosophyMoreLabel} →
+        </a>
+      )}
+    </div>
+  </section>
+
+  {/* §3 + §4 — Services block (one continuous --bg-surface-alt band) -- */}
+  <section class="services-block">
+    <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+
+      {/* §3 — Flagship grid */}
+      <div class="services-flagship-grid">
+        <h2 class="services-flagship-grid__heading">{flagshipHeading}</h2>
+        <ul class="services-grid services-grid--flagship" role="list">
+          {flagshipServices.map((s) => (
+            <li>
+              <a href={s.href} class="service-card service-card--flagship">
+                <div class="service-card__img">
+                  <img src={s.image} alt={s.imageAlt} loading="lazy" />
+                </div>
+                <div class="service-card__body">
+                  <h3 class="service-card__title">{s.title}</h3>
+                  <p class="service-card__text">{s.description}</p>
+                  <span class="service-card__link">Learn more →</span>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
 
-      <!-- Trust signal -->
-      <div class="services-hub__trust">
-        <p class="services-hub__trust-text">
-          All services are aligned to DfE statutory guidance, the PSHE Association framework, and international best practice.
-        </p>
+      {/* §4 — Secondary row (same surface, internal break via margin-top) */}
+      <div class="services-secondary-row">
+        <h3 class="services-secondary-row__heading">{secondaryHeading}</h3>
+        <ul class="services-grid services-grid--secondary" role="list">
+          {secondaryServices.map((s) => (
+            <li>
+              <a href={s.href} class="service-card service-card--secondary">
+                <div class="service-card__img">
+                  <img src={s.image} alt={s.imageAlt} loading="lazy" />
+                </div>
+                <div class="service-card__body">
+                  <h3 class="service-card__title">{s.title}</h3>
+                  <p class="service-card__text">{s.description}</p>
+                  <span class="service-card__link">Learn more →</span>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
 
-      <!-- CTA -->
-      <div class="services-hub__cta">
-        <p class="services-hub__cta-text">Not sure what you need?</p>
-        <a href="/contact" class="btn btn--std btn--primary has-icon-hover">Get in touch</a>
+    </div>
+  </section>
+
+  {/* §5 — Framework alignment strip (compact) ------------------------- */}
+  <section class="services-framework-strip">
+    <div class="services-framework-strip__inner mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+      <p class="services-framework-strip__label">{frameworkLabel}</p>
+    </div>
+  </section>
+
+  {/* §6 — Testimonial dark band (optional) ---------------------------- */}
+  {testimonialQuote && testimonialSource && (
+    <section class="services-proof-band">
+      <div class="services-proof-band__inner mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <p class="services-proof-band__quote">{testimonialQuote}</p>
+        <p class="services-proof-band__source">— {testimonialSource}</p>
+        <a href="/testimonials" class="services-proof-band__more">
+          Read more from schools we've worked with →
+        </a>
       </div>
+    </section>
+  )}
+
+  {/* §7 — Soft planning-call CTA -------------------------------------- */}
+  <section class="services-closing-cta">
+    <div class="services-closing-cta__inner mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+      <span class="services-closing-cta__eyebrow">{closingEyebrow}</span>
+      <h2 class="services-closing-cta__title">{closingTitle}</h2>
+      <p class="services-closing-cta__text">{closingText}</p>
+      <a
+        href="/contact?service=planning-call"
+        class="btn btn--std btn--primary has-icon-hover"
+        data-analytics-event="cta_click"
+        data-analytics-cta-type="hub_planning_call"
+        data-analytics-service-type="planning-call"
+      >
+        Book a planning call
+      </a>
+      <a href="/contact" class="services-closing-cta__secondary">
+        Or send us a message →
+      </a>
     </div>
   </section>
 </BaseLayout>
-
-<style>
-  .services-hub {
-    background: var(--bg-page);
-  }
-
-  .services-hub__header {
-    display: grid;
-    gap: var(--space-global-lg);
-    align-items: center;
-    margin-bottom: var(--space-global-xl);
-  }
-
-  .services-hub__header-photo img {
-    width: 100%;
-    height: auto;
-    border-radius: var(--radius-lg);
-    display: block;
-    aspect-ratio: 16 / 10;
-    object-fit: cover;
-  }
-
-  @media (min-width: 768px) {
-    .services-hub__header {
-      grid-template-columns: 1.1fr 1fr;
-      gap: var(--space-global-xl);
-    }
-  }
-
-  .services-hub__title {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-display-size-h1);
-    font-weight: var(--heading-weight-h1);
-    color: var(--text-heading);
-    margin: 0 0 var(--space-global-sm);
-  }
-
-  .services-hub__intro {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-prose-size-body);
-    color: var(--text-body-muted);
-    max-width: 36rem;
-    margin: 0;
-    line-height: 1.6;
-  }
-
-  .services-hub__grid {
-    display: grid;
-    gap: var(--space-global-md);
-    margin-bottom: var(--space-global-xl);
-  }
-
-  .services-hub__card {
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .services-hub__card .card__text {
-    font-size: var(--text-card-size-body);
-    color: var(--text-body-muted);
-    margin: var(--space-global-xs) 0 var(--space-global-sm);
-    line-height: 1.6;
-  }
-
-  .services-hub__trust {
-    padding: var(--space-global-md);
-    background: var(--bg-tinted);
-    border-radius: var(--radius-lg);
-    margin-bottom: var(--space-global-xl);
-  }
-
-  .services-hub__trust-text {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-prose-size-body);
-    color: var(--text-body);
-    text-align: center;
-    margin: 0;
-    line-height: 1.6;
-  }
-
-  .services-hub__cta {
-    text-align: center;
-    padding: var(--space-global-xl) 0;
-  }
-
-  .services-hub__cta-text {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-prose-size-body);
-    color: var(--text-body-muted);
-    margin: 0 0 var(--space-global-md);
-  }
-
-  @media (min-width: 768px) {
-    .services-hub__grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-</style>

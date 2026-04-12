@@ -23,14 +23,6 @@ const heroSubtitle =
 const heroImage: string | null = '/images/services/tailor-education-primary-pupil-rse-worksheet.webp';
 const heroImageAlt = 'A pupil working through a Circuits RSE workbook at their own pace';
 
-const glanceFacts = [
-  { label: 'Format', value: 'Workbook + session' },
-  { label: 'Year groups', value: 'KS2 – KS4' },
-  { label: 'Pace', value: 'Self-paced' },
-  { label: 'For', value: 'SEND coords & AP leads' },
-  { label: 'Aligned with', value: 'DfE 2026' },
-];
-
 const descriptionLead =
   'Mainstream RSE lessons assume a classroom that moves at one pace, reads the same way, and processes information the same way. Circuits is designed from the opposite starting point — that every student in a SEND or AP setting is arriving at this content differently, and the delivery should flex to meet them.';
 
@@ -118,19 +110,6 @@ const metaDescription = 'Circuits is a workbook-led, self-paced RSE programme de
         </div>
       </div>
     </header>
-
-    <section class="service-glance" aria-label="Service at a glance">
-      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-        <dl class="service-glance__inner">
-          {glanceFacts.map((fact) => (
-            <div class="glance-fact">
-              <dt class="glance-fact__label">{fact.label}</dt>
-              <dd class="glance-fact__value">{fact.value}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
-    </section>
 
     <section class="service-description">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">

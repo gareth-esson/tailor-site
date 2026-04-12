@@ -1,197 +1,392 @@
 ---
 /**
  * Blog index [B9] — /blog/
- * Lists all blog posts with filtering by target audience.
- * Tailor layer.
+ * Layout spec: Tailor_Layout_Spec_B9.md v1.0
+ *
+ * Three jobs, in order:
+ *   1. Surface the most recent writing (§2 featured post).
+ *   2. Let readers browse by audience / topic (§3 filter strip).
+ *   3. Make the archive legible (§4 post grid).
+ *
+ * Surface rhythm: tinted hero → page ground (rest of page). One switch.
+ * Intentionally quiet — the posts carry the visual interest.
+ *
+ * Launch state notes (per spec §9):
+ *   - `posts.length <= 24` → no load-more (§6 omitted).
+ *   - 0 posts have `topics` populated → topic filter row omits (§3 empty-row
+ *     rule). The row will appear automatically once blog posts get landing-
+ *     page topic references in Notion.
+ *   - 0 posts have `publishedDate` → featured post + grid sort degrade to
+ *     alphabetical. See sortPostsForIndex() for the warning.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getBlogPosts } from '../../lib/content';
+import {
+  formatDate,
+  deriveExcerpt,
+  sortPostsForIndex,
+} from '../../lib/blog-helpers';
 
+// --- Data ------------------------------------------------------------
+const allPosts = await getBlogPosts();
+const sortedPosts = sortPostsForIndex(allPosts);
 
+// §2 — featured = most recent (after sort). Null if archive is empty.
+const featuredPost = sortedPosts[0] ?? null;
 
-const posts = await getBlogPosts();
+// §4 — everything except the featured post.
+const gridPosts = featuredPost ? sortedPosts.slice(1) : [];
 
-// Sort by title for now (dates not yet in Notion schema)
-const sortedPosts = [...posts].sort((a, b) => a.title.localeCompare(b.title));
+// Pre-compute excerpts + formatted dates at build time.
+type CardPost = ReturnType<typeof toCardPost>;
+function toCardPost(p: typeof sortedPosts[number], maxChars: number) {
+  return {
+    ...p,
+    excerpt: deriveExcerpt(p.body, maxChars),
+    dateLabel: formatDate(p.publishedDate),
+  };
+}
 
-// Collect unique audiences for filter
-const audiences = [...new Set(posts.map((p) => p.targetAudience).filter(Boolean))] as string[];
+const featuredCard = featuredPost ? toCardPost(featuredPost, 220) : null;
+const gridCards: CardPost[] = gridPosts.map((p) => toCardPost(p, 140));
+
+// --- §3 Filter populations -------------------------------------------
+// Category — distinct values across the archive, sorted alphabetically.
+const categories = [
+  ...new Set(allPosts.map((p) => p.category).filter(Boolean)),
+].sort() as string[];
+
+// Topic — de-duplicated set of topics that appear on at least one post.
+// At launch this will be empty (blog posts don't yet reference landing
+// pages in Notion). The row omits when fewer than 2 values exist.
+type TopicChip = { slug: string; title: string };
+const topicMap = new Map<string, TopicChip>();
+allPosts.forEach((p) => {
+  (p.topics ?? []).forEach((t) => {
+    if (!topicMap.has(t.slug)) topicMap.set(t.slug, { slug: t.slug, title: t.title });
+  });
+});
+const topics: TopicChip[] = [...topicMap.values()].sort((a, b) =>
+  a.title.localeCompare(b.title),
+);
+
+// Per spec §3 "Empty rows": omit rows with fewer than 2 distinct values.
+const showCategoryRow = categories.length >= 2;
+const showTopicRow = topics.length >= 2;
+const showFilters = showCategoryRow || showTopicRow;
+
+// --- §6 Load-more gating ---------------------------------------------
+const LOAD_MORE_THRESHOLD = 24;
+const showLoadMore = gridCards.length > LOAD_MORE_THRESHOLD;
 ---
 
 <BaseLayout
   title="Blog — Tailor Education"
   description="Expert RSE articles, guides, and insights for teachers — from Tailor Education."
   canonicalPath="/blog/"
+  jsonLd={{
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: 'Tailor Education Blog',
+    description: 'Expert RSE articles, guides, and insights for teachers.',
+    publisher: {
+      '@type': 'Organization',
+      name: 'Tailor Education',
+      url: 'https://tailoreducation.org.uk',
+    },
+  }}
 >
-  <section class="blog-index">
-    <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
-      <h1 class="blog-index__title">Blog</h1>
-      <p class="blog-index__intro">
+  {/* §1 — Hero (tinted, text-only, no CTA, no image) ------------------ */}
+  <header class="blog-index-hero">
+    <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+      <span class="blog-index-hero__eyebrow">Writing</span>
+      <h1 class="blog-index-hero__title">Blog</h1>
+      <p class="blog-index-hero__intro">
         Practical guidance for RSE teaching, curriculum planning, and bringing relationships education to life in schools.
       </p>
+    </div>
+  </header>
 
-      <!-- Audience filter -->
-      {audiences.length > 0 && (
-        <div class="blog-filters" role="group" aria-label="Filter by audience">
-          <button class="blog-filter btn btn--sm btn--tint is-active" data-audience="all" type="button" aria-pressed="true">
-            All
-          </button>
-          {audiences.map((aud) => (
-            <button class="blog-filter btn btn--sm btn--outline" data-audience={aud} type="button" aria-pressed="false">
-              {aud}
-            </button>
+  {/* §2 — Featured post (always latest, never filtered) --------------- */}
+  {featuredCard && (
+    <section class="blog-featured" aria-label="Latest post">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <span class="blog-featured__label">Latest</span>
+        <a href={`/blog/${featuredCard.slug}`} class="blog-featured__card">
+          <div class="blog-featured__card-img">
+            {featuredCard.featuredImage && (
+              <img src={featuredCard.featuredImage} alt="" loading="eager" />
+            )}
+          </div>
+          <div class="blog-featured__card-body">
+            {featuredCard.category && (
+              <div class="blog-featured__card-eyebrow">{featuredCard.category}</div>
+            )}
+            <h2 class="blog-featured__card-title">{featuredCard.title}</h2>
+            {featuredCard.excerpt && (
+              <p class="blog-featured__card-excerpt">{featuredCard.excerpt}</p>
+            )}
+            <div class="blog-featured__card-meta">
+              {featuredCard.author && <span>By {featuredCard.author}</span>}
+              {featuredCard.dateLabel && featuredCard.author && (
+                <span class="blog-featured__card-meta-sep" aria-hidden="true">·</span>
+              )}
+              {featuredCard.dateLabel && featuredCard.publishedDate && (
+                <time datetime={featuredCard.publishedDate}>{featuredCard.dateLabel}</time>
+              )}
+            </div>
+            {featuredCard.topics.length > 0 && (
+              <div class="blog-featured__card-topics">
+                {featuredCard.topics.map((t) => (
+                  <span class="blog-featured__card-topic">{t.title}</span>
+                ))}
+              </div>
+            )}
+          </div>
+        </a>
+      </div>
+    </section>
+  )}
+
+  {/* §3 — Filter strip (category / topic) ----------------------------- */}
+  {showFilters && (
+    <section class="blog-filters" aria-label="Filter posts" data-pagefind-ignore>
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+
+        {showCategoryRow && (
+          <div class="blog-filters__row" role="group" aria-label="Filter by category" data-filter="category">
+            <span class="blog-filters__label">Category</span>
+            <div class="blog-filters__chips" role="toolbar" aria-label="Category filter chips">
+              <button class="blog-filter-chip is-active" type="button" data-value="all" aria-pressed="true">All</button>
+              {categories.map((cat) => (
+                <button class="blog-filter-chip" type="button" data-value={cat} aria-pressed="false">{cat}</button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {showTopicRow && (
+          <div class="blog-filters__row" role="group" aria-label="Filter by topic" data-filter="topic">
+            <span class="blog-filters__label">Topic</span>
+            <div class="blog-filters__chips" role="toolbar" aria-label="Topic filter chips">
+              <button class="blog-filter-chip is-active" type="button" data-value="all" aria-pressed="true">All</button>
+              {topics.map((t) => (
+                <button class="blog-filter-chip" type="button" data-value={t.slug} aria-pressed="false">{t.title}</button>
+              ))}
+            </div>
+          </div>
+        )}
+
+
+      </div>
+    </section>
+  )}
+
+  {/* §4 — Post grid (filterable) -------------------------------------- */}
+  <section class="blog-grid" aria-label="All posts">
+    <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] pb-[var(--space-struct-y-base)]">
+
+      {gridCards.length > 0 ? (
+        <ul class="blog-grid__list" id="blog-list" role="list">
+          {gridCards.map((post) => (
+            <li
+              data-category={post.category ?? ''}
+              data-topics={(post.topics ?? []).map((t) => t.slug).join(',')}
+            >
+              <a href={`/blog/${post.slug}`} class="card blog-card">
+                {post.featuredImage && (
+                  <div class="card__img">
+                    <img src={post.featuredImage} alt="" loading="lazy" />
+                  </div>
+                )}
+                <div class="card__body">
+                  {post.category && (
+                    <div class="card__eyebrow">{post.category}</div>
+                  )}
+                  <h3 class="card__title">{post.title}</h3>
+                  {post.excerpt && (
+                    <p class="blog-card__excerpt">{post.excerpt}</p>
+                  )}
+                  <div class="blog-card__meta">
+                    {post.author && <span>By {post.author}</span>}
+                    {post.dateLabel && post.author && (
+                      <span class="blog-card__meta-sep" aria-hidden="true">·</span>
+                    )}
+                    {post.dateLabel && post.publishedDate && (
+                      <time datetime={post.publishedDate}>{post.dateLabel}</time>
+                    )}
+                  </div>
+                  {post.topics.length > 0 && (
+                    <div class="blog-card__topics">
+                      {post.topics.slice(0, 3).map((t) => (
+                        <span class="blog-card__topic">{t.title}</span>
+                      ))}
+                      {post.topics.length > 3 && (
+                        <span class="blog-card__topic blog-card__topic--more">+{post.topics.length - 3} more</span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </a>
+            </li>
           ))}
+        </ul>
+      ) : null}
+
+      {/* §5 — Empty state (zero grid posts AND no featured post) */}
+      {gridCards.length === 0 && !featuredCard && (
+        <div class="blog-empty">
+          <p>No posts yet. Check back soon.</p>
         </div>
       )}
 
-      <!-- Post list -->
-      <ul class="blog-list" id="blog-list" role="list">
-        {sortedPosts.map((post) => (
-          <li data-audience={post.targetAudience || ''}>
-            <a
-              href={`/blog/${post.slug}`}
-              class="card blog-list__card"
-            >
-              <div class="card__body">
-                {post.targetAudience && (
-                  <div class="card__eyebrow">{post.targetAudience}</div>
-                )}
-                <h3 class="card__title">{post.title}</h3>
-                {post.topics.length > 0 && (
-                  <div class="blog-list__topics">
-                    {post.topics.map((t) => (
-                      <span class="blog-list__topic">{t.title}</span>
-                    ))}
-                  </div>
-                )}
-                {post.author && (
-                  <div class="blog-list__author">By {post.author}</div>
-                )}
-              </div>
-            </a>
-          </li>
-        ))}
-      </ul>
+      {/* §5 Variant B — zero filter results (hidden by default, shown by JS) */}
+      <div class="blog-empty blog-empty--no-results" id="blog-empty-no-results" hidden>
+        <p>No posts match these filters.</p>
+        <button type="button" class="blog-empty__clear" id="blog-clear-filters">
+          Clear filters →
+        </button>
+      </div>
 
-      {sortedPosts.length === 0 && (
-        <p class="blog-index__empty">No blog posts yet. Check back soon.</p>
-      )}
     </div>
   </section>
+
+  {/* §6 — Load more (skipped at launch per spec §9: posts ≤ 24) ------- */}
+  {showLoadMore && (
+    <div class="blog-load-more">
+      <button type="button" class="btn btn--std btn--outline" id="blog-load-more">
+        Load more
+      </button>
+    </div>
+  )}
 </BaseLayout>
 
 <script>
+  /**
+   * B9 filter strip — category + topic AND filter with URL state sync.
+   * Operates only on `#blog-list > li` — the featured post in §2 is
+   * never filtered (spec §3, "Featured post and filter state").
+   */
+  type Dimension = 'category' | 'topic';
+  const DIMENSIONS: Dimension[] = ['category', 'topic'];
+
   function initBlogFilters() {
-    const filters = document.querySelectorAll<HTMLButtonElement>('.blog-filter');
-    const items = document.querySelectorAll<HTMLLIElement>('.blog-list > li');
-    if (!filters.length || !items.length) return;
+    const list = document.getElementById('blog-list');
+    if (!list) return;
 
-    filters.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const audience = btn.dataset.audience;
+    const items = Array.from(list.querySelectorAll<HTMLLIElement>(':scope > li'));
+    const noResults = document.getElementById('blog-empty-no-results') as HTMLDivElement | null;
+    const clearBtn = document.getElementById('blog-clear-filters') as HTMLButtonElement | null;
 
-        filters.forEach((f) => {
-          f.classList.remove('is-active');
-          f.classList.remove('btn--tint');
-          f.classList.add('btn--outline');
-          f.setAttribute('aria-pressed', 'false');
+    // Current filter state, one value per dimension ('all' = no filter).
+    const state: Record<Dimension, string> = { category: 'all', topic: 'all' };
+
+    // Parse initial state from URL query string.
+    const params = new URLSearchParams(window.location.search);
+    DIMENSIONS.forEach((dim) => {
+      const v = params.get(dim);
+      if (v) state[dim] = v;
+    });
+
+    // Match an item against a dimension value.
+    function itemMatches(li: HTMLLIElement, dim: Dimension, value: string): boolean {
+      if (value === 'all') return true;
+      if (dim === 'category') return li.dataset.category === value;
+      if (dim === 'topic') return (li.dataset.topics ?? '').split(',').includes(value);
+      return true;
+    }
+
+    // Apply the AND of all current dimension filters to the list.
+    function applyFilters() {
+      let visibleCount = 0;
+      items.forEach((li) => {
+        const show = DIMENSIONS.every((dim) => itemMatches(li, dim, state[dim]));
+        li.style.display = show ? '' : 'none';
+        if (show) visibleCount += 1;
+      });
+
+      // Toggle zero-results empty state.
+      if (noResults) {
+        const filtersActive = DIMENSIONS.some((dim) => state[dim] !== 'all');
+        noResults.hidden = !(filtersActive && visibleCount === 0);
+      }
+    }
+
+    // Sync chip visual state to current `state`.
+    function syncChipStates() {
+      document.querySelectorAll<HTMLDivElement>('.blog-filters__row').forEach((row) => {
+        const dim = row.dataset.filter as Dimension | undefined;
+        if (!dim || !DIMENSIONS.includes(dim)) return;
+        const active = state[dim];
+        row.querySelectorAll<HTMLButtonElement>('.blog-filter-chip').forEach((btn) => {
+          const isActive = (btn.dataset.value ?? 'all') === active;
+          btn.classList.toggle('is-active', isActive);
+          btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
         });
-        btn.classList.add('is-active');
-        btn.classList.remove('btn--outline');
-        btn.classList.add('btn--tint');
-        btn.setAttribute('aria-pressed', 'true');
+      });
+    }
 
-        items.forEach((li) => {
-          const itemAudience = li.dataset.audience;
-          const show = audience === 'all' || itemAudience === audience;
-          li.style.display = show ? '' : 'none';
+    // Push current state to URL (query string only, canonical stays /blog/).
+    function syncUrl() {
+      const next = new URLSearchParams(window.location.search);
+      DIMENSIONS.forEach((dim) => {
+        if (state[dim] === 'all') next.delete(dim);
+        else next.set(dim, state[dim]);
+      });
+      const qs = next.toString();
+      const url = qs ? `${window.location.pathname}?${qs}` : window.location.pathname;
+      window.history.replaceState(null, '', url);
+    }
+
+    // Wire chip clicks.
+    document.querySelectorAll<HTMLDivElement>('.blog-filters__row').forEach((row) => {
+      const dim = row.dataset.filter as Dimension | undefined;
+      if (!dim) return;
+      const chips = Array.from(row.querySelectorAll<HTMLButtonElement>('.blog-filter-chip'));
+
+      chips.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          state[dim] = btn.dataset.value ?? 'all';
+          syncChipStates();
+          applyFilters();
+          syncUrl();
+        });
+      });
+
+      // Keyboard navigation — ARIA Toolbar pattern (Left/Right within row).
+      chips.forEach((btn, idx) => {
+        btn.addEventListener('keydown', (e: KeyboardEvent) => {
+          if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+            e.preventDefault();
+            const dir = e.key === 'ArrowRight' ? 1 : -1;
+            const next = (idx + dir + chips.length) % chips.length;
+            chips[next].focus();
+          } else if (e.key === 'Home') {
+            e.preventDefault();
+            chips[0].focus();
+          } else if (e.key === 'End') {
+            e.preventDefault();
+            chips[chips.length - 1].focus();
+          }
         });
       });
     });
+
+    // Clear-filters action for the zero-results empty state.
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+        DIMENSIONS.forEach((dim) => { state[dim] = 'all'; });
+        syncChipStates();
+        applyFilters();
+        syncUrl();
+      });
+    }
+
+    // Initial render — honours URL query state.
+    syncChipStates();
+    applyFilters();
   }
 
   initBlogFilters();
   document.addEventListener('astro:after-swap', initBlogFilters);
 </script>
-
-<style>
-  .blog-index {
-    background: var(--bg-page);
-  }
-
-  .blog-index__title {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-display-size-h1);
-    font-weight: var(--heading-weight-h1);
-    color: var(--text-heading);
-    margin: 0 0 var(--space-global-sm);
-  }
-
-  .blog-index__intro {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-prose-size-body);
-    color: var(--text-body-muted);
-    max-width: 36rem;
-    margin: 0 0 var(--space-global-lg);
-    line-height: var(--lh-body);
-  }
-
-  .blog-filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: var(--space-global-lg);
-  }
-
-  .blog-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    gap: var(--space-global-sm);
-  }
-
-  .blog-list__card {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .blog-list__topics {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem;
-    margin-top: 0.375rem;
-  }
-
-  .blog-list__topic {
-    font-size: var(--text-card-size-body);
-    color: var(--brand-accent-text);
-    font-weight: var(--font-weight-medium);
-  }
-
-  .blog-list__topic:not(:last-child)::after {
-    content: '\00b7';
-    margin-left: 0.25rem;
-    color: var(--text-body-muted);
-  }
-
-  .blog-list__author {
-    font-size: var(--text-card-size-body);
-    color: var(--text-body-muted);
-    margin-top: 0.25rem;
-  }
-
-  .blog-index__empty {
-    font-size: var(--text-prose-size-body);
-    color: var(--text-body-muted);
-    text-align: center;
-    padding: var(--space-global-xl) 0;
-  }
-
-  @media (min-width: 768px) {
-    .blog-list {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-</style>

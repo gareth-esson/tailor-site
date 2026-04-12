@@ -21,14 +21,6 @@ const heroSubtitle =
 const heroImage: string | null = '/images/services/tailor-education-secondary-students-collaborative-learning.webp';
 const heroImageAlt = 'Secondary students working collaboratively in a Tailor RSE session';
 
-const glanceFacts = [
-  { label: 'Format', value: 'In-school delivery' },
-  { label: 'Year groups', value: 'KS3 – KS4' },
-  { label: 'Session length', value: '50–90 min' },
-  { label: 'For', value: 'PSHE leads & SLT' },
-  { label: 'Aligned with', value: 'DfE 2026, KCSIE' },
-];
-
 const descriptionLead =
   'A specialist RSE educator delivers discussion-based lessons to your KS3 and KS4 students — covering consent, healthy relationships, pornography, online safety, misogyny, sexual health, and the topics students are asking about but staff often hesitate to tackle.';
 
@@ -115,19 +107,6 @@ const metaDescription = 'Discussion-led RSE for KS3 and KS4, delivered by specia
         </div>
       </div>
     </header>
-
-    <section class="service-glance" aria-label="Service at a glance">
-      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-        <dl class="service-glance__inner">
-          {glanceFacts.map((fact) => (
-            <div class="glance-fact">
-              <dt class="glance-fact__label">{fact.label}</dt>
-              <dd class="glance-fact__value">{fact.value}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
-    </section>
 
     <section class="service-description">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">

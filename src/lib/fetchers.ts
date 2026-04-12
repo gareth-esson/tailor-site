@@ -236,6 +236,7 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
         metaTitle: getRichTextValue(p['Meta Title']),
         metaDescription: getRichTextValue(p['Meta Description']),
         targetAudience: getSelectValue(p['Target Audience']),
+        category: getSelectValue(p['Category']),
         serviceLink: getSelectValue(p['Service Link']),
         author: getRichTextValue(p['Author']),
         featuredImage: getFilesUrl(p['Featured Image']),

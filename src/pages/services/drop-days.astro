@@ -22,14 +22,6 @@ const heroSubtitle =
 const heroImage: string | null = '/images/services/tailor-education-rse-year-group-session-school-hall.webp';
 const heroImageAlt = 'A whole year group gathered in the school hall for a Tailor drop day RSE session';
 
-const glanceFacts = [
-  { label: 'Format', value: 'On-site day programme' },
-  { label: 'Year groups', value: 'Flexible' },
-  { label: 'Duration', value: 'Full school day' },
-  { label: 'For', value: 'Whole year group cohorts' },
-  { label: 'Aligned with', value: 'DfE 2026' },
-];
-
 const descriptionLead =
   'Some schools prefer to concentrate their RSE delivery into a single, high-quality day rather than spread it thinly across the year. A drop day brings a specialist educator into your school for a full day of sessions, rotating through year groups or forms so the whole cohort is covered at once.';
 
@@ -110,19 +102,6 @@ const metaDescription = 'A full day of expert-led RSE delivery across multiple y
         </div>
       </div>
     </header>
-
-    <section class="service-glance" aria-label="Service at a glance">
-      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-        <dl class="service-glance__inner">
-          {glanceFacts.map((fact) => (
-            <div class="glance-fact">
-              <dt class="glance-fact__label">{fact.label}</dt>
-              <dd class="glance-fact__value">{fact.value}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
-    </section>
 
     <section class="service-description">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">

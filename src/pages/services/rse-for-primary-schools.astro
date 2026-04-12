@@ -21,14 +21,6 @@ const heroSubtitle =
 const heroImage: string | null = '/images/services/tailor-education-primary-rse-circle-time.webp';
 const heroImageAlt = 'Primary school pupils gathered for a circle-time RSE session led by a Tailor educator';
 
-const glanceFacts = [
-  { label: 'Format', value: 'In-school delivery' },
-  { label: 'Year groups', value: 'KS1 – KS2' },
-  { label: 'Session length', value: '45–60 min' },
-  { label: 'For', value: 'Primary teachers & SLT' },
-  { label: 'Aligned with', value: 'DfE 2026, PSHE Association' },
-];
-
 const descriptionLead =
   'A specialist RSE educator delivers age-appropriate lessons directly to your primary school students. Sessions are designed around the realities of teaching young children about relationships, bodies, boundaries, and staying safe — using language and activities that feel natural for the age group.';
 
@@ -116,20 +108,6 @@ const metaDescription = 'Age-appropriate RSE for KS1 and KS2, delivered by a spe
         </div>
       </div>
     </header>
-
-    <!-- §2 At-a-glance strip -->
-    <section class="service-glance" aria-label="Service at a glance">
-      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-        <dl class="service-glance__inner">
-          {glanceFacts.map((fact) => (
-            <div class="glance-fact">
-              <dt class="glance-fact__label">{fact.label}</dt>
-              <dd class="glance-fact__value">{fact.value}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
-    </section>
 
     <!-- §3 Description -->
     <section class="service-description">
