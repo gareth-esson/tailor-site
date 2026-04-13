@@ -702,18 +702,27 @@
      A segmented control or switch that lets readers
      choose between Standard and Simple text. Calm,
      clear, not a dumbing-down.
+
+     The current SimpleModeToggle component is the SWITCH
+     variant — it consumes -bg, -bg-active, -radius, -gap,
+     -font-size, -font-weight, -transition. The -text,
+     -text-active, -padding-x, -padding-y tokens are
+     reserved for the SEGMENTED-CONTROL variant (two
+     pill buttons, one per mode), if/when that form ships.
      ──────────────────────────────────── */
   --toggle-mode-bg: var(--bg-surface-alt);
   --toggle-mode-bg-active: var(--brand-accent);
-  --toggle-mode-text: var(--text-body-muted);
-  --toggle-mode-text-active: #FFFFFF;
   --toggle-mode-radius: var(--radius-pill);
-  --toggle-mode-padding-y: 0.4em;
-  --toggle-mode-padding-x: 1em;
   --toggle-mode-font-size: var(--text-card-size-body);
   --toggle-mode-font-weight: 600;
   --toggle-mode-gap: 2px;
   --toggle-mode-transition: var(--transition-duration) var(--transition-easing);
+
+  /* Segmented-control variant only (not consumed by the switch) */
+  --toggle-mode-text: var(--text-body-muted);
+  --toggle-mode-text-active: #FFFFFF;
+  --toggle-mode-padding-y: 0.4em;
+  --toggle-mode-padding-x: 1em;
 }
 /* =========================================
    UTILITY TEXT CLASSES
@@ -1438,7 +1447,7 @@ textarea.form-input {
     border-radius: var(--radius-sm);
 }
 .form-check input[type="radio"] {
-    border-radius: 50%;
+    border-radius: var(--radius-circle);
 }
 
 /* Checked states */
@@ -1464,7 +1473,7 @@ textarea.form-input {
     content: "";
     width: 0.5em;
     height: 0.5em;
-    border-radius: 50%;
+    border-radius: var(--radius-circle);
     background: var(--brand-accent);
 }
 
@@ -1662,7 +1671,7 @@ textarea.form-input {
 /* ── Solid badge ── */
 .badge--solid {
     background: var(--brand-accent);
-    color: #ffffff;
+    color: var(--text-on-dark);
     border-color: var(--brand-accent);
 }
 
@@ -1688,10 +1697,10 @@ textarea.form-input {
 .badge--meta {
     background-color: var(--bg-surface-alt);
     color: var(--text-body-muted);
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
     font-size: 11px;
     padding: 3px 8px;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     line-height: 1.5;
 }
 
@@ -1939,15 +1948,15 @@ textarea.form-input {
 .chip--active,
 .chip.is-active {
     background: var(--brand-accent);
-    color: #fff;
+    color: var(--text-on-dark);
     border-color: var(--brand-accent);
     font-weight: 600;
 }
 
 .chip--active:hover,
 .chip.is-active:hover {
-    background: var(--brand-accent-strong, #0B7B71);
-    border-color: var(--brand-accent-strong, #0B7B71);
+    background: var(--brand-accent-strong);
+    border-color: var(--brand-accent-strong);
 }
 
 .chip__count {
@@ -2695,6 +2704,7 @@ textarea.form-input {
     height: auto;
     transform: rotate(var(--postit-rotation));
     border-radius: var(--radius-sm);
+    box-shadow: var(--postit-shadow);
     mix-blend-mode: multiply;
     background: var(--bg-surface);
 }
@@ -2988,6 +2998,7 @@ textarea.form-input {
     height: auto;
     border-radius: var(--radius-sm);
     transform: rotate(var(--postit-rotation, -1.5deg));
+    box-shadow: var(--postit-shadow);
     mix-blend-mode: multiply;
 }
 

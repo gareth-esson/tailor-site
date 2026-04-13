@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', initB14);
 
   .topic-filter.is-active {
     background: var(--cat-color, var(--brand-accent));
-    color: #fff;
+    color: var(--text-on-dark);
     border-color: var(--cat-color, var(--brand-accent));
   }
 
@@ -275,8 +275,8 @@ document.addEventListener('DOMContentLoaded', initB14);
   /* Illustration slot */
   .topic-hub-card__illustration {
     flex-shrink: 0;
-    width: 6rem;
-    height: 6rem;
+    width: var(--spot-illus-size);
+    height: var(--spot-illus-size);
     background: var(--bg-surface-alt);
     border-radius: var(--radius-md);
     overflow: hidden;
