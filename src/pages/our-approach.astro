@@ -8,9 +8,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 // --- Framework reference data ---
-// Copy blocks marked [COPY TBD] are drafted with the content team and
-// inserted before ship. The data shape is settled; copy can flow in
-// without layout changes.
+// Four reference frameworks, rendered as editorial blocks in §4.3.
+// Data shape is stable; copy can be revised without layout changes.
 
 interface Framework {
   /** Short canonical name, used as the subsection heading. */
@@ -32,9 +31,15 @@ const FRAMEWORKS: Framework[] = [
     name: 'DfE statutory guidance',
     fullTitle:
       'Department for Education statutory guidance for Relationships Education, RSE and Health Education (2020, revised 2026)',
-    whatItIs: '[COPY TBD]',
-    howWeMap: '[COPY TBD]',
-    examples: ['[COPY TBD]'],
+    whatItIs:
+      "The Department for Education's statutory guidance sets out what schools in England must teach as part of Relationships Education at primary, RSE at secondary, and Health Education across both phases. It defines both the required learning and the boundaries on what should be covered at each age.",
+    howWeMap:
+      "Every Tailor lesson plan is cross-referenced to the relevant sections of the statutory guidance. Where the guidance specifies a learning outcome, one of our pages addresses it — with the mapping shown in the plan's metadata. Where the guidance draws a line on what is covered at primary versus secondary, we hold that line.",
+    examples: [
+      'Each lesson plan lists the DfE guidance sections it addresses.',
+      'Primary content never covers topics the guidance reserves for secondary.',
+      'The 2026 revisions are tracked against each affected page during our annual review.',
+    ],
     sourceUrl:
       'https://www.gov.uk/government/publications/relationships-education-relationships-and-sex-education-rse-and-health-education',
   },
@@ -42,17 +47,25 @@ const FRAMEWORKS: Framework[] = [
     name: 'PSHE Association Programme of Study',
     fullTitle:
       'PSHE Association Programme of Study for PSHE Education (KS1–KS5)',
-    whatItIs: '[COPY TBD]',
-    howWeMap: '[COPY TBD]',
-    examples: ['[COPY TBD]'],
+    whatItIs:
+      "The PSHE Association's Programme of Study is the sector-standard curriculum framework for PSHE Education in England, covering Key Stages 1 through 5. It maps learning outcomes across Relationships, Living in the Wider World, and Health & Wellbeing, with clear progression between key stages.",
+    howWeMap:
+      'Our lesson plans are mapped to Programme of Study learning outcomes by key stage. When we build a new unit, we start from the Programme of Study objectives and work back to activities and resources — not the other way round.',
+    examples: [
+      'Every lesson is tagged with the Programme of Study outcomes it covers.',
+      'Progression across key stages follows the Programme of Study sequencing.',
+      'Teachers completing our training can locate any lesson within the Programme of Study at a glance.',
+    ],
     sourceUrl: 'https://pshe-association.org.uk/',
   },
   {
     name: 'UNESCO International Technical Guidance',
     fullTitle:
-      'UNESCO International Technical Guidance on Sexuality Education (2018)',
-    whatItIs: '[COPY TBD]',
-    howWeMap: '[COPY TBD]',
+      'UNESCO International Technical Guidance on Sexuality Education (revised edition, 2018)',
+    whatItIs:
+      "UNESCO's International Technical Guidance on Sexuality Education is the international evidence-based standard for comprehensive sexuality education. It synthesises decades of research into age-banded learning objectives, informed by the WHO, UNAIDS, UNFPA, and UN Women.",
+    howWeMap:
+      'We use the Technical Guidance as an evidence reference for decisions beyond what UK guidance specifies — particularly around rights-based framings, consent, and the developmental appropriateness of specific concepts at specific ages. Where UK guidance is silent, the Technical Guidance informs what we do.',
     sourceUrl:
       'https://www.unesco.org/en/articles/international-technical-guidance-sexuality-education',
   },
@@ -60,8 +73,10 @@ const FRAMEWORKS: Framework[] = [
     name: 'WHO European Standards',
     fullTitle:
       'WHO Regional Office for Europe — Standards for Sexuality Education in Europe',
-    whatItIs: '[COPY TBD]',
-    howWeMap: '[COPY TBD]',
+    whatItIs:
+      "The WHO Regional Office for Europe's Standards for Sexuality Education in Europe, developed with the German Federal Centre for Health Education (BZgA), set out a framework for holistic sexuality education aligned with children's developmental stages from early years onwards.",
+    howWeMap:
+      'We cross-reference our age-banding decisions against the WHO standards, particularly for topics that go beyond biology into emotional development, relationships, and gender. Where UK guidance and the WHO standards diverge, we follow UK guidance and note the difference.',
     sourceUrl:
       'https://www.bzga-whocc.de/en/publications/standards-in-sexuality-education/',
   },
@@ -307,9 +322,7 @@ const aboutPageJsonLd = {
           Every live page is reviewed on an annual schedule. We trigger
           an out-of-cycle review on any substantive change to DfE
           statutory guidance, the PSHE Association Programme of Study,
-          or Keeping Children Safe in Education. Where relevant, review
-          sign-off includes an external reader. [COPY TBD: external
-          reader arrangement.]
+          or Keeping Children Safe in Education.
         </p>
 
         <h3>How it stays current</h3>
