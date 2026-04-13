@@ -178,13 +178,6 @@
   --btn-outline-border-hover: var(--brand-accent);
   --btn-outline-border-width: var(--border-width-xs);
 
-  /* Outline on Dark */
-  --btn-outline-bg-on-dark: transparent;
-  --btn-outline-bg-on-dark-hover: hsla(var(--brand-accent-soft-h), var(--brand-accent-soft-s), var(--brand-accent-soft-l), 0.1);
-  --btn-outline-text-on-dark: var(--brand-accent-soft);
-  --btn-outline-border-on-dark: hsla(var(--brand-accent-soft-h), var(--brand-accent-soft-s), var(--brand-accent-soft-l), 0.4);
-  --btn-outline-border-on-dark-hover: var(--brand-accent-soft);
-
   /* 4. WHITE VARIANTS (FOR BRAND BACKGROUNDS)
      Usage: Use these when the section background is --brand-accent or bright.
   */
@@ -251,34 +244,17 @@
 
   /* ── CONTENT TYPE COLOURS ── */
   --content-programme: #5B61D6;
-  --content-programme-soft: #ECEDF8;
   --content-lesson: #5A7DA8;
-  --content-lesson-soft: #EDF1F5;
   --content-activity: #C27080;
-  --content-activity-soft: #F8ECED;
 
   /* ── RSHE CATEGORY COLOURS ── */
   --cat-relationships: #4F78C7;
-  --cat-relationships-soft: #E8EEF8;
   --cat-safety: #4E7C74;
-  --cat-safety-soft: #E6F0EE;
   --cat-identity: #8B62C6;
-  --cat-identity-soft: #F0EAF8;
   --cat-sexual-health: #C35C74;
-  --cat-sexual-health-soft: #F8E8EC;
   --cat-wellbeing: #1D9B8A;
-  --cat-wellbeing-soft: #E2F5F2;
   --cat-online-safety: #5D6BB3;
-  --cat-online-safety-soft: #ECEEF8;
   --cat-puberty: #C97A4A;
-  --cat-puberty-soft: #F8EDE4;
-
-  /* ── SUPPLEMENTARY ACCENTS ── */
-  --accent-indigo: #5B61D6;
-  --accent-plum: #7B5AA6;
-  --accent-rose: #C96A7B;
-  --accent-ochre: #C88A1A;
-  --accent-moss: #5F8C65;
 
   /* ── OKAY TO ASK CATEGORY COLOURS ──
      The 7 browsing/book categories for the Okay to Ask content layer.
@@ -289,43 +265,36 @@
   --ota-cat-anatomy: #3B6DB5;
   --ota-cat-anatomy-h: 214;
   --ota-cat-anatomy-s: 52%;
-  --ota-cat-anatomy-l: 47%;
   --ota-cat-anatomy-soft: hsl(214, 40%, 92%);
 
   --ota-cat-puberty: #4DBD6E;
   --ota-cat-puberty-h: 139;
   --ota-cat-puberty-s: 44%;
-  --ota-cat-puberty-l: 52%;
   --ota-cat-puberty-soft: hsl(139, 35%, 92%);
 
   --ota-cat-relationships: #E8725A;
   --ota-cat-relationships-h: 11;
   --ota-cat-relationships-s: 76%;
-  --ota-cat-relationships-l: 63%;
   --ota-cat-relationships-soft: hsl(11, 60%, 93%);
 
   --ota-cat-sex: #1E9B8C;
   --ota-cat-sex-h: 171;
   --ota-cat-sex-s: 67%;
-  --ota-cat-sex-l: 36%;
   --ota-cat-sex-soft: hsl(171, 45%, 91%);
 
   --ota-cat-sexual-health: #E84D8A;
   --ota-cat-sexual-health-h: 336;
   --ota-cat-sexual-health-s: 77%;
-  --ota-cat-sexual-health-l: 60%;
   --ota-cat-sexual-health-soft: hsl(336, 60%, 93%);
 
   --ota-cat-law: #F0C24E;
   --ota-cat-law-h: 42;
   --ota-cat-law-s: 85%;
-  --ota-cat-law-l: 62%;
   --ota-cat-law-soft: hsl(42, 65%, 93%);
 
   --ota-cat-contraception: #7B61C4;
   --ota-cat-contraception-h: 258;
   --ota-cat-contraception-s: 44%;
-  --ota-cat-contraception-l: 57%;
   --ota-cat-contraception-soft: hsl(258, 35%, 93%);
 
   /* ── SAFEGUARDING TONES ──
@@ -641,11 +610,6 @@
   --shadow-md: 0 4px 12px rgba(27, 26, 23, 0.07), 0 1px 3px rgba(27, 26, 23, 0.05);
   --shadow-lg: 0 12px 32px rgba(27, 26, 23, 0.08), 0 4px 12px rgba(27, 26, 23, 0.05);
   --shadow-xl: 0 20px 48px rgba(27, 26, 23, 0.10), 0 8px 20px rgba(27, 26, 23, 0.05);
-
-  /* Button scale (tighter spread) */
-  --btn-shadow-sm: 0 1px 2px rgba(0,0,0,0.06), 0 1px 1px rgba(0,0,0,0.04);
-  --btn-shadow-md: 0 2px 6px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
-  --btn-shadow-lg: 0 4px 10px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.04);
 
   /* ------------------------------
      INTERACTION BEHAVIOUR
@@ -1076,7 +1040,7 @@ h6 { font-weight: var(--heading-weight-h6); }
 /* ── STYLE: TEXT (minimal — action trigger without visual weight) ── */
 .btn--text {
     background: transparent;
-    color: var(--brand-accent-text);
+    color: var(--btn-text-color);
     border-color: transparent;
     padding: 5px 8px;
     font-size: 12px;
@@ -3453,8 +3417,8 @@ textarea.form-input {
 }
 
 .error-404__body {
-    font-size: var(--text-prose-size-base);
-    color: var(--text-body-secondary);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body-muted);
     max-width: 36rem;
     margin: 0 auto var(--space-global-lg);
 }
