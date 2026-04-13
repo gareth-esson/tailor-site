@@ -6,7 +6,8 @@ import type { BlockObjectResponse } from '@notionhq/client/build/src/api-endpoin
 import type { BlogPost } from './types';
 
 /**
- * Format an ISO date string as British long form — e.g. "11 April 2026".
+ * Format an ISO date string as British short form — e.g. "9 Apr 2026".
+ * Matches the C4 blog post detail format exactly.
  * Returns null for null input so callers can `&&`-guard the output.
  */
 export function formatDate(iso: string | null): string | null {
@@ -15,7 +16,7 @@ export function formatDate(iso: string | null): string | null {
   if (Number.isNaN(date.getTime())) return null;
   return date.toLocaleDateString('en-GB', {
     day: 'numeric',
-    month: 'long',
+    month: 'short',
     year: 'numeric',
   });
 }
