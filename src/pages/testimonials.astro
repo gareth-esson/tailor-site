@@ -1,69 +1,635 @@
 ---
 /**
  * Testimonials page [B6] — /testimonials
- * Social proof. Placeholder content. Tailor layer.
+ * Social proof. Tailor layer.
+ * Data: Notion testimonials data source 4fede26f-29ad-4c3b-a67b-31065b0a19c3.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
+import TestimonialCard from '../components/TestimonialCard.astro';
+import { getTestimonials } from '../lib/content';
+import type { ServiceTag } from '../lib/types';
 
-const testimonials = [
-  { quote: 'The sessions were exactly what our students needed. Delivered with sensitivity, honesty, and real expertise.', name: 'Head of PSHE', school: 'Secondary school, West Midlands', service: 'Direct RSE delivery' },
-  { quote: 'Gareth helped us develop an RSE policy that our governors, staff, and parents all felt confident about.', name: 'Headteacher', school: 'Primary school, London', service: 'RSE policy & curriculum planning' },
-  { quote: 'The training completely changed how our PSHE team approaches RSE. Practical, honest, and directly applicable.', name: 'CPD Lead', school: 'Secondary school, Yorkshire', service: 'RSE training' },
-  { quote: 'The drop day gave our Year 9s a full day to focus on RSE properly. The students engaged brilliantly.', name: 'Head of Year', school: 'Academy, East Midlands', service: 'Drop day delivery' },
-  { quote: "Tailor Education's content is some of the best RSE material I've seen. Thoughtful, inclusive, and genuinely useful.", name: 'PSHE Coordinator', school: 'Secondary school, South East', service: 'RSE training' },
-  { quote: 'Parents were initially nervous about RSE delivery, but after seeing the Tailor approach they were fully on board.', name: 'Deputy Head', school: 'Faith school, North West', service: 'RSE policy & curriculum planning' },
+const testimonials = await getTestimonials();
+
+const SERVICE_TAGS: ServiceTag[] = [
+  'RSE delivery',
+  'RSE training',
+  'Drop days',
+  'Circuits (SEND/AP)',
+  'RSE policy & curriculum planning',
+  'Universities & FE',
+  'About / general',
 ];
+
+// JSON-LD — ItemList of Review items, one per approved testimonial.
+const jsonLd =
+  testimonials.length > 0
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        itemListElement: testimonials.map((t, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          item: {
+            '@type': 'Review',
+            reviewBody: t.quote,
+            author: { '@type': 'Person', name: t.name },
+            itemReviewed: {
+              '@type': 'EducationalOrganization',
+              name: 'Tailor Education',
+              url: 'https://tailoreducation.org.uk/',
+            },
+          },
+        })),
+      }
+    : undefined;
 ---
 
 <BaseLayout
-  title="Testimonials �� Tailor Education"
+  title="Testimonials — Tailor Education"
   description="What schools say about working with Tailor Education — testimonials from teachers and school leaders."
   canonicalPath="/testimonials"
+  jsonLd={jsonLd}
 >
-  <section class="testimonials-page">
-    <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
-      <h1 class="testimonials-page__title">What schools say</h1>
-      <p class="testimonials-page__intro">
-        Feedback from teachers, school leaders, and staff who have worked with Tailor Education.
-      </p>
+  <main class="testimonials-page">
 
-      <div class="testimonials-grid">
-        {testimonials.map((t) => (
-          <blockquote class="testimonial-card">
-            <p class="testimonial-card__quote">"{t.quote}"</p>
-            <footer class="testimonial-card__footer">
-              <span class="testimonial-card__name">{t.name}</span>
-              <span class="testimonial-card__school">{t.school}</span>
-              <span class="testimonial-card__service">{t.service}</span>
-            </footer>
-          </blockquote>
-        ))}
+    <!-- §4.1 Hero -->
+    <section class="testimonials-hero">
+      <div class="testimonials-hero__inner">
+        <span class="testimonials-hero__eyebrow">Social proof</span>
+        <h1 class="testimonials-hero__title">What schools say</h1>
+        <p class="testimonials-hero__lede">
+          Feedback from the schools, teachers and partners we've worked with.
+        </p>
       </div>
+    </section>
 
-      <div class="testimonials-cta">
-        <p class="testimonials-cta__text">Want to work with us?</p>
-        <a href="/services" class="btn btn--std btn--outline">View services</a>
-        <a href="/contact" class="btn btn--std btn--primary has-icon-hover">Get in touch</a>
+    {testimonials.length > 0 ? (
+      <>
+        <!-- §4.2 Filter bar -->
+        <section class="testimonials-filters" aria-labelledby="testimonials-filters-label">
+          <div class="testimonials-filters__inner">
+            <h2 id="testimonials-filters-label" class="sr-only">Filter testimonials</h2>
+            <div class="testimonials-filters__row" role="toolbar" aria-labelledby="testimonials-filters-label">
+              <span class="testimonials-filters__label" aria-hidden="true">Service</span>
+              <div class="testimonials-filters__scroll">
+                <button
+                  class="testimonial-filter-chip is-active"
+                  type="button"
+                  data-filter-type="service"
+                  data-filter-value="all"
+                  aria-pressed="true"
+                  tabindex="0"
+                >
+                  All
+                </button>
+                {SERVICE_TAGS.map((tag) => (
+                  <button
+                    class="testimonial-filter-chip"
+                    type="button"
+                    data-filter-type="service"
+                    data-filter-value={tag}
+                    aria-pressed="false"
+                    tabindex={-1}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <p class="testimonials-filters__count" aria-live="polite">
+              Showing {testimonials.length} {testimonials.length === 1 ? 'testimonial' : 'testimonials'}
+            </p>
+          </div>
+        </section>
+
+        <!-- §4.3 Grid -->
+        <section class="testimonials-grid" aria-label="Testimonials">
+          <div class="testimonials-grid__inner">
+            {testimonials.map((t) => (
+              <TestimonialCard testimonial={t} variant="card" showServiceTag={true} />
+            ))}
+          </div>
+        </section>
+
+        <!-- §4.4 Empty state (filter with zero matches — shown by JS) -->
+        <div class="testimonials-empty" id="testimonials-empty-filtered" hidden>
+          <div class="testimonials-empty__inner">
+            <p class="testimonials-empty__text">
+              No testimonials in this category yet.
+              <button type="button" class="testimonials-empty__reset">Show all</button>
+            </p>
+          </div>
+        </div>
+      </>
+    ) : (
+      <!-- Pre-launch: no approved entries yet -->
+      <section class="testimonials-empty-initial">
+        <div class="testimonials-empty-initial__inner">
+          <p class="testimonials-empty-initial__text">
+            Testimonials coming soon — we're collecting feedback from the schools we've worked with.
+          </p>
+        </div>
+      </section>
+    )}
+
+    <!-- §4.5 Work with us -->
+    <section class="testimonials-cta">
+      <div class="testimonials-cta__inner">
+        <div class="testimonials-cta__card">
+          <h2 class="testimonials-cta__title">Want to work with us?</h2>
+          <p class="testimonials-cta__text">
+            Tell us about your school and what you need — we'll come back within a couple of working days.
+          </p>
+          <a class="btn btn--std btn--primary has-icon-hover" href="/contact">Get in touch</a>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+
+  </main>
 </BaseLayout>
+
+<script>
+  let b6Initialized = false;
+
+  function initB6() {
+    if (b6Initialized) return;
+    b6Initialized = true;
+
+    const grid       = document.querySelector<HTMLElement>('.testimonials-grid__inner');
+    const chips      = document.querySelectorAll<HTMLButtonElement>('.testimonial-filter-chip');
+    const count      = document.querySelector<HTMLElement>('.testimonials-filters__count');
+    const emptyState = document.querySelector<HTMLElement>('#testimonials-empty-filtered');
+    const toolbars   = document.querySelectorAll<HTMLElement>('.testimonials-filters__row[role="toolbar"]');
+    const scrollTracks = document.querySelectorAll<HTMLElement>('.testimonials-filters__scroll');
+
+    if (!grid) return;
+
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>('.testimonial-card'));
+    let activeFilter = 'all';
+
+    // ─── Scroll track fade affordance ──────────────────────────────
+    function checkScrollEnd(track: HTMLElement) {
+      const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+      track.classList.toggle('is-scroll-end', atEnd);
+    }
+    scrollTracks.forEach((track) => {
+      checkScrollEnd(track);
+      track.addEventListener('scroll', () => checkScrollEnd(track), { passive: true });
+    });
+
+    // ─── URL state ─────────────────────────────────────────────────
+    function hydrateFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      const service = params.get('service');
+      if (service) activeFilter = service;
+      chips.forEach((chip) => {
+        const value = chip.dataset.filterValue || 'all';
+        const active = value === activeFilter;
+        chip.classList.toggle('is-active', active);
+        chip.setAttribute('aria-pressed', active ? 'true' : 'false');
+        chip.tabIndex = active ? 0 : -1;
+      });
+    }
+
+    function pushURL() {
+      const params = new URLSearchParams();
+      if (activeFilter !== 'all') params.set('service', activeFilter);
+      const qs = params.toString();
+      const next = qs ? `${window.location.pathname}?${qs}` : window.location.pathname;
+      window.history.replaceState(null, '', next);
+    }
+
+    // ─── Filter application ────────────────────────────────────────
+    function matches(card: HTMLElement): boolean {
+      if (activeFilter === 'all') return true;
+      const tags = card.dataset.serviceTags || '';
+      return tags.split('|').includes(activeFilter);
+    }
+
+    function render() {
+      let visibleCount = 0;
+      cards.forEach((card) => {
+        const show = matches(card);
+        card.hidden = !show;
+        if (show) visibleCount++;
+      });
+
+      if (count) {
+        count.textContent = `Showing ${visibleCount} ${visibleCount === 1 ? 'testimonial' : 'testimonials'}`;
+      }
+
+      // Empty state toggle
+      if (emptyState) {
+        emptyState.hidden = visibleCount > 0;
+      }
+      if (grid) {
+        grid.style.display = visibleCount > 0 ? '' : 'none';
+      }
+    }
+
+    // ─── Chip activation ───────────────────────────────────────────
+    function activateChip(btn: HTMLButtonElement) {
+      const value = btn.dataset.filterValue || 'all';
+      chips.forEach((b) => {
+        const isThis = b === btn;
+        b.classList.toggle('is-active', isThis);
+        b.setAttribute('aria-pressed', isThis ? 'true' : 'false');
+        b.tabIndex = isThis ? 0 : -1;
+      });
+      activeFilter = value;
+      pushURL();
+      render();
+    }
+
+    function activateByValue(value: string) {
+      const btn = Array.from(chips).find((c) => (c.dataset.filterValue || 'all') === value);
+      if (btn) activateChip(btn);
+    }
+
+    chips.forEach((btn) => {
+      btn.addEventListener('click', () => activateChip(btn));
+    });
+
+    // ─── ARIA Toolbar keyboard nav ─────────────────────────────────
+    toolbars.forEach((toolbar) => {
+      const rowChips = Array.from(toolbar.querySelectorAll<HTMLButtonElement>('.testimonial-filter-chip'));
+      toolbar.addEventListener('keydown', (e) => {
+        const currentIdx = rowChips.findIndex((c) => c === document.activeElement);
+        if (currentIdx < 0) return;
+        let nextIdx = currentIdx;
+        if (e.key === 'ArrowRight')     nextIdx = (currentIdx + 1) % rowChips.length;
+        else if (e.key === 'ArrowLeft') nextIdx = (currentIdx - 1 + rowChips.length) % rowChips.length;
+        else if (e.key === 'Home')      nextIdx = 0;
+        else if (e.key === 'End')       nextIdx = rowChips.length - 1;
+        else return;
+        e.preventDefault();
+        rowChips[currentIdx].tabIndex = -1;
+        rowChips[nextIdx].tabIndex    = 0;
+        rowChips[nextIdx].focus();
+      });
+    });
+
+    // ─── Empty-state reset ─────────────────────────────────────────
+    document.querySelector<HTMLButtonElement>('.testimonials-empty__reset')?.addEventListener('click', () => {
+      activateByValue('all');
+    });
+
+    // ─── Popstate (back/forward) ───────────────────────────────────
+    window.addEventListener('popstate', () => {
+      hydrateFromURL();
+      render();
+    });
+
+    // ─── Initial ───────────────────────────────────────────────────
+    hydrateFromURL();
+    render();
+  }
+
+  document.addEventListener('astro:page-load', initB6);
+  document.addEventListener('DOMContentLoaded', initB6);
+</script>
 
 <style>
   .testimonials-page { background: var(--bg-page); }
-  .testimonials-page__title { font-family: var(--font-tailor-heading-stack); font-size: var(--text-display-size-h1); font-weight: var(--heading-weight-h1); color: var(--text-heading); margin: 0 0 var(--space-global-sm); }
-  .testimonials-page__intro { font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); color: var(--text-body-muted); max-width: 36rem; margin: 0 0 var(--space-global-xl); line-height: var(--lh-body); }
 
-  .testimonials-grid { display: grid; gap: var(--space-global-md); margin-bottom: var(--space-global-xl); }
-  .testimonial-card { padding: var(--space-global-lg); margin: 0; background: var(--bg-surface); border: var(--border-width-xs) solid var(--border-subtle); border-radius: var(--radius-lg); border-left: 4px solid var(--brand-accent); }
-  .testimonial-card__quote { font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); font-style: italic; color: var(--text-body); line-height: var(--lh-prose); margin: 0 0 var(--space-global-sm); }
-  .testimonial-card__footer { display: flex; flex-direction: column; gap: 0.125rem; }
-  .testimonial-card__name { font-size: var(--text-card-size-body); font-weight: var(--font-weight-semibold); color: var(--text-heading); }
-  .testimonial-card__school { font-size: var(--text-card-size-body); color: var(--text-body-muted); }
-  .testimonial-card__service { font-size: var(--text-card-size-body); color: var(--brand-accent-text); font-weight: var(--font-weight-medium); }
+  /* -------------------------------------------------------------------- */
+  /* §4.1 Hero                                                            */
+  /* -------------------------------------------------------------------- */
+  .testimonials-hero {
+    width: 100%;
+    background: var(--bg-tinted);
+    border-bottom: var(--border-width-xs) solid var(--border-subtle);
+    padding: var(--space-global-xl) var(--space-global-gutter);
+  }
+  .testimonials-hero__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-shell);
+  }
+  .testimonials-hero__eyebrow {
+    display: block;
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--text-eyebrow-ls);
+    color: var(--text-body-muted);
+    margin: 0 0 var(--space-global-xs);
+  }
+  .testimonials-hero__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h1);
+    font-weight: var(--heading-weight-h1);
+    line-height: var(--lh-display);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-md);
+  }
+  .testimonials-hero__lede {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-lede);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-prose);
+    color: var(--text-body);
+    max-width: var(--container-max-prose);
+    margin: 0;
+  }
 
-  .testimonials-cta { text-align: center; display: flex; flex-wrap: wrap; gap: var(--space-global-sm); justify-content: center; align-items: center; }
-  .testimonials-cta__text { font-size: var(--text-prose-size-body); color: var(--text-body-muted); margin: 0; width: 100%; margin-bottom: var(--space-global-xs); }
+  /* -------------------------------------------------------------------- */
+  /* §4.2 Filter bar                                                      */
+  /* -------------------------------------------------------------------- */
+  .testimonials-filters {
+    width: 100%;
+    background: var(--bg-page);
+  }
+  .testimonials-filters__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-shell);
+    padding: var(--space-global-md) var(--space-global-gutter) var(--space-global-sm);
+  }
+  .testimonials-filters__row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-xs);
+    position: relative;
+  }
+  .testimonials-filters__label {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-body-muted);
+    flex-shrink: 0;
+  }
+  .testimonials-filters__scroll {
+    display: flex;
+    gap: var(--space-global-xs);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: var(--space-global-xs);
+    position: relative;
+  }
+  .testimonials-filters__scroll::-webkit-scrollbar { display: none; }
+  /* Right-edge fade hint */
+  .testimonials-filters__scroll::after {
+    content: '';
+    position: sticky;
+    right: 0;
+    top: 0;
+    flex-shrink: 0;
+    width: var(--space-global-md);
+    align-self: stretch;
+    background: linear-gradient(to right, transparent, var(--bg-page));
+    pointer-events: none;
+  }
+  .testimonials-filters__scroll.is-scroll-end::after { display: none; }
 
-  @media (min-width: 768px) { .testimonials-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 768px) {
+    .testimonials-filters__row {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--space-global-xs) var(--space-global-sm);
+    }
+    .testimonials-filters__label {
+      margin-right: var(--space-global-xs);
+    }
+    .testimonials-filters__scroll {
+      overflow-x: visible;
+      scroll-snap-type: none;
+      flex-wrap: wrap;
+      padding-bottom: 0;
+    }
+    .testimonials-filters__scroll::after { display: none; }
+  }
+
+  .testimonials-filters__count {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-regular);
+    color: var(--text-body-muted);
+    margin: var(--space-global-xs) 0 0;
+  }
+
+  /* Chip — scoped copy of B9's .blog-filter-chip rules */
+  .testimonial-filter-chip {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--lh-card);
+    padding: var(--space-global-xs) var(--space-global-sm);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    background: var(--bg-surface);
+    color: var(--text-body);
+    cursor: pointer;
+    white-space: nowrap;
+    scroll-snap-align: start;
+    flex-shrink: 0;
+    transition:
+      background var(--transition-duration) var(--transition-easing),
+      border-color var(--transition-duration) var(--transition-easing),
+      color var(--transition-duration) var(--transition-easing);
+  }
+  .testimonial-filter-chip:hover:not(.is-active) {
+    background: var(--bg-tinted);
+    color: var(--brand-accent-text);
+  }
+  .testimonial-filter-chip.is-active {
+    border-color: var(--brand-accent);
+    background: var(--btn-primary-bg);
+    color: #fff;
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* §4.3 Grid — CSS multi-column flow                                    */
+  /* -------------------------------------------------------------------- */
+  .testimonials-grid {
+    width: 100%;
+    background: var(--bg-page);
+  }
+  .testimonials-grid__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-shell);
+    padding: 0 var(--space-global-gutter) var(--space-struct-y-base);
+    column-width: 22rem;
+    column-gap: var(--space-global-md);
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* §4.4 Testimonial card                                                */
+  /* -------------------------------------------------------------------- */
+  .testimonial-card {
+    /* multi-column safety: avoid splitting cards across columns */
+    break-inside: avoid;
+    -webkit-column-break-inside: avoid;
+    page-break-inside: avoid;
+    display: inline-block;
+    width: 100%;
+
+    margin: 0 0 var(--space-global-md);
+    padding: var(--space-global-lg);
+    background: var(--bg-surface);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-left: var(--border-width-md) solid var(--brand-accent);
+    border-radius: var(--radius-lg);
+
+    /* typographic curly quotes via generated content */
+    quotes: "\201C" "\201D" "\2018" "\2019";
+  }
+
+  .testimonial-card__quote {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-prose);
+    color: var(--text-body);
+    margin: 0 0 var(--space-global-sm);
+  }
+  .testimonial-card__quote::before { content: open-quote; }
+  .testimonial-card__quote::after  { content: close-quote; }
+
+  .testimonial-card__footer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-xs);
+  }
+
+  .testimonial-card__attribution {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem; /* --space-global-3xs unavailable — raw value */
+    font-style: normal; /* override browser <cite> italic */
+  }
+
+  .testimonial-card__name {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-heading);
+  }
+  .testimonial-card__role,
+  .testimonial-card__org {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-regular);
+    color: var(--text-body-muted);
+  }
+
+  .testimonial-card__service-pill {
+    display: inline-block;
+    align-self: flex-start;
+    background: var(--bg-tinted);
+    color: var(--brand-accent-text);
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-medium);
+    padding: 0.125rem var(--space-global-xs);
+    border-radius: var(--radius-pill);
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* §4.4 Empty state (filtered — shown by JS when 0 matches)             */
+  /* -------------------------------------------------------------------- */
+  .testimonials-empty {
+    width: 100%;
+    background: var(--bg-page);
+  }
+  .testimonials-empty__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-prose);
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+    text-align: center;
+  }
+  .testimonials-empty__text {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body-muted);
+    line-height: var(--lh-prose);
+    margin: 0;
+  }
+  .testimonials-empty__reset {
+    background: transparent;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: var(--brand-accent-text);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  .testimonials-empty__reset:hover,
+  .testimonials-empty__reset:focus-visible {
+    color: var(--text-heading);
+  }
+
+  /* Pre-launch initial empty state */
+  .testimonials-empty-initial {
+    width: 100%;
+    background: var(--bg-page);
+  }
+  .testimonials-empty-initial__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-prose);
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+    text-align: center;
+  }
+  .testimonials-empty-initial__text {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body-muted);
+    line-height: var(--lh-prose);
+    margin: 0;
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* §4.5 CTA                                                             */
+  /* -------------------------------------------------------------------- */
+  .testimonials-cta {
+    width: 100%;
+    background: var(--bg-surface-alt);
+  }
+  .testimonials-cta__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-prose);
+    padding: var(--space-global-xl) var(--space-global-gutter);
+  }
+  .testimonials-cta__card {
+    background: var(--bg-tinted);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-global-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-sm);
+    align-items: center;
+    text-align: center;
+  }
+  .testimonials-cta__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h2);
+    font-weight: var(--heading-weight-h2);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
+    margin: 0;
+  }
+  .testimonials-cta__text {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body-muted);
+    line-height: var(--lh-prose);
+    max-width: 32rem;
+    margin: 0;
+  }
+
+  @media (max-width: 639px) {
+    .testimonials-cta__card {
+      padding: var(--space-global-md);
+    }
+  }
 </style>

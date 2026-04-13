@@ -143,6 +143,53 @@ export interface CurriculumStatement {
   topicIds: string[];
 }
 
+// --- Testimonials (B6) ---
+
+export type ServiceTag =
+  | 'RSE delivery'
+  | 'RSE training'
+  | 'Drop days'
+  | 'Circuits (SEND/AP)'
+  | 'RSE policy & curriculum planning'
+  | 'Universities & FE'
+  | 'About / general';
+
+export type Setting =
+  | 'Primary school'
+  | 'Secondary school'
+  | 'SEND school'
+  | 'Alternative provision'
+  | 'Third sector'
+  | 'Higher education'
+  | 'Other';
+
+export type Voice =
+  | 'School staff'
+  | 'Third sector lead'
+  | 'Young person'
+  | 'Academic / collaborator'
+  | 'Parent';
+
+export interface Testimonial {
+  id: string;
+  /** The testimonial text. Line breaks preserved as `\n`. */
+  quote: string;
+  /** Attributed name or anonymous descriptor. Never empty. */
+  name: string;
+  /** Job title. May be empty. */
+  role: string;
+  /** School or organisation. May be empty. */
+  organisation: string;
+  /** Service tag multi-select values. At least one expected. */
+  serviceTags: ServiceTag[];
+  /** Setting select. May be empty. Reserved for future use. */
+  setting: Setting | '';
+  /** Voice select. May be empty. Reserved for future use. */
+  voice: Voice | '';
+  /** Notion created_time, ISO string. Used for ordering. */
+  createdTime: string;
+}
+
 // --- Glossary index for tooltip matching ---
 
 export interface GlossaryIndex {

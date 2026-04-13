@@ -1,0 +1,57 @@
+---
+/**
+ * TestimonialCard [B6 / C5]
+ *
+ * Two variants off the same data shape:
+ *   - "card" — B6 grid: light surface, left accent bar, three-line attribution
+ *   - "band" — C5 proof band: inner markup for the dark band (parent supplies the band surface)
+ */
+import type { Testimonial } from '../lib/types';
+
+interface Props {
+  testimonial: Testimonial;
+  variant?: 'card' | 'band';
+  /** Show the service-tag pill on the card variant. Defaults true on "card", false on "band". */
+  showServiceTag?: boolean;
+}
+
+const { testimonial, variant = 'card', showServiceTag = variant === 'card' } = Astro.props;
+
+// Used by the "band" variant to compose the em-dash source line.
+const sourceLine = [testimonial.name, testimonial.role, testimonial.organisation]
+  .filter(Boolean)
+  .join(', ');
+---
+
+{variant === 'card' ? (
+  <blockquote
+    class="testimonial-card"
+    data-testimonial-id={testimonial.id}
+    data-service-tags={testimonial.serviceTags.join('|')}
+  >
+    <p class="testimonial-card__quote">{testimonial.quote}</p>
+    <footer class="testimonial-card__footer">
+      <cite class="testimonial-card__attribution">
+        <span class="testimonial-card__name">{testimonial.name}</span>
+        {testimonial.role && (
+          <span class="testimonial-card__role">{testimonial.role}</span>
+        )}
+        {testimonial.organisation && (
+          <span class="testimonial-card__org">{testimonial.organisation}</span>
+        )}
+      </cite>
+      {showServiceTag && testimonial.serviceTags[0] && (
+        <span class="testimonial-card__service-pill">{testimonial.serviceTags[0]}</span>
+      )}
+    </footer>
+  </blockquote>
+) : (
+  <>
+    <blockquote>
+      <p class="service-proof-band__quote">{testimonial.quote}</p>
+    </blockquote>
+    {sourceLine && (
+      <span class="service-proof-band__source">— {sourceLine}</span>
+    )}
+  </>
+)}

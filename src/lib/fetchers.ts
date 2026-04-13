@@ -9,7 +9,18 @@ import {
   getCheckboxValue,
   getNumberValue,
 } from './notion';
-import type { Question, GlossaryTerm, Topic, LandingPage, BlogPost, CurriculumStatement } from './types';
+import type {
+  Question,
+  GlossaryTerm,
+  Topic,
+  LandingPage,
+  BlogPost,
+  CurriculumStatement,
+  Testimonial,
+  ServiceTag,
+  Setting,
+  Voice,
+} from './types';
 
 // --- Notion property helpers ---
 
@@ -31,6 +42,7 @@ const QUESTIONS_DB = 'cd6d5a28-64a7-4809-84e1-483e4a4ac259';
 const GLOSSARY_DB = 'c844695c-a72f-496f-9fef-3e72cdf25f02';
 const TOPICS_DB = '16dde54c-a2e1-47c2-8c84-f84fa602f6e9';
 const CURRICULUM_DB = '9bcde5b1-3837-4321-bc12-b026b45a528b';
+const TESTIMONIALS_DB = '4fede26f-29ad-4c3b-a67b-31065b0a19c3';
 
 function getLandingPagesDb(): string | null {
   return import.meta.env.NOTION_LANDING_PAGES_DB || null;
@@ -249,6 +261,48 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
     return blogPosts;
   } catch (error) {
     console.warn(`  ⚠ Could not fetch blog posts (database may not be shared with integration yet):`, (error as Error).message);
+    return [];
+  }
+}
+
+export async function fetchTestimonials(): Promise<Testimonial[]> {
+  console.log('Fetching testimonials...');
+  try {
+    const pages = await queryDatabase(TESTIMONIALS_DB, {
+      property: 'Approved for live site',
+      checkbox: { equals: true },
+    });
+
+    const testimonials: Testimonial[] = pages.map((page) => {
+      const p = page.properties;
+      return {
+        id: page.id,
+        quote: getRichTextValue(p['Quote']),
+        name: getTitleValue(p['Name']),
+        role: getRichTextValue(p['Role']),
+        organisation: getRichTextValue(p['School or organisation']),
+        serviceTags: getMultiSelectValues(p['Service tag']) as ServiceTag[],
+        setting: (getSelectValue(p['Setting']) || '') as Setting | '',
+        voice: (getSelectValue(p['Voice']) || '') as Voice | '',
+        createdTime: (page as any).created_time || '',
+      };
+    });
+
+    // Default ordering: Notion created_time descending (newest first).
+    testimonials.sort((a, b) => {
+      if (a.createdTime && b.createdTime) {
+        return b.createdTime.localeCompare(a.createdTime);
+      }
+      return 0;
+    });
+
+    console.log(`  ✓ ${testimonials.length} testimonials fetched`);
+    return testimonials;
+  } catch (error) {
+    console.warn(
+      `  ⚠ Could not fetch testimonials (database may not be shared with integration yet):`,
+      (error as Error).message,
+    );
     return [];
   }
 }
