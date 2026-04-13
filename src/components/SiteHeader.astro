@@ -673,7 +673,7 @@ const isContact = pathname === '/contact';
   .mobile-nav__topbar {
     position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: var(--z-base);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -688,7 +688,7 @@ const isContact = pathname === '/contact';
     font-size: var(--text-nav-size-sm);
     font-weight: var(--font-weight-semibold);
     text-transform: uppercase;
-    letter-spacing: var(--text-eyebrow-ls);
+    letter-spacing: var(--section-eyebrow-ls);
     color: var(--text-body-muted);
   }
 
@@ -875,7 +875,7 @@ const isContact = pathname === '/contact';
     font-size: var(--text-nav-size-sm);
     font-weight: var(--font-weight-semibold);
     text-transform: uppercase;
-    letter-spacing: var(--text-eyebrow-ls);
+    letter-spacing: var(--section-eyebrow-ls);
     color: var(--cat-color, var(--text-heading));
     text-align: left;
     transition: background var(--transition-duration) var(--transition-easing);

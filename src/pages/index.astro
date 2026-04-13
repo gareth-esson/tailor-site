@@ -490,9 +490,9 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   .home-delivery__step-num {
     width: 1.5rem;
     height: 1.5rem;
-    border-radius: 50%;
+    border-radius: var(--radius-circle);
     background: var(--brand-primary);
-    color: #fff;
+    color: var(--text-on-dark);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -701,7 +701,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     align-items: center;
     gap: var(--space-global-xl);
     padding: var(--space-global-xl);
-    background: var(--bg-ota-book-panel);
+    background: var(--bg-ota-paper-panel);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
     text-decoration: none;
@@ -719,7 +719,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     flex-shrink: 0;
     width: 10rem;
     border-radius: var(--radius-sm);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--book-cover-shadow);
   }
 
   .home-ota__book-text {
