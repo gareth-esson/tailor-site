@@ -80,6 +80,11 @@
       return pagefind;
     }
 
+    // Search-type taxonomy — duplicated verbatim from src/lib/searchTypes.ts
+    // because this <script is:inline> block cannot import ES modules. If you
+    // change labels, type keys, or the URL-matching rules below, mirror the
+    // change in src/lib/searchTypes.ts (and the B10 search page that imports
+    // it) in the same commit.
     var typeLabels = {
       'anonymous_question': 'Okay to Ask',
       'glossary': 'Glossary',

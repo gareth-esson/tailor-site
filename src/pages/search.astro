@@ -1,213 +1,563 @@
 ---
+/**
+ * Search results page [B10] — /search
+ * Pagefind-powered client-side search. Query read from ?q= for the initial
+ * render; thereafter owned by the client (debounced, URL synced via
+ * history.replaceState).
+ *
+ * Tailor layer. The A4 header search (SearchBar.astro) is the peek surface;
+ * this is the committed reading surface — larger input, grouped results by
+ * type, per-group "Show all" toggle, structured no-results state.
+ */
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const query = Astro.url.searchParams.get('q') || '';
+const query = (Astro.url.searchParams.get('q') || '').trim();
+const hasQuery = query.length > 0;
+
+const title = hasQuery
+  ? `Search: "${query}" — Tailor Education`
+  : 'Search — Tailor Education';
+
+const description =
+  'Search questions, glossary, topics, blog, and services across Tailor Education.';
 ---
 
 <BaseLayout
-  title={query ? `Search results for "${query}" — Tailor Education` : 'Search — Tailor Education'}
-  description="Search questions, glossary terms, topics, blog posts and services across Tailor Education and Okay to Ask."
+  title={title}
+  description={description}
+  canonicalPath="/search"
   noIndex
 >
-  <section class="mx-auto max-w-4xl" style={`padding: var(--space-global-xl) var(--space-global-gutter);`}>
-    <h1
-      class="search-page__title"
-      style={`font-family: var(--font-tailor-heading-stack); font-size: var(--text-display-size-h2); font-weight: var(--heading-weight-h2); color: var(--text-heading); margin-bottom: var(--space-global-md);`}
+  <main class="search-page">
+    <!-- §4.1 Hero -->
+    <section class="search-page__hero">
+      <div class="search-page__hero-inner">
+        <span class="search-page__eyebrow">Search</span>
+        {hasQuery ? (
+          <h1 class="search-page__title">
+            Search results for <em class="search-page__title-query">&ldquo;{query}&rdquo;</em>
+          </h1>
+        ) : (
+          <h1 class="search-page__title">Search</h1>
+        )}
+        <p class="search-page__lede">
+          {hasQuery
+            ? 'Matches across questions, glossary, topics, blog, and services. Keep typing to refine.'
+            : 'Type a question, topic, or term. Okay to Ask answers, glossary definitions, blog pieces, and services all search together.'}
+        </p>
+      </div>
+    </section>
+
+    <!-- §4.2 Input band -->
+    <section class="search-page__band search-page__band--input">
+      <div class="search-page__shell">
+        <div class="search-page__input-wrap">
+          <svg
+            class="search-page__input-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            aria-hidden="true"
+          >
+            <circle cx="8.5" cy="8.5" r="5.75" stroke="currentColor" stroke-width="1.5" />
+            <path d="M13 13L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+          <label class="sr-only" for="search-page-input">Search Tailor Education</label>
+          <input
+            id="search-page-input"
+            class="search-page__input"
+            type="search"
+            name="q"
+            value={query}
+            placeholder="Search questions, topics, glossary…"
+            autocomplete="off"
+            autocorrect="off"
+            spellcheck="false"
+            aria-describedby="search-page-hint"
+          />
+          <button
+            type="button"
+            class="search-page__input-clear"
+            id="search-page-clear"
+            aria-label="Clear search"
+            hidden
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+        </div>
+        <p class="search-page__hint" id="search-page-hint">Results update as you type.</p>
+      </div>
+    </section>
+
+    <!-- §4.3–4.5 Results / meta / empty state -->
+    <section class="search-page__band search-page__band--results">
+      <div class="search-page__shell">
+        <p
+          class="search-page__meta"
+          id="search-page-meta"
+          aria-live="polite"
+          hidden
+        ></p>
+        <div
+          class="search-page__results"
+          id="search-page-results"
+          role="region"
+          aria-label="Search results"
+        ></div>
+        <div id="search-page-empty" hidden></div>
+      </div>
+    </section>
+
+    <!-- §4.6 Footer CTA -->
+    <section
+      class="search-page__band search-page__band--cta"
+      id="search-page-footer-cta"
+      hidden
     >
-      Search
-    </h1>
-
-    <!-- Search input -->
-    <div
-      class="search-page__input-wrap"
-      style={`display: flex; align-items: center; gap: var(--space-global-xs); background: var(--bg-surface-alt); border: var(--border-width-sm) solid var(--border-subtle); border-radius: var(--radius-base); padding: var(--space-global-sm) var(--space-global-md); margin-bottom: var(--space-global-lg);`}
-    >
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" style={`flex-shrink: 0; color: var(--text-body-muted);`}>
-        <circle cx="8.5" cy="8.5" r="5.75" stroke="currentColor" stroke-width="1.5"/>
-        <path d="M13 13L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-      <input
-        type="search"
-        id="search-page-input"
-        value={query}
-        placeholder="Search questions, topics, glossary..."
-        autocomplete="off"
-        aria-label="Search"
-        style={`flex: 1; border: none; background: transparent; font-family: var(--font-shell-body-stack); font-size: var(--text-prose-size-body); color: var(--text-body); outline: none; padding: 0;`}
-      />
-    </div>
-
-    <!-- Results container -->
-    <div id="search-page-results"></div>
-
-    <!-- No results template -->
-    <div id="search-page-empty" hidden>
-      <p style={`font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); color: var(--text-body-muted); text-align: center; padding: var(--space-global-xl) 0;`}>
-        No results for &ldquo;<span id="search-page-empty-query"></span>&rdquo;. Try a different search, or
-        <a href="/topics/" style={`color: var(--link-action-color);`}>browse by topic &rarr;</a>
-      </p>
-    </div>
-  </section>
-
-  <script is:inline>
-    async function initSearchPage() {
-      var input = document.getElementById('search-page-input');
-      var resultsContainer = document.getElementById('search-page-results');
-      var emptyState = document.getElementById('search-page-empty');
-      var emptyQuery = document.getElementById('search-page-empty-query');
-      if (!input || !resultsContainer) return;
-
-      var pagefind = null;
-
-      async function loadPagefind() {
-        if (pagefind) return pagefind;
-        try {
-          pagefind = await import('/pagefind/pagefind.js');
-          await pagefind.init();
-        } catch (e) {
-          pagefind = null;
-        }
-        return pagefind;
-      }
-
-      var typeLabels = {
-        'anonymous_question': 'Questions',
-        'glossary': 'Glossary',
-        'topics': 'Topics',
-        'blog': 'Blog',
-        'services': 'Services',
-      };
-
-      var typeOrder = ['anonymous_question', 'glossary', 'topics', 'blog', 'services', 'other'];
-
-      function getContentType(url) {
-        if (url.includes('/anonymous_question/')) return 'anonymous_question';
-        if (url.includes('/glossary/')) return 'glossary';
-        if (url.includes('/topics/')) return 'topics';
-        if (url.includes('/blog/')) return 'blog';
-        if (url.includes('/services/') || url.includes('/training')) return 'services';
-        return 'other';
-      }
-
-      async function doSearch(query) {
-        if (!query || query.length < 1) {
-          resultsContainer.innerHTML = '';
-          if (emptyState) emptyState.setAttribute('hidden', '');
-          return;
-        }
-
-        var pf = await loadPagefind();
-        if (!pf) {
-          resultsContainer.innerHTML = '<p style="color: var(--text-body-muted); font-family: var(--font-tailor-body-stack);">Search is not available in development mode. Build the site to generate the search index.</p>';
-          return;
-        }
-
-        var search = await pf.search(query);
-        var results = await Promise.all(
-          search.results.map(function(r) { return r.data(); })
-        );
-
-        if (typeof window.trackEvent === 'function') {
-          window.trackEvent('site_search_query', {
-            query: query,
-            result_count: search.results.length,
-            source_page: window.location.pathname,
-          });
-        }
-
-        if (results.length === 0) {
-          resultsContainer.innerHTML = '';
-          if (emptyQuery) emptyQuery.textContent = query;
-          if (emptyState) emptyState.removeAttribute('hidden');
-          return;
-        }
-
-        if (emptyState) emptyState.setAttribute('hidden', '');
-
-        var grouped = {};
-        for (var i = 0; i < results.length; i++) {
-          var r = results[i];
-          var type = getContentType(r.url);
-          if (!grouped[type]) grouped[type] = [];
-          grouped[type].push(r);
-        }
-
-        var html = '';
-        var sortedTypes = typeOrder.filter(function(t) { return grouped[t]; });
-
-        for (var si = 0; si < sortedTypes.length; si++) {
-          var type = sortedTypes[si];
-          var items = grouped[type];
-          var label = typeLabels[type] || 'Other';
-          var showLimit = 5;
-          var hasMore = items.length > showLimit;
-          var groupId = 'group-' + type;
-
-          html += '<div style="margin-bottom: var(--space-global-lg);">';
-          html += '<h2 style="font-family: var(--font-tailor-heading-stack); font-size: var(--text-prose-size-h3); font-weight: var(--heading-weight-h3); color: var(--text-heading); margin-bottom: var(--space-global-sm); padding-bottom: var(--space-global-xs); border-bottom: var(--border-width-xs) solid var(--border-subtle);">' + label + ' <span style="font-weight: var(--font-weight-regular); color: var(--text-body-muted); font-size: var(--text-card-size-body);">(' + items.length + ')</span></h2>';
-
-          for (var j = 0; j < items.length; j++) {
-            var item = items[j];
-            var hiddenAttr = j >= showLimit ? 'style="display:none;" data-group="' + groupId + '"' : '';
-            html += '<a href="' + item.url + '" class="search-page__result" ' + hiddenAttr
-              + ' data-query="' + query + '" data-type="' + type + '" data-position="' + (j + 1) + '"'
-              + ' style="display: block; padding: var(--space-global-sm) 0; border-bottom: var(--border-width-xs) solid var(--border-subtle); text-decoration: none; color: var(--text-body);">'
-              + '<span style="display: block; font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); font-weight: var(--font-weight-medium); color: var(--text-heading);">' + ((item.meta && item.meta.title) || item.url) + '</span>'
-              + '<span style="display: block; font-size: var(--text-card-size-body); color: var(--text-body-muted); margin-top: 0.25rem;">' + (item.excerpt || '') + '</span>'
-              + '</a>';
-          }
-
-          if (hasMore) {
-            html += '<button type="button" data-toggle="' + groupId + '" style="margin-top: var(--space-global-sm); font-family: var(--font-shell-body-stack); font-size: var(--text-card-size-body); font-weight: var(--font-weight-medium); color: var(--link-action-color); background: none; border: none; cursor: pointer; padding: 0;">Show all ' + items.length + ' results</button>';
-          }
-
-          html += '</div>';
-        }
-
-        resultsContainer.innerHTML = html;
-
-        resultsContainer.querySelectorAll('[data-toggle]').forEach(function(btn) {
-          btn.addEventListener('click', function() {
-            var gid = btn.getAttribute('data-toggle');
-            resultsContainer.querySelectorAll('[data-group="' + gid + '"]').forEach(function(el) {
-              el.style.display = '';
-            });
-            btn.remove();
-          });
-        });
-
-        resultsContainer.querySelectorAll('.search-page__result').forEach(function(el) {
-          el.addEventListener('click', function() {
-            if (typeof window.trackEvent === 'function') {
-              window.trackEvent('site_search_result_click', {
-                query: el.getAttribute('data-query'),
-                result_slug: el.getAttribute('href'),
-                result_type: el.getAttribute('data-type'),
-                position: Number(el.getAttribute('data-position')),
-              });
-            }
-          }, { once: true });
-        });
-
-        var url = new URL(window.location.href);
-        url.searchParams.set('q', query);
-        history.replaceState(null, '', url.toString());
-      }
-
-      var timer;
-      input.addEventListener('input', function() {
-        clearTimeout(timer);
-        timer = setTimeout(function() { doSearch(input.value.trim()); }, 300);
-      });
-
-      if (input.value.trim()) {
-        doSearch(input.value.trim());
-      }
-
-      input.focus();
-    }
-
-    initSearchPage();
-    document.addEventListener('astro:after-swap', initSearchPage);
-  </script>
+      <div class="search-page__shell search-page__shell--center">
+        <p class="search-page__cta-text">
+          Didn't find what you needed? We might still be able to help.
+        </p>
+        <a href="/contact" class="btn btn--std btn--primary has-icon-hover">
+          Get in touch
+        </a>
+      </div>
+    </section>
+  </main>
 </BaseLayout>
+
+<script>
+  import { initSearchPage } from '../scripts/search-page';
+  initSearchPage();
+  document.addEventListener('astro:after-swap', initSearchPage);
+</script>
+
+<style>
+  .search-page { background: var(--bg-page); }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* §4.1 Hero                                                            */
+  /* -------------------------------------------------------------------- */
+  .search-page__hero {
+    width: 100%;
+    background: var(--bg-tinted);
+    border-bottom: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  .search-page__hero-inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-shell);
+    padding: var(--space-global-xl) var(--space-global-gutter);
+  }
+
+  .search-page__eyebrow {
+    display: block;
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--card-eyebrow-ls);
+    color: var(--text-body-muted);
+    margin: 0 0 var(--space-global-xs);
+  }
+
+  .search-page__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h1);
+    font-weight: var(--heading-weight-h1);
+    line-height: var(--lh-display);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .search-page__title-query {
+    font-style: italic;
+    font-weight: var(--font-weight-regular);
+  }
+
+  .search-page__lede {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-lede);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-body);
+    color: var(--text-body-muted);
+    max-width: var(--container-max-prose);
+    margin: 0;
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* Shared band + shell wrappers                                         */
+  /* -------------------------------------------------------------------- */
+  .search-page__band {
+    width: 100%;
+  }
+
+  .search-page__band--input {
+    background: var(--bg-page);
+  }
+
+  .search-page__band--results {
+    background: var(--bg-page);
+  }
+
+  .search-page__band--cta {
+    background: var(--bg-tinted);
+    border-top: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  .search-page__shell {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-reading-wide);
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+  }
+
+  .search-page__band--input .search-page__shell {
+    padding-top: var(--space-global-xl);
+    padding-bottom: var(--space-global-xs);
+  }
+
+  .search-page__band--results .search-page__shell {
+    padding-top: var(--space-global-xl);
+  }
+
+  .search-page__shell--center {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-global-md);
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* §4.2 Input band                                                      */
+  /* -------------------------------------------------------------------- */
+  .search-page__input-wrap {
+    display: flex;
+    align-items: center;
+    gap: var(--space-global-sm);
+    background: var(--bg-surface);
+    border: var(--border-width-sm) solid var(--border-strong);
+    border-radius: var(--radius-base);
+    padding: 0.75rem 1rem;
+    transition:
+      border-color var(--transition-duration) var(--transition-easing),
+      box-shadow var(--transition-duration) var(--transition-easing);
+  }
+
+  .search-page__input-wrap:focus-within {
+    border-color: var(--brand-accent);
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  .search-page__input-icon {
+    flex-shrink: 0;
+    color: var(--text-body-muted);
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .search-page__input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-lede);
+    font-weight: var(--font-weight-regular);
+    color: var(--text-body);
+    outline: none;
+    padding: 0.125rem 0;
+  }
+
+  .search-page__input::placeholder {
+    color: var(--text-body-muted);
+  }
+
+  .search-page__input-clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    color: var(--text-body-muted);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: var(--radius-xs);
+  }
+
+  .search-page__input-clear:hover {
+    color: var(--text-heading);
+  }
+
+  .search-page__input-clear:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  .search-page__hint {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+    margin: var(--space-global-xs) 0 0;
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* §4.3 Meta + results container                                        */
+  /* -------------------------------------------------------------------- */
+  .search-page__meta {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-body-muted);
+    margin: 0 0 var(--space-global-lg);
+  }
+
+  .search-page__results:empty {
+    display: none;
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* §4.4 Result groups and rows                                          */
+  /* -------------------------------------------------------------------- */
+  .search-result-group {
+    margin: 0 0 var(--space-global-lg);
+  }
+
+  .search-result-group:last-child {
+    margin-bottom: 0;
+  }
+
+  .search-result-group__heading {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h3);
+    font-weight: var(--heading-weight-h3);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+    padding-bottom: var(--space-global-xs);
+    border-bottom: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  .search-result-group__count {
+    font-weight: var(--font-weight-regular);
+    color: var(--text-body-muted);
+    font-size: var(--text-card-size-body);
+  }
+
+  .search-result-group__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .search-result-group__item {
+    border-bottom: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  .search-result-group__item:last-child {
+    border-bottom: none;
+  }
+
+  .search-result-row {
+    display: block;
+    padding: 0.625rem 0;
+    text-decoration: none;
+    color: var(--text-body);
+  }
+
+  .search-result-row:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-xs);
+  }
+
+  .search-result-row__title {
+    display: block;
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-heading);
+    line-height: var(--lh-heading);
+  }
+
+  .search-result-row:hover .search-result-row__title,
+  .search-result-row:focus-visible .search-result-row__title {
+    color: var(--brand-accent-text);
+    text-decoration: underline;
+  }
+
+  .search-result-row__excerpt {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+    line-height: var(--lh-body);
+    margin-top: 0.25rem;
+  }
+
+  .search-result-row__excerpt :global(mark) {
+    background: var(--brand-accent-soft);
+    color: inherit;
+    border-radius: var(--radius-xs);
+    padding: 0 0.125em;
+  }
+
+  .search-result-group__toggle {
+    margin-top: var(--space-global-sm);
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-medium);
+    color: var(--link-action-color);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem 0;
+    text-align: left;
+  }
+
+  .search-result-group__toggle:hover {
+    color: var(--link-action-color-hover);
+    text-decoration: underline;
+  }
+
+  .search-result-group__toggle:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-xs);
+  }
+
+  /* Pagefind error fallback */
+  .search-page__error {
+    background: var(--bg-surface-alt);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-base);
+    padding: var(--space-global-md);
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body);
+  }
+
+  .search-page__error a {
+    color: var(--brand-accent-text);
+    text-decoration: underline;
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* §4.5 No-results                                                      */
+  /* -------------------------------------------------------------------- */
+  .search-no-results {
+    background: var(--bg-surface-alt);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-global-lg);
+  }
+
+  .search-no-results__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h2);
+    font-weight: var(--heading-weight-h2);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .search-no-results__intro {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body);
+    line-height: var(--lh-body);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .search-no-results__suggestions {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-global-md);
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body);
+    line-height: var(--lh-body);
+  }
+
+  .search-no-results__suggestions li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin: 0 0 var(--space-global-xs);
+  }
+
+  .search-no-results__suggestions li::before {
+    content: '\2192'; /* → */
+    position: absolute;
+    left: 0;
+    color: var(--brand-accent-text);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .search-no-results__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-global-sm);
+    margin-top: var(--space-global-md);
+  }
+
+  .search-no-results__divider {
+    border: 0;
+    border-top: var(--border-width-xs) solid var(--border-subtle);
+    margin: var(--space-global-lg) 0 var(--space-global-md);
+  }
+
+  .search-no-results__escape {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body-muted);
+    margin: 0;
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* §4.6 Footer CTA                                                      */
+  /* -------------------------------------------------------------------- */
+  .search-page__cta-text {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h3);
+    font-weight: var(--heading-weight-h3);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
+    margin: 0;
+  }
+
+  @media (max-width: 639px) {
+    .search-page__input {
+      font-size: 1rem;
+    }
+    .search-no-results {
+      padding: var(--space-global-md);
+    }
+    .search-no-results__actions .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
