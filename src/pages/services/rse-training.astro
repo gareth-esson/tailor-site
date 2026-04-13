@@ -23,14 +23,6 @@ const heroSubtitle =
 const heroImage: string | null = '/images/services/tailor-education-rse-cpd-workshop-facilitator.webp';
 const heroImageAlt = 'A Tailor facilitator leading a CPD workshop for school staff on RSE delivery';
 
-const glanceFacts = [
-  { label: 'Format', value: 'In person or remote' },
-  { label: 'Duration', value: 'Half or full day' },
-  { label: 'For', value: 'Teachers, PSHE leads, SLT' },
-  { label: 'CPD', value: 'Accredited' },
-  { label: 'Aligned with', value: 'KCSIE, DfE 2026' },
-];
-
 const descriptionLead =
   'The biggest barrier to good RSE in most schools isn\'t policy or curriculum — it\'s teacher confidence. Staff are asked to deliver topics they were never trained in, sometimes with a few hours\' notice, often with no clear framework for what to say when a student asks the question they were dreading.';
 
@@ -119,19 +111,6 @@ const metaDescription = 'CPD-accredited RSE training for school staff, led by sp
         </div>
       </div>
     </header>
-
-    <section class="service-glance" aria-label="Service at a glance">
-      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-        <dl class="service-glance__inner">
-          {glanceFacts.map((fact) => (
-            <div class="glance-fact">
-              <dt class="glance-fact__label">{fact.label}</dt>
-              <dd class="glance-fact__value">{fact.value}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
-    </section>
 
     <section class="service-description">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">

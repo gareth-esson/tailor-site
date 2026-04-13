@@ -41,6 +41,27 @@
       "has": [{ "type": "host", "value": "tailor-rse.co.uk" }],
       "destination": "https://tailoreducation.org.uk/$1",
       "permanent": true
-    }
+    },
+
+    { "source": "/topic/:slug", "destination": "/topics/:slug", "permanent": true },
+    { "source": "/category/:slug", "destination": "/topics/", "permanent": true },
+    { "source": "/project_category/:slug", "destination": "/topics/", "permanent": true },
+
+    { "source": "/rse-for-primary-schools/", "destination": "/services/rse-for-primary-schools/", "permanent": true },
+    { "source": "/rse-for-secondary-schools/", "destination": "/services/rse-for-secondary-schools/", "permanent": true },
+    { "source": "/rse-for-special-schools/", "destination": "/services/rse-for-send-and-ap/", "permanent": true },
+    { "source": "/tailored-rse-for-alternative-provision/", "destination": "/services/rse-for-send-and-ap/", "permanent": true },
+    { "source": "/rse-for-vulnerable-young-people/", "destination": "/services/rse-for-send-and-ap/", "permanent": true },
+    { "source": "/rse-training/", "destination": "/services/rse-training/", "permanent": true },
+    { "source": "/anonymous-questions-about-sex-relationships/", "destination": "/questions/", "permanent": true },
+    { "source": "/universities-and-fe/", "destination": "/services/", "permanent": true },
+    { "source": "/schools/", "destination": "/services/", "permanent": true },
+    { "source": "/events/", "destination": "/services/rse-training/", "permanent": true },
+
+    { "source": "/a-comprehensive-guide-to-developing-an-effective-rse-programme-in-special-schools/", "destination": "/blog/complete-guide-rse-special-schools/", "permanent": true },
+    { "source": "/developing-an-effective-rse-programme-in-special-schools-conducting-a-student-centred-needs-assessment/", "destination": "/blog/rse-send-practical-approaches/", "permanent": true },
+    { "source": "/consent-education-for-men/", "destination": "/blog/teaching-consent-beyond-no-means-no/", "permanent": true },
+    { "source": "/tackling-misogyny-in-schools-strategies/", "destination": "/blog/talking-to-boys-masculinity-misogyny-online-influencers/", "permanent": true },
+    { "source": "/teaching-masculinity-in-schools/", "destination": "/blog/talking-to-boys-masculinity-misogyny-online-influencers/", "permanent": true }
   ]
 }

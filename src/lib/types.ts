@@ -126,6 +126,7 @@ export interface BlogPost {
   metaTitle: string;
   metaDescription: string;
   targetAudience: string | null;
+  category: string | null;
   serviceLink: string | null;
   author: string;
   featuredImage: string | null;

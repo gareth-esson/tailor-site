@@ -22,14 +22,6 @@ const heroSubtitle =
 const heroImage: string | null = '/images/services/tailor-education-teachers-planning-rse-curriculum.webp';
 const heroImageAlt = 'Teachers and a Tailor consultant planning an RSE curriculum around a table';
 
-const glanceFacts = [
-  { label: 'Format', value: 'Consultation + deliverables' },
-  { label: 'Duration', value: '2–4 weeks' },
-  { label: 'For', value: 'PSHE leads & SLT' },
-  { label: 'Deliverables', value: 'Policy + curriculum map' },
-  { label: 'Aligned with', value: 'DfE 2026, inspection-ready' },
-];
-
 const descriptionLead =
   'Writing a RSE policy from scratch, or rewriting one that no longer reflects the DfE 2026 guidance, is the kind of work PSHE leads rarely have time for alongside teaching. It also requires a degree of confidence about what good looks like — particularly in the sections that parents or inspectors will scrutinise.';
 
@@ -118,19 +110,6 @@ const metaDescription = 'Bespoke consultancy to develop your RSE policy, plan yo
         </div>
       </div>
     </header>
-
-    <section class="service-glance" aria-label="Service at a glance">
-      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-        <dl class="service-glance__inner">
-          {glanceFacts.map((fact) => (
-            <div class="glance-fact">
-              <dt class="glance-fact__label">{fact.label}</dt>
-              <dd class="glance-fact__value">{fact.value}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
-    </section>
 
     <section class="service-description">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">

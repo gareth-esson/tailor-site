@@ -1,197 +1,811 @@
 ---
 /**
  * Blog index [B9] — /blog/
- * Lists all blog posts with filtering by target audience.
- * Tailor layer.
+ * Layout spec: Tailor_Layout_Spec_B9.md v2.2
+ *
+ * One job: present every published blog post in a browsable, filterable grid.
+ * No featured/hero post — all posts sit in one uniform grid, newest first.
+ *
+ * Surface rhythm: tinted hero → page ground (rest of page). One switch.
+ * Intentionally quiet — the posts carry the visual interest.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getBlogPosts } from '../../lib/content';
+import {
+  formatDate,
+  deriveExcerpt,
+  sortPostsForIndex,
+} from '../../lib/blog-helpers';
 
+// --- Data ----------------------------------------------------------------
+const allPosts = await getBlogPosts();
+const posts = sortPostsForIndex(allPosts);
 
+// Pre-compute excerpts + formatted dates at build time.
+const cards = posts.map((p) => ({
+  ...p,
+  excerpt: deriveExcerpt(p.body, 140),
+  dateLabel: formatDate(p.publishedDate),
+}));
 
-const posts = await getBlogPosts();
+// --- Filter populations --------------------------------------------------
+// Category — fixed canonical list per spec §2.4.
+const CATEGORY_ORDER = ['RSE in Practice', 'Guidance and Policy', 'Our Work'];
+const categoryPostCounts = new Map<string, number>();
+CATEGORY_ORDER.forEach((cat) => categoryPostCounts.set(cat, 0));
+posts.forEach((p) => {
+  if (p.category && categoryPostCounts.has(p.category)) {
+    categoryPostCounts.set(p.category, (categoryPostCounts.get(p.category) ?? 0) + 1);
+  }
+});
 
-// Sort by title for now (dates not yet in Notion schema)
-const sortedPosts = [...posts].sort((a, b) => a.title.localeCompare(b.title));
+// Topic — deduplicated, preserving first-appearance order.
+type TopicChip = { slug: string; title: string };
+const topicMap = new Map<string, TopicChip>();
+posts.forEach((p) => {
+  (p.topics ?? []).forEach((t) => {
+    if (!topicMap.has(t.title)) topicMap.set(t.title, { slug: t.slug, title: t.title });
+  });
+});
+const topics: TopicChip[] = [...topicMap.values()];
 
-// Collect unique audiences for filter
-const audiences = [...new Set(posts.map((p) => p.targetAudience).filter(Boolean))] as string[];
+// --- Load-more gating ----------------------------------------------------
+const POSTS_PER_PAGE = 12;
+const showLoadMore = posts.length > 24;
+
+// --- JSON-LD -------------------------------------------------------------
+const siteUrl = 'https://tailoreducation.org.uk';
+const jsonLd = posts.length > 0
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'Blog',
+      name: 'Tailor Education — Blog',
+      url: `${siteUrl}/blog/`,
+      blogPost: posts.slice(0, 50).map((p) => {
+        const entry: Record<string, unknown> = {
+          '@type': 'BlogPosting',
+          headline: p.title,
+          url: `${siteUrl}/blog/${p.slug}/`,
+        };
+        if (p.publishedDate) entry.datePublished = p.publishedDate;
+        if (p.author) entry.author = { '@type': 'Person', name: p.author };
+        if (p.featuredImage) entry.image = p.featuredImage;
+        if (p.metaDescription) entry.description = p.metaDescription;
+        return entry;
+      }),
+    }
+  : undefined;
 ---
 
 <BaseLayout
   title="Blog — Tailor Education"
-  description="Expert RSE articles, guides, and insights for teachers — from Tailor Education."
+  description="Practical guidance on RSE teaching, curriculum planning, and bringing relationships education to life in schools."
   canonicalPath="/blog/"
+  jsonLd={jsonLd}
 >
-  <section class="blog-index">
-    <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
-      <h1 class="blog-index__title">Blog</h1>
-      <p class="blog-index__intro">
+  {/* §1 — Hero (tinted band, text-only) --------------------------------- */}
+  <header class="blog-index-hero">
+    <div class="blog-index-hero__inner">
+      <span class="blog-index-hero__eyebrow">Writing</span>
+      <h1 class="blog-index-hero__title">Blog</h1>
+      <p class="blog-index-hero__intro">
         Practical guidance for RSE teaching, curriculum planning, and bringing relationships education to life in schools.
       </p>
-
-      <!-- Audience filter -->
-      {audiences.length > 0 && (
-        <div class="blog-filters" role="group" aria-label="Filter by audience">
-          <button class="blog-filter btn btn--sm btn--tint is-active" data-audience="all" type="button" aria-pressed="true">
-            All
-          </button>
-          {audiences.map((aud) => (
-            <button class="blog-filter btn btn--sm btn--outline" data-audience={aud} type="button" aria-pressed="false">
-              {aud}
-            </button>
-          ))}
-        </div>
-      )}
-
-      <!-- Post list -->
-      <ul class="blog-list" id="blog-list" role="list">
-        {sortedPosts.map((post) => (
-          <li data-audience={post.targetAudience || ''}>
-            <a
-              href={`/blog/${post.slug}`}
-              class="card blog-list__card"
-            >
-              <div class="card__body">
-                {post.targetAudience && (
-                  <div class="card__eyebrow">{post.targetAudience}</div>
-                )}
-                <h3 class="card__title">{post.title}</h3>
-                {post.topics.length > 0 && (
-                  <div class="blog-list__topics">
-                    {post.topics.map((t) => (
-                      <span class="blog-list__topic">{t.title}</span>
-                    ))}
-                  </div>
-                )}
-                {post.author && (
-                  <div class="blog-list__author">By {post.author}</div>
-                )}
-              </div>
-            </a>
-          </li>
-        ))}
-      </ul>
-
-      {sortedPosts.length === 0 && (
-        <p class="blog-index__empty">No blog posts yet. Check back soon.</p>
-      )}
     </div>
-  </section>
+  </header>
+
+  <div class="blog-index">
+    {/* §2 — Filter bar (category + topic) ------------------------------- */}
+    <section class="blog-filters" aria-label="Filter posts" data-pagefind-ignore="all">
+      <div class="blog-filters__inner">
+
+        <div class="blog-filters__row" role="toolbar" aria-label="Filter by category">
+          <span class="blog-filters__label" id="filter-category-label">Category</span>
+          <div class="blog-filters__scroll" aria-labelledby="filter-category-label">
+            <button class="blog-filter-chip is-active" type="button" data-filter-type="category" data-filter-value="all" aria-pressed="true" tabindex="0">All</button>
+            {CATEGORY_ORDER.map((cat) => {
+              const count = categoryPostCounts.get(cat) ?? 0;
+              const disabled = count === 0;
+              return (
+                <button
+                  class:list={['blog-filter-chip', { 'is-disabled': disabled }]}
+                  type="button"
+                  data-filter-type="category"
+                  data-filter-value={cat}
+                  aria-pressed="false"
+                  aria-disabled={disabled ? 'true' : undefined}
+                  tabindex={-1}
+                >{cat}</button>
+              );
+            })}
+          </div>
+        </div>
+
+        {topics.length > 0 && (
+          <div class="blog-filters__row" role="toolbar" aria-label="Filter by topic">
+            <span class="blog-filters__label" id="filter-topic-label">Topic</span>
+            <div class="blog-filters__scroll" aria-labelledby="filter-topic-label">
+              <button class="blog-filter-chip is-active" type="button" data-filter-type="topic" data-filter-value="all" aria-pressed="true" tabindex="0">All</button>
+              {topics.map((t) => (
+                <button class="blog-filter-chip" type="button" data-filter-type="topic" data-filter-value={t.title} aria-pressed="false" tabindex={-1}>{t.title}</button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <p class="blog-filters__count" aria-live="polite">
+          Showing {Math.min(cards.length, POSTS_PER_PAGE)} of {cards.length} posts
+        </p>
+      </div>
+    </section>
+
+    {/* §3 — Post grid ----------------------------------------------------- */}
+    <section class="blog-grid-section">
+      <div class="blog-grid-section__inner">
+
+        {cards.length > 0 ? (
+          <ul class="blog-grid" role="list">
+            {cards.map((post, i) => (
+              <li
+                class="blog-grid__item"
+                data-category={post.category ?? ''}
+                data-topics={post.topics.length > 0 ? `|${post.topics.map((t) => t.title).join('|')}|` : ''}
+              >
+                <a href={`/blog/${post.slug}/`} class="blog-index-card">
+                  <div class="blog-index-card__img">
+                    {post.featuredImage
+                      ? <img src={post.featuredImage} alt="" loading={i < 3 ? 'eager' : 'lazy'} />
+                      : <div class="blog-index-card__img-fallback" aria-hidden="true" />}
+                  </div>
+                  <div class="blog-index-card__body">
+                    {post.category && <div class="blog-index-card__eyebrow">{post.category}</div>}
+                    <h3 class="blog-index-card__title">{post.title}</h3>
+                    {post.excerpt && <p class="blog-index-card__excerpt">{post.excerpt}</p>}
+                    <div class="blog-index-card__meta">
+                      {post.author && <span class="blog-index-card__author">By {post.author}</span>}
+                      {post.author && post.dateLabel && <span class="blog-index-card__meta-sep" aria-hidden="true">&middot;</span>}
+                      {post.dateLabel && post.publishedDate && (
+                        <time datetime={post.publishedDate} class="blog-index-card__date">{post.dateLabel}</time>
+                      )}
+                    </div>
+                    {post.topics.length > 0 && (
+                      <div class="blog-index-card__topics">
+                        {post.topics.slice(0, 3).map((t, ti) => (
+                          <span class="blog-index-card__topic">
+                            {t.title}
+                            {ti < Math.min(post.topics.length, 3) - 1 && <span class="blog-index-card__topic-sep" aria-hidden="true"> &middot; </span>}
+                          </span>
+                        ))}
+                        {post.topics.length > 3 && (
+                          <span class="blog-index-card__topic blog-index-card__topic--more">+{post.topics.length - 3} more</span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div class="blog-empty">
+            <h2 class="blog-empty__title">No posts yet</h2>
+            <p class="blog-empty__body">Check back soon, or explore topics.</p>
+            <div class="blog-empty__actions">
+              <a class="btn btn--std btn--primary has-icon-hover" href="/topics/">Browse topics</a>
+            </div>
+          </div>
+        )}
+
+        {/* §4 — Empty / no-results state (filter-driven, JS toggles) */}
+        {cards.length > 0 && (
+          <div class="blog-empty" id="blog-empty-filtered" hidden>
+            <h2 class="blog-empty__title">No posts match these filters</h2>
+            <p class="blog-empty__body">Try clearing a filter or browse all topics.</p>
+            <div class="blog-empty__actions">
+              <button class="btn btn--std btn--outline blog-empty__clear" type="button">Clear filters</button>
+              <a class="btn btn--std btn--primary has-icon-hover" href="/topics/">Browse topics</a>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+
+    {/* §5 — Load more (pagination) ---------------------------------------- */}
+    {showLoadMore && (
+      <nav class="blog-pagination" aria-label="Blog pagination" data-pagefind-ignore="all">
+        <div class="blog-pagination__inner">
+          <p class="blog-pagination__status" aria-live="polite">
+            Showing {POSTS_PER_PAGE} of {cards.length} posts
+          </p>
+          <button class="btn btn--std btn--outline blog-pagination__load-more" type="button">Load more posts</button>
+        </div>
+      </nav>
+    )}
+  </div>
 </BaseLayout>
 
-<script>
-  function initBlogFilters() {
-    const filters = document.querySelectorAll<HTMLButtonElement>('.blog-filter');
-    const items = document.querySelectorAll<HTMLLIElement>('.blog-list > li');
-    if (!filters.length || !items.length) return;
-
-    filters.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const audience = btn.dataset.audience;
-
-        filters.forEach((f) => {
-          f.classList.remove('is-active');
-          f.classList.remove('btn--tint');
-          f.classList.add('btn--outline');
-          f.setAttribute('aria-pressed', 'false');
-        });
-        btn.classList.add('is-active');
-        btn.classList.remove('btn--outline');
-        btn.classList.add('btn--tint');
-        btn.setAttribute('aria-pressed', 'true');
-
-        items.forEach((li) => {
-          const itemAudience = li.dataset.audience;
-          const show = audience === 'all' || itemAudience === audience;
-          li.style.display = show ? '' : 'none';
-        });
-      });
-    });
-  }
-
-  initBlogFilters();
-  document.addEventListener('astro:after-swap', initBlogFilters);
-</script>
-
 <style>
-  .blog-index {
-    background: var(--bg-page);
+  /* ── §1 Hero ──────────────────────────────────────────────────────────── */
+  .blog-index-hero {
+    width: 100%;
+    background: var(--bg-tinted);
+    border-bottom: var(--border-width-xs) solid var(--border-subtle);
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
   }
 
-  .blog-index__title {
+  .blog-index-hero__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-shell);
+  }
+
+  .blog-index-hero__eyebrow {
+    display: block;
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--text-eyebrow-ls);
+    color: var(--brand-accent-text);
+    margin: 0 0 var(--space-global-xs);
+  }
+
+  .blog-index-hero__title {
     font-family: var(--font-tailor-heading-stack);
     font-size: var(--text-display-size-h1);
     font-weight: var(--heading-weight-h1);
+    line-height: var(--lh-display);
     color: var(--text-heading);
     margin: 0 0 var(--space-global-sm);
   }
 
-  .blog-index__intro {
+  .blog-index-hero__intro {
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-prose-size-body);
-    color: var(--text-body-muted);
-    max-width: 36rem;
-    margin: 0 0 var(--space-global-lg);
+    font-weight: var(--font-weight-regular);
     line-height: var(--lh-body);
-  }
-
-  .blog-filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: var(--space-global-lg);
-  }
-
-  .blog-list {
-    list-style: none;
-    padding: 0;
+    color: var(--text-body-muted);
+    max-width: var(--container-max-prose);
     margin: 0;
-    display: grid;
+  }
+
+  /* ── §2 Filter bar ────────────────────────────────────────────────────── */
+  .blog-filters {
+    width: 100%;
+    padding: var(--space-global-lg) var(--space-global-gutter) var(--space-global-md);
+  }
+
+  .blog-filters__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-shell);
+    display: flex;
+    flex-direction: column;
     gap: var(--space-global-sm);
   }
 
-  .blog-list__card {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .blog-list__topics {
+  .blog-filters__row {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem;
-    margin-top: 0.375rem;
+    flex-direction: column;
+    gap: var(--space-global-xs);
   }
 
-  .blog-list__topic {
+  .blog-filters__label {
+    font-family: var(--font-tailor-body-stack);
     font-size: var(--text-card-size-body);
-    color: var(--brand-accent-text);
-    font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--text-eyebrow-ls);
+    color: var(--text-body-muted);
+    flex-shrink: 0;
   }
 
-  .blog-list__topic:not(:last-child)::after {
-    content: '\00b7';
-    margin-left: 0.25rem;
-    color: var(--text-body-muted);
+  .blog-filters__scroll {
+    display: flex;
+    gap: var(--space-global-xs);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: var(--space-global-xs);
+    position: relative;
   }
 
-  .blog-list__author {
-    font-size: var(--text-card-size-body);
-    color: var(--text-body-muted);
-    margin-top: 0.25rem;
+  .blog-filters__scroll::-webkit-scrollbar {
+    display: none;
   }
 
-  .blog-index__empty {
-    font-size: var(--text-prose-size-body);
-    color: var(--text-body-muted);
-    text-align: center;
-    padding: var(--space-global-xl) 0;
+  /* Right-edge fade gradient — hints at overflow */
+  .blog-filters__row {
+    position: relative;
+  }
+
+  .blog-filters__scroll::after {
+    content: '';
+    position: sticky;
+    right: 0;
+    top: 0;
+    flex-shrink: 0;
+    width: var(--space-global-md);
+    align-self: stretch;
+    background: linear-gradient(to right, transparent, var(--bg-surface-alt));
+    pointer-events: none;
+  }
+
+  .blog-filters__scroll.is-scroll-end::after {
+    display: none;
   }
 
   @media (min-width: 768px) {
-    .blog-list {
+    .blog-filters__row {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--space-global-xs) var(--space-global-sm);
+    }
+
+    .blog-filters__label {
+      margin-right: var(--space-global-xs);
+    }
+
+    .blog-filters__scroll {
+      overflow-x: visible;
+      scroll-snap-type: none;
+      flex-wrap: wrap;
+      padding-bottom: 0;
+    }
+
+    .blog-filters__scroll::after {
+      display: none;
+    }
+  }
+
+  /* ── Filter chips ─────────────────────────────────────────────────────── */
+  .blog-filter-chip {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--lh-card);
+    padding: var(--space-global-xs) var(--space-global-sm);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    background: var(--bg-surface);
+    color: var(--text-body);
+    cursor: pointer;
+    white-space: nowrap;
+    scroll-snap-align: start;
+    flex-shrink: 0;
+    transition:
+      background var(--transition-duration) var(--transition-easing),
+      border-color var(--transition-duration) var(--transition-easing),
+      color var(--transition-duration) var(--transition-easing);
+  }
+
+  .blog-filter-chip:hover:not(.is-active):not(.is-disabled) {
+    background: var(--bg-tinted);
+    color: var(--brand-accent-text);
+  }
+
+  .blog-filter-chip.is-active {
+    border-color: var(--brand-accent);
+    background: var(--btn-primary-bg);
+    color: #fff;
+  }
+
+  .blog-filter-chip.is-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .blog-filters__count {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-regular);
+    color: var(--text-body-muted);
+    margin: var(--space-global-xs) 0 0;
+  }
+
+  /* ── §3 Post grid ─────────────────────────────────────────────────────── */
+  .blog-index {
+    background: var(--bg-surface-alt);
+  }
+
+  .blog-grid-section {
+    width: 100%;
+    padding: var(--space-global-lg) var(--space-global-gutter) var(--space-struct-y-base);
+  }
+
+  .blog-grid-section__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-shell);
+  }
+
+  .blog-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-global-lg);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  @media (min-width: 640px) {
+    .blog-grid {
       grid-template-columns: repeat(2, 1fr);
     }
   }
+
+  @media (min-width: 1024px) {
+    .blog-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* ── Blog index card ──────────────────────────────────────────────────── */
+  .blog-index-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--bg-page);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--shadow-xs);
+    transition:
+      box-shadow var(--transition-duration) var(--transition-easing),
+      border-color var(--transition-duration) var(--transition-easing),
+      transform var(--transition-duration) var(--transition-easing);
+  }
+
+  .blog-index-card:hover,
+  .blog-index-card:focus-visible {
+    box-shadow: var(--shadow-lg);
+    border-color: var(--brand-accent);
+    transform: translateY(var(--card-lift-distance));
+  }
+
+  .blog-index-card__img {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    overflow: hidden;
+    background: var(--bg-surface-alt);
+  }
+
+  .blog-index-card__img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .blog-index-card__img-fallback {
+    width: 100%;
+    height: 100%;
+    background: var(--bg-tinted);
+  }
+
+  .blog-index-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-xs);
+    padding: var(--space-global-md);
+    flex: 1;
+  }
+
+  .blog-index-card__eyebrow {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-h6);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: var(--card-eyebrow-ls);
+    color: var(--brand-accent-text);
+    line-height: var(--lh-card);
+    margin: 0;
+  }
+
+  .blog-index-card__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-card-size-h3);
+    font-weight: var(--heading-weight-h3);
+    line-height: var(--lh-heading-sub);
+    color: var(--text-heading);
+    margin: 0;
+  }
+
+  .blog-index-card__excerpt {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-body);
+    color: var(--text-body-muted);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .blog-index-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-global-xs);
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-card);
+    color: var(--text-body-muted);
+    margin-top: var(--space-global-xs);
+  }
+
+  .blog-index-card__topics {
+    display: flex;
+    flex-wrap: wrap;
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-h6);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--lh-card);
+    color: var(--brand-accent-text);
+    margin-top: var(--space-global-xs);
+  }
+
+  .blog-index-card__topic--more {
+    color: var(--text-body-muted);
+    font-weight: var(--font-weight-regular);
+  }
+
+  /* ── §4 Empty state ───────────────────────────────────────────────────── */
+  .blog-empty {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-prose);
+    text-align: left;
+    padding: var(--space-struct-y-base) 0;
+  }
+
+  .blog-empty__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h3);
+    font-weight: var(--heading-weight-h3);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .blog-empty__body {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    line-height: var(--lh-body);
+    color: var(--text-body-muted);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .blog-empty__actions {
+    display: flex;
+    gap: var(--space-global-sm);
+    flex-wrap: wrap;
+  }
+
+  /* ── §5 Pagination ────────────────────────────────────────────────────── */
+  .blog-pagination {
+    width: 100%;
+    padding: var(--space-global-lg) var(--space-global-gutter) var(--space-struct-y-base);
+  }
+
+  .blog-pagination__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-shell);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-global-sm);
+  }
+
+  .blog-pagination__status {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-regular);
+    color: var(--text-body-muted);
+    margin: 0;
+  }
+
+  /* ── Reduced motion ───────────────────────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .blog-index-card {
+      transition: none;
+    }
+    .blog-index-card:hover,
+    .blog-index-card:focus-visible {
+      transform: none;
+    }
+  }
 </style>
+
+<script>
+  const POSTS_PER_PAGE = 12;
+
+  let b9Initialized = false;
+
+  function initB9() {
+    if (b9Initialized) return;
+    b9Initialized = true;
+
+    const grid       = document.querySelector<HTMLUListElement>('.blog-grid');
+    const chips      = document.querySelectorAll<HTMLButtonElement>('.blog-filter-chip');
+    const count      = document.querySelector<HTMLElement>('.blog-filters__count');
+    const emptyState = document.querySelector<HTMLElement>('#blog-empty-filtered');
+    const pagination = document.querySelector<HTMLElement>('.blog-pagination');
+    const loadMore   = document.querySelector<HTMLButtonElement>('.blog-pagination__load-more');
+    const status     = document.querySelector<HTMLElement>('.blog-pagination__status');
+    const toolbars   = document.querySelectorAll<HTMLElement>('.blog-filters__row[role="toolbar"]');
+    const scrollTracks = document.querySelectorAll<HTMLElement>('.blog-filters__scroll');
+
+    if (!grid) return;
+
+    const items = Array.from(grid.querySelectorAll<HTMLLIElement>('.blog-grid__item'));
+    let currentCategory = 'all';
+    let currentTopic    = 'all';
+    let batchesShown    = 1;
+
+    // ─── Scroll track fade affordance ──────────────────────────────
+    function checkScrollEnd(track: HTMLElement) {
+      const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+      track.classList.toggle('is-scroll-end', atEnd);
+    }
+
+    scrollTracks.forEach((track) => {
+      checkScrollEnd(track);
+      track.addEventListener('scroll', () => checkScrollEnd(track), { passive: true });
+    });
+
+    // ─── URL state ─────────────────────────────────────────────────
+    function hydrateFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      const cat = params.get('category');
+      const top = params.get('topic');
+      if (cat) currentCategory = cat;
+      if (top) currentTopic    = top;
+      chips.forEach((chip) => {
+        const type  = chip.dataset.filterType;
+        const value = chip.dataset.filterValue || 'all';
+        const active =
+          (type === 'category' && value === currentCategory) ||
+          (type === 'topic'    && value === currentTopic);
+        chip.classList.toggle('is-active', active);
+        chip.setAttribute('aria-pressed', active ? 'true' : 'false');
+        chip.tabIndex = active ? 0 : -1;
+      });
+    }
+
+    function pushURL() {
+      const params = new URLSearchParams();
+      if (currentCategory !== 'all') params.set('category', currentCategory);
+      if (currentTopic    !== 'all') params.set('topic',    currentTopic);
+      const qs = params.toString();
+      const next = qs ? `${window.location.pathname}?${qs}` : window.location.pathname;
+      window.history.replaceState(null, '', next);
+    }
+
+    // ─── Filtering + rendering ─────────────────────────────────────
+    function matchesFilters(item: HTMLLIElement): boolean {
+      const categoryOk = currentCategory === 'all' || item.dataset.category === currentCategory;
+      const topicsAttr = item.dataset.topics || '';
+      const topicOk    = currentTopic === 'all' || topicsAttr.includes(`|${currentTopic}|`);
+      return categoryOk && topicOk;
+    }
+
+    function render(opts: { focusFirstNew?: boolean } = {}) {
+      const matched    = items.filter(matchesFilters);
+      const maxBatch   = Math.max(1, Math.ceil(matched.length / POSTS_PER_PAGE));
+      if (batchesShown > maxBatch) batchesShown = maxBatch;
+      const visibleCount = Math.min(matched.length, batchesShown * POSTS_PER_PAGE);
+
+      items.forEach((li) => { li.style.display = 'none'; });
+      const visibleItems = matched.slice(0, visibleCount);
+      visibleItems.forEach((li) => { li.style.display = ''; });
+
+      if (count)  count.textContent  = `Showing ${visibleCount} of ${matched.length} posts`;
+      if (status) status.textContent = `Showing ${visibleCount} of ${matched.length} posts`;
+
+      // Toggle grid visibility and empty state
+      if (emptyState) {
+        emptyState.hidden = matched.length > 0;
+      }
+      if (grid) {
+        grid.style.display = matched.length > 0 ? '' : 'none';
+      }
+
+      if (loadMore && pagination) {
+        const hasMore = matched.length > visibleCount;
+        loadMore.hidden = !hasMore;
+        pagination.hidden = matched.length <= POSTS_PER_PAGE;
+      }
+
+      // Focus management after Load More
+      if (opts.focusFirstNew) {
+        const firstNew = visibleItems[Math.max(0, visibleCount - POSTS_PER_PAGE)];
+        const link = firstNew?.querySelector<HTMLAnchorElement>('a.blog-index-card');
+        if (link) link.focus();
+        else if (status) status.focus();
+      }
+    }
+
+    // ─── Chip click handling ───────────────────────────────────────
+    function activateChip(btn: HTMLButtonElement) {
+      if (btn.getAttribute('aria-disabled') === 'true') return;
+
+      const type  = btn.dataset.filterType as 'category' | 'topic';
+      const value = btn.dataset.filterValue || 'all';
+
+      document
+        .querySelectorAll<HTMLButtonElement>(`.blog-filter-chip[data-filter-type="${type}"]`)
+        .forEach((b) => {
+          const isThis = b === btn;
+          b.classList.toggle('is-active', isThis);
+          b.setAttribute('aria-pressed', isThis ? 'true' : 'false');
+          b.tabIndex = isThis ? 0 : -1;
+        });
+
+      if (type === 'category') currentCategory = value;
+      else                      currentTopic    = value;
+      batchesShown = 1;
+      pushURL();
+      render();
+    }
+
+    chips.forEach((btn) => {
+      btn.addEventListener('click', () => activateChip(btn));
+    });
+
+    // ─── ARIA Toolbar keyboard nav ─────────────────────────────────
+    toolbars.forEach((toolbar) => {
+      const rowChips = Array.from(toolbar.querySelectorAll<HTMLButtonElement>('.blog-filter-chip'));
+      toolbar.addEventListener('keydown', (e) => {
+        const currentIdx = rowChips.findIndex((c) => c === document.activeElement);
+        if (currentIdx < 0) return;
+        let nextIdx = currentIdx;
+        if (e.key === 'ArrowRight')      nextIdx = (currentIdx + 1) % rowChips.length;
+        else if (e.key === 'ArrowLeft')  nextIdx = (currentIdx - 1 + rowChips.length) % rowChips.length;
+        else if (e.key === 'Home')       nextIdx = 0;
+        else if (e.key === 'End')        nextIdx = rowChips.length - 1;
+        else return;
+        e.preventDefault();
+        rowChips[currentIdx].tabIndex = -1;
+        rowChips[nextIdx].tabIndex    = 0;
+        rowChips[nextIdx].focus();
+      });
+    });
+
+    // ─── Load more ─────────────────────────────────────────────────
+    loadMore?.addEventListener('click', () => {
+      batchesShown += 1;
+      render({ focusFirstNew: true });
+    });
+
+    // ─── Empty state "Clear filters" ───────────────────────────────
+    document.querySelector<HTMLButtonElement>('.blog-empty__clear')?.addEventListener('click', () => {
+      currentCategory = 'all';
+      currentTopic    = 'all';
+      batchesShown    = 1;
+      chips.forEach((b) => {
+        const isAll = b.dataset.filterValue === 'all';
+        b.classList.toggle('is-active', isAll);
+        b.setAttribute('aria-pressed', isAll ? 'true' : 'false');
+        b.tabIndex = isAll ? 0 : -1;
+      });
+      pushURL();
+      render();
+    });
+
+    // ─── Initial render ────────────────────────────────────────────
+    hydrateFromURL();
+    render();
+  }
+
+  document.addEventListener('astro:page-load', initB9);
+  document.addEventListener('DOMContentLoaded', initB9);
+</script>
