@@ -1,114 +1,391 @@
 ---
 /**
  * Contact page [B7] — /contact
- * Hosts the enquiry form [E1]. Service type pre-selected via ?service= param.
+ * Hosts the enquiry form [E1]. Service type is pre-selected via the
+ * ?service= URL parameter (and echoed in the hero lede where it matches
+ * a known service). Tailor layer.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import EnquiryForm from '../components/EnquiryForm.astro';
 
-
-// Pre-fill from URL param (handled client-side in EnquiryForm)
 const serviceParam = Astro.url.searchParams.get('service') || undefined;
+
+// Map raw ?service= values to friendly names for the hero lede (§4.1).
+// Keys must match the EnquiryForm <option> values. Unknown values fall
+// back to the generic lede (Variant B).
+const SERVICE_NAMES: Record<string, string> = {
+  'RSE training': 'RSE training',
+  'Direct RSE delivery': 'RSE delivery',
+  'Drop day delivery': 'a drop day',
+  'RSE policy & curriculum planning': 'policy and curriculum planning',
+  'Other': 'something specific',
+};
+const friendlyServiceName = serviceParam
+  ? SERVICE_NAMES[serviceParam]
+  : undefined;
+
+// --- SEO ---
+
+const description =
+  "Get in touch with Tailor Education to discuss RSE training, delivery, and support for your school.";
+
+const contactPageJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: 'Contact — Tailor Education',
+  url: 'https://tailoreducation.org.uk/contact',
+  mainEntity: {
+    '@type': 'EducationalOrganization',
+    name: 'Tailor Education',
+    url: 'https://tailoreducation.org.uk/',
+    email: 'hello@tailoreducation.org.uk',
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'customer service',
+      email: 'hello@tailoreducation.org.uk',
+      availableLanguage: 'English',
+    },
+  },
+};
 ---
 
 <BaseLayout
   title="Contact — Tailor Education"
-  description="Get in touch with Tailor Education to discuss RSE training, delivery, and support for your school."
+  description={description}
   canonicalPath="/contact"
+  jsonLd={contactPageJsonLd}
 >
-  <section class="contact-page">
-    <div class="mx-auto max-w-3xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
-      <h1 class="contact-page__title">Get in touch</h1>
-      <p class="contact-page__intro">
-        Interested in RSE delivery, training, or consultancy for your school? Fill in the form below and we'll get back to you.
-      </p>
+  <main class="contact-page">
+    <!-- §4.1 Hero -->
+    <section class="contact-hero">
+      <div class="contact-hero__inner">
+        <span class="contact-hero__eyebrow">Contact</span>
+        <h1 class="contact-hero__title">Get in touch</h1>
+        {friendlyServiceName ? (
+          <p class="contact-hero__lede">
+            Enquiring about <em>{friendlyServiceName}</em>? Fill in a few
+            details and we'll come back to you within a couple of working
+            days.
+          </p>
+        ) : (
+          <p class="contact-hero__lede">
+            Training, delivery, curriculum planning, or a question we
+            haven't listed — fill in a few details and we'll come back to
+            you within a couple of working days.
+          </p>
+        )}
+      </div>
+    </section>
 
-      <div class="contact-page__form">
+    <!-- §4.2 Form -->
+    <section class="contact-form" aria-labelledby="contact-form-label">
+      <div class="contact-form__inner">
+        <h2 id="contact-form-label" class="sr-only">Enquiry form</h2>
         <EnquiryForm preSelectedService={serviceParam} />
       </div>
+    </section>
 
-      <div class="contact-page__direct">
-        <h2 class="contact-page__section-title">Other ways to reach us</h2>
-        <p class="contact-page__text">
-          Email: <a href="mailto:hello@tailoreducation.org.uk">hello@tailoreducation.org.uk</a>
+    <!-- §4.3 Other ways to reach us -->
+    <section class="contact-direct" aria-labelledby="contact-direct-title">
+      <div class="contact-direct__inner">
+        <h2 id="contact-direct-title" class="contact-direct__title">
+          Other ways to reach us
+        </h2>
+        <p class="contact-direct__intro">
+          If the form isn't the right fit, email us directly or find us on
+          Instagram.
         </p>
-        <p class="contact-page__text">
-          Instagram: <a href="https://instagram.com/oktoask.co.uk" target="_blank" rel="noopener noreferrer">@oktoask.co.uk</a>
-        </p>
-      </div>
+        <dl class="contact-direct__list">
+          <dt class="contact-direct__term">Email</dt>
+          <dd class="contact-direct__value">
+            <a href="mailto:hello@tailoreducation.org.uk">
+              hello@tailoreducation.org.uk
+            </a>
+          </dd>
 
-      <div class="contact-page__safeguarding">
-        <p class="contact-page__note">
-          For urgent safeguarding concerns, contact your local authority designated officer (LADO) or call the NSPCC helpline on <a href="tel:08088005000">0808 800 5000</a>.
-        </p>
+          <dt class="contact-direct__term">Instagram</dt>
+          <dd class="contact-direct__value">
+            <a
+              href="https://instagram.com/oktoask.co.uk"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              @oktoask.co.uk
+            </a>
+            <span class="contact-direct__note">(Okay to Ask account)</span>
+          </dd>
+        </dl>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <!-- §4.4 Safeguarding note -->
+    <section
+      class="contact-safeguarding"
+      aria-labelledby="contact-safeguarding-title"
+    >
+      <div class="contact-safeguarding__inner">
+        <div class="contact-safeguarding__panel" role="note">
+          <h2
+            id="contact-safeguarding-title"
+            class="contact-safeguarding__title"
+          >
+            In a crisis? Please don't use this form.
+          </h2>
+          <p class="contact-safeguarding__intro">
+            This form isn't monitored for crisis contact and we can't
+            respond in real time. If you or a young person needs help
+            right now, use one of the routes below.
+          </p>
+          <ul class="contact-safeguarding__list">
+            <li>
+              If someone is in immediate danger, call
+              <a href="tel:999">999</a>.
+            </li>
+            <li>
+              Concerned about a child: NSPCC helpline
+              <a href="tel:08088005000">0808 800 5000</a>.
+            </li>
+            <li>
+              If you're a young person needing to talk: Childline
+              <a href="tel:08001111">0800 1111</a> (free, confidential).
+            </li>
+            <li>
+              Schools: your local authority designated officer (LADO) is
+              the first point of contact for concerns involving a
+              professional.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
 </BaseLayout>
 
 <style>
-  .contact-page {
-    background: var(--bg-page);
+  .contact-page { background: var(--bg-page); }
+
+  /* Visually-hidden helper (scoped to this page). */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
-  .contact-page__title {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-display-size-h1);
-    font-weight: var(--heading-weight-h1);
-    color: var(--text-heading);
-    margin: 0 0 var(--space-global-sm);
+  /* -------------------------------------------------------------------- */
+  /* §4.1 Hero                                                            */
+  /* -------------------------------------------------------------------- */
+  .contact-hero {
+    width: 100%;
+    background: var(--bg-tinted);
+    border-bottom: var(--border-width-xs) solid var(--border-subtle);
   }
 
-  .contact-page__intro {
+  .contact-hero__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-shell);
+    padding: var(--space-global-xl) var(--space-global-gutter);
+  }
+
+  .contact-hero__eyebrow {
+    display: block;
     font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-prose-size-body);
-    color: var(--text-body-muted);
-    margin: 0 0 var(--space-global-xl);
-    line-height: 1.6;
-  }
-
-  .contact-page__form {
-    margin-bottom: var(--space-global-2xl);
-  }
-
-  .contact-page__section-title {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-prose-size-h3);
-    font-weight: var(--heading-weight-h3);
-    color: var(--text-heading);
-    margin: 0 0 var(--space-global-sm);
-  }
-
-  .contact-page__text {
-    font-size: var(--text-prose-size-body);
-    color: var(--text-body);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--text-eyebrow-ls);
+    color: var(--brand-accent-text);
     margin: 0 0 var(--space-global-xs);
   }
 
-  .contact-page__text a {
-    color: var(--brand-accent-text);
+  .contact-hero__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h1);
+    font-weight: var(--heading-weight-h1);
+    line-height: var(--lh-display);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-md);
   }
 
-  .contact-page__direct {
-    padding: var(--space-global-lg);
+  .contact-hero__lede {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-lede);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-prose);
+    color: var(--text-body);
+    margin: 0;
+  }
+
+  .contact-hero__lede em {
+    font-style: italic;
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* §4.2 Form                                                            */
+  /* -------------------------------------------------------------------- */
+  .contact-form {
+    width: 100%;
+    background: var(--bg-page);
+  }
+
+  .contact-form__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-prose);
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* §4.3 Other ways to reach us                                          */
+  /* -------------------------------------------------------------------- */
+  .contact-direct {
+    width: 100%;
     background: var(--bg-surface-alt);
-    border-radius: var(--radius-lg);
-    margin-bottom: var(--space-global-lg);
   }
 
-  .contact-page__safeguarding {
-    padding: var(--space-global-md);
-    border-top: var(--border-width-xs) solid var(--border-subtle);
+  .contact-direct__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-prose);
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
   }
 
-  .contact-page__note {
+  .contact-direct__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h2);
+    font-weight: var(--heading-weight-h2);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .contact-direct__intro {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body-muted);
+    line-height: var(--lh-body);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .contact-direct__list {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    column-gap: var(--space-global-md);
+    row-gap: var(--space-global-xs);
+    margin: 0;
+    padding: 0;
+  }
+
+  .contact-direct__term {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-heading);
+    margin: 0;
+    line-height: var(--lh-body);
+  }
+
+  .contact-direct__value {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body);
+    margin: 0;
+    line-height: var(--lh-body);
+  }
+
+  .contact-direct__value a {
+    color: var(--brand-accent-text);
+    text-decoration: underline;
+  }
+
+  .contact-direct__note {
+    display: inline;
     font-size: var(--text-card-size-body);
     color: var(--text-body-muted);
-    margin: 0;
-    line-height: 1.5;
+    margin-left: var(--space-global-xs);
   }
 
-  .contact-page__note a {
+  @media (max-width: 639px) {
+    .contact-direct__list {
+      grid-template-columns: 1fr;
+      row-gap: var(--space-global-sm);
+    }
+    .contact-direct__value {
+      margin-top: calc(var(--space-global-xs) * -1);
+    }
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* §4.4 Safeguarding note                                               */
+  /* -------------------------------------------------------------------- */
+  .contact-safeguarding {
+    width: 100%;
+    background: var(--bg-page);
+  }
+
+  .contact-safeguarding__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-prose);
+    padding: var(--space-global-xl) var(--space-global-gutter)
+      var(--space-struct-y-base);
+  }
+
+  .contact-safeguarding__panel {
+    background: var(--bg-surface);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-left: var(--border-width-md) solid var(--state-warning);
+    border-radius: var(--radius-lg);
+    padding: var(--space-global-lg);
+  }
+
+  .contact-safeguarding__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h3);
+    font-weight: var(--heading-weight-h3);
+    line-height: var(--lh-heading-sub);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .contact-safeguarding__intro {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body);
+    line-height: var(--lh-body);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .contact-safeguarding__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-sm);
+  }
+
+  .contact-safeguarding__list li {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    color: var(--text-body);
+    line-height: var(--lh-body);
+  }
+
+  .contact-safeguarding__list a {
     color: var(--brand-accent-text);
+    text-decoration: underline;
+  }
+
+  @media (max-width: 639px) {
+    .contact-safeguarding__panel {
+      padding: var(--space-global-md);
+    }
   }
 </style>
