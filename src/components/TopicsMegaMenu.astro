@@ -84,22 +84,37 @@ const categories = [
 ---
 
 {mobile ? (
-  <div class="mega-mobile pl-[var(--space-global-sm)]">
+  <div class="mega-mobile">
     {categories.map((cat) => (
-      <div class="mega-mobile__group mb-[var(--space-global-sm)]">
-        <div class="mega-mobile__heading" style={`--cat-color: var(--cat-${cat.token})`}>
-          {cat.name}
+      <div class="mega-mobile__group" data-cat-token={cat.token}>
+        <button
+          class="mega-mobile__cat-trigger mobile-nav__cat-trigger"
+          type="button"
+          aria-expanded="false"
+          aria-controls={`mobile-cat-${cat.token}`}
+          style={`--cat-color: var(--cat-${cat.token})`}
+        >
+          <span class="mega-mobile__cat-label">{cat.name}</span>
+          <svg class="mega-mobile__cat-chevron mobile-nav__chevron" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+            <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div
+          id={`mobile-cat-${cat.token}`}
+          class="mega-mobile__cat-panel mobile-nav__cat-panel"
+          aria-hidden="true"
+        >
+          <ul class="mega-mobile__list list-none p-0 m-0" role="list">
+            {cat.pages.map((page) => (
+              <li>
+                <a href={`/topics/${page.slug}`} class="mega-mobile__link mobile-nav__sub-link">{page.title}</a>
+              </li>
+            ))}
+          </ul>
         </div>
-        <ul class="mega-mobile__list list-none p-0 m-0" role="list">
-          {cat.pages.map((page) => (
-            <li>
-              <a href={`/topics/${page.slug}`} class="mega-mobile__link block">{page.title}</a>
-            </li>
-          ))}
-        </ul>
       </div>
     ))}
-    <a href="/topics/" class="mega-mobile__view-all block py-2">View all topics</a>
+    <a href="/topics/" class="mega-mobile__view-all">View all topics <span aria-hidden="true">&rarr;</span></a>
   </div>
 ) : (
   <div
@@ -200,41 +215,53 @@ const categories = [
 
   /* ========================================
      Mobile Mega Menu (inside D3)
+     Nested accordion: one category open at a time.
+     Category trigger + link styles are shared with
+     .mobile-nav__cat-trigger / .mobile-nav__sub-link
+     in SiteHeader.astro — the mega-mobile__* classes
+     only own per-component details (label underline,
+     view-all link).
      ======================================== */
-  .mega-mobile__heading {
-    font-family: var(--font-shell-body-stack);
-    font-size: var(--text-footer-size-sm);
-    font-weight: var(--font-weight-semibold);
-    color: var(--cat-color, var(--text-heading));
-    text-transform: uppercase;
-    letter-spacing: var(--text-eyebrow-ls);
-    padding-bottom: 0.25rem;
-    margin-bottom: 0.25rem;
+  .mega-mobile {
+    padding: 0;
+  }
+
+  .mega-mobile__group {
+    /* No bottom border — category trigger separators live on the trigger itself. */
+  }
+
+  .mega-mobile__cat-label {
+    display: inline-block;
+    padding-bottom: 0.125rem;
     border-bottom: 2px solid var(--cat-color, var(--border-subtle));
+    color: var(--cat-color, var(--text-heading));
   }
 
   .mega-mobile__link {
-    padding: 0.4rem 0.5rem;
-    font-family: var(--font-shell-body-stack);
-    font-size: var(--text-nav-size);
-    font-weight: var(--font-weight-regular);
-    color: var(--text-body);
-    text-decoration: none;
-  }
-
-  .mega-mobile__link:hover {
-    color: var(--brand-accent-text);
+    /* Typography inherited from .mobile-nav__sub-link. */
   }
 
   .mega-mobile__view-all {
+    display: flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: var(--space-global-xs) var(--space-global-sm);
+    padding-inline-start: var(--space-global-md);
     font-family: var(--font-shell-body-stack);
     font-size: var(--text-nav-size);
     font-weight: var(--font-weight-medium);
     color: var(--brand-accent-text);
     text-decoration: none;
+    gap: var(--space-global-xs);
   }
 
   .mega-mobile__view-all:hover {
     text-decoration: underline;
+  }
+
+  .mega-mobile__view-all:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: calc(var(--focus-ring-offset) * -1);
+    border-radius: var(--radius-xs);
   }
 </style>

@@ -366,6 +366,9 @@
 
   /* ── ON-DARK OVERLAYS ── */
   --overlay-on-dark: rgba(255, 255, 255, 0.15);
+  /* Dims light-ground content behind modal/drawer/overlay surfaces.
+     Value is --bg-emphasis (#1E2A3A) at 40%. Used by D3 mobile nav scrim. */
+  --overlay-scrim: rgba(30, 42, 58, 0.4);
 
   /* ── OKAY TO ASK POST-IT MOTIF ── */
   --surface-ota-postit: #F5E58A;
