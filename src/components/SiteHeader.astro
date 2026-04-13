@@ -159,87 +159,122 @@ const isContact = pathname === '/contact';
   <!-- Mobile navigation [D3] -->
   <div
     id="mobile-nav"
-    class="mobile-nav lg:hidden max-h-[calc(100vh-var(--header-height))] overflow-y-auto py-[var(--space-global-sm)] px-[var(--space-global-gutter)]"
+    class="mobile-nav lg:hidden"
     aria-hidden="true"
     inert
   >
-    <nav aria-label="Mobile navigation">
+    <!-- Sticky topbar: Menu label + close button -->
+    <div class="mobile-nav__topbar">
+      <span class="mobile-nav__topbar-label" role="heading" aria-level="2">Menu</span>
+      <button
+        class="mobile-nav__close"
+        type="button"
+        aria-label="Close menu"
+        data-dismiss="mobile-nav"
+      >
+        <svg class="mobile-nav__close-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="mobile-nav__body" aria-label="Mobile navigation">
       <ul class="mobile-nav__list list-none p-0 m-0" role="list">
         <li class="mobile-nav__item">
           <button
-            class="mobile-nav__link mobile-nav__accordion-trigger flex items-center justify-between w-full py-3 border-0 bg-transparent cursor-pointer"
+            class="mobile-nav__link mobile-nav__accordion-trigger"
             aria-expanded="false"
             aria-controls="mobile-topics-panel"
             aria-current={isTopics ? 'page' : undefined}
             type="button"
           >
-            Topics
+            <span>Topics</span>
             <svg class="mobile-nav__chevron" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
               <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
-          <div id="mobile-topics-panel" class="mobile-nav__mega pb-[var(--space-global-sm)]" aria-hidden="true">
+          <div id="mobile-topics-panel" class="mobile-nav__mega" aria-hidden="true">
             <TopicsMegaMenu mobile />
           </div>
         </li>
         <li class="mobile-nav__item">
-          <a href="/questions/" class="mobile-nav__link flex items-center justify-between w-full py-3" aria-current={isQuestions ? 'page' : undefined}>Okay to Ask</a>
+          <a href="/questions/" class="mobile-nav__link" aria-current={isQuestions ? 'page' : undefined}>
+            <span>Okay to Ask</span>
+          </a>
         </li>
         <li class="mobile-nav__item">
           <button
-            class="mobile-nav__link mobile-nav__accordion-trigger flex items-center justify-between w-full py-3 border-0 bg-transparent cursor-pointer"
+            class="mobile-nav__link mobile-nav__accordion-trigger"
             aria-expanded="false"
             aria-controls="mobile-rse-panel"
             aria-current={isRseDelivery ? 'page' : undefined}
             type="button"
           >
-            RSE Delivery
+            <span>RSE Delivery</span>
             <svg class="mobile-nav__chevron" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
               <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
-          <div id="mobile-rse-panel" class="mobile-nav__accordion-panel pb-[var(--space-global-sm)]" aria-hidden="true">
-            <ul class="list-none p-0 m-0 pl-[var(--space-global-sm)] flex flex-col gap-0.5" role="list">
+          <div id="mobile-rse-panel" class="mobile-nav__accordion-panel" aria-hidden="true">
+            <ul class="mobile-nav__sub-list list-none p-0 m-0" role="list">
               {rseDeliveryLinks.map((link) => (
-                <li><a href={link.href} class="mobile-nav__sub-link block">{link.title}</a></li>
+                <li>
+                  <a href={link.href} class="mobile-nav__sub-link" aria-current={pathname === link.href.replace(/\/$/, '') ? 'page' : undefined}>
+                    {link.title}
+                  </a>
+                </li>
               ))}
             </ul>
           </div>
         </li>
         <li class="mobile-nav__item">
           <button
-            class="mobile-nav__link mobile-nav__accordion-trigger flex items-center justify-between w-full py-3 border-0 bg-transparent cursor-pointer"
+            class="mobile-nav__link mobile-nav__accordion-trigger"
             aria-expanded="false"
             aria-controls="mobile-rse-training-panel"
             aria-current={isRseTraining ? 'page' : undefined}
             type="button"
           >
-            RSE Training &amp; Support
+            <span>RSE Training &amp; Support</span>
             <svg class="mobile-nav__chevron" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
               <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
-          <div id="mobile-rse-training-panel" class="mobile-nav__accordion-panel pb-[var(--space-global-sm)]" aria-hidden="true">
-            <ul class="list-none p-0 m-0 pl-[var(--space-global-sm)] flex flex-col gap-0.5" role="list">
+          <div id="mobile-rse-training-panel" class="mobile-nav__accordion-panel" aria-hidden="true">
+            <ul class="mobile-nav__sub-list list-none p-0 m-0" role="list">
               {rseTrainingLinks.map((link) => (
-                <li><a href={link.href} class="mobile-nav__sub-link block">{link.title}</a></li>
+                <li>
+                  <a href={link.href} class="mobile-nav__sub-link" aria-current={pathname === link.href.replace(/\/$/, '') ? 'page' : undefined}>
+                    {link.title}
+                  </a>
+                </li>
               ))}
             </ul>
           </div>
         </li>
         <li class="mobile-nav__item">
-          <a href="/blog/" class="mobile-nav__link flex items-center justify-between w-full py-3" aria-current={isBlog ? 'page' : undefined}>Blog</a>
+          <a href="/blog/" class="mobile-nav__link" aria-current={isBlog ? 'page' : undefined}>
+            <span>Blog</span>
+          </a>
         </li>
         <li class="mobile-nav__item">
-          <a href="/about" class="mobile-nav__link flex items-center justify-between w-full py-3" aria-current={isAbout ? 'page' : undefined}>About</a>
+          <a href="/about" class="mobile-nav__link" aria-current={isAbout ? 'page' : undefined}>
+            <span>About</span>
+          </a>
         </li>
         <li class="mobile-nav__item">
-          <a href="/contact" class="mobile-nav__link flex items-center justify-between w-full py-3" aria-current={isContact ? 'page' : undefined}>Contact</a>
+          <a href="/contact" class="mobile-nav__link" aria-current={isContact ? 'page' : undefined}>
+            <span>Contact</span>
+          </a>
         </li>
       </ul>
     </nav>
   </div>
 </header>
+
+<!-- Scrim sits outside <header> so it can cover the viewport beneath the
+     header without being inside the sticky positioning context. -->
+<div class="mobile-nav-scrim lg:hidden" aria-hidden="true" data-dismiss="mobile-nav"></div>
 
 <script>
   function initHeader() {
@@ -300,28 +335,67 @@ const isContact = pathname === '/contact';
       }
     });
 
-    // --- Mobile hamburger ---
+    // --- Mobile navigation open/close (shared by hamburger, close button,
+    // scrim tap, Escape key). Extracted so all four close paths share one
+    // state toggle.
     const hamburger = header.querySelector('.site-header__hamburger') as HTMLButtonElement | null;
     const mobileNav = document.getElementById('mobile-nav');
 
-    if (hamburger && mobileNav) {
-      hamburger.addEventListener('click', () => {
-        const expanded = hamburger.getAttribute('aria-expanded') === 'true';
-        hamburger.setAttribute('aria-expanded', String(!expanded));
-        mobileNav.setAttribute('aria-hidden', String(expanded));
-        if (expanded) {
-          mobileNav.setAttribute('inert', '');
-        } else {
-          mobileNav.removeAttribute('inert');
-        }
-        hamburger.classList.toggle('is-open', !expanded);
-        document.body.classList.toggle('nav-open', !expanded);
-      });
+    function openMobileNav() {
+      if (!hamburger || !mobileNav) return;
+      hamburger.setAttribute('aria-expanded', 'true');
+      hamburger.setAttribute('aria-label', 'Close menu');
+      hamburger.classList.add('is-open');
+      mobileNav.setAttribute('aria-hidden', 'false');
+      mobileNav.removeAttribute('inert');
+      document.body.classList.add('nav-open');
+      // Move focus to the close button — first focusable element in the drawer.
+      const closeBtn = mobileNav.querySelector<HTMLButtonElement>('.mobile-nav__close');
+      if (closeBtn) closeBtn.focus();
     }
 
-    // --- Mobile accordion triggers (Topics, RSE Delivery) ---
-    const accordionTriggers = header.querySelectorAll('.mobile-nav__accordion-trigger');
-    accordionTriggers.forEach((trigger) => {
+    function closeMobileNav() {
+      if (!hamburger || !mobileNav) return;
+      hamburger.setAttribute('aria-expanded', 'false');
+      hamburger.setAttribute('aria-label', 'Open menu');
+      hamburger.classList.remove('is-open');
+      mobileNav.setAttribute('aria-hidden', 'true');
+      mobileNav.setAttribute('inert', '');
+      document.body.classList.remove('nav-open');
+      hamburger.focus();
+    }
+
+    function toggleMobileNav() {
+      if (!hamburger) return;
+      const expanded = hamburger.getAttribute('aria-expanded') === 'true';
+      if (expanded) closeMobileNav();
+      else openMobileNav();
+    }
+
+    if (hamburger && mobileNav) {
+      hamburger.addEventListener('click', toggleMobileNav);
+    }
+
+    // Scrim taps + close button — any element with [data-dismiss="mobile-nav"].
+    document.querySelectorAll('[data-dismiss="mobile-nav"]').forEach((el) => {
+      el.addEventListener('click', closeMobileNav);
+    });
+
+    // Escape closes the mobile nav (separately handled from the desktop
+    // flyout Escape handler above, which only targets .site-header__ triggers).
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      if (mobileNav && mobileNav.getAttribute('aria-hidden') === 'false') {
+        closeMobileNav();
+      }
+    });
+
+    // --- Mobile accordion triggers (top-level: Topics, RSE Delivery, RSE Training).
+    // Multi-open: opening one does not close the others.
+    const topLevelAccordions = header.querySelectorAll(
+      '.mobile-nav > .mobile-nav__body .mobile-nav__item > .mobile-nav__accordion-trigger'
+    );
+    topLevelAccordions.forEach((trigger) => {
       trigger.addEventListener('click', () => {
         const expanded = trigger.getAttribute('aria-expanded') === 'true';
         trigger.setAttribute('aria-expanded', String(!expanded));
@@ -330,6 +404,57 @@ const isContact = pathname === '/contact';
         if (panel) panel.setAttribute('aria-hidden', String(expanded));
       });
     });
+
+    // --- Topics mega-menu category triggers (nested inside the Topics panel).
+    // One-at-a-time: tapping a new category collapses the previously-open one.
+    const catTriggers = header.querySelectorAll<HTMLButtonElement>(
+      '#mobile-topics-panel .mobile-nav__cat-trigger'
+    );
+    catTriggers.forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        const expanded = trigger.getAttribute('aria-expanded') === 'true';
+        // Collapse siblings first.
+        catTriggers.forEach((other) => {
+          if (other === trigger) return;
+          other.setAttribute('aria-expanded', 'false');
+          const otherId = other.getAttribute('aria-controls');
+          const otherPanel = otherId ? document.getElementById(otherId) : null;
+          if (otherPanel) otherPanel.setAttribute('aria-hidden', 'true');
+        });
+        trigger.setAttribute('aria-expanded', String(!expanded));
+        const panelId = trigger.getAttribute('aria-controls');
+        const panel = panelId ? document.getElementById(panelId) : null;
+        if (panel) panel.setAttribute('aria-hidden', String(expanded));
+      });
+    });
+
+    // --- Auto-expand ancestors of the current page on mount, so a user who
+    // opens the drawer on /topics/consent sees Topics open AND Relationships
+    // (the category containing Consent) open.
+    const currentSubLink = mobileNav?.querySelector<HTMLAnchorElement>(
+      '.mobile-nav__sub-link[aria-current="page"]'
+    );
+    if (currentSubLink) {
+      const innerPanel = currentSubLink.closest<HTMLElement>(
+        '.mobile-nav__cat-panel, .mobile-nav__accordion-panel'
+      );
+      if (innerPanel) {
+        innerPanel.setAttribute('aria-hidden', 'false');
+        const innerTrigger = document.querySelector<HTMLButtonElement>(
+          `[aria-controls="${innerPanel.id}"]`
+        );
+        if (innerTrigger) innerTrigger.setAttribute('aria-expanded', 'true');
+      }
+      // If the inner panel is a topics category, also expand the Topics parent.
+      const outerMega = currentSubLink.closest<HTMLElement>('.mobile-nav__mega');
+      if (outerMega) {
+        outerMega.setAttribute('aria-hidden', 'false');
+        const outerTrigger = document.querySelector<HTMLButtonElement>(
+          `[aria-controls="${outerMega.id}"]`
+        );
+        if (outerTrigger) outerTrigger.setAttribute('aria-expanded', 'true');
+      }
+    }
   }
 
   initHeader();
@@ -492,19 +617,114 @@ const isContact = pathname === '/contact';
 
   /* ========================================
      Mobile Navigation [D3]
+     Panel structure:
+       .mobile-nav
+         .mobile-nav__topbar   (sticky; "Menu" label + X close)
+         .mobile-nav__body     (scrollable; nav list)
+     Three close paths: X button, scrim tap, Escape.
      ======================================== */
+
+  /* Panel: drops out from beneath the sticky header.
+     Uses visibility + opacity + transform so open AND close animate;
+     CSS cannot transition display:none, so visibility with a delayed
+     transition keeps the closed state inaccessible to focus. */
   .mobile-nav {
-    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
     background: var(--bg-surface);
     border-top: var(--border-width-xs) solid var(--border-subtle);
     z-index: var(--z-mobile-nav);
-    position: relative;
+    /* Dynamic viewport height for iOS Safari (URL bar behaviour); fallback to 100vh. */
+    max-height: calc(100vh - var(--header-height));
+    max-height: calc(100dvh - var(--header-height));
+    overflow-y: auto;
+    opacity: 0;
+    transform: translateY(-0.75rem);
+    visibility: hidden;
+    transition:
+      opacity var(--transition-duration) var(--transition-easing),
+      transform var(--transition-duration) var(--transition-easing),
+      visibility 0s linear var(--transition-duration);
   }
 
   .mobile-nav[aria-hidden="false"] {
-    display: block;
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    transition:
+      opacity var(--transition-duration) var(--transition-easing),
+      transform var(--transition-duration) var(--transition-easing),
+      visibility 0s linear 0s;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-nav {
+      transition: visibility 0s linear var(--transition-duration);
+      transform: none;
+    }
+    .mobile-nav[aria-hidden="false"] {
+      transition: visibility 0s linear 0s;
+    }
+  }
+
+  /* --- Topbar: sticky inside the drawer, above the scrolling list --- */
+  .mobile-nav__topbar {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 3rem;
+    padding: var(--space-global-xs) var(--space-global-sm) var(--space-global-xs) var(--space-global-gutter);
+    background: var(--bg-surface);
+    border-bottom: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  .mobile-nav__topbar-label {
+    font-family: var(--font-shell-body-stack);
+    font-size: var(--text-nav-size-sm);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--text-eyebrow-ls);
+    color: var(--text-body-muted);
+  }
+
+  .mobile-nav__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--text-body);
+    cursor: pointer;
+    transition:
+      background var(--transition-duration) var(--transition-easing),
+      color var(--transition-duration) var(--transition-easing);
+  }
+
+  .mobile-nav__close:hover {
+    background: var(--bg-surface-alt);
+    color: var(--brand-accent-text);
+  }
+
+  .mobile-nav__close:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  /* --- Body (scrollable list container) --- */
+  .mobile-nav__body {
+    padding: var(--space-global-xs) var(--space-global-gutter) var(--space-global-sm);
+  }
+
+  /* --- Top-level rows --- */
   .mobile-nav__item {
     border-bottom: var(--border-width-xs) solid var(--border-subtle);
   }
@@ -514,56 +734,230 @@ const isContact = pathname === '/contact';
   }
 
   .mobile-nav__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-global-sm);
+    width: 100%;
+    min-height: 3rem;
+    padding: var(--space-global-sm) var(--space-global-xs);
+    background: transparent;
+    border: none;
+    cursor: pointer;
     font-family: var(--font-shell-body-stack);
     font-size: var(--text-prose-size-body);
     font-weight: var(--font-weight-medium);
+    line-height: var(--lh-heading-sub);
     color: var(--text-body);
     text-decoration: none;
+    text-align: left;
+    transition:
+      background var(--transition-duration) var(--transition-easing),
+      color var(--transition-duration) var(--transition-easing);
   }
 
-  .mobile-nav__link:hover,
-  .mobile-nav__link:focus-visible {
-    color: var(--brand-accent-text);
+  @media (hover: hover) {
+    .mobile-nav__link:hover {
+      color: var(--brand-accent-text);
+    }
   }
 
   .mobile-nav__link:active {
     background: var(--bg-surface-alt);
   }
 
-  .mobile-nav__chevron {
-    transition: transform var(--transition-duration) var(--transition-easing);
-    color: var(--text-body);
+  .mobile-nav__link:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: calc(var(--focus-ring-offset) * -1);
   }
 
-  .mobile-nav__accordion-trigger[aria-expanded="true"] .mobile-nav__chevron {
-    transform: rotate(180deg);
-  }
-
-  .mobile-nav__mega,
-  .mobile-nav__accordion-panel {
-    display: none;
-  }
-
-  .mobile-nav__mega[aria-hidden="false"],
-  .mobile-nav__accordion-panel[aria-hidden="false"] {
-    display: block;
-  }
-
-  .mobile-nav__sub-link {
-    padding: 0.4rem 0.5rem;
-    font-family: var(--font-shell-body-stack);
-    font-size: var(--text-nav-size);
-    font-weight: var(--font-weight-regular);
-    color: var(--text-body);
-    text-decoration: none;
-  }
-
-  .mobile-nav__sub-link:hover {
+  /* Expanded parent row — background shift + accent colour shift. */
+  .mobile-nav__accordion-trigger[aria-expanded="true"] {
+    background: var(--bg-surface-alt);
     color: var(--brand-accent-text);
   }
 
-  /* Lock body scroll when mobile nav is open */
+  /* Chevron rotation (desktop sites handle this too; inherit the pattern). */
+  .mobile-nav__chevron {
+    flex-shrink: 0;
+    color: var(--text-body-muted);
+    transition: transform var(--transition-duration) var(--transition-easing);
+  }
+
+  .mobile-nav__accordion-trigger[aria-expanded="true"] .mobile-nav__chevron,
+  .mobile-nav__cat-trigger[aria-expanded="true"] .mobile-nav__chevron {
+    transform: rotate(180deg);
+  }
+
+  /* --- Sub-panels (accordion expansion) --- */
+  .mobile-nav__mega,
+  .mobile-nav__accordion-panel,
+  .mobile-nav__cat-panel {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.18s var(--transition-easing);
+  }
+
+  .mobile-nav__mega[aria-hidden="false"],
+  .mobile-nav__accordion-panel[aria-hidden="false"],
+  .mobile-nav__cat-panel[aria-hidden="false"] {
+    display: block;
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-nav__mega,
+    .mobile-nav__accordion-panel,
+    .mobile-nav__cat-panel {
+      transition: none;
+    }
+  }
+
+  .mobile-nav__accordion-panel,
+  .mobile-nav__cat-panel {
+    background: var(--bg-surface);
+    padding-block: var(--space-global-xs);
+  }
+
+  .mobile-nav__sub-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* --- Sub-items (dropdown children, topic pages) --- */
+  .mobile-nav__sub-link {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 2.75rem;
+    padding: var(--space-global-xs) var(--space-global-sm);
+    padding-inline-start: var(--space-global-md);
+    font-family: var(--font-shell-body-stack);
+    font-size: var(--text-nav-size);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-heading-sub);
+    color: var(--text-body);
+    text-decoration: none;
+    transition:
+      background var(--transition-duration) var(--transition-easing),
+      color var(--transition-duration) var(--transition-easing);
+  }
+
+  @media (hover: hover) {
+    .mobile-nav__sub-link:hover {
+      color: var(--brand-accent-text);
+    }
+  }
+
+  .mobile-nav__sub-link:active {
+    background: var(--bg-surface-alt);
+  }
+
+  .mobile-nav__sub-link:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: calc(var(--focus-ring-offset) * -1);
+  }
+
+  /* --- Topics mega-menu: category heading row --- */
+  .mobile-nav__cat-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 2.75rem;
+    padding: var(--space-global-xs) var(--space-global-sm);
+    padding-inline-start: var(--space-global-md);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-shell-body-stack);
+    font-size: var(--text-nav-size-sm);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--text-eyebrow-ls);
+    color: var(--cat-color, var(--text-heading));
+    text-align: left;
+    transition: background var(--transition-duration) var(--transition-easing);
+  }
+
+  .mobile-nav__cat-trigger[aria-expanded="true"] {
+    background: var(--bg-surface-alt);
+  }
+
+  .mobile-nav__cat-trigger:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: calc(var(--focus-ring-offset) * -1);
+  }
+
+  /* --- Active-page indicator (all tiers) --- */
+  .mobile-nav__link[aria-current="page"] {
+    background: var(--bg-surface-alt);
+    box-shadow: inset 3px 0 0 0 var(--brand-accent);
+  }
+
+  .mobile-nav__sub-link[aria-current="page"] {
+    background: var(--bg-surface-alt);
+    color: var(--brand-accent-text);
+    font-weight: var(--font-weight-medium);
+    box-shadow: inset 3px 0 0 0 var(--brand-accent);
+  }
+
+  /* ========================================
+     Mobile nav scrim
+     Covers the viewport beneath the header when the
+     drawer is open. Fades in/out in sync with the panel.
+     Carries data-dismiss so a tap closes the drawer.
+     ======================================== */
+  .mobile-nav-scrim {
+    position: fixed;
+    inset: var(--header-height) 0 0 0;
+    z-index: calc(var(--z-mobile-nav) - 1);
+    background: var(--overlay-scrim);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity var(--transition-duration) var(--transition-easing),
+      visibility 0s linear var(--transition-duration);
+  }
+
+  @supports (backdrop-filter: blur(2px)) or (-webkit-backdrop-filter: blur(2px)) {
+    .mobile-nav-scrim {
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+  }
+
+  :global(body.nav-open) .mobile-nav-scrim {
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity var(--transition-duration) var(--transition-easing),
+      visibility 0s linear 0s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-nav-scrim {
+      transition: visibility 0s linear var(--transition-duration);
+    }
+    :global(body.nav-open) .mobile-nav-scrim {
+      transition: visibility 0s linear 0s;
+    }
+  }
+
+  /* Desktop: drawer and scrim hidden entirely (Tailwind lg:hidden on the
+     markup also removes them from the layout; this belt-and-braces rule
+     ensures the animated states don't leak in.) */
+  @media (min-width: 1024px) {
+    .mobile-nav,
+    .mobile-nav-scrim {
+      display: none;
+    }
+  }
+
+  /* Lock body scroll (and iOS rubber-banding) when mobile nav is open. */
   :global(body.nav-open) {
     overflow: hidden;
+    touch-action: none;
   }
 </style>
