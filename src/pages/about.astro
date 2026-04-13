@@ -1,110 +1,823 @@
 ---
 /**
  * About page [B2] — /about
- * Mission, team, Okay to Ask project, framework alignment. Tailor layer.
+ * Trust page: who Tailor is, the team, how we think, recent writing,
+ * and a soft contact door. Tailor layer.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getBlogPosts } from '../lib/content';
+import type { BlogPost } from '../lib/types';
 
+// --- Team data (hand-maintained — v1 ship, pre-Notion) ---
+
+interface TeamMember {
+  name: string;
+  role: string;
+  bio: string;
+  portrait: string | null;
+  portraitAlt: string | null;
+  credentials?: string;
+  linkedIn?: string;
+}
+
+const team: TeamMember[] = [
+  {
+    name: 'Gareth Esson',
+    role: 'Founder & RSE Specialist',
+    bio: 'Gareth is an experienced RSE educator who has worked directly with schools across the UK. He writes all Tailor Education content and delivers training and RSE sessions in schools.',
+    portrait: null, // [ASSET TBD — /team/gareth.jpg]
+    portraitAlt: null,
+    credentials: 'QTS · PSHE Association member',
+  },
+];
+
+// --- Featured blog posts ---
+
+const FEATURED_SLUGS: string[] = [
+  // [COPY TBD — 3 slugs chosen for the About page]
+];
+
+const allPosts = await getBlogPosts();
+
+const resolvedFeatured = FEATURED_SLUGS
+  .map((slug) => allPosts.find((p) => p.slug === slug))
+  .filter((p): p is BlogPost => p !== undefined);
+
+// Back-fill up to 3 from newest-first, de-duplicated.
+const byDate = [...allPosts].sort((a, b) => {
+  const ad = a.publishedDate ? new Date(a.publishedDate).getTime() : 0;
+  const bd = b.publishedDate ? new Date(b.publishedDate).getTime() : 0;
+  return bd - ad;
+});
+
+const featuredPosts: BlogPost[] = [...resolvedFeatured];
+for (const p of byDate) {
+  if (featuredPosts.length >= 3) break;
+  if (!featuredPosts.some((f) => f.id === p.id)) featuredPosts.push(p);
+}
+const displayPosts = featuredPosts.slice(0, 3);
+
+// --- Helpers ---
+
+function initials(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+function formatDate(iso: string | null): string | null {
+  if (!iso) return null;
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return null;
+  return new Intl.DateTimeFormat('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  }).format(d);
+}
+
+function plainTextFromBlocks(blocks: any[]): string {
+  const parts: string[] = [];
+  for (const b of blocks ?? []) {
+    if (b?.type === 'paragraph') {
+      const rt = b.paragraph?.rich_text ?? [];
+      const text = rt.map((t: any) => t.plain_text || '').join('').trim();
+      if (text) parts.push(text);
+    }
+    if (parts.join(' ').length >= 300) break;
+  }
+  return parts.join(' ');
+}
+
+function deriveExcerpt(post: BlogPost, max = 140): string {
+  const source = (post.metaDescription || plainTextFromBlocks(post.body) || '').trim();
+  if (source.length <= max) return source;
+  const slice = source.slice(0, max - 1);
+  const lastSpace = slice.lastIndexOf(' ');
+  return (lastSpace > 40 ? slice.slice(0, lastSpace) : slice) + '…';
+}
+
+// Dev-time loud failure: if a team member has a portrait but no alt, yell.
+if (import.meta.env.DEV) {
+  for (const m of team) {
+    if (m.portrait && !m.portraitAlt) {
+      console.warn(
+        `[about.astro] Team member "${m.name}" has a portrait but no portraitAlt. Alt text is required for informational portraits.`,
+      );
+    }
+  }
+}
+
+// --- SEO ---
+
+const description =
+  'Meet the team behind Tailor Education — a community-interest company delivering expert RSE content, training, and support to UK schools.';
+
+const orgJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Tailor Education',
+  url: 'https://tailoreducation.org.uk/',
+  logo: 'https://tailoreducation.org.uk/logo.png',
+  description,
+  founder: {
+    '@type': 'Person',
+    name: 'Gareth Esson',
+  },
+};
 ---
 
 <BaseLayout
   title="About — Tailor Education"
-  description="Tailor Education creates expert RSE resources, training and support for schools. Meet the team and learn about Okay to Ask."
+  description={description}
   canonicalPath="/about"
+  jsonLd={orgJsonLd}
 >
-  <article class="about-page">
-    <!-- 1. Tailor Education -->
-    <section class="about-hero">
-      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
-        <h1 class="about-hero__title">About Tailor Education</h1>
-        <p class="about-hero__text">
-          Tailor Education is a community interest company dedicated to providing expert relationships and sex education for UK schools. We believe every young person deserves honest, inclusive, and age-appropriate RSE — and every teacher deserves the tools and confidence to deliver it.
+  <!-- §1 Hero -->
+  <header class="about-hero">
+    <div class="about-hero__inner">
+      <span class="about-hero__eyebrow">About Tailor Education</span>
+      <h1 class="about-hero__title">RSE built by teachers, trusted by schools.</h1>
+      <p class="about-hero__lede">
+        Tailor Education is a community-interest company delivering expert
+        relationships and sex education resources, training, and support to UK
+        schools. Everything we publish is written by practising educators and
+        aligned to statutory guidance.
+      </p>
+    </div>
+  </header>
+
+  <div class="about-page">
+    <!-- §2 Who we are -->
+    <section class="about-intro">
+      <div class="about-intro__inner">
+        <h2 class="about-intro__title">Tailor Education</h2>
+        <p class="about-intro__para">
+          Tailor Education exists to make high-quality relationships and sex
+          education feel deliverable in every classroom — not just the ones
+          with a specialist on staff. We build the resources, the training,
+          and the planning support that let schools teach RSE with confidence,
+          grounded in DfE statutory guidance and the PSHE Association
+          Programme of Study.
+        </p>
+        <p class="about-intro__para">
+          We're a <a
+            href="https://find-and-update.company-information.service.gov.uk/"
+            rel="noopener noreferrer"
+          >community-interest company</a>: any surplus we generate is committed,
+          by statute, to the community purpose we were founded for. That's a
+          structure, not a slogan — it shapes who we answer to and how we
+          choose what to work on next.
+        </p>
+        <p class="about-intro__para">
+          We believe young people deserve honest, inclusive, age-appropriate
+          RSE — and teachers deserve the tools and the confidence to deliver
+          it. Every page we publish and every training session we run is
+          measured against that belief.
         </p>
       </div>
     </section>
 
-    <!-- 2. Meet the team -->
-    <section class="about-section about-section--alt">
-      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-        <h2 class="about-section__title">Meet the team</h2>
-        <div class="team-grid">
-          <div class="team-card">
-            <div class="team-card__avatar" aria-hidden="true">GE</div>
-            <div class="team-card__info">
-              <h3 class="team-card__name">Gareth Esson</h3>
-              <p class="team-card__role">Founder & RSE Specialist</p>
-              <p class="team-card__bio">
-                Gareth is an experienced RSE educator who has worked directly with schools across the UK. He writes all Tailor Education content and delivers training and RSE sessions in schools.
-              </p>
-            </div>
-          </div>
-          <div class="team-card">
-            <div class="team-card__avatar" aria-hidden="true">TE</div>
-            <div class="team-card__info">
-              <h3 class="team-card__name">Team member</h3>
-              <p class="team-card__role">Role TBC</p>
-              <p class="team-card__bio">Bio coming soon.</p>
-            </div>
+    <!-- §3 Meet the team -->
+    <section class="about-team" aria-labelledby="about-team-title">
+      <div class="about-team__inner">
+        <h2 id="about-team-title" class="about-team__title">Meet the team</h2>
+        <p class="about-team__intro">
+          The people behind Tailor's content, training, and delivery.
+        </p>
+        <ul class="about-team__grid" data-count={team.length} role="list">
+          {team.map((m, i) => (
+            <li class="about-team__item">
+              <div class="about-team-card">
+                <div class="about-team-card__portrait">
+                  {m.portrait ? (
+                    <img
+                      src={m.portrait}
+                      alt={m.portraitAlt || `Portrait of ${m.name}`}
+                      loading={i === 0 ? 'eager' : 'lazy'}
+                      decoding="async"
+                    />
+                  ) : (
+                    <div class="about-team-card__portrait-fallback" aria-hidden="true">
+                      {initials(m.name)}
+                    </div>
+                  )}
+                </div>
+                <div class="about-team-card__body">
+                  {m.linkedIn ? (
+                    <h3 class="about-team-card__name">
+                      <a href={m.linkedIn} rel="noopener noreferrer" target="_blank">
+                        {m.name}<span class="sr-only"> (opens in new tab)</span>
+                      </a>
+                    </h3>
+                  ) : (
+                    <h3 class="about-team-card__name">{m.name}</h3>
+                  )}
+                  <p class="about-team-card__role">{m.role}</p>
+                  {m.credentials && (
+                    <p class="about-team-card__credentials">{m.credentials}</p>
+                  )}
+                  <p class="about-team-card__bio">{m.bio}</p>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- §4 Our approach -->
+    <section class="about-approach">
+      <div class="about-approach__inner">
+        <h2 class="about-intro__title">Our approach</h2>
+        <p class="about-intro__para">
+          Our content is written by practising educators, aligned to DfE, PSHE
+          Association, and UNESCO frameworks, and designed around
+          disclosure-aware activity design. If you want to see how that plays
+          out in curriculum, training, and classroom practice, we've written
+          it up in full.
+        </p>
+        <a href="/our-approach" class="btn btn--std btn--outline has-icon-hover about-approach__cta">
+          Read about our approach
+        </a>
+      </div>
+    </section>
+
+    {displayPosts.length > 0 && (
+      <!-- §5 From our blog -->
+      <section class="about-blog" aria-labelledby="about-blog-title">
+        <div class="about-blog__inner">
+          <h2 id="about-blog-title" class="about-blog__title">From our blog</h2>
+          <p class="about-blog__intro">
+            A taste of how we think, in long form.
+          </p>
+          <ul class="about-blog__grid" role="list">
+            {displayPosts.map((post) => {
+              const category = post.targetAudience || post.topics[0]?.title || null;
+              const excerpt = deriveExcerpt(post);
+              const date = formatDate(post.publishedDate);
+              const topics = post.topics.slice(0, 3);
+              const extraTopicCount = Math.max(0, post.topics.length - topics.length);
+              return (
+                <li class="about-blog__item">
+                  <a href={`/blog/${post.slug}`} class="blog-index-card">
+                    <div class="blog-index-card__image">
+                      {post.featuredImage ? (
+                        <img
+                          src={post.featuredImage}
+                          alt=""
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      ) : (
+                        <div class="blog-index-card__image-fallback" aria-hidden="true"></div>
+                      )}
+                    </div>
+                    <div class="blog-index-card__body">
+                      {category && (
+                        <div class="blog-index-card__eyebrow">{category}</div>
+                      )}
+                      <h3 class="blog-index-card__title">{post.title}</h3>
+                      {excerpt && (
+                        <p class="blog-index-card__excerpt">{excerpt}</p>
+                      )}
+                      <div class="blog-index-card__meta">
+                        {post.author && <span>{post.author}</span>}
+                        {post.author && date && <span aria-hidden="true"> · </span>}
+                        {date && <time datetime={post.publishedDate || undefined}>{date}</time>}
+                      </div>
+                      {topics.length > 0 && (
+                        <div class="blog-index-card__topics">
+                          {topics.map((t) => (
+                            <span class="blog-index-card__topic">{t.title}</span>
+                          ))}
+                          {extraTopicCount > 0 && (
+                            <span class="blog-index-card__topic blog-index-card__topic--more">
+                              +{extraTopicCount} more
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+          <div class="about-blog__footer">
+            <a href="/blog/" class="btn btn--std btn--outline has-icon-hover">
+              View all posts
+            </a>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    )}
 
-    <!-- 3. The Okay to Ask project -->
-    <section class="about-section">
-      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-        <h2 class="about-section__title">The Okay to Ask project</h2>
-        <p class="about-section__text">
-          Okay to Ask started with anonymous question boxes in schools. Young people wrote down whatever they wanted to know — no names, no judgement. We collected those questions and answered every single one honestly.
-        </p>
-        <p class="about-section__text">
-          The result is a growing collection of over 150 real questions and honest answers, published online and in print. The Okay to Ask book brings these questions to life with the original handwritten post-it notes and expert answers.
-        </p>
-        <a href="/book" class="link-action">Learn about the book</a>
-      </div>
-    </section>
-
-    <!-- 4. Framework alignment -->
-    <section class="about-section about-section--alt">
-      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-        <h2 class="about-section__title">Framework alignment</h2>
-        <p class="about-section__text">
-          All Tailor Education content is aligned to national and international RSE frameworks, including DfE statutory guidance, the PSHE Association Programme of Study, UNESCO, and WHO standards.
-        </p>
-        <a href="/our-approach" class="link-action">Read about our approach</a>
-      </div>
-    </section>
-
-    <!-- 5. CTA -->
+    <!-- §6 Get in touch -->
     <section class="about-cta">
-      <div class="mx-auto max-w-4xl px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+      <div class="about-cta__inner">
         <div class="about-cta__card">
-          <a href="/our-approach" class="btn btn--std btn--outline">See our approach</a>
-          <a href="/contact" class="btn btn--std btn--primary has-icon-hover">Get in touch</a>
+          <h2 class="about-cta__title">Work with us</h2>
+          <p class="about-cta__body">
+            Training, delivery, bespoke planning: drop us a note and we'll come
+            back within a working day.
+          </p>
+          <a href="/contact" class="btn btn--std btn--primary has-icon-hover">
+            Get in touch
+          </a>
         </div>
       </div>
     </section>
-  </article>
+  </div>
 </BaseLayout>
 
 <style>
   .about-page { background: var(--bg-page); }
-  .about-hero { background: var(--bg-surface); border-bottom: var(--border-width-xs) solid var(--border-subtle); }
-  .about-hero__title { font-family: var(--font-tailor-heading-stack); font-size: var(--text-display-size-h1); font-weight: var(--heading-weight-h1); color: var(--text-heading); margin: 0 0 var(--space-global-md); }
-  .about-hero__text { font-family: var(--font-tailor-body-stack); font-size: var(--text-prose-size-body); color: var(--text-body); max-width: 36rem; margin: 0; line-height: 1.7; }
-  .about-section { font-family: var(--font-tailor-body-stack); }
-  .about-section--alt { background: var(--bg-surface-alt); }
-  .about-section__title { font-family: var(--font-tailor-heading-stack); font-size: var(--text-prose-size-h2); font-weight: var(--heading-weight-h2); color: var(--text-heading); margin: 0 0 var(--space-global-sm); }
-  .about-section__text { font-size: var(--text-prose-size-body); color: var(--text-body); line-height: 1.7; max-width: 36rem; margin: 0 0 var(--space-global-sm); }
 
-  .team-grid { display: grid; gap: var(--space-global-md); }
-  .team-card { display: flex; gap: var(--space-global-md); padding: var(--space-global-md); background: var(--bg-surface); border-radius: var(--radius-lg); border: var(--border-width-xs) solid var(--border-subtle); }
-  .team-card__avatar { width: 3.5rem; height: 3.5rem; border-radius: 50%; background: var(--bg-tinted); display: flex; align-items: center; justify-content: center; font-family: var(--font-tailor-body-stack); font-weight: var(--font-weight-bold); color: var(--brand-accent-text); flex-shrink: 0; }
-  .team-card__name { font-size: var(--text-prose-size-body); font-weight: var(--font-weight-semibold); color: var(--text-heading); margin: 0; }
-  .team-card__role { font-size: var(--text-card-size-body); color: var(--brand-accent-text); margin: 0 0 var(--space-global-xs); }
-  .team-card__bio { font-size: var(--text-card-size-body); color: var(--text-body-muted); margin: 0; line-height: 1.5; }
+  /* -------------------------------------------------------------------- */
+  /* §1 Hero                                                              */
+  /* -------------------------------------------------------------------- */
+  .about-hero {
+    width: 100%;
+    background: var(--bg-tinted);
+    border-bottom: var(--border-width-xs) solid var(--border-subtle);
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+  }
 
-  .about-cta__card { display: flex; flex-wrap: wrap; gap: var(--space-global-sm); justify-content: center; }
+  .about-hero__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-shell);
+  }
 
-  @media (min-width: 768px) { .team-grid { grid-template-columns: repeat(2, 1fr); } }
+  .about-hero__eyebrow {
+    display: block;
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--text-eyebrow-ls);
+    color: var(--brand-accent-text);
+    margin: 0 0 var(--space-global-xs);
+  }
+
+  .about-hero__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h1);
+    font-weight: var(--heading-weight-h1);
+    line-height: var(--lh-display);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .about-hero__lede {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-lede);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-prose);
+    color: var(--text-body);
+    max-width: var(--container-max-prose);
+    margin: 0;
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* §2 Intro / §4 Approach (shared prose typography)                     */
+  /* -------------------------------------------------------------------- */
+  .about-intro,
+  .about-approach {
+    width: 100%;
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+  }
+
+  .about-intro__inner,
+  .about-approach__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-prose);
+  }
+
+  .about-intro__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h2);
+    font-weight: var(--heading-weight-h2);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .about-intro__para {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-prose);
+    color: var(--text-body);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .about-intro__para:last-child { margin-bottom: 0; }
+
+  .about-approach__cta {
+    margin-top: var(--space-global-md);
+    align-self: flex-start;
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* §3 Meet the team                                                     */
+  /* -------------------------------------------------------------------- */
+  .about-team {
+    width: 100%;
+    background: var(--bg-surface-alt);
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+  }
+
+  .about-team__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-shell);
+  }
+
+  .about-team__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h2);
+    font-weight: var(--heading-weight-h2);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .about-team__intro {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-prose);
+    color: var(--text-body);
+    margin: 0 0 var(--space-global-lg);
+    max-width: var(--container-max-prose);
+  }
+
+  .about-team__grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-global-lg);
+  }
+
+  .about-team__grid[data-count="1"] {
+    grid-template-columns: 1fr;
+    max-width: 24rem;
+    margin-inline: auto;
+  }
+
+  .about-team__grid[data-count="2"] { grid-template-columns: 1fr; }
+
+  @media (min-width: 640px) {
+    .about-team__grid { grid-template-columns: repeat(2, 1fr); }
+    .about-team__grid[data-count="2"] {
+      grid-template-columns: repeat(2, 1fr);
+      max-width: 48rem;
+      margin-inline: auto;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .about-team__grid { grid-template-columns: repeat(3, 1fr); }
+    .about-team__grid[data-count="1"] { grid-template-columns: 1fr; }
+    .about-team__grid[data-count="2"] { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .about-team__item { display: flex; }
+
+  /* Team card */
+  .about-team-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-surface);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-xs);
+  }
+
+  .about-team-card__portrait {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: var(--bg-surface-alt);
+  }
+
+  .about-team-card__portrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+  }
+
+  .about-team-card__portrait-fallback {
+    width: 100%;
+    height: 100%;
+    background: var(--bg-tinted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-tailor-heading-stack);
+    font-size: clamp(2.5rem, 5vw + 1rem, 4rem);
+    font-weight: var(--font-weight-bold);
+    color: var(--brand-accent-text);
+    letter-spacing: -0.02em;
+  }
+
+  .about-team-card__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-xs);
+    padding: var(--space-global-md);
+  }
+
+  .about-team-card__name {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-card-size-h3);
+    font-weight: var(--heading-weight-h3);
+    line-height: var(--lh-heading-sub);
+    color: var(--text-heading);
+    margin: 0;
+  }
+
+  .about-team-card__name a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .about-team-card__name a:hover,
+  .about-team-card__name a:focus-visible {
+    color: var(--brand-accent-text);
+    text-decoration: underline;
+  }
+
+  .about-team-card__role {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--lh-card);
+    color: var(--brand-accent-text);
+    margin: 0;
+  }
+
+  .about-team-card__credentials {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-h6);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--card-eyebrow-ls);
+    color: var(--text-body-muted);
+    line-height: var(--lh-card);
+    margin: 0;
+  }
+
+  .about-team-card__bio {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-card);
+    color: var(--text-body-muted);
+    margin: var(--space-global-xs) 0 0;
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* §4 Approach — layout of intro block                                  */
+  /* (typography shared with §2 via .about-intro__title/__para classes)    */
+  /* -------------------------------------------------------------------- */
+  .about-approach__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* §5 From our blog                                                     */
+  /* -------------------------------------------------------------------- */
+  .about-blog {
+    width: 100%;
+    background: var(--bg-surface-alt);
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+  }
+
+  .about-blog__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-shell);
+  }
+
+  .about-blog__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h2);
+    font-weight: var(--heading-weight-h2);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .about-blog__intro {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-prose);
+    color: var(--text-body);
+    margin: 0 0 var(--space-global-lg);
+    max-width: var(--container-max-prose);
+  }
+
+  .about-blog__grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-global-lg);
+  }
+
+  @media (min-width: 640px) {
+    .about-blog__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (min-width: 1024px) {
+    .about-blog__grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .about-blog__item { display: flex; }
+
+  .about-blog__footer {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-global-lg);
+  }
+
+  @media (min-width: 640px) {
+    .about-blog__footer { justify-content: flex-end; }
+  }
+
+  /* Blog index card (reused pattern from B9 — local copy for v1) */
+  .blog-index-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-surface);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-xs);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .blog-index-card:hover,
+  .blog-index-card:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(27, 26, 23, 0.08);
+  }
+
+  .blog-index-card__image {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--bg-tinted);
+  }
+
+  .blog-index-card__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .blog-index-card__image-fallback {
+    width: 100%;
+    height: 100%;
+    background: var(--bg-tinted);
+  }
+
+  .blog-index-card__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-xs);
+    padding: var(--space-global-md);
+  }
+
+  .blog-index-card__eyebrow {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-h6);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--card-eyebrow-ls);
+    color: var(--brand-accent-text);
+    line-height: var(--lh-card);
+  }
+
+  .blog-index-card__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-card-size-h3);
+    font-weight: var(--heading-weight-h3);
+    line-height: var(--lh-heading-sub);
+    color: var(--text-heading);
+    margin: 0;
+  }
+
+  .blog-index-card:hover .blog-index-card__title,
+  .blog-index-card:focus-visible .blog-index-card__title {
+    color: var(--brand-accent-text);
+  }
+
+  .blog-index-card__excerpt {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-card);
+    color: var(--text-body-muted);
+    margin: 0;
+  }
+
+  .blog-index-card__meta {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-h6);
+    color: var(--text-body-muted);
+    line-height: var(--lh-card);
+    margin-top: var(--space-global-xs);
+  }
+
+  .blog-index-card__topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-global-xs);
+    margin-top: var(--space-global-xs);
+  }
+
+  .blog-index-card__topic {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-h6);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-body-muted);
+  }
+
+  .blog-index-card__topic:not(:last-child)::after {
+    content: '\00b7';
+    margin-left: var(--space-global-xs);
+  }
+
+  .blog-index-card__topic--more {
+    color: var(--brand-accent-text);
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* §6 Get in touch                                                      */
+  /* -------------------------------------------------------------------- */
+  .about-cta {
+    width: 100%;
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+  }
+
+  .about-cta__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-prose);
+  }
+
+  .about-cta__card {
+    background: var(--bg-tinted);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-struct-y-base) var(--space-global-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-global-md);
+    text-align: left;
+  }
+
+  .about-cta__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h2);
+    font-weight: var(--heading-weight-h2);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
+    margin: 0;
+  }
+
+  .about-cta__body {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-prose);
+    color: var(--text-body);
+    margin: 0;
+  }
 </style>
