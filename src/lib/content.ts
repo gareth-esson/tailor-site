@@ -5,6 +5,7 @@ import {
   fetchLandingPages,
   fetchBlogPosts,
   fetchCurriculumStatements,
+  fetchTestimonials,
 } from './fetchers';
 import { cached } from './notion-cache';
 import type {
@@ -14,6 +15,8 @@ import type {
   LandingPage,
   BlogPost,
   CurriculumStatement,
+  Testimonial,
+  ServiceTag,
   TopicRef,
   GlossaryRef,
   QuestionRef,
@@ -29,6 +32,7 @@ let _topics: Topic[] | null = null;
 let _landingPages: LandingPage[] | null = null;
 let _blogPosts: BlogPost[] | null = null;
 let _curriculumStatements: CurriculumStatement[] | null = null;
+let _testimonials: Testimonial[] | null = null;
 let _glossaryIndex: GlossaryIndex | null = null;
 
 // Promise-singleton guard. Without this, Astro dev — which fires many
@@ -72,6 +76,7 @@ async function _loadAllContentImpl(): Promise<void> {
   const landingPages = await cached('landing-pages', fetchLandingPages);
   const blogPosts = await cached('blog-posts', fetchBlogPosts);
   const curriculumStatements = await cached('curriculum-statements', fetchCurriculumStatements);
+  const testimonials = await cached('testimonials', fetchTestimonials);
 
   // Build lookup maps
   const topicMap = new Map<string, Topic>(topics.map((t) => [t.id, t]));
@@ -190,6 +195,7 @@ async function _loadAllContentImpl(): Promise<void> {
   _landingPages = landingPages;
   _blogPosts = blogPosts;
   _curriculumStatements = curriculumStatements;
+  _testimonials = testimonials;
   _glossaryIndex = glossaryIndex;
 
   console.log('\n=== Content loaded and relations resolved ===\n');
@@ -225,6 +231,16 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
 export async function getCurriculumStatements(): Promise<CurriculumStatement[]> {
   await loadAllContent();
   return _curriculumStatements!;
+}
+
+export async function getTestimonials(): Promise<Testimonial[]> {
+  await loadAllContent();
+  return _testimonials!;
+}
+
+export async function getTestimonialsByService(tag: ServiceTag): Promise<Testimonial[]> {
+  const all = await getTestimonials();
+  return all.filter((t) => t.serviceTags.includes(tag));
 }
 
 export async function getGlossaryIndex(): Promise<GlossaryIndex> {
