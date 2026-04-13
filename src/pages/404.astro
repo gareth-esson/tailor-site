@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Page not found — Tailor Education"
+  description="The page you're looking for doesn't exist or has moved."
+  noIndex
+>
+  <section class="error-404">
+    <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+      <span class="error-404__code">404</span>
+      <h1 class="error-404__title">Page not found</h1>
+      <p class="error-404__body">
+        The page you're looking for doesn't exist or has been moved.
+        Try one of the links below, or use the search to find what you need.
+      </p>
+      <nav class="error-404__links" aria-label="Suggested pages">
+        <a href="/" class="btn btn--std btn--primary">Back to home</a>
+        <a href="/search" class="btn btn--std btn--outline">Search the site</a>
+      </nav>
+    </div>
+  </section>
+</BaseLayout>
