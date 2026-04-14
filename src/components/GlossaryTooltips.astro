@@ -32,9 +32,9 @@
       tooltip.innerHTML = `
         <div class="glossary-tooltip__content">
           <p>${definition}</p>
-          <a href="/glossary/${slug}" class="glossary-tooltip__link"
+          <a href="/glossary/${slug}" class="link-action link-action--card glossary-tooltip__link"
              data-analytics-event="glossary_tooltip_click"
-             data-analytics-term-slug="${slug}">Read more &rarr;</a>
+             data-analytics-term-slug="${slug}">Read more</a>
         </div>
       `;
 
@@ -202,14 +202,6 @@
     margin: 0 0 var(--space-global-xs);
   }
 
-  .glossary-tooltip__link {
-    color: var(--brand-accent-text);
-    font-size: var(--text-card-size-h6);
-    font-weight: var(--font-weight-semibold);
-    text-decoration: none;
-  }
-
-  .glossary-tooltip__link:hover {
-    text-decoration: underline;
-  }
+  /* Layout hook only — typography/colour/hover come from
+     .link-action link-action--card. */
 </style>

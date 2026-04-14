@@ -42,8 +42,8 @@ const topics = featured.slice(0, 6);
   <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
     <div class="service-topics-strip__header">
       <h2 class="service-topics-strip__label">Explore by topic</h2>
-      <a href="/topics/" class="service-topics-strip__see-all">
-        See all {totalCount} topic guides →
+      <a href="/topics/" class="link-action link-action--card">
+        See all {totalCount} topic guides
       </a>
     </div>
     <div class="service-topics-strip__grid">
@@ -76,18 +76,6 @@ const topics = featured.slice(0, 6);
     font-weight: var(--heading-weight-h3);
     color: var(--text-heading);
     margin: 0;
-  }
-
-  .service-topics-strip__see-all {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-card-size-body);
-    font-weight: var(--font-weight-semibold);
-    color: var(--link-action-color);
-    text-decoration: none;
-  }
-
-  .service-topics-strip__see-all:hover {
-    text-decoration: underline;
   }
 
   .service-topics-strip__grid {

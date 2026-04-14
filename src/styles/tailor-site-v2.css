@@ -3160,19 +3160,9 @@ textarea.form-input {
     margin-bottom: 0;
 }
 
+/* Layout hook only — typography/colour/hover come from .link-action. */
 .services-philosophy__more {
-    display: inline-block;
     margin-top: var(--space-global-sm);
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-prose-size-body);
-    font-weight: var(--font-weight-semibold);
-    color: var(--link-action-color);
-    text-decoration: none;
-}
-
-.services-philosophy__more:hover {
-    text-decoration: underline;
-    color: var(--link-action-color-hover);
 }
 
 /* §3 + §4 · Services block (flagship + secondary share one surface) */
@@ -3350,24 +3340,11 @@ textarea.form-input {
     margin: 0;
 }
 
+/* Layout hook only — typography/colour/hover come from
+   .link-action link-action--muted link-action--card.
+   Focus ring is handled globally by the .surface--dark :focus-visible rule. */
 .services-proof-band__more {
-    display: inline-block;
     margin-top: var(--space-global-md);
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-card-size-body);
-    color: var(--text-on-dark);
-    opacity: 0.85;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-}
-
-.services-proof-band__more:hover {
-    opacity: 1;
-}
-
-.services-proof-band__more:focus-visible {
-    outline: var(--focus-ring-width) solid var(--focus-ring-on-dark);
-    outline-offset: var(--focus-ring-offset);
 }
 
 /* §7 · Soft planning-call CTA */
@@ -3407,17 +3384,14 @@ textarea.form-input {
     margin: 0 0 var(--space-global-md);
 }
 
+/* Layout hook only — typography/colour/hover come from
+   .link-action link-action--card.
+   display: flex + justify-content overrides .link-action's inline-flex so
+   the link sits on its own line after the primary button, centred. */
 .services-closing-cta__secondary {
-    display: block;
+    display: flex;
+    justify-content: center;
     margin-top: var(--space-global-md);
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-card-size-body);
-    color: var(--link-default);
-    text-decoration: none;
-}
-
-.services-closing-cta__secondary:hover {
-    text-decoration: underline;
 }
 
 
@@ -3652,18 +3626,6 @@ textarea.form-input {
     align-items: center;
     gap: var(--space-global-md);
 }
-.service-proof-band__testimonials-link {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-card-size-body);
-    color: var(--text-on-dark);
-    opacity: 0.7;
-    text-decoration: none;
-    transition: opacity var(--transition-duration) var(--transition-easing);
-}
-.service-proof-band__testimonials-link:hover {
-    opacity: 1;
-}
-
 /* §7 — Related blog posts */
 .service-blog__grid {
     display: grid;
