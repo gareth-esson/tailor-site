@@ -72,32 +72,108 @@ export async function fetchPageBlocks(pageId: string): Promise<BlockObjectRespon
 }
 
 /**
- * Retry a function with exponential backoff for Notion rate limits.
+ * Retry a function with exponential backoff for transient Notion / network
+ * failures. Retries on:
+ *
+ *   - rate_limited (Notion's dedicated rate-limit code)
+ *   - HTTP 429 (same concept, different SDK shape)
+ *   - HTTP 5xx (500, 502, 503, 504 — Notion gateway/server hiccups)
+ *   - Notion SDK typed errors: APIResponseError with service_unavailable,
+ *     internal_server_error, bad_gateway, gateway_timeout; plus
+ *     RequestTimeoutError.
+ *   - Low-level fetch failures: EAI_AGAIN, ETIMEDOUT, ECONNRESET,
+ *     ECONNREFUSED, ENETUNREACH, AbortError, or a "fetch failed"
+ *     message from undici.
+ *
+ * Non-retriable errors (unauthorized, validation_error, 404, etc.)
+ * bubble up immediately so real bugs are visible in the build log.
+ *
+ * Backoff: base 3s × 2^attempt with ±25% jitter, capped at 60s.
+ * Max 10 attempts — at worst about 5 minutes of retry before giving up,
+ * which is well within a Vercel build's time budget.
  */
+function isRetriableError(error: unknown): boolean {
+  if (!error || typeof error !== 'object') return false;
+
+  const err = error as {
+    code?: string;
+    status?: number;
+    name?: string;
+    message?: string;
+    cause?: { code?: string; message?: string };
+  };
+
+  // HTTP status-based (Notion SDK surfaces these on the error object)
+  if (err.status === 429) return true;
+  if (typeof err.status === 'number' && err.status >= 500 && err.status < 600) {
+    return true;
+  }
+
+  // Notion SDK string codes
+  const retriableCodes = new Set([
+    'rate_limited',
+    'internal_server_error',
+    'service_unavailable',
+    'bad_gateway',
+    'gateway_timeout',
+    'conflict_error', // rare, but usually transient on heavy concurrent reads
+  ]);
+  if (err.code && retriableCodes.has(err.code)) return true;
+
+  // SDK typed error class names
+  if (err.name === 'RequestTimeoutError') return true;
+  if (err.name === 'AbortError') return true;
+
+  // Low-level network errors surface either on .code or on .cause.code
+  // (undici wraps the real error in a `cause`), and sometimes only in
+  // the message string.
+  const networkCodes = new Set([
+    'EAI_AGAIN',
+    'ETIMEDOUT',
+    'ECONNRESET',
+    'ECONNREFUSED',
+    'ENETUNREACH',
+    'UND_ERR_SOCKET',
+  ]);
+  if (err.code && networkCodes.has(err.code)) return true;
+  if (err.cause?.code && networkCodes.has(err.cause.code)) return true;
+
+  const msg = (err.message || '') + ' ' + (err.cause?.message || '');
+  if (/fetch failed|network timeout|socket hang up/i.test(msg)) return true;
+
+  return false;
+}
+
 async function retryWithBackoff<T>(
   fn: () => Promise<T>,
-  maxRetries = 8,
+  maxRetries = 10,
   baseDelay = 3000,
+  maxDelay = 60_000,
 ): Promise<T> {
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       return await fn();
     } catch (error: unknown) {
-      // The Notion SDK surfaces rate limits as `code: 'rate_limited'`
-      // on the error object, NOT as `status: 429`. Check both so the
-      // handler works regardless of which error shape the SDK version
-      // happens to emit.
-      const err = error as { code?: string; status?: number } | null;
-      const isRateLimit =
-        !!err && (err.code === 'rate_limited' || err.status === 429);
       const isLastAttempt = attempt === maxRetries;
+      const retriable = isRetriableError(error);
 
-      if (!isRateLimit || isLastAttempt) {
+      if (!retriable || isLastAttempt) {
         throw error;
       }
 
-      const delay = baseDelay * Math.pow(2, attempt);
-      console.warn(`Rate limited by Notion API, retrying in ${delay}ms…`);
+      // Exponential backoff with jitter, capped at maxDelay.
+      const exp = baseDelay * Math.pow(2, attempt);
+      const capped = Math.min(exp, maxDelay);
+      const jittered = capped * (0.75 + Math.random() * 0.5); // ±25% jitter
+      const delay = Math.round(jittered);
+
+      const errDescriptor = (() => {
+        const e = error as { code?: string; status?: number; name?: string; message?: string };
+        return e.code || e.status || e.name || e.message || 'unknown';
+      })();
+      console.warn(
+        `Notion API transient failure (${errDescriptor}); retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries})…`,
+      );
       await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
