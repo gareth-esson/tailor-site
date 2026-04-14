@@ -7,7 +7,6 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
 import ServiceTopicsStrip from '../../components/ServiceTopicsStrip.astro';
-import ServicePageStyles from '../../components/ServicePageStyles.astro';
 import { getBlogPosts } from '../../lib/content';
 
 // --- Data ----------------------------------------------------------
@@ -209,5 +208,4 @@ const metaDescription = 'Bespoke consultancy to develop your RSE policy, plan yo
     <CtaServiceEnquiry serviceName={serviceName} serviceParam={serviceParam} variant="alt" />
 
   </article>
-  <ServicePageStyles />
 </BaseLayout>

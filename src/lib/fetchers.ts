@@ -37,12 +37,20 @@ function getDateValue(prop: any): string | null {
 }
 
 // --- Data source IDs (Notion SDK v5 uses data source IDs, not database IDs) ---
+// All read from env so preview/staging can point at separate Notion DBs.
+// The fallback literals are the production IDs; they kick in only when
+// the env var is unset (dev convenience), matching prior behaviour.
 
-const QUESTIONS_DB = 'cd6d5a28-64a7-4809-84e1-483e4a4ac259';
-const GLOSSARY_DB = 'c844695c-a72f-496f-9fef-3e72cdf25f02';
-const TOPICS_DB = '16dde54c-a2e1-47c2-8c84-f84fa602f6e9';
-const CURRICULUM_DB = '9bcde5b1-3837-4321-bc12-b026b45a528b';
-const TESTIMONIALS_DB = '4fede26f-29ad-4c3b-a67b-31065b0a19c3';
+const QUESTIONS_DB =
+  import.meta.env.NOTION_QUESTIONS_DB || 'cd6d5a28-64a7-4809-84e1-483e4a4ac259';
+const GLOSSARY_DB =
+  import.meta.env.NOTION_GLOSSARY_DB || 'c844695c-a72f-496f-9fef-3e72cdf25f02';
+const TOPICS_DB =
+  import.meta.env.NOTION_TOPICS_DB || '16dde54c-a2e1-47c2-8c84-f84fa602f6e9';
+const CURRICULUM_DB =
+  import.meta.env.NOTION_CURRICULUM_DB || '9bcde5b1-3837-4321-bc12-b026b45a528b';
+const TESTIMONIALS_DB =
+  import.meta.env.NOTION_TESTIMONIALS_DB || '4fede26f-29ad-4c3b-a67b-31065b0a19c3';
 
 function getLandingPagesDb(): string | null {
   return import.meta.env.NOTION_LANDING_PAGES_DB || null;

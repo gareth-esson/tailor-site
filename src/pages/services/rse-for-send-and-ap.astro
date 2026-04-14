@@ -8,7 +8,6 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
 import ServiceTopicsStrip from '../../components/ServiceTopicsStrip.astro';
-import ServicePageStyles from '../../components/ServicePageStyles.astro';
 import { getBlogPosts } from '../../lib/content';
 
 // --- Data ----------------------------------------------------------
@@ -209,5 +208,4 @@ const metaDescription = 'Circuits is a workbook-led, self-paced RSE programme de
     <CtaServiceEnquiry serviceName={serviceName} serviceParam={serviceParam} variant="alt" />
 
   </article>
-  <ServicePageStyles />
 </BaseLayout>

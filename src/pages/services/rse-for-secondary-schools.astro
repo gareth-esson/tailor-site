@@ -6,7 +6,6 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
 import ServiceTopicsStrip from '../../components/ServiceTopicsStrip.astro';
-import ServicePageStyles from '../../components/ServicePageStyles.astro';
 import { getBlogPosts } from '../../lib/content';
 
 // --- Data ----------------------------------------------------------
@@ -206,5 +205,4 @@ const metaDescription = 'Discussion-led RSE for KS3 and KS4, delivered by specia
     <CtaServiceEnquiry serviceName={serviceName} serviceParam={serviceParam} variant="alt" />
 
   </article>
-  <ServicePageStyles />
 </BaseLayout>

@@ -6,7 +6,6 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
 import ServiceTopicsStrip from '../../components/ServiceTopicsStrip.astro';
-import ServicePageStyles from '../../components/ServicePageStyles.astro';
 import { getBlogPosts } from '../../lib/content';
 
 // --- Data ----------------------------------------------------------
@@ -214,5 +213,4 @@ const metaDescription = 'Age-appropriate RSE for KS1 and KS2, delivered by a spe
     <CtaServiceEnquiry serviceName={serviceName} serviceParam={serviceParam} variant="alt" />
 
   </article>
-  <ServicePageStyles />
 </BaseLayout>
