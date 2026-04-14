@@ -104,6 +104,15 @@
   /* Text on dark — muted */
   --text-muted-on-dark: rgba(255, 255, 255, 0.6);
   --text-on-dark-strapline: rgba(255, 255, 255, 0.9);
+  /* On-dark opacity ramp — use these instead of raw rgba(255,255,255,X)
+     for any semi-transparent text or UI element on dark surfaces.
+     Referenced by CLAUDE-CODE-OPERATING-RULES.md §2. */
+  --on-dark-90: rgba(255, 255, 255, 0.90);
+  --on-dark-70: rgba(255, 255, 255, 0.70);
+  --on-dark-55: rgba(255, 255, 255, 0.55);
+  --on-dark-40: rgba(255, 255, 255, 0.40);
+  --on-dark-20: rgba(255, 255, 255, 0.20);
+  --on-dark-10: rgba(255, 255, 255, 0.10);
   /* ====================================
      LINKS & FOCUS (DERIVED FROM ACCENT)
      ==================================== */
@@ -1165,6 +1174,35 @@ h6 { font-weight: var(--heading-weight-h6); }
 /* Action link — no arrow variant */
 .link-action--no-arrow::after {
     display: none;
+}
+
+/* Action link — size variants (lock to a type scale; base inherits from context).
+   --card: card footers, compact sections, secondary CTAs alongside body text.
+   --display: hero sections, large CTA areas, alongside display headings. */
+.link-action--card {
+    font-size: var(--text-card-size-body);
+}
+.link-action--display {
+    font-size: var(--text-display-size-body);
+}
+
+/* Action link — muted variant (quiet, low-emphasis; typically on dark surfaces).
+   Uses the --on-dark-* opacity ramp so the colour stays visually neutral
+   instead of adopting the brand accent. Pair with .surface--dark or .on-dark. */
+.link-action--muted {
+    color: var(--on-dark-70);
+    font-weight: var(--font-weight-regular);
+}
+.link-action--muted:hover {
+    color: var(--on-dark-90);
+}
+.surface--dark .link-action--muted,
+.on-dark .link-action--muted {
+    color: var(--on-dark-70);
+}
+.surface--dark .link-action--muted:hover,
+.on-dark .link-action--muted:hover {
+    color: var(--on-dark-90);
 }
 
 /* =========================================

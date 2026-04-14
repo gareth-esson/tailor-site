@@ -1177,6 +1177,26 @@ For Next.js/other: `gdh-master.css → [project globals.css with brand overrides
 - Contextual `p` rules (e.g. `.section-name p`) have specificity 0-1-1, which beats single-class utility rules like `.signpost` (0-1-0). Always exclude utility classes: `.section-name p:not(.signpost):not(.preheader)`.
 - Use `p.signpost` (0-1-1) as an escape hatch when signpost specificity needs boosting.
 
+#### Astro-scoped CSS: the specificity gotcha
+
+Astro's `<style>` blocks in `.astro` components are scoped by default — the compiler rewrites every selector to include a `[data-astro-cid-<hash>]` attribute selector on each compound. That attribute counts as a class for specificity purposes, which breaks the bare `p.classname` escape hatch above.
+
+**Concrete example**: in a component scoped with `data-astro-cid-abc123`:
+
+| Source selector | Astro rewrites to | Specificity |
+|---|---|---|
+| `.approach-section p` | `.approach-section[data-astro-cid-abc123] p[data-astro-cid-abc123]` | 0-3-1 |
+| `p.framework-title` | `p[data-astro-cid-abc123].framework-title` | 0-2-1 |
+| `.approach-section p.framework-title` | `.approach-section[data-astro-cid-abc123] p[data-astro-cid-abc123].framework-title` | 0-4-1 |
+
+Source-order tiebreaking doesn't help because specificity differs. The override at 0-2-1 loses to the base at 0-3-1 regardless of where it sits in the file.
+
+**Rule for Astro-scoped `<style>` blocks:**
+
+- When a utility class needs to override a contextual `p` rule in the same scoped block, always include the parent selector: `.parent-class p.utility-name`, not bare `p.utility-name`.
+- Global (unscoped) CSS files (`tailor-site-v2.css`, `tailwind.css`) don't get the attribute injection, so the bare `p.utility-name` escape hatch still works there.
+- If you reach for `!important` to make a utility class stick inside an Astro `<style>` block, stop — the correct fix is almost always raising specificity via the parent selector, not `!important`.
+
 ### 29.9 ACF Taxonomy Fields (WordPress Only)
 
 When building taxonomy-driven layouts in WordPress with ACF (e.g. theme area cards):
