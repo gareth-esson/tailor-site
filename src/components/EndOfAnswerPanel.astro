@@ -89,7 +89,7 @@ const { topicName, topicSlug } = Astro.props;
     font-family: var(--font-ota-body-stack, inherit);
     font-size: var(--text-util-lede-size, var(--text-prose-size-body));
     color: var(--text-ota-muted);
-    line-height: 1.5;
+    line-height: var(--lh-ui);
   }
 
   /* ── Shared panel base ── */
@@ -112,13 +112,13 @@ const { topicName, topicSlug } = Astro.props;
     font-family: var(--font-ota-heading-stack, inherit);
     font-size: var(--text-card-size-h3);
     font-weight: var(--heading-ota-weight-h3, 600);
-    line-height: 1.25;
+    line-height: var(--lh-tight);
   }
 
   .end-panel__body {
     font-family: var(--font-ota-body-stack, inherit);
     font-size: var(--text-card-size-body);
-    line-height: 1.55;
+    line-height: var(--lh-body);
     margin-top: var(--space-global-sm);
   }
 

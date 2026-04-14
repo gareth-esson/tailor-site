@@ -450,10 +450,12 @@
   /* ------------------------------
      TYPOGRAPHY: LINE HEIGHTS
      ------------------------------ */
+  --lh-tight: 1.25;
   --lh-display: 1.15;
   --lh-heading: 1.2;
   --lh-heading-sub: 1.3;
   --lh-card: 1.4;
+  --lh-ui: 1.5;
   --lh-body: 1.6;
   --lh-prose: 1.7;
 
@@ -461,7 +463,7 @@
      TYPOGRAPHY: COMPONENTS & AUX
      ------------------------------ */
   --btn-font-size: 14px;
-  --btn-font-weight: 600;
+  --btn-font-weight: var(--font-weight-semibold);
   --btn-ls: 0.01em;
   --btn-lh: 1;
 
@@ -691,7 +693,7 @@
   --toggle-mode-bg-active: var(--brand-accent);
   --toggle-mode-radius: var(--radius-pill);
   --toggle-mode-font-size: var(--text-card-size-body);
-  --toggle-mode-font-weight: 600;
+  --toggle-mode-font-weight: var(--font-weight-semibold);
   --toggle-mode-gap: 2px;
   --toggle-mode-transition: var(--transition-duration) var(--transition-easing);
 
@@ -1129,7 +1131,7 @@ h6 { font-weight: var(--heading-weight-h6); }
 .link-action {
     color: var(--link-action-color);
     text-decoration: none;
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     display: inline-flex;
     align-items: center;
     gap: var(--link-action-gap);
@@ -1284,7 +1286,7 @@ h6 { font-weight: var(--heading-weight-h6); }
     padding: 0 0 var(--space-global-sm);
     font-size: var(--accordion-content-size);
     color: var(--accordion-content-color);
-    line-height: 1.7;
+    line-height: var(--lh-prose);
     margin: 0;
 }
 
@@ -1355,7 +1357,7 @@ h6 { font-weight: var(--heading-weight-h6); }
     padding: var(--form-input-padding-y) var(--form-input-padding-x);
     transition: border-color var(--transition-duration) var(--transition-easing);
     outline: none;
-    line-height: 1.5;
+    line-height: var(--lh-ui);
 }
 .form-input::placeholder {
     color: var(--form-placeholder-color);
@@ -1390,7 +1392,7 @@ textarea.form-input {
     cursor: pointer;
     transition: border-color var(--transition-duration) var(--transition-easing);
     outline: none;
-    line-height: 1.5;
+    line-height: var(--lh-ui);
 }
 .form-select:focus {
     border-color: var(--form-border-focus);
@@ -1466,7 +1468,7 @@ textarea.form-input {
 .form-helper {
     font-size: calc(var(--form-label-size) * 0.9);
     color: var(--neutral-500);
-    line-height: 1.5;
+    line-height: var(--lh-ui);
 }
 
 /* ── Validation: Error ── */
@@ -1524,7 +1526,7 @@ textarea.form-input {
 /* ── Badge tokens ── */
 :root {
     --badge-font-size: 11px;
-    --badge-font-weight: 600;
+    --badge-font-weight: var(--font-weight-semibold);
     --badge-padding-y: 0.25em;
     --badge-padding-x: 0.65em;
     --badge-radius: var(--radius-sm);
@@ -1606,7 +1608,7 @@ textarea.form-input {
     align-self: flex-start;
     background: transparent;
     border-color: transparent;
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     letter-spacing: 0.03em;
     text-transform: uppercase;
     gap: 0.3em;
@@ -1686,7 +1688,7 @@ textarea.form-input {
     font-size: 11px;
     padding: 3px 8px;
     border-radius: var(--radius-sm);
-    line-height: 1.5;
+    line-height: var(--lh-ui);
 }
 
 /* ── Sensitivity badges ── */
@@ -1701,7 +1703,7 @@ textarea.form-input {
 .badge--mandatory {
     background-color: var(--state-error-soft);
     color: var(--state-error-text);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
 }
 
 /* ── Okay to Ask category badges ── */
@@ -1783,7 +1785,7 @@ textarea.form-input {
     background: var(--neutral-100, #f4f4f5);
     color: var(--text-body);
     font-size: var(--alert-font-size);
-    line-height: 1.6;
+    line-height: var(--lh-body);
     position: relative;
 }
 
@@ -1910,7 +1912,7 @@ textarea.form-input {
     gap: 4px;
     padding: 6px 14px;
     font-size: var(--text-card-size-body, 0.875rem);
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
     font-family: inherit;
     color: var(--text-body-muted);
     background: var(--bg-page);
@@ -1935,7 +1937,7 @@ textarea.form-input {
     background: var(--brand-accent);
     color: var(--text-on-dark);
     border-color: var(--brand-accent);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
 }
 
 .chip--active:hover,
@@ -1945,7 +1947,7 @@ textarea.form-input {
 }
 
 .chip__count {
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     opacity: 0.75;
 }
 
@@ -1968,7 +1970,7 @@ textarea.form-input {
     padding: var(--form-input-padding-y, 0.5rem) var(--form-input-padding-x, 0.75rem);
     transition: border-color var(--transition-duration) var(--transition-easing);
     outline: none;
-    line-height: 1.5;
+    line-height: var(--lh-ui);
 }
 .input::placeholder { color: var(--form-placeholder-color, var(--text-body-muted)); }
 .input:focus { border-color: var(--brand-accent); }
@@ -2053,7 +2055,7 @@ textarea.form-input {
 }
 .card__eyebrow {
     font-size: var(--text-card-size-h6);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     letter-spacing: var(--card-eyebrow-ls);
     text-transform: uppercase;
     color: var(--card-eyebrow-color, var(--brand-accent-text));
@@ -2061,20 +2063,20 @@ textarea.form-input {
 .card__title {
     margin: 0;
     font-size: var(--text-card-size-h5);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: var(--text-heading);
-    line-height: 1.3;
+    line-height: var(--lh-heading-sub);
 }
 .card__text {
     font-size: var(--text-card-size-body);
     color: var(--text-body-muted);
-    line-height: 1.6;
+    line-height: var(--lh-body);
 }
 
 /* ── Card link (action link style) ── */
 .card__link {
     font-size: var(--text-card-size-body);
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: var(--link-action-color, var(--brand-accent-text));
     text-decoration: none;
     display: inline-flex;
@@ -2563,7 +2565,7 @@ textarea.form-input {
     border-radius: var(--radius-sm);
     overflow: hidden;
     font-size: var(--table-font-size);
-    line-height: 1.5;
+    line-height: var(--lh-ui);
     color: var(--text-body);
 }
 
