@@ -14,6 +14,13 @@ interface Props {
   layer?: 'tailor' | 'ota';
   jsonLd?: Record<string, unknown>;
   noIndex?: boolean;
+  /**
+   * URL of an image that is the likely LCP element on the page.
+   * Emitted as <link rel="preload" as="image"> so the browser can
+   * start fetching it before CSS/JS resolve. Use for above-the-fold
+   * hero images only.
+   */
+  preloadImage?: string;
 }
 
 const {
@@ -25,6 +32,7 @@ const {
   layer = 'tailor',
   jsonLd,
   noIndex = false,
+  preloadImage,
 } = Astro.props;
 
 // Single source of truth: `site:` in astro.config.mjs → Astro.site.
@@ -40,6 +48,7 @@ const ga4Id = import.meta.env.GA4_MEASUREMENT_ID || '';
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {preloadImage && <link rel="preload" as="image" href={preloadImage} />}
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
@@ -74,12 +83,21 @@ const ga4Id = import.meta.env.GA4_MEASUREMENT_ID || '';
       }
     </script>
 
-    <!-- Font loading — all three families on every page to prevent FOUT on navigation -->
+    <!-- Font loading — all three families on every page to prevent FOUT on navigation.
+         Load as `media="print"` then promote to `all` onload so the stylesheet
+         fetch doesn't block first paint. `display=swap` keeps text visible with
+         a fallback while the webfont downloads. <noscript> fallback for users
+         who disable JS. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,100..900,0..100,0..1;1,9..144,100..900,0..100,0..1&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" />
+    <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" />
+    <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,100..900,0..100,0..1;1,9..144,100..900,0..100,0..1&display=swap" />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" />
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" />
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,100..900,0..100,0..1;1,9..144,100..900,0..100,0..1&display=swap" />
+    </noscript>
 
 
     <!-- GA4 -->
