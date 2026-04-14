@@ -64,7 +64,11 @@ export function injectGlossaryTooltips(
     // - elements with data-glossary-tooltip
     const result = replaceFirstInText(html, regex, (match) => {
       matched.add(termLower);
-      return `<span class="glossary-term" data-glossary-tooltip data-term-slug="${ref.slug}" data-short-def="${escapeAttr(ref.shortDefinition)}" data-simple-def="${escapeAttr(ref.simpleDefinition)}">${match}</span>`;
+      // Render as a <button> so the trigger is keyboard-focusable and
+      // has the right semantics for screen readers. The runtime script
+      // (GlossaryTooltips.astro) wires up aria-describedby to the
+      // tooltip element when it's shown on focus/hover.
+      return `<button type="button" class="glossary-term" data-glossary-tooltip data-term-slug="${ref.slug}" data-short-def="${escapeAttr(ref.shortDefinition)}" data-simple-def="${escapeAttr(ref.simpleDefinition)}">${match}</button>`;
     });
 
     if (matched.has(termLower)) {
@@ -108,10 +112,10 @@ function replaceFirstInText(
       if (/^h[1-6]$/.test(tagName)) {
         inHeading = isClosing ? false : true;
       }
-      if (tagName === 'span' && part.includes('data-glossary-tooltip')) {
+      if (tagName === 'button' && part.includes('data-glossary-tooltip')) {
         inTooltip = true;
       }
-      if (isClosing && tagName === 'span' && inTooltip) {
+      if (isClosing && tagName === 'button' && inTooltip) {
         inTooltip = false;
       }
 

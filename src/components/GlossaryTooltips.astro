@@ -8,9 +8,12 @@
 ---
 
 <script>
+  let tooltipCounter = 0;
+
   function initTooltips() {
-    const terms = document.querySelectorAll('[data-glossary-tooltip]');
+    const terms = document.querySelectorAll<HTMLElement>('[data-glossary-tooltip]');
     let activeTooltip: HTMLElement | null = null;
+    let activeTrigger: HTMLElement | null = null;
 
     function isSimpleMode(): boolean {
       return document.documentElement.classList.contains('simple-active');
@@ -25,6 +28,7 @@
       const tooltip = document.createElement('div');
       tooltip.className = 'glossary-tooltip';
       tooltip.setAttribute('role', 'tooltip');
+      tooltip.id = `glossary-tooltip-${++tooltipCounter}`;
       tooltip.innerHTML = `
         <div class="glossary-tooltip__content">
           <p>${definition}</p>
@@ -42,6 +46,10 @@
       const tooltip = createTooltip(el);
       el.appendChild(tooltip);
       activeTooltip = tooltip;
+      activeTrigger = el;
+
+      // Link the trigger to the tooltip for screen readers.
+      el.setAttribute('aria-describedby', tooltip.id);
 
       // Position: ensure tooltip stays in viewport
       requestAnimationFrame(() => {
@@ -62,35 +70,60 @@
         activeTooltip.remove();
         activeTooltip = null;
       }
+      if (activeTrigger) {
+        activeTrigger.removeAttribute('aria-describedby');
+        activeTrigger = null;
+      }
     }
 
     const isTouchDevice = 'ontouchstart' in window;
 
     terms.forEach((el) => {
-      const termEl = el as HTMLElement;
-      termEl.style.position = 'relative';
+      el.style.position = 'relative';
 
+      // Touch: tap toggles.
       if (isTouchDevice) {
-        termEl.addEventListener('click', (e) => {
+        el.addEventListener('click', (e) => {
           e.preventDefault();
-          if (activeTooltip && activeTooltip.parentElement === termEl) {
+          if (activeTrigger === el) {
             hideTooltip();
           } else {
-            showTooltip(termEl);
+            showTooltip(el);
           }
         });
       } else {
-        termEl.addEventListener('mouseenter', () => showTooltip(termEl));
-        termEl.addEventListener('mouseleave', (e) => {
-          // Allow hovering the tooltip itself
+        // Mouse: hover.
+        el.addEventListener('mouseenter', () => showTooltip(el));
+        el.addEventListener('mouseleave', (e) => {
           const related = (e as MouseEvent).relatedTarget as HTMLElement;
-          if (related && termEl.contains(related)) return;
+          if (related && el.contains(related)) return;
           hideTooltip();
         });
       }
+
+      // Keyboard: focus shows, blur hides. Works on both touch and
+      // mouse devices and is additive to the above. Space/Enter
+      // fire the default button click so we guard against double-toggle.
+      el.addEventListener('focus', () => {
+        if (activeTrigger !== el) showTooltip(el);
+      });
+      el.addEventListener('blur', (e) => {
+        // Don't hide if focus moved INTO the tooltip (e.g. "Read more" link).
+        const related = (e as FocusEvent).relatedTarget as HTMLElement | null;
+        if (related && el.contains(related)) return;
+        hideTooltip();
+      });
     });
 
-    // Close tooltip on click elsewhere (touch)
+    // Escape dismisses + returns focus to the trigger.
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape' || !activeTooltip) return;
+      const trigger = activeTrigger;
+      hideTooltip();
+      trigger?.focus();
+    });
+
+    // Close tooltip on click elsewhere (touch).
     if (isTouchDevice) {
       document.addEventListener('click', (e) => {
         if (activeTooltip && !(e.target as HTMLElement).closest('[data-glossary-tooltip]')) {
@@ -99,7 +132,7 @@
       });
     }
 
-    // Update tooltip content when mode changes
+    // Update tooltip content when mode changes.
     const toggle = document.querySelector('.mode-toggle');
     if (toggle) {
       toggle.addEventListener('click', () => {
@@ -113,7 +146,17 @@
 </script>
 
 <style is:global>
-  .glossary-term {
+  /* button trigger — reset UA styles so it reads as inline text */
+  button.glossary-term {
+    display: inline;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+    text-align: inherit;
     text-decoration-line: underline;
     text-decoration-style: dotted;
     text-decoration-thickness: 2px;
@@ -122,6 +165,11 @@
     font-weight: var(--font-weight-semibold);
     cursor: help;
     position: relative;
+  }
+  button.glossary-term:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-xs);
   }
 
   .glossary-tooltip {
