@@ -27,7 +27,9 @@ const {
   noIndex = false,
 } = Astro.props;
 
-const siteUrl = 'https://tailoreducation.org.uk';
+// Single source of truth: `site:` in astro.config.mjs → Astro.site.
+// Fallback only if the config hasn't been set (shouldn't happen in prod).
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://tailoreducation.org.uk';
 const canonical = canonicalPath ? `${siteUrl}${canonicalPath}` : `${siteUrl}${Astro.url.pathname}`;
 const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`;
 const ga4Id = import.meta.env.GA4_MEASUREMENT_ID || '';
