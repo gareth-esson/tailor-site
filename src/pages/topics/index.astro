@@ -52,7 +52,6 @@ const sortedPages = [...landingPages].sort((a, b) => {
   if (catA !== catB) return catA - catB;
   return a.title.localeCompare(b.title);
 });
-export const prerender = true;
 ---
 
 <BaseLayout
