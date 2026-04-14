@@ -895,6 +895,15 @@ h6 { font-weight: var(--heading-weight-h6); }
 .btn--sm.has-icon-left   { padding-left: var(--btn-padding-icon-sm); padding-right: var(--btn-padding-bal-sm); }
 .btn--sm.has-icon-hover:hover { padding-right: var(--btn-padding-icon-sm); padding-left: var(--btn-padding-bal-sm); }
 
+/* Touch-device target bump — small buttons get 44px min height on
+   coarse-pointer inputs (mobile/tablet) to meet WCAG AAA 2.5.5 without
+   inflating them visually on desktop. */
+@media (pointer: coarse) {
+    .btn--sm {
+        min-height: 2.75rem;
+    }
+}
+
 /* ── ICONS: RIGHT (::after) ── */
 /* SVG data URI — 24×24 viewBox, 1.5px stroke, matches system icon spec */
 .btn.has-icon-right::after,
@@ -1307,7 +1316,7 @@ h6 { font-weight: var(--heading-weight-h6); }
     --form-label-size: var(--text-card-size-h6);
     --form-label-weight: 600;
     --form-input-size: var(--text-card-size-body);
-    --form-placeholder-color: var(--neutral-400);
+    --form-placeholder-color: var(--text-body-muted);
     --form-border: var(--border-width-xs) solid var(--neutral-200);
     --form-border-focus: var(--brand-accent);
     --form-group-gap: 0.4rem;
@@ -3412,4 +3421,42 @@ textarea.form-input {
     justify-content: center;
     gap: var(--space-global-sm);
     flex-wrap: wrap;
+}
+
+/* =========================================
+   TOUCH TARGET MINIMUM (WCAG 2.5.5 AAA)
+   -----------------------------------------
+   Any component below 44×44 on touch devices
+   gets a baseline min-height. Coarse-pointer
+   media query leaves desktop sizes alone.
+   ========================================= */
+@media (pointer: coarse) {
+    .blog-filter-chip,
+    .ota-filter,
+    .testimonial-filter-chip,
+    .topic-filter,
+    .chip {
+        min-height: 2.75rem;
+    }
+}
+
+/* =========================================
+   REDUCED MOTION — GLOBAL FALLBACK
+   -----------------------------------------
+   Any component with per-component reduced-
+   motion rules will still override this for
+   cases where a total disable is wrong. This
+   belt-and-braces rule catches untokenised
+   transitions and animations that haven't
+   been individually gated.
+   ========================================= */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }

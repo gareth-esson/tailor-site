@@ -20,11 +20,13 @@ export default defineConfig({
         'https://tailoreducation.org.uk/about',
         'https://tailoreducation.org.uk/our-approach',
         'https://tailoreducation.org.uk/contact',
-        'https://tailoreducation.org.uk/training',
         'https://tailoreducation.org.uk/services/',
-        'https://tailoreducation.org.uk/services/delivery',
         'https://tailoreducation.org.uk/services/drop-days',
+        'https://tailoreducation.org.uk/services/rse-for-primary-schools',
+        'https://tailoreducation.org.uk/services/rse-for-secondary-schools',
+        'https://tailoreducation.org.uk/services/rse-for-send-and-ap',
         'https://tailoreducation.org.uk/services/rse-policy-curriculum-planning',
+        'https://tailoreducation.org.uk/services/rse-training',
         'https://tailoreducation.org.uk/topics/',
         'https://tailoreducation.org.uk/questions/',
         'https://tailoreducation.org.uk/blog/',
@@ -83,10 +85,8 @@ export default defineConfig({
       status: 301,
       destination: '/contact',
     },
-    '/rse-training': {
-      status: 301,
-      destination: '/training',
-    },
+    // /rse-training → /services/rse-training is handled by vercel.json
+    // at the edge (fires before astro's redirect layer).
     '/our-services': {
       status: 301,
       destination: '/services/',

@@ -143,7 +143,7 @@ const isContact = pathname === '/contact';
       <SearchBar />
 
       <button
-        class="site-header__hamburger flex lg:hidden flex-col items-center justify-center gap-1 w-10 h-10 p-2 bg-transparent border-0 cursor-pointer"
+        class="site-header__hamburger flex lg:hidden flex-col items-center justify-center gap-1 w-11 h-11 p-2 bg-transparent border-0 cursor-pointer"
         type="button"
         aria-expanded="false"
         aria-controls="mobile-nav"
@@ -165,7 +165,7 @@ const isContact = pathname === '/contact';
   >
     <!-- Sticky topbar: Menu label + close button -->
     <div class="mobile-nav__topbar">
-      <span class="mobile-nav__topbar-label" role="heading" aria-level="2">Menu</span>
+      <span class="mobile-nav__topbar-label">Menu</span>
       <button
         class="mobile-nav__close"
         type="button"
@@ -341,6 +341,18 @@ const isContact = pathname === '/contact';
     const hamburger = header.querySelector('.site-header__hamburger') as HTMLButtonElement | null;
     const mobileNav = document.getElementById('mobile-nav');
 
+    // Make the rest of the page inert while the drawer is open so Tab
+    // can't escape the drawer on mobile. Query inside the handlers (not
+    // at script load) so SSR/after-swap rehydration picks up fresh
+    // references each time.
+    function setOutsideInert(inert: boolean) {
+      const outside = document.querySelectorAll<HTMLElement>('main, footer');
+      outside.forEach((el) => {
+        if (inert) el.setAttribute('inert', '');
+        else el.removeAttribute('inert');
+      });
+    }
+
     function openMobileNav() {
       if (!hamburger || !mobileNav) return;
       hamburger.setAttribute('aria-expanded', 'true');
@@ -349,6 +361,7 @@ const isContact = pathname === '/contact';
       mobileNav.setAttribute('aria-hidden', 'false');
       mobileNav.removeAttribute('inert');
       document.body.classList.add('nav-open');
+      setOutsideInert(true);
       // Move focus to the close button — first focusable element in the drawer.
       const closeBtn = mobileNav.querySelector<HTMLButtonElement>('.mobile-nav__close');
       if (closeBtn) closeBtn.focus();
@@ -362,6 +375,7 @@ const isContact = pathname === '/contact';
       mobileNav.setAttribute('aria-hidden', 'true');
       mobileNav.setAttribute('inert', '');
       document.body.classList.remove('nav-open');
+      setOutsideInert(false);
       hamburger.focus();
     }
 

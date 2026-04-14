@@ -125,11 +125,11 @@ const otaCategories = [
         </ul>
 
         {/* Pagination controls */}
-        <div class="flex justify-center items-center gap-[var(--space-global-sm)] mt-[var(--space-global-lg)]" id="pagination-controls">
+        <nav class="flex justify-center items-center gap-[var(--space-global-sm)] mt-[var(--space-global-lg)]" id="pagination-controls" aria-label="Pagination">
           <button class="btn btn--sm btn--tint" id="pagination-prev" type="button" disabled>Previous</button>
           <span id="pagination-indicator" class="b8-pagination-indicator">Page 1 of 1</span>
           <button class="btn btn--sm btn--tint" id="pagination-next" type="button">Next</button>
-        </div>
+        </nav>
 
         <p id="question-count" aria-live="polite" class="b8-question-count text-center mt-[var(--space-global-sm)]">
           {questions.length} questions

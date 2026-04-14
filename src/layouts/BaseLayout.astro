@@ -58,9 +58,11 @@ const ga4Id = import.meta.env.GA4_MEASUREMENT_ID || '';
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={fullOgImage} />
 
-    <!-- JSON-LD structured data -->
+    <!-- JSON-LD structured data.
+         Escape `<` to `\u003c` to defend against `</script>` sneaking
+         through Notion-authored string content and breaking the tag. -->
     {jsonLd && (
-      <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+      <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />
     )}
 
     <!-- Simple Mode: check preference before first paint to prevent flash of wrong content -->
