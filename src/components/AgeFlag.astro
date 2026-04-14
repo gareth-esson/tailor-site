@@ -45,12 +45,12 @@ const { topicLabel, topicSlug } = Astro.props;
       <p>
         This answer covers <strong>{topicLabel}</strong> in a way suitable for students in Year 9 and above.
         {' '}
-        <a href={`/topics/${topicSlug}`}>Read a foundational answer first &rarr;</a>
+        <a href={`/topics/${topicSlug}`} class="link-action link-action--card">Read a foundational answer first</a>
       </p>
       <div class="mt-[var(--space-global-sm)]">
         <button
           type="button"
-          class="btn btn--sm btn--outline"
+          class="btn btn--sm btn--tint"
           data-ageflag-continue
           data-analytics-event="age_flag_continue"
         >

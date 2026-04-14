@@ -225,7 +225,7 @@ const bodyWithTooltips = injectGlossaryTooltips(bodyHtml, glossaryIndex, undefin
           <h2 class="blog-post__section-title">Related articles</h2>
           <div class="blog-post__related-grid">
             {relatedPosts.map((rp) => (
-              <a href={`/blog/${rp.slug}`} class="card blog-related-card">
+              <a href={`/blog/${rp.slug}`} class="card card--lift blog-related-card">
                 {rp.featuredImage && (
                   <div class="blog-related-card__img">
                     <img src={rp.featuredImage} alt={rp.title} loading="lazy" />

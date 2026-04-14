@@ -532,12 +532,14 @@ const aboutPageJsonLd = {
     margin-top: 0;
   }
 
-  .approach-framework-block__title {
+  /* Scoped descendant + tag+class (0-4-1 once Astro adds [data-astro-cid])
+     beats .approach-section p (0-3-1 scoped) cleanly — avoids !important. */
+  .approach-section p.approach-framework-block__title {
     font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-card-size-body) !important;
-    color: var(--text-body-muted) !important;
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
     line-height: var(--lh-body);
-    margin: 0 0 var(--space-global-sm) !important;
+    margin: 0 0 var(--space-global-sm);
   }
 
   .approach-framework-block__title a {
@@ -614,13 +616,15 @@ const aboutPageJsonLd = {
     background: var(--bg-page);
   }
 
-  .approach-section__closer {
+  /* Scoped descendant + tag+class (0-4-1 once Astro adds [data-astro-cid])
+     beats .approach-section p (0-3-1 scoped) cleanly — avoids !important. */
+  .approach-section p.approach-section__closer {
     font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-prose-size-body) !important;
+    font-size: var(--text-prose-size-body);
     font-style: italic;
-    color: var(--text-body-muted) !important;
+    color: var(--text-body-muted);
     line-height: var(--lh-prose);
-    margin: var(--space-global-md) 0 0 !important;
+    margin: var(--space-global-md) 0 0;
   }
 
   .approach-section--review code {

@@ -48,7 +48,7 @@ function slugify(text: string): string {
 
 <a
   href={`/anonymous_question/${q.slug}`}
-  class="card qcard no-underline flex flex-col"
+  class="card card--lift qcard no-underline flex flex-col"
   data-analytics-event="question_card_click"
   data-analytics-target-slug={q.slug}
 >
@@ -84,18 +84,11 @@ function slugify(text: string): string {
 </a>
 
 <style>
+  /* Transparent at rest so cards inherit the warm OtA surface they sit on.
+     Hover lift/shadow is handled by .card--lift from tailor-site-v2.css. */
   .qcard {
     background: transparent;
-    box-shadow: var(--shadow-none);
     border-color: transparent;
-    transition:
-      transform var(--transition-duration, 0.15s) var(--transition-easing, ease),
-      border-color var(--transition-duration, 0.15s) var(--transition-easing, ease);
-  }
-
-  .qcard:hover {
-    transform: translateY(-3px);
-    border-color: var(--border-subtle);
   }
 
   .qcard:focus-visible {

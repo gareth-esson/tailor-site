@@ -298,7 +298,7 @@ const displayQuestions = questions
           </div>
           {questions.length > 6 && (
             <div class="landing-questions__more">
-              <a href="/questions/" class="btn btn--sm btn--outline has-icon-hover">
+              <a href="/questions/" class="btn btn--sm btn--tint has-icon-hover">
                 See all {questions.length} questions
               </a>
             </div>
@@ -314,7 +314,7 @@ const displayQuestions = questions
           <h2 class="landing-section__title">For teachers: further reading</h2>
           <div class="landing-blog__grid">
             {blogPosts.map((bp) => (
-              <a href={`/blog/${bp.slug}`} class="card blog-card">
+              <a href={`/blog/${bp.slug}`} class="card card--lift blog-card">
                 <div class="card__body">
                   {bp.targetAudience && (
                     <div class="card__eyebrow">{bp.targetAudience}</div>
