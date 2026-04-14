@@ -47,6 +47,23 @@
     { "source": "/category/:slug", "destination": "/topics/", "permanent": true },
     { "source": "/project_category/:slug", "destination": "/topics/", "permanent": true },
 
+    { "source": "/about-us", "destination": "/about", "permanent": true },
+    { "source": "/contact-us", "destination": "/contact", "permanent": true },
+    { "source": "/our-services", "destination": "/services/", "permanent": true },
+    { "source": "/training", "destination": "/services/rse-training", "permanent": true },
+    { "source": "/services/delivery", "destination": "/services", "permanent": true },
+    { "source": "/services/rse-delivery", "destination": "/services", "permanent": true },
+    { "source": "/glossary", "destination": "/topics/", "permanent": true },
+    { "source": "/blog/page/:num*", "destination": "/blog/", "permanent": true },
+    { "source": "/feed", "destination": "/", "permanent": true },
+    { "source": "/feed/:rest*", "destination": "/", "permanent": true },
+    { "source": "/author/:slug*", "destination": "/about", "permanent": true },
+    { "source": "/tag/:slug*", "destination": "/topics/", "permanent": true },
+
+    { "source": "/topics/positive-sexuality-and-intimacy", "destination": "/topics/sex-and-intimacy", "permanent": true },
+    { "source": "/topics/stereotypes-prejudice-and-discrimination", "destination": "/topics/gender-stereotypes-and-discrimination", "permanent": true },
+    { "source": "/topics/drugs-alcohol-and-vaping", "destination": "/topics/", "permanent": true },
+
     { "source": "/rse-for-primary-schools/", "destination": "/services/rse-for-primary-schools/", "permanent": true },
     { "source": "/rse-for-secondary-schools/", "destination": "/services/rse-for-secondary-schools/", "permanent": true },
     { "source": "/rse-for-special-schools/", "destination": "/services/rse-for-send-and-ap/", "permanent": true },

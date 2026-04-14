@@ -222,8 +222,30 @@ export function initSearchPage(): void {
     meta!.removeAttribute('hidden');
   }
 
+  // Swap hero title/lede to reflect whether the user has typed a query.
+  // The Astro page renders both variants; we toggle their `hidden` attrs
+  // and fill in the quoted query on the "active" title.
+  function setHeroState(query: string): void {
+    const titleEmpty = document.querySelector<HTMLElement>('[data-search-title="empty"]');
+    const titleActive = document.querySelector<HTMLElement>('[data-search-title="active"]');
+    const ledeEmpty = document.querySelector<HTMLElement>('[data-search-lede="empty"]');
+    const ledeActive = document.querySelector<HTMLElement>('[data-search-lede="active"]');
+    const titleQuery = document.querySelector<HTMLElement>('[data-search-title-query]');
+    const active = query.trim().length > 0;
+    if (titleEmpty) titleEmpty.hidden = active;
+    if (titleActive) titleActive.hidden = !active;
+    if (ledeEmpty) ledeEmpty.hidden = active;
+    if (ledeActive) ledeActive.hidden = !active;
+    if (titleQuery) titleQuery.textContent = `\u201c${query.trim()}\u201d`;
+    // Also update the tab title so the browser history entry is meaningful.
+    document.title = active
+      ? `Search: "${query.trim()}" \u2014 Tailor Education`
+      : 'Search \u2014 Tailor Education';
+  }
+
   async function runSearch(query: string): Promise<void> {
     const trimmed = query.trim();
+    setHeroState(trimmed);
     if (!trimmed) {
       resultsContainer!.innerHTML = '';
       meta!.setAttribute('hidden', '');
@@ -301,9 +323,14 @@ export function initSearchPage(): void {
     }
   });
 
-  // Initial render.
-  const initial = input.value.trim();
+  // Initial render. In output: 'static' mode the Astro shell is
+  // prerendered once with an empty input; we read ?q= from the URL
+  // client-side here to restore the query on page load or back-nav.
+  const urlQuery = new URLSearchParams(window.location.search).get('q') ?? '';
+  const initial = urlQuery.trim();
+  if (initial) input.value = initial;
   setClearBtnVisible(initial.length > 0);
+  setHeroState(initial);
   if (initial) {
     void runSearch(initial);
   } else {

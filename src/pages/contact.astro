@@ -4,25 +4,16 @@
  * Hosts the enquiry form [E1]. Service type is pre-selected via the
  * ?service= URL parameter (and echoed in the hero lede where it matches
  * a known service). Tailor layer.
+ *
+ * Note: In output: 'static' mode this page is prerendered. The
+ * ?service= query param is read CLIENT-SIDE: the inline script at
+ * the bottom of the page swaps the hero lede variant and the form's
+ * pre-filled <select> option. Both responsibilities live in their
+ * respective pages of code (hero in the inline script below, select
+ * prefill in EnquiryForm.astro's own <script>).
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import EnquiryForm from '../components/EnquiryForm.astro';
-
-const serviceParam = Astro.url.searchParams.get('service') || undefined;
-
-// Map raw ?service= values to friendly names for the hero lede (§4.1).
-// Keys must match the EnquiryForm <option> values. Unknown values fall
-// back to the generic lede (Variant B).
-const SERVICE_NAMES: Record<string, string> = {
-  'RSE training': 'RSE training',
-  'Direct RSE delivery': 'RSE delivery',
-  'Drop day delivery': 'a drop day',
-  'RSE policy & curriculum planning': 'policy and curriculum planning',
-  'Other': 'something specific',
-};
-const friendlyServiceName = serviceParam
-  ? SERVICE_NAMES[serviceParam]
-  : undefined;
 
 // --- SEO ---
 
@@ -61,19 +52,19 @@ const contactPageJsonLd = {
       <div class="contact-hero__inner">
         <span class="contact-hero__eyebrow">Contact</span>
         <h1 class="contact-hero__title">Get in touch</h1>
-        {friendlyServiceName ? (
-          <p class="contact-hero__lede">
-            Enquiring about <em>{friendlyServiceName}</em>? Fill in a few
-            details and we'll come back to you within a couple of working
-            days.
-          </p>
-        ) : (
-          <p class="contact-hero__lede">
-            Training, delivery, curriculum planning, or a question we
-            haven't listed — fill in a few details and we'll come back to
-            you within a couple of working days.
-          </p>
-        )}
+
+        {/* Generic lede (default). Inline script below hides this and shows
+            the service-specific variant if a known ?service= param is set. */}
+        <p class="contact-hero__lede" data-contact-lede="generic">
+          Training, delivery, curriculum planning, or a question we
+          haven't listed — fill in a few details and we'll come back to
+          you within a couple of working days.
+        </p>
+        <p class="contact-hero__lede" data-contact-lede="specific" hidden>
+          Enquiring about <em data-contact-lede-service></em>? Fill in a few
+          details and we'll come back to you within a couple of working
+          days.
+        </p>
       </div>
     </section>
 
@@ -81,7 +72,7 @@ const contactPageJsonLd = {
     <section class="contact-form" aria-labelledby="contact-form-label">
       <div class="contact-form__inner">
         <h2 id="contact-form-label" class="sr-only">Enquiry form</h2>
-        <EnquiryForm preSelectedService={serviceParam} />
+        <EnquiryForm />
       </div>
     </section>
 
@@ -159,6 +150,40 @@ const contactPageJsonLd = {
       </div>
     </section>
   </div>
+
+  <script>
+    // Swap the generic hero lede for the service-specific variant when
+    // ?service= matches a known service. Runs before paint (inline +
+    // top of document) is overkill for a below-the-fold lede, so we
+    // let this run after DOM parse — any flash is invisible.
+    function applyServiceLede() {
+      const params = new URLSearchParams(window.location.search);
+      const serviceParam = params.get('service');
+      if (!serviceParam) return;
+
+      const SERVICE_NAMES: Record<string, string> = {
+        'RSE training': 'RSE training',
+        'Direct RSE delivery': 'RSE delivery',
+        'Drop day delivery': 'a drop day',
+        'RSE policy & curriculum planning': 'policy and curriculum planning',
+        'Other': 'something specific',
+      };
+      const friendly = SERVICE_NAMES[serviceParam];
+      if (!friendly) return;
+
+      const generic = document.querySelector<HTMLElement>('[data-contact-lede="generic"]');
+      const specific = document.querySelector<HTMLElement>('[data-contact-lede="specific"]');
+      const label = document.querySelector<HTMLElement>('[data-contact-lede-service]');
+      if (!generic || !specific || !label) return;
+
+      label.textContent = friendly;
+      generic.hidden = true;
+      specific.hidden = false;
+    }
+
+    applyServiceLede();
+    document.addEventListener('astro:after-swap', applyServiceLede);
+  </script>
 </BaseLayout>
 
 <style>

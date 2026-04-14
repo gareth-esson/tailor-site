@@ -1,9 +1,10 @@
 ---
 /**
  * Search results page [B10] — /search
- * Pagefind-powered client-side search. Query read from ?q= for the initial
- * render; thereafter owned by the client (debounced, URL synced via
- * history.replaceState).
+ * Pagefind-powered client-side search. In output: 'static' mode this page
+ * is prerendered as a fixed shell. The query is read from ?q= CLIENT-SIDE
+ * in initSearchPage() (src/scripts/search-page.ts); the hero title/lede
+ * swap to the "results for …" variant once a query is present.
  *
  * Tailor layer. The A4 header search (SearchBar.astro) is the peek surface;
  * this is the committed reading surface — larger input, grouped results by
@@ -11,19 +12,12 @@
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const query = (Astro.url.searchParams.get('q') || '').trim();
-const hasQuery = query.length > 0;
-
-const title = hasQuery
-  ? `Search: "${query}" — Tailor Education`
-  : 'Search — Tailor Education';
-
 const description =
   'Search questions, glossary, topics, blog, and services across Tailor Education.';
 ---
 
 <BaseLayout
-  title={title}
+  title="Search — Tailor Education"
   description={description}
   canonicalPath="/search"
   noIndex
@@ -33,17 +27,17 @@ const description =
     <section class="search-page__hero">
       <div class="search-page__hero-inner">
         <span class="search-page__eyebrow">Search</span>
-        {hasQuery ? (
-          <h1 class="search-page__title">
-            Search results for <em class="search-page__title-query">&ldquo;{query}&rdquo;</em>
-          </h1>
-        ) : (
-          <h1 class="search-page__title">Search</h1>
-        )}
-        <p class="search-page__lede">
-          {hasQuery
-            ? 'Matches across questions, glossary, topics, blog, and services. Keep typing to refine.'
-            : 'Type a question, topic, or term. Okay to Ask answers, glossary definitions, blog pieces, and services all search together.'}
+        {/* Both title variants render; initSearchPage() shows the right
+            one based on ?q= / live input. */}
+        <h1 class="search-page__title" data-search-title="empty">Search</h1>
+        <h1 class="search-page__title" data-search-title="active" hidden>
+          Search results for <em class="search-page__title-query" data-search-title-query></em>
+        </h1>
+        <p class="search-page__lede" data-search-lede="empty">
+          Type a question, topic, or term. Okay to Ask answers, glossary definitions, blog pieces, and services all search together.
+        </p>
+        <p class="search-page__lede" data-search-lede="active" hidden>
+          Matches across questions, glossary, topics, blog, and services. Keep typing to refine.
         </p>
       </div>
     </section>
@@ -69,7 +63,6 @@ const description =
             class="search-page__input"
             type="search"
             name="q"
-            value={query}
             placeholder="Search questions, topics, glossary…"
             autocomplete="off"
             autocorrect="off"
