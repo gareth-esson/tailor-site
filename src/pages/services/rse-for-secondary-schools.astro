@@ -7,7 +7,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
 import ServiceTopicsStrip from '../../components/ServiceTopicsStrip.astro';
 import ServicePageStyles from '../../components/ServicePageStyles.astro';
-import { getBlogPosts } from '../../lib/content';
+import { getBlogPosts, getTestimonials } from '../../lib/content';
 
 // --- Data ----------------------------------------------------------
 const slug = 'rse-for-secondary-schools';
@@ -23,6 +23,10 @@ const heroImageAlt = 'Secondary students working collaboratively in a Tailor RSE
 
 const descriptionLead =
   'A specialist RSE educator delivers discussion-based lessons to your KS3 and KS4 students — covering consent, healthy relationships, pornography, online safety, misogyny, sexual health, and the topics students are asking about but staff often hesitate to tackle.';
+
+// H2 shown above the description body on the C5 page.
+// Placeholder — Gareth: review/replace per service if this isn't the right framing.
+const descriptionHeading = 'What is RSE for secondary schools?';
 
 const descriptionBody = [
   'Secondary students can tell when a session is being delivered by someone who isn\'t comfortable with the material — and they disengage fast. Our educators lead with expertise, honesty, and the ability to hold a room through genuinely difficult conversations. Every session is planned with your PSHE lead around what is happening in your cohort.',
@@ -40,15 +44,14 @@ const featureCards = [
   { title: 'Post-session staff debrief', description: 'Written summary with talking points and follow-up recommendations for form tutors and pastoral staff.' },
 ];
 
-const processSteps = [
-  { number: 1, title: 'We plan together', description: 'Pre-visit consultation to agree topics, year groups, cohort context, and anything sensitive happening in the school.' },
-  { number: 2, title: 'We deliver', description: 'A specialist educator leads discussion-based sessions directly with your students.' },
-  { number: 3, title: 'You get results', description: 'Written debrief, disclosure watch-list, and students who can name what\'s healthy and what isn\'t.' },
-];
-
-const testimonialQuote =
-  'The sessions were exactly what our students needed. Delivered with sensitivity, honesty, and real expertise — the kind of RSE we want but can\'t always deliver ourselves.';
-const testimonialSource = 'Head of PSHE, secondary school';
+// Prefer secondary-school setting; fall back to any RSE delivery quote
+const _testimonials = await getTestimonials();
+const _delivery = _testimonials.filter((t) => t.serviceTags.includes('RSE delivery'));
+const _match = _delivery.find((t) => t.setting === 'Secondary school') || _delivery[0] || null;
+const testimonialQuote: string | null = _match?.quote || null;
+const testimonialSource: string | null = _match
+  ? [_match.role || _match.name, _match.organisation].filter(Boolean).join(', ')
+  : null;
 
 const featuredTopicSlugs = [
   'consent',
@@ -83,7 +86,7 @@ const metaDescription = 'Discussion-led RSE for KS3 and KS4, delivered by specia
   <article class="service-page" data-pagefind-body>
 
     <header class="service-hero">
-      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+      <div class="service-hero__wrap">
         <div class="service-hero__inner">
           <div class="service-hero__text">
             <span class="service-hero__eyebrow">Services</span>
@@ -109,15 +112,18 @@ const metaDescription = 'Discussion-led RSE for KS3 and KS4, delivered by specia
     </header>
 
     <section class="service-description">
-      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-        <p class="service-description__lead">{descriptionLead}</p>
-        {descriptionBody.map((para) => (<p>{para}</p>))}
-        {whatSchoolsGet && (
-          <>
-            <h2 class="service-description__sub-title">What schools get</h2>
-            <p>{whatSchoolsGet}</p>
-          </>
-        )}
+      <div class="service-description__inner py-[var(--space-struct-y-base)]">
+        <div class="service-description__col">
+          <h2 class="service-description__heading">{descriptionHeading}</h2>
+          <p class="service-description__lead">{descriptionLead}</p>
+          {descriptionBody.map((para) => (<p>{para}</p>))}
+          {whatSchoolsGet && (
+            <>
+              <h2 class="service-description__sub-title">What schools get</h2>
+              <p>{whatSchoolsGet}</p>
+            </>
+          )}
+        </div>
       </div>
     </section>
 
@@ -134,23 +140,6 @@ const metaDescription = 'Discussion-led RSE for KS3 and KS4, delivered by specia
         </div>
       </div>
     </section>
-
-    {processSteps && (
-      <section class="service-process">
-        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-          <h2 class="service-section-title">How it works</h2>
-          <div class="service-process__grid">
-            {processSteps.map((step) => (
-              <div class="process-step">
-                <div class="process-step__number">{step.number}</div>
-                <h3 class="process-step__title">{step.title}</h3>
-                <p class="process-step__text">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    )}
 
     <section class="service-proof-band">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
@@ -177,6 +166,8 @@ const metaDescription = 'Discussion-led RSE for KS3 and KS4, delivered by specia
       </div>
     </section>
 
+    <ServiceTopicsStrip featuredSlugs={featuredTopicSlugs} />
+
     {relatedPosts.length > 0 && (
       <section class="service-blog">
         <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
@@ -200,8 +191,6 @@ const metaDescription = 'Discussion-led RSE for KS3 and KS4, delivered by specia
         </div>
       </section>
     )}
-
-    <ServiceTopicsStrip featuredSlugs={featuredTopicSlugs} />
 
     <CtaServiceEnquiry serviceName={serviceName} serviceParam={serviceParam} variant="alt" />
 

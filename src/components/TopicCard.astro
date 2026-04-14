@@ -1,0 +1,138 @@
+---
+/**
+ * TopicCard — reusable topic card
+ * Used on /topics/ hub, homepage Topics section, service pages.
+ * Props: slug, title, category, summary (optional)
+ */
+import { getTopicIllustrationPath } from '../lib/topic-illustrations';
+
+interface Props {
+  slug: string;
+  title: string;
+  category?: string;
+  summary?: string;
+}
+
+const { slug, title, category, summary } = Astro.props;
+
+const categoryTokenMap: Record<string, string> = {
+  'Relationships': 'relationships',
+  'Sex & Sexual Health': 'sexual-health',
+  'Puberty & The Body': 'puberty',
+  'Identity & Diversity': 'identity',
+  'Online Safety & Media': 'online-safety',
+  'Safety & Safeguarding': 'safety',
+  'Health & Wellbeing': 'wellbeing',
+};
+
+const minorWords = new Set(['a','an','and','as','at','but','by','for','in','nor','of','on','or','so','the','to','up','yet']);
+function toTitleCase(str: string): string {
+  return str.split(' ').map((word, i, arr) => {
+    if (i === 0 || i === arr.length - 1 || !minorWords.has(word.toLowerCase())) {
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    }
+    return word.toLowerCase();
+  }).join(' ');
+}
+
+const token = categoryTokenMap[category || ''] || 'relationships';
+const illustrationSrc = getTopicIllustrationPath(slug);
+---
+
+<a href={`/topics/${slug}`} class="topic-card" style={`--cat-color: var(--cat-${token})`}>
+  <div class="topic-card__illustration">
+    {illustrationSrc && <img src={illustrationSrc} alt="" loading="lazy" />}
+  </div>
+  <div class="topic-card__body">
+    {category && <span class="topic-card__eyebrow">{category}</span>}
+    <h3 class="topic-card__title">{toTitleCase(title)}</h3>
+    {summary && <p class="topic-card__summary">{summary}</p>}
+    <span class="topic-card__link">Explore topic</span>
+  </div>
+</a>
+
+<style>
+  .topic-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-md);
+    padding: var(--space-global-lg);
+    background: var(--bg-surface);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color var(--transition-duration) var(--transition-easing);
+    height: 100%;
+  }
+
+  .topic-card:hover {
+    border-color: var(--cat-color, var(--brand-accent));
+  }
+
+  .topic-card__illustration {
+    flex-shrink: 0;
+    width: 5rem;
+    height: 5rem;
+    background: var(--bg-surface-alt);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .topic-card__illustration img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .topic-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-xs);
+  }
+
+  .topic-card__eyebrow {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--text-eyebrow-ls);
+    color: var(--cat-color, var(--text-body-muted));
+  }
+
+  .topic-card__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-card-size-h2);
+    font-weight: var(--heading-weight-h2);
+    color: var(--text-heading);
+    line-height: var(--lh-heading-sub);
+    margin: 0;
+  }
+
+  .topic-card__summary {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+    line-height: var(--lh-body);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .topic-card__link {
+    margin-top: auto;
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-bold);
+    color: var(--link-action-color);
+  }
+
+  .topic-card__link::after {
+    content: ' →';
+  }
+</style>

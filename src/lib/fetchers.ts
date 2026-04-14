@@ -9,7 +9,7 @@ import {
   getCheckboxValue,
   getNumberValue,
 } from './notion';
-import type { Question, GlossaryTerm, Topic, LandingPage, BlogPost, CurriculumStatement } from './types';
+import type { Question, GlossaryTerm, Topic, LandingPage, BlogPost, CurriculumStatement, Testimonial } from './types';
 
 // --- Notion property helpers ---
 
@@ -38,6 +38,10 @@ function getLandingPagesDb(): string | null {
 
 function getBlogDb(): string | null {
   return import.meta.env.NOTION_BLOG_DB || null;
+}
+
+function getTestimonialsDb(): string | null {
+  return import.meta.env.NOTION_TESTIMONIALS_DB || null;
 }
 
 // --- Concurrency-limited batch processing ---
@@ -249,6 +253,44 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
     return blogPosts;
   } catch (error) {
     console.warn(`  ⚠ Could not fetch blog posts (database may not be shared with integration yet):`, (error as Error).message);
+    return [];
+  }
+}
+
+export async function fetchTestimonials(): Promise<Testimonial[]> {
+  const dbId = getTestimonialsDb();
+  if (!dbId) {
+    console.warn('  ⚠ NOTION_TESTIMONIALS_DB not set, skipping testimonials');
+    return [];
+  }
+
+  console.log('Fetching testimonials...');
+  try {
+    const pages = await queryDatabase(dbId, {
+      property: 'Approved for live site',
+      checkbox: { equals: true },
+    });
+
+    const testimonials: Testimonial[] = pages.map((page) => {
+      const p = page.properties;
+      return {
+        id: page.id,
+        name: getTitleValue(p['Name']),
+        quote: getRichTextValue(p['Quote']),
+        role: getRichTextValue(p['Role']),
+        organisation: getRichTextValue(p['School or organisation']),
+        serviceTags: getMultiSelectValues(p['Service tag']),
+        setting: getSelectValue(p['Setting']),
+        voice: getSelectValue(p['Voice']),
+        source: getRichTextValue(p['Source']),
+        dateCollected: getDateValue(p['Date collected']),
+      };
+    });
+
+    console.log(`  ✓ ${testimonials.length} testimonials fetched`);
+    return testimonials;
+  } catch (error) {
+    console.warn(`  ⚠ Could not fetch testimonials (database may not be shared with integration yet):`, (error as Error).message);
     return [];
   }
 }

@@ -9,7 +9,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
 import ServiceTopicsStrip from '../../components/ServiceTopicsStrip.astro';
 import ServicePageStyles from '../../components/ServicePageStyles.astro';
-import { getBlogPosts } from '../../lib/content';
+import { getBlogPosts, getTestimonials } from '../../lib/content';
 
 // --- Data ----------------------------------------------------------
 const slug = 'rse-training';
@@ -25,6 +25,10 @@ const heroImageAlt = 'A Tailor facilitator leading a CPD workshop for school sta
 
 const descriptionLead =
   'The biggest barrier to good RSE in most schools isn\'t policy or curriculum — it\'s teacher confidence. Staff are asked to deliver topics they were never trained in, sometimes with a few hours\' notice, often with no clear framework for what to say when a student asks the question they were dreading.';
+
+// H2 shown above the description body on the C5 page.
+// Placeholder — Gareth: review/replace per service if this isn't the right framing.
+const descriptionHeading = 'What is RSE training?';
 
 const descriptionBody = [
   'Our training is built around that reality. Rather than walking staff through a generic RSE overview, we focus on the specific moments teachers find hardest: managing disclosures, handling unexpected questions, pitching content age-appropriately, navigating parent concerns, and building the personal confidence to hold the room.',
@@ -44,15 +48,12 @@ const featureCards = [
   { title: 'CPD certification and resource pack', description: 'All attendees receive CPD accreditation and a written resource pack to reference after the training.' },
 ];
 
-const processSteps = [
-  { number: 1, title: 'We scope together', description: 'Pre-training call to agree focus areas, the balance of topics, and anything specific your staff are struggling with.' },
-  { number: 2, title: 'We train', description: 'Half-day, full-day, or multi-session delivery — in person at your school or remotely, led by a specialist educator.' },
-  { number: 3, title: 'Staff are ready', description: 'CPD certification, a written resource pack, and follow-up support for anything that comes up afterwards.' },
-];
-
-const testimonialQuote =
-  'Easily the most practical CPD our department has ever had. Staff left with actual phrases and scripts, not just a warm feeling about the importance of RSE. Three months on, our team is still referencing it.';
-const testimonialSource = 'PSHE Coordinator, MAT';
+const _testimonials = await getTestimonials();
+const _match = _testimonials.find((t) => t.serviceTags.includes('RSE training')) || null;
+const testimonialQuote: string | null = _match?.quote || null;
+const testimonialSource: string | null = _match
+  ? [_match.role || _match.name, _match.organisation].filter(Boolean).join(', ')
+  : null;
 
 const featuredTopicSlugs = [
   'consent',
@@ -87,7 +88,7 @@ const metaDescription = 'CPD-accredited RSE training for school staff, led by sp
   <article class="service-page" data-pagefind-body>
 
     <header class="service-hero">
-      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+      <div class="service-hero__wrap">
         <div class="service-hero__inner">
           <div class="service-hero__text">
             <span class="service-hero__eyebrow">Services</span>
@@ -113,15 +114,18 @@ const metaDescription = 'CPD-accredited RSE training for school staff, led by sp
     </header>
 
     <section class="service-description">
-      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-        <p class="service-description__lead">{descriptionLead}</p>
-        {descriptionBody.map((para) => (<p>{para}</p>))}
-        {whatSchoolsGet && (
-          <>
-            <h2 class="service-description__sub-title">What schools get</h2>
-            <p>{whatSchoolsGet}</p>
-          </>
-        )}
+      <div class="service-description__inner py-[var(--space-struct-y-base)]">
+        <div class="service-description__col">
+          <h2 class="service-description__heading">{descriptionHeading}</h2>
+          <p class="service-description__lead">{descriptionLead}</p>
+          {descriptionBody.map((para) => (<p>{para}</p>))}
+          {whatSchoolsGet && (
+            <>
+              <h2 class="service-description__sub-title">What schools get</h2>
+              <p>{whatSchoolsGet}</p>
+            </>
+          )}
+        </div>
       </div>
     </section>
 
@@ -138,23 +142,6 @@ const metaDescription = 'CPD-accredited RSE training for school staff, led by sp
         </div>
       </div>
     </section>
-
-    {processSteps && (
-      <section class="service-process">
-        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-          <h2 class="service-section-title">How it works</h2>
-          <div class="service-process__grid">
-            {processSteps.map((step) => (
-              <div class="process-step">
-                <div class="process-step__number">{step.number}</div>
-                <h3 class="process-step__title">{step.title}</h3>
-                <p class="process-step__text">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    )}
 
     <section class="service-proof-band">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
@@ -181,6 +168,8 @@ const metaDescription = 'CPD-accredited RSE training for school staff, led by sp
       </div>
     </section>
 
+    <ServiceTopicsStrip featuredSlugs={featuredTopicSlugs} />
+
     {relatedPosts.length > 0 && (
       <section class="service-blog">
         <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
@@ -204,8 +193,6 @@ const metaDescription = 'CPD-accredited RSE training for school staff, led by sp
         </div>
       </section>
     )}
-
-    <ServiceTopicsStrip featuredSlugs={featuredTopicSlugs} />
 
     <CtaServiceEnquiry serviceName={serviceName} serviceParam={serviceParam} variant="alt" />
 

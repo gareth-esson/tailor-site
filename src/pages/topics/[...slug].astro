@@ -8,10 +8,11 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaExploreLessons from '../../components/CtaExploreLessons.astro';
 import CtaBringToSchool from '../../components/CtaBringToSchool.astro';
+import TopicCard from '../../components/TopicCard.astro';
+import QuestionCard from '../../components/QuestionCard.astro';
 import { getLandingPages, getQuestions, getGlossaryTerms, getBlogPosts, getGlossaryIndex, getCurriculumStatements } from '../../lib/content';
 import { renderBlocks } from '../../lib/render-blocks';
 import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
-import { getPostItImagePath } from '../../lib/post-it-images';
 import type { LandingPage, Question, GlossaryTerm, BlogPost, CurriculumStatement } from '../../lib/types';
 import topicAliases from '../../../docs/topic-aliases.json';
 
@@ -153,9 +154,9 @@ const jsonLd = {
   },
 };
 
-// Questions: limit to 6 with post-it + simpleAnswer for b11-sample-card display
+// Questions: limit to 6 answered questions for the shared QuestionCard
 const displayQuestions = questions
-  .filter((q) => q.body.length > 0 && q.hasPostItScan && q.simpleAnswer?.length > 0)
+  .filter((q) => q.body.length > 0)
   .slice(0, 6);
 
 ---
@@ -167,25 +168,29 @@ const displayQuestions = questions
   jsonLd={jsonLd}
 >
   <div class="landing-page" data-pagefind-body>
-    <!-- §1 Hero -->
+    <!-- §1 Hero (2:1 text/illustration) -->
     <section class="landing-hero">
       <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
-        {illustrationSrc && (
-          <div class="landing-hero__illustration">
-            <img src={illustrationSrc} alt="" class="landing-hero__illustration-img" />
-          </div>
-        )}
-        <span class="landing-hero__category" style={`--cat-color: var(--cat-${catToken})`}>
-          {landingPage.category}
-        </span>
-        <h1 class="landing-hero__title">{landingPage.title}</h1>
+        <div class="landing-hero__inner">
+          <div class="landing-hero__text">
+            <span class="landing-hero__category" style={`--cat-color: var(--cat-${catToken})`}>
+              {landingPage.category}
+            </span>
+            <h1 class="landing-hero__title">{landingPage.title}</h1>
 
-        {/* Topic search aliases — indexed by Pagefind but hidden from view */}
-        {aliases.length > 0 && (
-          <div data-pagefind-meta="aliases" style="display:none">
-            {aliases.join(', ')}
+            {/* Topic search aliases — indexed by Pagefind but hidden from view */}
+            {aliases.length > 0 && (
+              <div data-pagefind-meta="aliases" style="display:none">
+                {aliases.join(', ')}
+              </div>
+            )}
           </div>
-        )}
+          {illustrationSrc && (
+            <div class="landing-hero__illustration">
+              <img src={illustrationSrc} alt="" class="landing-hero__illustration-img" />
+            </div>
+          )}
+        </div>
       </div>
     </section>
 
@@ -200,7 +205,7 @@ const displayQuestions = questions
 
     <!-- §3 Curriculum mapping (auto-generated) -->
     {safeStatements.length > 0 && (
-      <section class="landing-curriculum" style="background: var(--bg-surface-alt);">
+      <section class="landing-curriculum">
         <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
           <h2 class="landing-section__title">Curriculum alignment</h2>
           <p class="landing-curriculum__summary">
@@ -264,41 +269,33 @@ const displayQuestions = questions
     <!-- §4 CTA [A11] — mid-page -->
     <CtaExploreLessons topicTitle={landingPage.title} topicSlugs={topicSlugs} />
 
-    <!-- §5 Questions young people ask -->
+    <!-- §5 Related landing pages (moved above Questions) -->
+    {relatedPages.length > 0 && (
+      <section class="landing-related">
+        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+          <h2 class="landing-section__title">Related topics</h2>
+          <div class="landing-related__grid">
+            {relatedPages.map((rp) => (
+              <TopicCard slug={rp.slug} title={rp.title} category={rp.category ?? undefined} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- §6 Questions young people ask — uses shared QuestionCard -->
     {displayQuestions.length > 0 && (
       <section class="landing-questions">
         <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
           <h2 class="landing-section__title">Questions young people ask</h2>
-          <div class="landing-questions__stack">
-            {displayQuestions.map((q) => {
-              const postItImage = getPostItImagePath(q.slug);
-              return (
-                <a href={`/anonymous_question/${q.slug}`} class="b11-sample-card">
-                  {postItImage && (
-                    <img
-                      src={postItImage}
-                      alt=""
-                      class="b11-sample-card__postit"
-                      loading="lazy"
-                    />
-                  )}
-                  <div class="b11-sample-card__body">
-                    {q.okayToAskCategory && (
-                      <span class="b11-sample-card__eyebrow">{q.okayToAskCategory}</span>
-                    )}
-                    <div class="b11-sample-card__question">{q.question}</div>
-                    {q.simpleAnswer && (
-                      <p class="b11-sample-card__excerpt">{q.simpleAnswer}</p>
-                    )}
-                    <span class="b11-sample-card__link">Read the full answer</span>
-                  </div>
-                </a>
-              );
-            })}
+          <div class="landing-questions__grid">
+            {displayQuestions.map((q) => (
+              <QuestionCard question={q} />
+            ))}
           </div>
           {questions.length > 6 && (
             <div class="landing-questions__more">
-              <a href="/questions/" class="btn btn--sm btn--outline has-icon-hover">
+              <a href="/questions/" class="btn btn--sm btn--tint has-icon-hover">
                 See all {questions.length} questions
               </a>
             </div>
@@ -307,9 +304,9 @@ const displayQuestions = questions
       </section>
     )}
 
-    <!-- §6 For teachers: further reading (conditional) -->
+    <!-- §7 For teachers: further reading (conditional) -->
     {blogPosts.length > 0 && (
-      <section class="landing-blog" style="background: var(--bg-surface-alt);">
+      <section class="landing-blog">
         <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
           <h2 class="landing-section__title">For teachers: further reading</h2>
           <div class="landing-blog__grid">
@@ -331,22 +328,6 @@ const displayQuestions = questions
       </section>
     )}
 
-    <!-- §7 Related landing pages -->
-    {relatedPages.length > 0 && (
-      <section class="landing-related">
-        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-          <h2 class="landing-section__title">Related topics</h2>
-          <div class="landing-related__pills">
-            {relatedPages.map((rp) => (
-              <a href={`/topics/${rp.slug}`} class="landing-pill">
-                {rp.title}
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-    )}
-
     <!-- §8 CTA [A12] — bottom of page  -->
     <CtaBringToSchool topicTitle={landingPage.title} serviceTarget={landingPage.serviceCtaTarget} />
   </div>
@@ -357,17 +338,35 @@ const displayQuestions = questions
      Landing page [C3] styles
      ======================================== */
   .landing-page {
-    background: var(--bg-page);
+    background: var(--bg-surface);
   }
 
-  /* --- §1 Hero --- */
+  /* Surface rhythm:
+     hero (white) → body (white) → curriculum (tint) → CTA (white)
+     → related (tint) → questions (white) → blog (tint) → CTA (white). */
+  .landing-curriculum,
+  .landing-related,
+  .landing-blog {
+    background: var(--bg-surface-alt);
+  }
+
+  /* --- §1 Hero (2:1 text/illustration) --- */
   .landing-hero {
-    background: var(--bg-surface);
-    border-bottom: var(--border-width-xs) solid var(--border-subtle);
+    background: var(--bg-tinted);
+  }
+
+  .landing-hero__inner {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: var(--space-global-md);
+    align-items: flex-start;
+  }
+
+  .landing-hero__text {
+    min-width: 0;
   }
 
   .landing-hero__illustration {
-    margin-bottom: var(--space-global-xs);
     width: fit-content;
     background: var(--bg-surface-alt);
     border-radius: var(--radius-lg);
@@ -388,10 +387,26 @@ const displayQuestions = questions
     }
   }
 
-  @media (min-width: 1024px) {
+  @media (min-width: 768px) {
+    .landing-hero__inner {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--space-global-xl);
+    }
+    .landing-hero__text {
+      flex: 2 1 0;
+    }
+    .landing-hero__illustration {
+      flex: 1 1 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: 1 / 1;
+      width: 100%;
+    }
     .landing-hero__illustration-img {
-      width: 14rem;
-      height: 14rem;
+      width: 80%;
+      height: 80%;
     }
   }
 
@@ -479,7 +494,7 @@ const displayQuestions = questions
 
   .curriculum-detail__content h3 {
     font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-prose-size-h3);
+    font-size: var(--text-card-size-h2);
     font-weight: var(--heading-weight-h3);
     color: var(--text-heading);
     margin-top: var(--space-global-md);
@@ -501,7 +516,7 @@ const displayQuestions = questions
 
   .curriculum-statement__text {
     font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-prose-size-body);
+    font-size: var(--text-card-size-body);
     color: var(--text-body);
     font-style: italic;
   }
@@ -521,11 +536,24 @@ const displayQuestions = questions
     margin: 0 0 var(--space-global-md);
   }
 
-  /* --- §4 Questions --- */
-  .landing-questions__stack {
-    display: flex;
-    flex-direction: column;
+  /* --- §6 Questions grid (2-col from sm, 3-col from lg) --- */
+  .landing-questions__grid {
+    display: grid;
+    grid-template-columns: 1fr;
     gap: var(--space-global-md);
+  }
+
+  @media (min-width: 640px) {
+    .landing-questions__grid {
+      grid-template-columns: repeat(2, 1fr);
+      align-items: stretch;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .landing-questions__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 
   .landing-questions__more {
@@ -552,31 +580,23 @@ const displayQuestions = questions
     margin-top: var(--space-global-xs);
   }
 
-  /* --- §7 Related topic pills --- */
-  .landing-related__pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-global-xs);
+  /* --- §7 Related topics (cards) --- */
+  .landing-related__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-global-sm);
   }
 
-  .landing-pill {
-    display: inline-block;
-    padding: var(--space-global-xs) var(--space-global-sm);
-    background: var(--bg-surface);
-    border: var(--border-width-xs) solid var(--border-subtle);
-    border-radius: var(--radius-pill);
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-card-size-body);
-    font-weight: var(--font-weight-medium);
-    color: var(--text-body);
-    text-decoration: none;
-    transition: border-color var(--transition-duration) var(--transition-easing),
-                color var(--transition-duration) var(--transition-easing);
+  @media (min-width: 640px) {
+    .landing-related__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
-  .landing-pill:hover {
-    border-color: var(--brand-accent);
-    color: var(--brand-accent-text);
+  @media (min-width: 1024px) {
+    .landing-related__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 
   /* --- Responsive --- */

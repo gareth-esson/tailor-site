@@ -1,22 +1,17 @@
 ---
 /**
  * Testimonials page [B6] — /testimonials
- * Social proof. Placeholder content. Tailor layer.
+ * Social proof. Live data from Notion testimonials database.
+ * Tailor layer.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getTestimonials } from '../lib/content';
 
-const testimonials = [
-  { quote: 'The sessions were exactly what our students needed. Delivered with sensitivity, honesty, and real expertise.', name: 'Head of PSHE', school: 'Secondary school, West Midlands', service: 'Direct RSE delivery' },
-  { quote: 'Gareth helped us develop an RSE policy that our governors, staff, and parents all felt confident about.', name: 'Headteacher', school: 'Primary school, London', service: 'RSE policy & curriculum planning' },
-  { quote: 'The training completely changed how our PSHE team approaches RSE. Practical, honest, and directly applicable.', name: 'CPD Lead', school: 'Secondary school, Yorkshire', service: 'RSE training' },
-  { quote: 'The drop day gave our Year 9s a full day to focus on RSE properly. The students engaged brilliantly.', name: 'Head of Year', school: 'Academy, East Midlands', service: 'Drop day delivery' },
-  { quote: "Tailor Education's content is some of the best RSE material I've seen. Thoughtful, inclusive, and genuinely useful.", name: 'PSHE Coordinator', school: 'Secondary school, South East', service: 'RSE training' },
-  { quote: 'Parents were initially nervous about RSE delivery, but after seeing the Tailor approach they were fully on board.', name: 'Deputy Head', school: 'Faith school, North West', service: 'RSE policy & curriculum planning' },
-];
+const testimonials = await getTestimonials();
 ---
 
 <BaseLayout
-  title="Testimonials �� Tailor Education"
+  title="Testimonials — Tailor Education"
   description="What schools say about working with Tailor Education — testimonials from teachers and school leaders."
   canonicalPath="/testimonials"
 >
@@ -28,21 +23,26 @@ const testimonials = [
       </p>
 
       <div class="testimonials-grid">
-        {testimonials.map((t) => (
-          <blockquote class="testimonial-card">
-            <p class="testimonial-card__quote">"{t.quote}"</p>
-            <footer class="testimonial-card__footer">
-              <span class="testimonial-card__name">{t.name}</span>
-              <span class="testimonial-card__school">{t.school}</span>
-              <span class="testimonial-card__service">{t.service}</span>
-            </footer>
-          </blockquote>
-        ))}
+        {testimonials.map((t) => {
+          const attribution = [t.role, t.organisation].filter(Boolean).join(', ');
+          return (
+            <blockquote class="testimonial-card">
+              <p class="testimonial-card__quote">&ldquo;{t.quote}&rdquo;</p>
+              <footer class="testimonial-card__footer">
+                <span class="testimonial-card__name">{t.name}</span>
+                {attribution && <span class="testimonial-card__school">{attribution}</span>}
+                {t.serviceTags.length > 0 && (
+                  <span class="testimonial-card__service">{t.serviceTags.join(' · ')}</span>
+                )}
+              </footer>
+            </blockquote>
+          );
+        })}
       </div>
 
       <div class="testimonials-cta">
         <p class="testimonials-cta__text">Want to work with us?</p>
-        <a href="/services" class="btn btn--std btn--outline">View services</a>
+        <a href="/services" class="btn btn--std btn--tint">View services</a>
         <a href="/contact" class="btn btn--std btn--primary has-icon-hover">Get in touch</a>
       </div>
     </div>

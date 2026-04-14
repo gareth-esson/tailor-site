@@ -8,7 +8,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
 import ServiceTopicsStrip from '../../components/ServiceTopicsStrip.astro';
 import ServicePageStyles from '../../components/ServicePageStyles.astro';
-import { getBlogPosts } from '../../lib/content';
+import { getBlogPosts, getTestimonials } from '../../lib/content';
 
 // --- Data ----------------------------------------------------------
 const slug = 'rse-policy-curriculum-planning';
@@ -24,6 +24,10 @@ const heroImageAlt = 'Teachers and a Tailor consultant planning an RSE curriculu
 
 const descriptionLead =
   'Writing a RSE policy from scratch, or rewriting one that no longer reflects the DfE 2026 guidance, is the kind of work PSHE leads rarely have time for alongside teaching. It also requires a degree of confidence about what good looks like — particularly in the sections that parents or inspectors will scrutinise.';
+
+// H2 shown above the description body on the C5 page.
+// Placeholder — Gareth: review/replace per service if this isn't the right framing.
+const descriptionHeading = 'What is RSE policy and curriculum planning?';
 
 const descriptionBody = [
   'We work with your PSHE lead, SLT, and governors to build a policy and curriculum map that reflects your school\'s context, meets the DfE 2026 statutory requirements, and reads confidently for the audiences that matter: parents, inspectors, and your own staff.',
@@ -43,15 +47,12 @@ const featureCards = [
   { title: 'Follow-up review', description: 'Post-engagement review call to answer questions, handle any pushback, and lock in the final version.' },
 ];
 
-const processSteps = [
-  { number: 1, title: 'Scoping call', description: 'We start with a 60-minute call with your PSHE lead and SLT to understand current provision, context, and priorities.' },
-  { number: 2, title: 'Drafting', description: 'We draft your policy, curriculum map, and parent document. You review; we iterate.' },
-  { number: 3, title: 'Finalise and adopt', description: 'Final versions delivered ready for SLT and governor adoption, with a follow-up call to handle anything that comes up afterwards.' },
-];
-
-const testimonialQuote =
-  'We went from a policy held together with sellotape to something I could genuinely defend to parents and inspectors. The structured process meant we actually finished it — instead of it drifting for another term.';
-const testimonialSource = 'PSHE Lead, primary school';
+const _testimonials = await getTestimonials();
+const _match = _testimonials.find((t) => t.serviceTags.includes('RSE policy & curriculum planning')) || null;
+const testimonialQuote: string | null = _match?.quote || null;
+const testimonialSource: string | null = _match
+  ? [_match.role || _match.name, _match.organisation].filter(Boolean).join(', ')
+  : null;
 
 const featuredTopicSlugs = [
   'consent',
@@ -86,7 +87,7 @@ const metaDescription = 'Bespoke consultancy to develop your RSE policy, plan yo
   <article class="service-page" data-pagefind-body>
 
     <header class="service-hero">
-      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+      <div class="service-hero__wrap">
         <div class="service-hero__inner">
           <div class="service-hero__text">
             <span class="service-hero__eyebrow">Services</span>
@@ -112,15 +113,18 @@ const metaDescription = 'Bespoke consultancy to develop your RSE policy, plan yo
     </header>
 
     <section class="service-description">
-      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-        <p class="service-description__lead">{descriptionLead}</p>
-        {descriptionBody.map((para) => (<p>{para}</p>))}
-        {whatSchoolsGet && (
-          <>
-            <h2 class="service-description__sub-title">What schools get</h2>
-            <p>{whatSchoolsGet}</p>
-          </>
-        )}
+      <div class="service-description__inner py-[var(--space-struct-y-base)]">
+        <div class="service-description__col">
+          <h2 class="service-description__heading">{descriptionHeading}</h2>
+          <p class="service-description__lead">{descriptionLead}</p>
+          {descriptionBody.map((para) => (<p>{para}</p>))}
+          {whatSchoolsGet && (
+            <>
+              <h2 class="service-description__sub-title">What schools get</h2>
+              <p>{whatSchoolsGet}</p>
+            </>
+          )}
+        </div>
       </div>
     </section>
 
@@ -137,23 +141,6 @@ const metaDescription = 'Bespoke consultancy to develop your RSE policy, plan yo
         </div>
       </div>
     </section>
-
-    {processSteps && (
-      <section class="service-process">
-        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-          <h2 class="service-section-title">How it works</h2>
-          <div class="service-process__grid">
-            {processSteps.map((step) => (
-              <div class="process-step">
-                <div class="process-step__number">{step.number}</div>
-                <h3 class="process-step__title">{step.title}</h3>
-                <p class="process-step__text">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    )}
 
     <section class="service-proof-band">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
@@ -180,6 +167,8 @@ const metaDescription = 'Bespoke consultancy to develop your RSE policy, plan yo
       </div>
     </section>
 
+    <ServiceTopicsStrip featuredSlugs={featuredTopicSlugs} />
+
     {relatedPosts.length > 0 && (
       <section class="service-blog">
         <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
@@ -203,8 +192,6 @@ const metaDescription = 'Bespoke consultancy to develop your RSE policy, plan yo
         </div>
       </section>
     )}
-
-    <ServiceTopicsStrip featuredSlugs={featuredTopicSlugs} />
 
     <CtaServiceEnquiry serviceName={serviceName} serviceParam={serviceParam} variant="alt" />
 

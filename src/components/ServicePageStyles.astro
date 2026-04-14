@@ -23,11 +23,21 @@
   }
 
   /* ----------------------------------------------------------------
-     §1 — Hero (tinted, with required image)
+     §1 — Hero
+     Full-bleed at lg+: the image column stretches to section height
+     and sits flush to the right edge (no padding). Matches the
+     homepage .hero-teacher treatment.
      ---------------------------------------------------------------- */
   .service-hero {
     background: var(--bg-tinted);
     border-bottom: var(--border-width-xs) solid var(--border-subtle);
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+  }
+
+  .service-hero__wrap {
+    max-width: var(--container-max-shell);
+    margin: 0 auto;
+    width: 100%;
   }
 
   .service-hero__inner {
@@ -64,6 +74,10 @@
     margin: 0 0 var(--space-global-md);
   }
 
+  .service-hero__image {
+    width: 100%;
+  }
+
   .service-hero__image img {
     border-radius: var(--radius-lg);
     width: 100%;
@@ -74,11 +88,34 @@
   }
 
   /* ----------------------------------------------------------------
-     §3 — Service description (pure prose, no h2, no callout)
+     §3 — Service description (left-aligned; shell-width wrapper with
+     a prose-width text column anchored to the left edge — not centred).
      ---------------------------------------------------------------- */
   .service-description {
     font-family: var(--font-tailor-body-stack);
     color: var(--text-body);
+  }
+
+  .service-description__inner {
+    max-width: var(--container-max-shell);
+    margin: 0 auto;
+    width: 100%;
+    padding-left: var(--space-global-gutter);
+    padding-right: var(--space-global-gutter);
+  }
+
+  .service-description__col {
+    max-width: var(--container-max-prose);
+    /* No mx-auto: left-aligned within the shell, flush with hero text */
+  }
+
+  .service-description__heading {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h2);
+    font-weight: var(--heading-weight-h2);
+    color: var(--text-heading);
+    line-height: var(--lh-heading);
+    margin: 0 0 var(--space-global-md);
   }
 
   .service-description__lead {
@@ -123,10 +160,11 @@
   }
 
   .feature-card {
-    background: var(--bg-surface);
+    background: #ffffff;
     border: var(--border-width-xs) solid var(--border-subtle);
     border-radius: var(--radius-lg);
     padding: var(--space-global-lg);
+    box-shadow: var(--shadow-sm);
   }
 
   .feature-card__title {
@@ -139,51 +177,6 @@
   }
 
   .feature-card__text {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-card-size-body);
-    color: var(--text-body-muted);
-    line-height: var(--lh-body);
-    margin: 0;
-  }
-
-  /* ----------------------------------------------------------------
-     §5 — Process steps
-     ---------------------------------------------------------------- */
-  .service-process__grid {
-    display: grid;
-    gap: var(--space-global-md);
-  }
-
-  .process-step {
-    text-align: left;
-    padding: 0;
-  }
-
-  .process-step__number {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: var(--radius-pill);
-    background: var(--bg-tinted);
-    color: var(--brand-accent-text);
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-prose-size-body);
-    font-weight: var(--font-weight-bold);
-    margin-bottom: var(--space-global-sm);
-  }
-
-  .process-step__title {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-card-size-h3);
-    font-weight: var(--heading-weight-h3);
-    color: var(--text-heading);
-    line-height: var(--lh-heading-sub);
-    margin: 0 0 var(--space-global-xs);
-  }
-
-  .process-step__text {
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-card-size-body);
     color: var(--text-body-muted);
@@ -313,9 +306,6 @@
     .service-features__grid {
       grid-template-columns: repeat(2, 1fr);
     }
-    .service-process__grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
     .service-blog__grid {
       grid-template-columns: repeat(2, 1fr);
     }
@@ -329,11 +319,48 @@
     .service-features__grid {
       grid-template-columns: repeat(3, 1fr);
     }
-    .service-process__grid {
-      grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-    }
     .service-blog__grid {
       grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* ----------------------------------------------------------------
+     Hero full-bleed: image column stretches to section edges, no
+     right padding, full height via align-self: stretch + object-fit
+     cover. Mirrors homepage .hero-teacher.
+     ---------------------------------------------------------------- */
+  @media (min-width: 1024px) {
+    .service-hero {
+      padding: 0;
+    }
+    .service-hero__wrap {
+      max-width: none;
+    }
+    .service-hero__inner {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 0;
+      align-items: stretch;
+    }
+    .service-hero__text {
+      /* Match nav-logo left edge (see homepage hero for rationale) */
+      padding: var(--space-struct-y-base) var(--space-global-gutter);
+      padding-left: calc(5vw + var(--space-global-gutter));
+      align-self: center;
+    }
+    .service-hero__text > * {
+      max-width: var(--container-max-prose);
+    }
+    .service-hero__image {
+      align-self: stretch;
+      display: flex;
+    }
+    .service-hero__image img,
+    .service-hero__image-placeholder {
+      width: 100%;
+      height: 100%;
+      aspect-ratio: auto;
+      border-radius: 0;
+      object-fit: cover;
     }
   }
 </style>

@@ -5,7 +5,7 @@
  * OtA visual identity. Atkinson body, Fraunces headings.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getGlossaryTerms, getGlossaryIndex } from '../../lib/content';
+import { getGlossaryTerms, getGlossaryIndex, getLandingPages } from '../../lib/content';
 import { renderBlocks } from '../../lib/render-blocks';
 import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
 import type { GlossaryTerm, GlossaryIndex } from '../../lib/types';
@@ -21,19 +21,33 @@ export const prerender = true;
 export async function getStaticPaths() {
   const terms = await getGlossaryTerms();
   const glossaryIndex = await getGlossaryIndex();
+  const landingPages = await getLandingPages();
 
-  return terms.map((t) => ({
-    params: { slug: t.slug },
-    props: { term: t, glossaryIndex },
-  }));
+  return terms.map((t) => {
+    // Resolve term's granular topic → parent landing page slug,
+    // since /topics/{slug} routes land on landing-page slugs, not
+    // granular topic slugs. Fall back to null if no match.
+    const landing = t.topic
+      ? landingPages.find((lp) => lp.granularTopicIds.includes(t.topic!.id)) || null
+      : null;
+    const landingTopic = landing
+      ? { name: landing.title, slug: landing.slug }
+      : null;
+
+    return {
+      params: { slug: t.slug },
+      props: { term: t, glossaryIndex, landingTopic },
+    };
+  });
 }
 
 interface Props {
   term: GlossaryTerm;
   glossaryIndex: GlossaryIndex;
+  landingTopic: { name: string; slug: string } | null;
 }
 
-const { term, glossaryIndex } = Astro.props;
+const { term, glossaryIndex, landingTopic } = Astro.props;
 
 // SEO metadata
 const metaTitle = term.metaTitle || `What is ${term.term}? | Tailor Education`;
@@ -68,9 +82,10 @@ const simpleWithTooltips = injectGlossaryTooltips(
   term.slug
 );
 
-// Topic info for CTA
-const topicName = term.topic?.name || '';
-const topicSlug = term.topic?.slug || '';
+// Topic info for CTA — resolved to the parent landing page (what
+// /topics/{slug} actually routes to), not the granular topic.
+const topicName = landingTopic?.name || '';
+const topicSlug = landingTopic?.slug || '';
 
 // Limit referencing questions to 6
 const referencedQuestions = term.referencedIn.slice(0, 6);
@@ -216,7 +231,7 @@ const referencedQuestions = term.referencedIn.slice(0, 6);
           Explore {topicName}
         </h2>
         <div class="flex justify-center mt-[var(--space-global-md)]">
-          <a href={`/topics/${topicSlug}`} class="btn btn--outline btn--std has-icon-hover">
+          <a href={`/topics/${topicSlug}`} class="btn btn--tint btn--std has-icon-hover">
             See everything on {topicName}
           </a>
         </div>

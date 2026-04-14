@@ -84,16 +84,16 @@ function slugify(text: string): string {
 </a>
 
 <style>
-  .qcard {
+  .qcard.card {
     background: transparent;
-    box-shadow: var(--shadow-none);
+    box-shadow: none;
     border-color: transparent;
     transition:
       transform var(--transition-duration, 0.15s) var(--transition-easing, ease),
       border-color var(--transition-duration, 0.15s) var(--transition-easing, ease);
   }
 
-  .qcard:hover {
+  .qcard.card:hover {
     transform: translateY(-3px);
     border-color: var(--border-subtle);
   }
@@ -112,7 +112,7 @@ function slugify(text: string): string {
     justify-content: center;
     padding: var(--space-global-sm);
     height: 10rem;
-    background: var(--bg-page);
+    background: transparent;
   }
 
   .qcard__img {

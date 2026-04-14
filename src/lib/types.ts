@@ -134,6 +134,19 @@ export interface BlogPost {
   body: BlockObjectResponse[];
 }
 
+export interface Testimonial {
+  id: string;
+  name: string;            // attribution (or "Anonymous workshop participant" etc.)
+  quote: string;
+  role: string;            // job title
+  organisation: string;    // school or organisation
+  serviceTags: string[];   // e.g. ["RSE delivery", "RSE training"]
+  setting: string | null;  // Primary/Secondary/SEND/AP/etc.
+  voice: string | null;    // School staff/Young person/Parent/etc.
+  source: string;
+  dateCollected: string | null;
+}
+
 export interface CurriculumStatement {
   id: string;
   statement: string;

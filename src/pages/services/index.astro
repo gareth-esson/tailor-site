@@ -12,6 +12,7 @@
  * (soft planning-call CTA).
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getTestimonials } from '../../lib/content';
 
 // --- Hero ------------------------------------------------------------
 const heroEyebrow = 'Services';
@@ -97,11 +98,18 @@ const secondaryServices = [
 const frameworkLabel =
   'Aligned with DfE statutory guidance, the PSHE Association framework, and international best practice.';
 
-// --- §6 Testimonial (optional — omit cleanly if no quote provided) ---
-// Content slot per spec §10 item 19. Leave `null` to skip the dark band
-// entirely. A Tailor-wide quote belongs here, not a service-specific one.
-const testimonialQuote: string | null = null;
-const testimonialSource: string | null = null;
+// --- §6 Testimonial — Tailor-wide quote ------------------------------
+// Pulls a testimonial tagged "About / general" from Notion;
+// falls back to any approved testimonial if none is tagged that way.
+const _testimonials = await getTestimonials();
+const _match =
+  _testimonials.find((t) => t.serviceTags.includes('About / general')) ||
+  _testimonials[0] ||
+  null;
+const testimonialQuote: string | null = _match?.quote || null;
+const testimonialSource: string | null = _match
+  ? [_match.role || _match.name, _match.organisation].filter(Boolean).join(', ')
+  : null;
 
 // --- §7 Soft planning-call CTA ---------------------------------------
 const closingEyebrow = 'Not sure which service fits?';

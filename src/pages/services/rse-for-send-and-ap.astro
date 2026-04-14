@@ -9,7 +9,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
 import ServiceTopicsStrip from '../../components/ServiceTopicsStrip.astro';
 import ServicePageStyles from '../../components/ServicePageStyles.astro';
-import { getBlogPosts } from '../../lib/content';
+import { getBlogPosts, getTestimonials } from '../../lib/content';
 
 // --- Data ----------------------------------------------------------
 const slug = 'rse-for-send-and-ap';
@@ -25,6 +25,10 @@ const heroImageAlt = 'A pupil working through a Circuits RSE workbook at their o
 
 const descriptionLead =
   'Mainstream RSE lessons assume a classroom that moves at one pace, reads the same way, and processes information the same way. Circuits is designed from the opposite starting point — that every student in a SEND or AP setting is arriving at this content differently, and the delivery should flex to meet them.';
+
+// H2 shown above the description body on the C5 page.
+// Placeholder — Gareth: review/replace per service if this isn't the right framing.
+const descriptionHeading = 'What is Circuits?';
 
 const descriptionBody = [
   'Each student works through their own workbook alongside a Tailor educator. Keynote content is simplified visually — fewer words per page, clearer imagery, more space to think. Activities include doodle space, games, and reflective prompts, so students can engage in the way that works for them. The workbook belongs to the student afterwards — a reference they can come back to in their own time.',
@@ -43,15 +47,12 @@ const featureCards = [
   { title: 'Pre-delivery planning with your team', description: 'We meet your SENCO or AP lead in advance to agree pace, topics, and any student-specific considerations.' },
 ];
 
-const processSteps = [
-  { number: 1, title: 'We adapt', description: 'Planning call with your SENCO or AP lead to agree topics, pace, grouping, and any student-specific considerations.' },
-  { number: 2, title: 'They learn at their pace', description: 'A specialist educator works through workbooks with your students — self-paced, low-pressure, on their terms.' },
-  { number: 3, title: 'They keep the workbook', description: 'The workbook stays with the student as a reference they can return to. Staff get a debrief on progress and anything flagged.' },
-];
-
-const testimonialQuote =
-  'Our students engaged in a way they rarely do with whole-class sessions. The workbooks gave them something concrete to hold, and the fact they got to keep them mattered more than I expected.';
-const testimonialSource = 'SENCO, alternative provision';
+const _testimonials = await getTestimonials();
+const _match = _testimonials.find((t) => t.serviceTags.includes('Circuits (SEND/AP)')) || null;
+const testimonialQuote: string | null = _match?.quote || null;
+const testimonialSource: string | null = _match
+  ? [_match.role || _match.name, _match.organisation].filter(Boolean).join(', ')
+  : null;
 
 const featuredTopicSlugs = [
   'personal-safety',
@@ -86,7 +87,7 @@ const metaDescription = 'Circuits is a workbook-led, self-paced RSE programme de
   <article class="service-page" data-pagefind-body>
 
     <header class="service-hero">
-      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+      <div class="service-hero__wrap">
         <div class="service-hero__inner">
           <div class="service-hero__text">
             <span class="service-hero__eyebrow">Services</span>
@@ -112,15 +113,18 @@ const metaDescription = 'Circuits is a workbook-led, self-paced RSE programme de
     </header>
 
     <section class="service-description">
-      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-        <p class="service-description__lead">{descriptionLead}</p>
-        {descriptionBody.map((para) => (<p>{para}</p>))}
-        {whatSchoolsGet && (
-          <>
-            <h2 class="service-description__sub-title">What schools get</h2>
-            <p>{whatSchoolsGet}</p>
-          </>
-        )}
+      <div class="service-description__inner py-[var(--space-struct-y-base)]">
+        <div class="service-description__col">
+          <h2 class="service-description__heading">{descriptionHeading}</h2>
+          <p class="service-description__lead">{descriptionLead}</p>
+          {descriptionBody.map((para) => (<p>{para}</p>))}
+          {whatSchoolsGet && (
+            <>
+              <h2 class="service-description__sub-title">What schools get</h2>
+              <p>{whatSchoolsGet}</p>
+            </>
+          )}
+        </div>
       </div>
     </section>
 
@@ -137,23 +141,6 @@ const metaDescription = 'Circuits is a workbook-led, self-paced RSE programme de
         </div>
       </div>
     </section>
-
-    {processSteps && (
-      <section class="service-process">
-        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-          <h2 class="service-section-title">How it works</h2>
-          <div class="service-process__grid">
-            {processSteps.map((step) => (
-              <div class="process-step">
-                <div class="process-step__number">{step.number}</div>
-                <h3 class="process-step__title">{step.title}</h3>
-                <p class="process-step__text">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    )}
 
     <section class="service-proof-band">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
@@ -180,6 +167,8 @@ const metaDescription = 'Circuits is a workbook-led, self-paced RSE programme de
       </div>
     </section>
 
+    <ServiceTopicsStrip featuredSlugs={featuredTopicSlugs} />
+
     {relatedPosts.length > 0 && (
       <section class="service-blog">
         <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
@@ -203,8 +192,6 @@ const metaDescription = 'Circuits is a workbook-led, self-paced RSE programme de
         </div>
       </section>
     )}
-
-    <ServiceTopicsStrip featuredSlugs={featuredTopicSlugs} />
 
     <CtaServiceEnquiry serviceName={serviceName} serviceParam={serviceParam} variant="alt" />
 

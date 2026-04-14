@@ -6,12 +6,34 @@
  * Layer rhythm:   T → T → T → T → T → OtA → T → T
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
-import TopicsOverviewGrid from '../components/TopicsOverviewGrid.astro';
+import TopicCard from '../components/TopicCard.astro';
 import QuestionCard from '../components/QuestionCard.astro';
-import { getQuestions } from '../lib/content';
+import { getQuestions, getLandingPages, getTestimonials } from '../lib/content';
 import type { QuestionRef } from '../lib/types';
 
 const allQuestions = await getQuestions();
+const landingPages = await getLandingPages();
+const allTestimonials = await getTestimonials();
+
+// Featured testimonial — first approved one (Notion order). Falls back gracefully if empty.
+const featuredTestimonial = allTestimonials[0] || null;
+
+// Category order + sort landing pages
+const categoryOrder = [
+  'Relationships',
+  'Sex & Sexual Health',
+  'Puberty & The Body',
+  'Identity & Diversity',
+  'Online Safety & Media',
+  'Safety & Safeguarding',
+  'Health & Wellbeing',
+];
+const sortedLandingPages = [...landingPages].sort((a, b) => {
+  const catA = categoryOrder.indexOf(a.category || '');
+  const catB = categoryOrder.indexOf(b.category || '');
+  if (catA !== catB) return catA - catB;
+  return a.title.localeCompare(b.title);
+});
 
 // Featured questions: pick 3 answered questions with post-it scans
 const answered = allQuestions.filter((q) => q.body.length > 0 && q.hasPostItScan);
@@ -32,7 +54,7 @@ const featured: QuestionRef[] = answered.slice(0, 3).map((q) => ({
 const heroPhoto = '/images/services/tailor-education-secondary-rse-group-activity.webp' as string | null;
 
 // §2 product screenshot — conditionally rendered
-const appScreenshot = '/images/homepage/app-placeholder.svg' as string | null;
+const appScreenshot = '/images/homepage/Tailor Teach App Screenshot.png' as string | null;
 
 // §3 delivery photograph — conditionally rendered
 const deliveryPhoto = '/images/services/tailor-education-primary-rse-discussion-circle.webp' as string | null;
@@ -48,25 +70,25 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   canonicalPath="/"
 >
   <!-- ═══ §1 TEACHER HERO ═══ -->
-  <section class="hero-teacher surface--dark" aria-labelledby="hero-heading">
+  <section class="hero-teacher surface--brand" aria-labelledby="hero-heading">
     <div class="hero-teacher__inner">
-      <div class={heroPhoto ? '' : 'hero-teacher__text-only'}>
+      <div class={`hero-teacher__content ${heroPhoto ? '' : 'hero-teacher__text-only'}`}>
         <p class="preheader hero-teacher__eyebrow">Tailor Education</p>
         <h1 id="hero-heading" class="hero-teacher__title">Expert RSE lessons and training for schools</h1>
         <p class="hero-teacher__subtitle">
           Curriculum-aligned relationships and sex education for UK schools. Written by specialists, built for teachers.
         </p>
         <div class="hero-teacher__actions">
-          <a href="/topics" class="btn btn--std btn--primary has-icon-hover">
+          <a href="/topics" class="btn btn--std btn--white-primary has-icon-hover">
             Explore RSE lessons
           </a>
-          <a href="/services" class="btn btn--std btn--white-outline has-icon-hover">
+          <a href="/services" class="btn btn--std btn--white-tint has-icon-hover">
             Bring Tailor to your school
           </a>
         </div>
       </div>
       {heroPhoto && (
-        <div class="hero-photo-wrap hidden lg:block">
+        <div class="hero-teacher__photo-col hidden lg:block">
           <img src={heroPhoto} alt="Secondary students in a Tailor RSE group session" class="hero-photo" loading="eager" />
         </div>
       )}
@@ -161,7 +183,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
           <a href="/services/rse-training" class="btn btn--std btn--primary has-icon-hover">
             Explore training options
           </a>
-          <a href="/contact" class="btn btn--std btn--outline has-icon-hover">
+          <a href="/contact" class="btn btn--std btn--tint has-icon-hover">
             Talk to us about support
           </a>
         </div>
@@ -201,30 +223,37 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
         </div>
       </div>
 
-      <div class="home-trust__quote-wrap">
-        <blockquote class="home-trust__quote">
-          <p class="home-trust__quote-text">
-            "Tailor Education's content is some of the best RSE material I've seen. Thoughtful, inclusive, and genuinely useful."
-          </p>
-          <div class="home-trust__attribution">
-            <cite class="home-trust__cite">PSHE Coordinator</cite>
+      {featuredTestimonial && (
+        <div class="home-trust__quote-wrap">
+          <blockquote class="home-trust__quote">
+            <p class="home-trust__quote-text">
+              &ldquo;{featuredTestimonial.quote}&rdquo;
+            </p>
+            <div class="home-trust__attribution">
+              <cite class="home-trust__cite">
+                {featuredTestimonial.name}
+                {(featuredTestimonial.role || featuredTestimonial.organisation) && (
+                  <>, {[featuredTestimonial.role, featuredTestimonial.organisation].filter(Boolean).join(', ')}</>
+                )}
+              </cite>
+            </div>
+          </blockquote>
+          <div class="home-trust__action">
+            <a href="/testimonials" class="link-action">Read more testimonials</a>
           </div>
-        </blockquote>
-        <div class="home-trust__action">
-          <a href="/our-approach" class="link-action">See our approach</a>
         </div>
-      </div>
+      )}
     </div>
   </section>
 
   <!-- ═══ §6 OKAY TO ASK (single OtA layer switch) ═══ -->
   <div class="layer-ota">
-    <section class="home-ota" aria-labelledby="ota-heading">
+    <section class="home-ota" aria-labelledby="ota-heading" style="background: var(--bg-surface);">
       <div class="home-ota__inner">
         <!-- Beat 1: OtA introduction -->
         <div class="home-ota__intro">
           <img
-            src="/assets/ota-wordmark-dark.svg"
+            src="/assets/ota-wordmark-coral.svg"
             alt="Okay to Ask"
             class="home-ota__wordmark"
             width="160"
@@ -245,7 +274,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
               ))}
             </div>
             <div class="home-ota__questions-more">
-              <a href="/questions/" class="btn btn--std btn--outline has-icon-hover w-full sm:w-auto">
+              <a href="/questions/" class="btn btn--std btn--tint has-icon-hover w-full sm:w-auto">
                 See all questions
               </a>
             </div>
@@ -276,7 +305,22 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   <!-- ═══ §7 TOPICS OVERVIEW ═══ -->
   <section class="home-topics" aria-labelledby="topics-heading">
     <div class="home-topics__inner">
-      <TopicsOverviewGrid />
+      <h2 id="topics-heading" class="home-topics__title">Topics we cover</h2>
+      <p class="home-topics__intro">
+        Expert-written RSE content across {sortedLandingPages.length} curriculum-aligned topics.
+      </p>
+      <ul class="home-topics__grid" role="list">
+        {sortedLandingPages.map((lp) => (
+          <li>
+            <TopicCard
+              slug={lp.slug}
+              title={lp.title}
+              category={lp.category}
+              summary={lp.metaDescription}
+            />
+          </li>
+        ))}
+      </ul>
     </div>
   </section>
 
@@ -291,7 +335,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
         <a href="/contact" class="btn btn--std btn--primary has-icon-hover">
           Get in touch
         </a>
-        <a href="/topics" class="btn btn--std btn--white-outline has-icon-hover">
+        <a href="/topics" class="btn btn--std btn--tint has-icon-hover">
           Explore lessons
         </a>
       </div>
@@ -307,7 +351,6 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
 
   /* --- §1 Teacher hero --- */
   .hero-teacher {
-    background-color: var(--hero-tailor-bg);
     padding: var(--space-struct-y-hero) var(--space-global-gutter);
   }
 
@@ -315,6 +358,10 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     max-width: var(--container-max-shell);
     margin: 0 auto;
     width: 100%;
+  }
+
+  .hero-teacher__content {
+    max-width: var(--container-max-prose);
   }
 
   .hero-teacher__text-only {
@@ -348,6 +395,10 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-global-sm);
+  }
+
+  .hero-teacher__photo-col {
+    width: 100%;
   }
 
   .hero-photo {
@@ -492,12 +543,12 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     height: 1.5rem;
     border-radius: 50%;
     background: var(--brand-primary);
-    color: #fff;
+    color: var(--text-on-dark);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    font-size: 0.75rem;
+    font-size: var(--text-card-size-body);
     font-weight: var(--font-weight-bold);
   }
 
@@ -649,7 +700,10 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     padding: var(--space-struct-y-base) var(--space-global-gutter);
     position: relative;
     overflow: hidden;
-    background: var(--bg-surface-alt);
+    /* White ground — section is differentiated by the coral OtA wordmark,
+       not a coral background. Text tokens fall back to standard light-mode
+       OtA values defined in tailor-site-v2.css (dark heading + body on white). */
+    background: var(--bg-surface);
   }
 
   .home-ota__inner {
@@ -708,6 +762,11 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     color: inherit;
     transition: box-shadow var(--transition-duration) var(--transition-easing),
                 transform var(--transition-duration) var(--transition-easing);
+    /* The book panel keeps its light cream surface inside the warm-dark
+       section, so restore the light-mode OtA text tokens for its children. */
+    --text-ota-heading: var(--text-heading);
+    --text-ota-muted: #5B6675;
+    --text-ota-body: var(--text-body);
   }
 
   .home-ota__book-panel:hover {
@@ -780,6 +839,44 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     width: 100%;
   }
 
+  .home-topics__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h2);
+    font-weight: var(--heading-weight-h2);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .home-topics__intro {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body-muted);
+    line-height: var(--lh-body);
+    max-width: var(--container-max-prose);
+    margin: 0 0 var(--space-global-xl);
+  }
+
+  .home-topics__grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-global-md);
+  }
+
+  @media (min-width: 640px) {
+    .home-topics__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .home-topics__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
   /* --- §8 Closing CTA --- */
   .home-cta {
     background-color: var(--hero-tailor-bg);
@@ -845,11 +942,45 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   }
 
   @media (min-width: 1024px) {
+    .hero-teacher {
+      padding: 0;
+    }
+
     .hero-teacher__inner {
       display: grid;
-      grid-template-columns: 1fr 0.9fr;
-      gap: var(--space-global-xl);
-      align-items: center;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 0;
+      align-items: stretch;
+      max-width: none;
+    }
+
+    .hero-teacher__content {
+      /* Match the nav-bar logo's left edge: SiteHeader's inner uses
+         `lg:max-w-[90vw]` centred + gutter, so its left edge sits at
+         5vw + gutter from the viewport. Mirror that here so the hero
+         heading aligns visually with the logo above it. */
+      padding: var(--space-struct-y-hero) var(--space-global-gutter);
+      padding-left: calc(5vw + var(--space-global-gutter));
+      max-width: none;
+      align-self: center;
+      width: 100%;
+    }
+
+    .hero-teacher__content > * {
+      max-width: var(--container-max-prose);
+    }
+
+    .hero-teacher__photo-col {
+      align-self: stretch;
+      display: flex;
+    }
+
+    .hero-teacher__photo-col .hero-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 0;
+      box-shadow: none;
     }
 
     .home-platform__inner {

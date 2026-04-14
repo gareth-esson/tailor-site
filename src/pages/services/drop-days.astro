@@ -8,7 +8,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
 import ServiceTopicsStrip from '../../components/ServiceTopicsStrip.astro';
 import ServicePageStyles from '../../components/ServicePageStyles.astro';
-import { getBlogPosts } from '../../lib/content';
+import { getBlogPosts, getTestimonials } from '../../lib/content';
 
 // --- Data ----------------------------------------------------------
 const slug = 'drop-days';
@@ -25,6 +25,10 @@ const heroImageAlt = 'A whole year group gathered in the school hall for a Tailo
 const descriptionLead =
   'Some schools prefer to concentrate their RSE delivery into a single, high-quality day rather than spread it thinly across the year. A drop day brings a specialist educator into your school for a full day of sessions, rotating through year groups or forms so the whole cohort is covered at once.';
 
+// H2 shown above the description body on the C5 page.
+// Placeholder — Gareth: review/replace per service if this isn't the right framing.
+const descriptionHeading = 'What is an RSE drop day?';
+
 const descriptionBody = [
   'Drop days are particularly useful when you want to guarantee every student has heard the same content, delivered by the same expert voice, within a defined window. We work with you on topic selection, session order, and how the day fits around your existing timetable.',
 ];
@@ -38,12 +42,13 @@ const featureCards = [
   { title: 'Post-day summary and follow-up', description: 'Written debrief for staff including talking points, disclosure watch-list, and recommended follow-up activities.' },
 ];
 
-// Drop days has no dedicated process block in v3 — the flow is self-explanatory
-const processSteps = null;
-
-const testimonialQuote =
-  'One day, every student in the year group covered — and delivered better than anything we could have put together ourselves. It let us protect the rest of the curriculum while still doing RSE properly.';
-const testimonialSource = 'Assistant Head, secondary school';
+// Real testimonial pulled from Notion, filtered by Service tag
+const _testimonials = await getTestimonials();
+const _match = _testimonials.find((t) => t.serviceTags.includes('Drop days')) || null;
+const testimonialQuote: string | null = _match?.quote || null;
+const testimonialSource: string | null = _match
+  ? [_match.role || _match.name, _match.organisation].filter(Boolean).join(', ')
+  : null;
 
 const featuredTopicSlugs = [
   'consent',
@@ -78,7 +83,7 @@ const metaDescription = 'A full day of expert-led RSE delivery across multiple y
   <article class="service-page" data-pagefind-body>
 
     <header class="service-hero">
-      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+      <div class="service-hero__wrap">
         <div class="service-hero__inner">
           <div class="service-hero__text">
             <span class="service-hero__eyebrow">Services</span>
@@ -104,15 +109,18 @@ const metaDescription = 'A full day of expert-led RSE delivery across multiple y
     </header>
 
     <section class="service-description">
-      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-        <p class="service-description__lead">{descriptionLead}</p>
-        {descriptionBody.map((para) => (<p>{para}</p>))}
-        {whatSchoolsGet && (
-          <>
-            <h2 class="service-description__sub-title">What schools get</h2>
-            <p>{whatSchoolsGet}</p>
-          </>
-        )}
+      <div class="service-description__inner py-[var(--space-struct-y-base)]">
+        <div class="service-description__col">
+          <h2 class="service-description__heading">{descriptionHeading}</h2>
+          <p class="service-description__lead">{descriptionLead}</p>
+          {descriptionBody.map((para) => (<p>{para}</p>))}
+          {whatSchoolsGet && (
+            <>
+              <h2 class="service-description__sub-title">What schools get</h2>
+              <p>{whatSchoolsGet}</p>
+            </>
+          )}
+        </div>
       </div>
     </section>
 
@@ -129,23 +137,6 @@ const metaDescription = 'A full day of expert-led RSE delivery across multiple y
         </div>
       </div>
     </section>
-
-    {processSteps && (
-      <section class="service-process">
-        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-          <h2 class="service-section-title">How it works</h2>
-          <div class="service-process__grid">
-            {processSteps.map((step) => (
-              <div class="process-step">
-                <div class="process-step__number">{step.number}</div>
-                <h3 class="process-step__title">{step.title}</h3>
-                <p class="process-step__text">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    )}
 
     <section class="service-proof-band">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
@@ -172,6 +163,8 @@ const metaDescription = 'A full day of expert-led RSE delivery across multiple y
       </div>
     </section>
 
+    <ServiceTopicsStrip featuredSlugs={featuredTopicSlugs} />
+
     {relatedPosts.length > 0 && (
       <section class="service-blog">
         <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
@@ -195,8 +188,6 @@ const metaDescription = 'A full day of expert-led RSE delivery across multiple y
         </div>
       </section>
     )}
-
-    <ServiceTopicsStrip featuredSlugs={featuredTopicSlugs} />
 
     <CtaServiceEnquiry serviceName={serviceName} serviceParam={serviceParam} variant="alt" />
 

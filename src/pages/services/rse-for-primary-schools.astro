@@ -7,7 +7,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
 import ServiceTopicsStrip from '../../components/ServiceTopicsStrip.astro';
 import ServicePageStyles from '../../components/ServicePageStyles.astro';
-import { getBlogPosts } from '../../lib/content';
+import { getBlogPosts, getTestimonials } from '../../lib/content';
 
 // --- Data ----------------------------------------------------------
 const slug = 'rse-for-primary-schools';
@@ -23,6 +23,10 @@ const heroImageAlt = 'Primary school pupils gathered for a circle-time RSE sessi
 
 const descriptionLead =
   'A specialist RSE educator delivers age-appropriate lessons directly to your primary school students. Sessions are designed around the realities of teaching young children about relationships, bodies, boundaries, and staying safe — using language and activities that feel natural for the age group.';
+
+// H2 shown above the description body on the C5 page.
+// Placeholder — Gareth: review/replace per service if this isn't the right framing.
+const descriptionHeading = 'What is RSE for primary schools?';
 
 const descriptionBody = [
   'We cover the topics that primary staff often find hardest to approach: puberty, consent in age-appropriate terms, healthy friendships, and online safety for younger children. Every session is planned with your PSHE lead in advance so it fits the year group, the school ethos, and anything your cohort is working through.',
@@ -40,15 +44,14 @@ const featureCards = [
   { title: 'Parent-facing information', description: 'Available on request — helps schools communicate what was covered and why.' },
 ];
 
-const processSteps = [
-  { number: 1, title: 'We plan together', description: 'Pre-visit consultation to agree topics, year groups, and the approach that fits your school.' },
-  { number: 2, title: 'We deliver', description: 'A specialist educator delivers age-appropriate sessions directly to your students.' },
-  { number: 3, title: 'You get results', description: 'Staff summary, follow-up resources, and students who can have the conversations that matter.' },
-];
-
-const testimonialQuote =
-  'The children were completely engaged. The educator pitched it perfectly for our Year 5s — honest and clear without being overwhelming. Several parents commented on how well their children talked about the session at home.';
-const testimonialSource = 'PSHE Lead, primary school';
+// Prefer primary-school setting; fall back to any RSE delivery quote
+const _testimonials = await getTestimonials();
+const _delivery = _testimonials.filter((t) => t.serviceTags.includes('RSE delivery'));
+const _match = _delivery.find((t) => t.setting === 'Primary school') || _delivery[0] || null;
+const testimonialQuote: string | null = _match?.quote || null;
+const testimonialSource: string | null = _match
+  ? [_match.role || _match.name, _match.organisation].filter(Boolean).join(', ')
+  : null;
 
 const featuredTopicSlugs = [
   'puberty',
@@ -84,7 +87,7 @@ const metaDescription = 'Age-appropriate RSE for KS1 and KS2, delivered by a spe
 
     <!-- §1 Hero -->
     <header class="service-hero">
-      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+      <div class="service-hero__wrap">
         <div class="service-hero__inner">
           <div class="service-hero__text">
             <span class="service-hero__eyebrow">Services</span>
@@ -111,15 +114,18 @@ const metaDescription = 'Age-appropriate RSE for KS1 and KS2, delivered by a spe
 
     <!-- §3 Description -->
     <section class="service-description">
-      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-        <p class="service-description__lead">{descriptionLead}</p>
-        {descriptionBody.map((para) => (<p>{para}</p>))}
-        {whatSchoolsGet && (
-          <>
-            <h2 class="service-description__sub-title">What schools get</h2>
-            <p>{whatSchoolsGet}</p>
-          </>
-        )}
+      <div class="service-description__inner py-[var(--space-struct-y-base)]">
+        <div class="service-description__col">
+          <h2 class="service-description__heading">{descriptionHeading}</h2>
+          <p class="service-description__lead">{descriptionLead}</p>
+          {descriptionBody.map((para) => (<p>{para}</p>))}
+          {whatSchoolsGet && (
+            <>
+              <h2 class="service-description__sub-title">What schools get</h2>
+              <p>{whatSchoolsGet}</p>
+            </>
+          )}
+        </div>
       </div>
     </section>
 
@@ -137,24 +143,6 @@ const metaDescription = 'Age-appropriate RSE for KS1 and KS2, delivered by a spe
         </div>
       </div>
     </section>
-
-    <!-- §5 Process steps -->
-    {processSteps && (
-      <section class="service-process">
-        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-          <h2 class="service-section-title">How it works</h2>
-          <div class="service-process__grid">
-            {processSteps.map((step) => (
-              <div class="process-step">
-                <div class="process-step__number">{step.number}</div>
-                <h3 class="process-step__title">{step.title}</h3>
-                <p class="process-step__text">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    )}
 
     <!-- §6 Dark proof band -->
     <section class="service-proof-band">
@@ -182,6 +170,9 @@ const metaDescription = 'Age-appropriate RSE for KS1 and KS2, delivered by a spe
       </div>
     </section>
 
+    <!-- §8 Topics strip (above related articles) -->
+    <ServiceTopicsStrip featuredSlugs={featuredTopicSlugs} />
+
     <!-- §7 Related blog posts -->
     {relatedPosts.length > 0 && (
       <section class="service-blog">
@@ -206,9 +197,6 @@ const metaDescription = 'Age-appropriate RSE for KS1 and KS2, delivered by a spe
         </div>
       </section>
     )}
-
-    <!-- §8 Topics strip -->
-    <ServiceTopicsStrip featuredSlugs={featuredTopicSlugs} />
 
     <!-- §9 Closing enquiry CTA -->
     <CtaServiceEnquiry serviceName={serviceName} serviceParam={serviceParam} variant="alt" />

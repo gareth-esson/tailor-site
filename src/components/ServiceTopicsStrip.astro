@@ -1,12 +1,13 @@
 ---
 /**
  * Service topics strip — §8 of C5 service pages.
- * Compact single-row topic browser: 6 curated topic chips + "See all" link.
- * Replaces the full TopicsOverviewGrid that v2 used at the bottom of service
- * pages. Full grid still lives at /topics/; this is a conversion-page nudge.
+ * Renders the 6 curated topics (or alphabetical backfill) as illustrated
+ * TopicCards — same card used on /topics/ hub, homepage, and C3 related
+ * topics. Replaces the old text-chip variant.
  */
 import { getLandingPages } from '../lib/content';
 import type { LandingPage } from '../lib/types';
+import TopicCard from './TopicCard.astro';
 
 interface Props {
   /**
@@ -39,7 +40,7 @@ const topics = featured.slice(0, 6);
 ---
 
 <section class="service-topics-strip">
-  <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+  <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
     <div class="service-topics-strip__header">
       <h2 class="service-topics-strip__label">Explore by topic</h2>
       <a href="/topics/" class="service-topics-strip__see-all">
@@ -48,9 +49,12 @@ const topics = featured.slice(0, 6);
     </div>
     <div class="service-topics-strip__grid">
       {topics.map((lp) => (
-        <a href={`/topics/${lp.slug}`} class="topic-chip">
-          {lp.title}
-        </a>
+        <TopicCard
+          slug={lp.slug}
+          title={lp.title}
+          category={lp.category ?? undefined}
+          summary={lp.metaDescription}
+        />
       ))}
     </div>
   </div>
@@ -58,7 +62,7 @@ const topics = featured.slice(0, 6);
 
 <style>
   .service-topics-strip {
-    background: var(--bg-page);
+    background: var(--bg-surface-alt);
   }
 
   .service-topics-strip__header {
@@ -67,13 +71,13 @@ const topics = featured.slice(0, 6);
     justify-content: space-between;
     gap: var(--space-global-sm);
     flex-wrap: wrap;
-    margin-bottom: var(--space-global-sm);
+    margin-bottom: var(--space-global-md);
   }
 
   .service-topics-strip__label {
     font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-card-size-h3);
-    font-weight: var(--heading-weight-h3);
+    font-size: var(--text-prose-size-h2);
+    font-weight: var(--heading-weight-h2);
     color: var(--text-heading);
     margin: 0;
   }
@@ -92,43 +96,19 @@ const topics = featured.slice(0, 6);
 
   .service-topics-strip__grid {
     display: grid;
-    gap: var(--space-global-xs);
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .topic-chip {
-    display: flex;
-    align-items: center;
-    padding: var(--space-global-sm) var(--space-global-md);
-    background: var(--bg-surface);
-    border: var(--border-width-xs) solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-card-size-body);
-    font-weight: var(--font-weight-medium);
-    color: var(--text-heading);
-    text-decoration: none;
-    transition: border-color var(--transition-duration) var(--transition-easing);
-  }
-
-  .topic-chip:hover {
-    border-color: var(--brand-accent);
-  }
-
-  .topic-chip:focus-visible {
-    outline: var(--focus-ring-width) solid var(--focus-ring);
-    outline-offset: var(--focus-ring-offset);
+    gap: var(--space-global-sm);
+    grid-template-columns: 1fr;
   }
 
   @media (min-width: 640px) {
     .service-topics-strip__grid {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
     }
   }
 
   @media (min-width: 1024px) {
     .service-topics-strip__grid {
-      grid-template-columns: repeat(6, 1fr);
+      grid-template-columns: repeat(3, 1fr);
     }
   }
 </style>
