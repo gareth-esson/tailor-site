@@ -1,5 +1,4 @@
 ---
-export const prerender = true;
 /**
  * Topics hub [B14] — /topics/
  * Teacher-facing catalogue of all 23 RSHE topic landing pages.
@@ -53,6 +52,7 @@ const sortedPages = [...landingPages].sort((a, b) => {
   if (catA !== catB) return catA - catB;
   return a.title.localeCompare(b.title);
 });
+export const prerender = true;
 ---
 
 <BaseLayout

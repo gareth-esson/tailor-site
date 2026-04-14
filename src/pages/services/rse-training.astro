@@ -1,5 +1,4 @@
 ---
-export const prerender = true;
 /**
  * Service page [C5] — /services/rse-training
  * RSE training for school staff. Tailor layer, v3.
@@ -69,6 +68,7 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'training').slice(
 
 const metaTitle = `${title} for school staff — RSE for Schools | Tailor Education`;
 const metaDescription = 'CPD-accredited RSE training for school staff, led by specialist educators. Half-day, full-day, or bespoke programmes — in person or remote.';
+export const prerender = true;
 ---
 
 <BaseLayout

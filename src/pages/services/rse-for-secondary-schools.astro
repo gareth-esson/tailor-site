@@ -1,5 +1,4 @@
 ---
-export const prerender = true;
 /**
  * Service page [C5] — /services/rse-for-secondary-schools
  * RSE delivery for secondary schools. Tailor layer, v3.
@@ -65,6 +64,7 @@ const relatedPosts = allPosts.filter((p) => p.serviceLink === 'delivery').slice(
 
 const metaTitle = `${title} — RSE for Schools | Tailor Education`;
 const metaDescription = 'Discussion-led RSE for KS3 and KS4, delivered by specialist educators with the confidence and credibility to lead honest conversations.';
+export const prerender = true;
 ---
 
 <BaseLayout
