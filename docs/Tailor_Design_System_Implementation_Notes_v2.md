@@ -149,6 +149,107 @@ What does **NOT** auto-swap on dark surfaces (you must handle explicitly):
 
 ---
 
+## Container widths and layout rhythm
+
+Every page's visual spine is driven by a small set of container-width tokens, applied consistently across header, footer, and sections. Pick the token that matches the context — never pick a number by hand, never add a one-off `max-width: 34rem` to an individual element. If the token you need doesn't exist, flag it rather than invent a value.
+
+### The width tokens
+
+| Token | Width | Used for |
+|---|---|---|
+| `--container-max-shell` | **responsive**: 72rem below `lg`, `min(90vw, 100rem)` at `lg+` | Outer wrapper on header, footer, and every page section. The spine that makes left edges line up at every viewport. Caps firmly at 1600px on large monitors. |
+| `--container-max-hero-text` | 48rem (768px) | Hero H1 + subtitle column. Also: centred CTA/intro blocks that stand alone with nothing flanking them (homepage closing CTA, OtA intro, `about-cta`, `approach-cta`, `testimonials-cta`, `CtaBringToSchool`, `CtaBlogBottom`). |
+| `--container-max-text-col` | 36rem (576px) | Marketing text column **beside an image or in a grid cell** (homepage §2–§4, `services-hero`, `service-hero` on C5 pages, `book-hero__content`). Narrower because the image already gives the column its breathing room. |
+| `--container-max-prose` | 44rem (704px) | Long-form editorial reading — `/our-approach`, blog post body, Q&A bodies, glossary term explainers. Don't use this for marketing or CTA copy. |
+| `--container-max-reading-wide` | 56rem (896px) | Post-it metadata band, end-of-answer panel, related-questions grid on C1 Q&A pages. Specific to the OtA reading flow. |
+
+### Decision tree: which width?
+
+1. **Page section outer wrapper** (header, footer, any `__inner` that spans the page) → `--container-max-shell`.
+2. **Hero H1 + subtitle** → `--container-max-hero-text`.
+3. **Centred CTA or intro with nothing flanking it** (closing bands, OtA intros, "Work with us" cards) → `--container-max-hero-text`.
+4. **Text column beside an image or in a two-column grid cell** → `--container-max-text-col`.
+5. **Long-form editorial reading** → `--container-max-prose`.
+6. **OtA Q&A metadata / related-questions bands** → `--container-max-reading-wide`.
+
+If a new section doesn't fit cleanly into one of these five categories, ask before picking.
+
+### The cap-the-wrapper rule
+
+**Apply width caps to the text-column wrapper, not to individual elements.** Heading and body must share the same right edge by construction, not by coincidence.
+
+**Wrong** — per-element caps lead to mismatched edges because the H2 has no cap and stretches wider than the paragraph:
+
+```css
+.section__title { /* no max-width — stretches to grid cell */ }
+.section__intro { max-width: 36rem; }
+.section__desc  { max-width: 34rem; }  /* and this disagrees with the intro */
+```
+
+**Right** — wrap the text-column in a single container with one cap; children inherit:
+
+```html
+<div class="section__text">           <!-- max-width: var(--container-max-text-col) -->
+  <span class="preheader">…</span>
+  <h2 class="section__title">…</h2>    <!-- no per-element cap -->
+  <p class="section__intro">…</p>      <!-- no per-element cap -->
+  <a class="btn btn--std btn--primary">…</a>
+</div>
+```
+
+### Shell responsive behaviour
+
+The shell widens on desktop so the content column doesn't feel pinched on a large laptop:
+
+```css
+:root {
+  --container-max-shell: 72rem;              /* below lg: fit with gutter */
+}
+@media (min-width: 1024px) {
+  :root {
+    --container-max-shell: min(90vw, 100rem); /* lg+: 90vw of viewport, cap at 1600px */
+  }
+}
+```
+
+This gives three regimes:
+- **Mobile/tablet (< 1024px)**: shell is 72rem (or the viewport if smaller), with gutter padding.
+- **Laptop (1024–1778px)**: shell is 90vw — e.g. 1361px on a 14" MacBook Pro, 1555px on a 16". Content fills most of the screen.
+- **Large monitors (≥ 1778px)**: shell caps at 1600px and sits centred. Prevents content stretching on 27" displays.
+
+### Alignment invariant
+
+Header, footer, and every page section share the same outer container rule. That means the header logo, the footer brand, and the first character of every section's heading sit at the same `x`-position at every viewport size. **If something breaks that alignment, it's a bug.** Common causes: a section using `max-width: 72rem` directly instead of the token; gutter padding applied to a different element than the sibling section uses (e.g. `__inner` vs outer `<section>`).
+
+### Hero structure pattern (text-only heroes)
+
+Text-only heroes (about, blog index, testimonials, contact, our-approach) use a two-tier wrapper so the hero text column sits left-aligned at the shell's left edge while the hero band behind it still spans the shell width:
+
+```html
+<section class="about-hero">
+  <div class="about-hero__inner">    <!-- max-width: var(--container-max-shell) -->
+    <div class="about-hero__text">   <!-- max-width: var(--container-max-hero-text) -->
+      <span class="about-hero__eyebrow">…</span>
+      <h1 class="about-hero__title">…</h1>
+      <p class="about-hero__lede">…</p>
+    </div>
+  </div>
+</section>
+```
+
+`__inner` handles page-shell alignment. `__text` caps the reading column. Both wrappers are mandatory for text-only heroes; don't collapse them into one.
+
+For image/text split heroes (`hero-teacher`, `services-hero`, `service-hero` on C5, `book-hero`), the grid cell handles the shell alignment; the text wrapper inside the cell just needs the `hero-text` cap.
+
+### Anti-patterns (things we moved away from)
+
+- **`__text-only` conditional classes** — applied the wrapper cap only when there was no image. The image/no-image branches should produce the same text column width; always-on wrapper is cleaner.
+- **Per-element `max-width` on `__desc` / `__intro` / `__subtitle`** — heading without a cap + body with a cap means the two disagree on right edge.
+- **Mixed numbers** (34rem, 36rem, 38rem) across sibling sections — use the token, one number, applied at the wrapper.
+- **Picking `container-max-shell` for a hero** — shell is for the page spine, not for copy. A hero H1 at shell width (1361px at 14" MBP) has uncomfortable line length.
+
+---
+
 ## Component reference
 
 ### Buttons

@@ -39,6 +39,21 @@ or z-index in component CSS or inline styles. Only exception: pixel
 values inside `@media` queries (CSS custom properties don't work there)
 — use raw px with a comment naming the breakpoint token.
 
+## Container widths
+
+Pick one of the named container tokens — never pick a number by hand.
+See `docs/Tailor_Design_System_Implementation_Notes_v2.md` →
+"Container widths and layout rhythm" for the full rules. Quick version:
+
+- `--container-max-shell` → header, footer, every page section outer
+- `--container-max-hero-text` (48rem) → hero H1 + subtitle, centred CTAs
+- `--container-max-text-col` (36rem) → text column beside an image
+- `--container-max-prose` (44rem) → long-form editorial reading
+- `--container-max-reading-wide` (56rem) → OtA Q&A metadata bands
+
+Always cap the wrapper, not individual `__title` / `__intro` / `__desc`
+elements — heading and body must share the same right edge.
+
 ## When you're unsure — don't guess
 
 1. Grep `tailor-site-v2.css` for the relevant pattern (`--btn-`,
