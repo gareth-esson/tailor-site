@@ -3317,7 +3317,7 @@ textarea.form-input {
 
 /* §3 + §4 · Services block (flagship + secondary share one surface) */
 .services-block {
-    background: var(--bg-surface-alt);
+    background: var(--bg-page);
 }
 
 .services-flagship-grid__heading,

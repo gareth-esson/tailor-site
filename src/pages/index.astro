@@ -2,7 +2,7 @@
 /**
  * Homepage [B1] — /
  * v2: Teacher-first. 8 sections, 1 layer switch.
- * Surface rhythm: dark → white → alt → white → alt → warm → ground → dark
+ * Surface rhythm: dark → white → white → white → alt → warm → white → dark
  * Layer rhythm:   T → T → T → T → T → OtA → T → T
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -106,7 +106,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   </section>
 
   <!-- ═══ §3 DELIVERY ═══ -->
-  <section class="home-delivery surface--alt" aria-labelledby="delivery-heading">
+  <section class="home-delivery" aria-labelledby="delivery-heading">
     <div class="home-delivery__inner">
       {deliveryPhoto && (
         <div class="hidden lg:block">
@@ -359,7 +359,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
 
   /* --- §2 Platform --- */
   .home-platform {
-    background: var(--bg-surface);
+    background: var(--bg-page);
     padding: var(--space-struct-y-base) var(--space-global-gutter);
   }
 
@@ -508,7 +508,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
 
   /* --- §4 Training & support --- */
   .home-training {
-    background: var(--bg-surface);
+    background: var(--bg-page);
     padding: var(--space-struct-y-base) var(--space-global-gutter);
   }
 
