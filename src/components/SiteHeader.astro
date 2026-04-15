@@ -43,7 +43,7 @@ const isContact = pathname === '/contact';
   id="site-header"
 >
   <!-- Skip link: visible only on focus -->
-  <a href="#main" class="site-header__skip-link">Skip to main content</a>
+  <a href="#main" class="skip-to-content">Skip to main content</a>
 
   <div class="site-header__inner mx-auto flex h-full w-full items-center max-w-[var(--container-max-shell)] lg:max-w-[90vw] px-[var(--space-global-gutter)] gap-[var(--space-global-md)]">
     <!-- Slot 1: Brand -->
@@ -501,29 +501,8 @@ const isContact = pathname === '/contact';
     border-radius: var(--radius-sm);
   }
 
-  /* --- Skip link: invisible until focused --- */
-  .site-header__skip-link {
-    position: absolute;
-    left: var(--space-global-sm);
-    top: var(--space-global-sm);
-    padding: var(--space-global-xs) var(--space-global-sm);
-    background: var(--bg-surface);
-    color: var(--text-body);
-    font-family: var(--font-shell-body-stack);
-    font-size: var(--text-card-size-body);
-    text-decoration: none;
-    border-radius: var(--radius-sm);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-200%);
-    transition: transform var(--transition-duration) var(--transition-easing);
-    z-index: calc(var(--z-header) + 1);
-  }
-
-  .site-header__skip-link:focus-visible {
-    transform: translateY(0);
-    outline: var(--focus-ring-width) solid var(--focus-ring);
-    outline-offset: var(--focus-ring-offset);
-  }
+  /* Skip link styles live globally in tailor-site-v2.css as .skip-to-content;
+     focus outline is the global :focus-visible rule. */
 
   /* --- Nav link (desktop) --- */
   .site-header__nav-link {

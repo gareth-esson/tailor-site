@@ -507,16 +507,36 @@ Surface violations as you find them, but don't auto-rewrite the whole codebase i
 
 ### Known drift targets (existing bespoke components that reinvent system ones)
 
-These are in-site components that duplicate functionality the design system already provides. Each is a Tier-2 refactor candidate — swap the bespoke class for the system component + a thin layout hook, remove the redundant CSS.
+These are in-site components that duplicate functionality the design system already provides. Each is a refactor candidate — swap the bespoke class for the system component + a thin layout hook, remove the redundant CSS.
 
-| Bespoke class | Where | Should consume |
-|---|---|---|
-| `.topic-chip` (ServiceTopicsStrip), `.blog-filter-chip` (blog index), `.testimonial-filter-chip` (testimonials) | 3 sites | `.chip` + `.chip--active` (note: `--chip-*` token family isn't yet defined in the CSS — add if migrating) |
-| `.end-panel` + `__eyebrow/__heading/__body/__action` (EndOfAnswerPanel) | 1 component, 3 panels | `.card` + `.card__eyebrow/__title/__text/__link` with `.card--lift` |
-| `.feature-card`, `.service-card`, `.service-card--flagship/--secondary`, `.b11-sample-card`, `.topic-hub-card`, `.blog-index-card`, `.glossary-term-card`, `.testimonial-card`, `.about-team-card` | 9 classes across services/, book, about, blog, etc. | `.card` BEM (currently bypass `.card` base entirely) |
-| `.blog-pagination` | blog index | `.pagination` (not yet in fork — port or keep bespoke) |
-| `.error-404` | /404 | `.error-page` (not yet in fork — port or keep bespoke) |
-| Decorative SVGs sized with Tailwind utilities | service pages, feature grids | `.spot-icon` + size/modifier (currently zero uses in src/) |
+| Bespoke class | Where | Should consume | Status |
+|---|---|---|---|
+| ~~`.blog-filter-chip`, `.testimonial-filter-chip`~~ | ~~blog index, testimonials~~ | `.chip` + `.chip.is-active` | ✓ done (see `--chip-*` tokens added to the CSS). |
+| ~~`.site-header__skip-link`~~ | ~~SiteHeader~~ | `.skip-to-content` | ✓ done (promoted to global class in tailor-site-v2.css). |
+| `.topic-chip` | ServiceTopicsStrip | — | **Left bespoke.** A nav link to a topic page, not an interactive "selectable tag." Doesn't match the `.chip` system definition. |
+| `.blog-pagination` | blog index | `.pagination` | Deferred — `.pagination` not yet in the Tailor fork. Port the master component first, then migrate. |
+| `.error-404` | /404 | `.error-page` | Deferred — `.error-page` not yet in the Tailor fork. Port first, then migrate. |
+
+### Specialised cards (NOT drift — left bespoke by design)
+
+Earlier audits flagged these as "bypassing `.card` BEM." On closer review they are **specialised designs with their own typography, surface, and structural needs**, not reinvention of the generic card. Refactoring each to compose with `.card` + override class would add markup wrappers (`.card__body`, etc.) and a near-equal amount of override CSS — no net hygiene win. Leave bespoke unless a specific case genuinely matches the generic `.card` shape (title + text + optional image + action link at card-scale typography).
+
+| Class | Why it's specialised |
+|---|---|
+| `.feature-card` | Large-format title + body on bordered surface; no image, no action, padding is lg not card-default. |
+| `.service-card` / `.service-card--flagship` / `.service-card--secondary` | Card-like but with two distinct visual hierarchies (flagship vs secondary) and a bespoke hover treatment. |
+| `.b11-sample-card` | Post-it image framing is intrinsic to the OtA identity; the whole card IS the post-it. |
+| `.topic-hub-card` | Illustration + `--cat-color` category theming via inline custom property. |
+| `.blog-index-card` | Image + eyebrow + title + meta block; close match to `.card` but CSS lives in 3 pages with small structural variance — refactor isn't worth the risk. |
+| `.testimonial-card` | Quote + attribution pattern, not a title-body-action card. |
+| `.glossary-term-card` | Term + definition pattern; the typographic design is the point. |
+| `.about-team-card` | Portrait + name + bio team-member layout. |
+
+### Genuinely absent (no local usage)
+
+| Master component | Status in site |
+|---|---|
+| Decorative `.spot-icon` (36–64px illustrations) | Site uses photos for hero imagery and 16–24px Lucide-style icons for UI. No 48px decorative icons in any page. `.spot-icon` CSS is present for future use but has zero markup uses today. |
 
 ---
 
@@ -540,7 +560,9 @@ These are in-site components that duplicate functionality the design system alre
 
 ---
 
-*Document version: 2.1 | Date: 15 April 2026 | Supersedes: v2.0 (14 April 2026)*
-*v2.1 changelog: adds "Master components NOT currently in the Tailor fork" and*
-*"Known drift targets" tables following the CSS/docs reconciliation audit.*
+*Document version: 2.2 | Date: 15 April 2026 | Supersedes: v2.1 (15 April 2026)*
+*v2.2 changelog: migrates `.blog-filter-chip` / `.testimonial-filter-chip` to*
+*`.chip` + `--chip-*` tokens; promotes `.site-header__skip-link` to global*
+*`.skip-to-content`. Splits the "known drift targets" table into genuine drift*
+*(refactored) and specialised bespoke cards (left as-is with rationale).*
 *Audited against: SYSTEM-RULES.md and CLAUDE-CODE-OPERATING-RULES.md*

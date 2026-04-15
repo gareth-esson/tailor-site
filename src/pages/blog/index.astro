@@ -102,13 +102,13 @@ const jsonLd = posts.length > 0
         <div class="blog-filters__row" role="toolbar" aria-label="Filter by category">
           <span class="blog-filters__label" id="filter-category-label">Category</span>
           <div class="blog-filters__scroll" aria-labelledby="filter-category-label">
-            <button class="blog-filter-chip is-active" type="button" data-filter-type="category" data-filter-value="all" aria-pressed="true" tabindex="0">All</button>
+            <button class="chip blog-filter-chip is-active" type="button" data-filter-type="category" data-filter-value="all" aria-pressed="true" tabindex="0">All</button>
             {CATEGORY_ORDER.map((cat) => {
               const count = categoryPostCounts.get(cat) ?? 0;
               const disabled = count === 0;
               return (
                 <button
-                  class:list={['blog-filter-chip', { 'is-disabled': disabled }]}
+                  class:list={['chip', 'blog-filter-chip', { 'is-disabled': disabled }]}
                   type="button"
                   data-filter-type="category"
                   data-filter-value={cat}
@@ -125,9 +125,9 @@ const jsonLd = posts.length > 0
           <div class="blog-filters__row" role="toolbar" aria-label="Filter by topic">
             <span class="blog-filters__label" id="filter-topic-label">Topic</span>
             <div class="blog-filters__scroll" aria-labelledby="filter-topic-label">
-              <button class="blog-filter-chip is-active" type="button" data-filter-type="topic" data-filter-value="all" aria-pressed="true" tabindex="0">All</button>
+              <button class="chip blog-filter-chip is-active" type="button" data-filter-type="topic" data-filter-value="all" aria-pressed="true" tabindex="0">All</button>
               {topics.map((t) => (
-                <button class="blog-filter-chip" type="button" data-filter-type="topic" data-filter-value={t.title} aria-pressed="false" tabindex={-1}>{t.title}</button>
+                <button class="chip blog-filter-chip" type="button" data-filter-type="topic" data-filter-value={t.title} aria-pressed="false" tabindex={-1}>{t.title}</button>
               ))}
             </div>
           </div>
@@ -360,40 +360,12 @@ const jsonLd = posts.length > 0
   }
 
   /* ── Filter chips ─────────────────────────────────────────────────────── */
+  /* Layout-only hook — typography/colour/hover/active/disabled all come from
+     the system .chip base. Kept for scroll-snap on the horizontal filter
+     bar and flex-shrink to prevent chips squashing on overflow. */
   .blog-filter-chip {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-card-size-body);
-    font-weight: var(--font-weight-semibold);
-    line-height: var(--lh-card);
-    padding: var(--space-global-xs) var(--space-global-sm);
-    border: var(--border-width-xs) solid var(--border-subtle);
-    border-radius: var(--radius-pill);
-    background: var(--bg-surface);
-    color: var(--text-body);
-    cursor: pointer;
-    white-space: nowrap;
     scroll-snap-align: start;
     flex-shrink: 0;
-    transition:
-      background var(--transition-duration) var(--transition-easing),
-      border-color var(--transition-duration) var(--transition-easing),
-      color var(--transition-duration) var(--transition-easing);
-  }
-
-  .blog-filter-chip:hover:not(.is-active):not(.is-disabled) {
-    background: var(--bg-tinted);
-    color: var(--brand-accent-text);
-  }
-
-  .blog-filter-chip.is-active {
-    border-color: var(--brand-accent);
-    background: var(--btn-primary-bg);
-    color: var(--text-on-dark);
-  }
-
-  .blog-filter-chip.is-disabled {
-    opacity: 0.5;
-    pointer-events: none;
   }
 
   .blog-filters__count {

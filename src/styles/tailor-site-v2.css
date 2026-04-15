@@ -1222,6 +1222,36 @@ h6 { font-weight: var(--heading-weight-h6); }
    .on-dark utility class.
    ========================================= */
 
+/* ── Skip-to-content link: invisible until keyboard-focused ──
+   Lives at the top of <body> as the first interactive element.
+   Assumes the layout provides a target with id="main" (BaseLayout does). */
+.skip-to-content {
+    position: absolute;
+    left: var(--space-global-sm);
+    top: var(--space-global-sm);
+    padding: var(--space-global-xs) var(--space-global-sm);
+    background: var(--bg-surface);
+    color: var(--text-body);
+    font-family: var(--font-shell-body-stack);
+    font-size: var(--text-card-size-body);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-200%);
+    transition: transform var(--transition-duration) var(--transition-easing);
+    z-index: calc(var(--z-header, 1000) + 1);
+}
+
+.skip-to-content:focus-visible {
+    transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .skip-to-content {
+        transition: none;
+    }
+}
+
 /* ── Global keyboard focus ring ── */
 :focus-visible {
     outline: var(--focus-ring-width) solid var(--focus-ring);
@@ -1941,21 +1971,46 @@ textarea.form-input {
    Pill-shaped toggle buttons used in filter
    bars, onboarding multi-select, key stage
    selectors. Chips are NOT buttons — they
-   toggle on/off.
+   toggle on/off. Either .chip--active or
+   .chip.is-active works for the selected
+   state (JS-driven filter UIs tend to use
+   is-active with aria-pressed).
    ========================================= */
+
+:root {
+    /* Chip — rest state */
+    --chip-padding-y: var(--space-global-xs);
+    --chip-padding-x: var(--space-global-sm);
+    --chip-font-size: var(--text-card-size-body);
+    --chip-font-weight: var(--font-weight-semibold);
+    --chip-radius: var(--radius-pill);
+    --chip-bg: var(--bg-surface);
+    --chip-color: var(--text-body);
+    --chip-border: var(--border-subtle);
+    --chip-border-width: var(--border-width-xs);
+    /* Chip — hover (when not active, not disabled) */
+    --chip-bg-hover: var(--bg-tinted);
+    --chip-color-hover: var(--brand-accent-text);
+    --chip-border-hover: var(--border-subtle);
+    /* Chip — active / selected */
+    --chip-bg-active: var(--btn-primary-bg);
+    --chip-color-active: var(--text-on-dark);
+    --chip-border-active: var(--brand-accent);
+}
 
 .chip {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    padding: 6px 14px;
-    font-size: var(--text-card-size-body, 0.875rem);
-    font-weight: var(--font-weight-medium);
+    gap: 0.25em;
+    padding: var(--chip-padding-y) var(--chip-padding-x);
     font-family: inherit;
-    color: var(--text-body-muted);
-    background: var(--bg-page);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius-base);
+    font-size: var(--chip-font-size);
+    font-weight: var(--chip-font-weight);
+    line-height: var(--lh-card);
+    color: var(--chip-color);
+    background: var(--chip-bg);
+    border: var(--chip-border-width) solid var(--chip-border);
+    border-radius: var(--chip-radius);
     cursor: pointer;
     text-decoration: none;
     white-space: nowrap;
@@ -1964,29 +2019,34 @@ textarea.form-input {
                 border-color var(--transition-duration) var(--transition-easing);
 }
 
-.chip:hover {
-    background: var(--bg-surface-alt);
-    color: var(--text-body);
-    border-color: var(--neutral-400);
+.chip:hover:not(.is-active):not(.chip--active):not(.is-disabled):not(:disabled) {
+    background: var(--chip-bg-hover);
+    color: var(--chip-color-hover);
+    border-color: var(--chip-border-hover);
 }
 
 .chip--active,
 .chip.is-active {
-    background: var(--brand-accent);
-    color: var(--text-on-dark);
-    border-color: var(--brand-accent);
-    font-weight: var(--font-weight-semibold);
+    background: var(--chip-bg-active);
+    color: var(--chip-color-active);
+    border-color: var(--chip-border-active);
 }
 
-.chip--active:hover,
-.chip.is-active:hover {
-    background: var(--brand-accent-strong);
-    border-color: var(--brand-accent-strong);
+.chip.is-disabled,
+.chip:disabled {
+    opacity: 0.5;
+    pointer-events: none;
 }
 
 .chip__count {
     font-weight: var(--font-weight-regular);
     opacity: 0.75;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .chip {
+        transition: none;
+    }
 }
 
 
