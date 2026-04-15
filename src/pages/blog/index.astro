@@ -86,11 +86,13 @@ const jsonLd = posts.length > 0
   {/* §1 — Hero (tinted band, text-only) --------------------------------- */}
   <header class="blog-index-hero">
     <div class="blog-index-hero__inner">
-      <span class="blog-index-hero__eyebrow">Writing</span>
-      <h1 class="blog-index-hero__title">Blog</h1>
-      <p class="blog-index-hero__intro">
-        Practical guidance for RSE teaching, curriculum planning, and bringing relationships education to life in schools.
-      </p>
+      <div class="blog-index-hero__text">
+        <span class="blog-index-hero__eyebrow">Writing</span>
+        <h1 class="blog-index-hero__title">Blog</h1>
+        <p class="blog-index-hero__intro">
+          Practical guidance for RSE teaching, curriculum planning, and bringing relationships education to life in schools.
+        </p>
+      </div>
     </div>
   </header>
 
@@ -239,6 +241,10 @@ const jsonLd = posts.length > 0
     max-width: var(--container-max-shell);
   }
 
+  .blog-index-hero__text {
+    max-width: var(--container-max-hero-text);
+  }
+
   .blog-index-hero__eyebrow {
     display: block;
     font-family: var(--font-tailor-body-stack);
@@ -265,7 +271,6 @@ const jsonLd = posts.length > 0
     font-weight: var(--font-weight-regular);
     line-height: var(--lh-body);
     color: var(--text-body-muted);
-    max-width: var(--container-max-prose);
     margin: 0;
   }
 

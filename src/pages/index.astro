@@ -50,7 +50,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   <!-- ═══ §1 TEACHER HERO ═══ -->
   <section class="hero-teacher surface--dark" aria-labelledby="hero-heading">
     <div class="hero-teacher__inner">
-      <div class={heroPhoto ? '' : 'hero-teacher__text-only'}>
+      <div class="hero-teacher__text">
         <p class="preheader hero-teacher__eyebrow">Tailor Education</p>
         <h1 id="hero-heading" class="hero-teacher__title">Expert RSE lessons and training for schools</h1>
         <p class="hero-teacher__subtitle">
@@ -76,7 +76,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   <!-- ═══ §2 PLATFORM / TAILOR TEACH ═══ -->
   <section class="home-platform" aria-labelledby="platform-heading">
     <div class="home-platform__inner">
-      <div class={appScreenshot ? '' : 'home-platform__text-only'}>
+      <div class="home-platform__text">
         <span class="preheader home-platform__preheader">Tailor Teach</span>
         <h2 id="platform-heading" class="home-platform__title">Expert-authored RSE lessons, ready to teach</h2>
         <p class="home-platform__intro">
@@ -118,7 +118,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
           />
         </div>
       )}
-      <div class={deliveryPhoto ? '' : 'home-delivery__text-only'}>
+      <div class="home-delivery__text">
         <span class="preheader home-delivery__preheader">In-school delivery</span>
         <h2 id="delivery-heading" class="home-delivery__title">We deliver RSE in your school</h2>
         <p class="home-delivery__desc">
@@ -148,7 +148,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   <!-- ═══ §4 TRAINING & SUPPORT ═══ -->
   <section class="home-training" aria-labelledby="training-heading">
     <div class="home-training__inner">
-      <div class={trainingPhoto ? '' : 'home-training__text-only'}>
+      <div class="home-training__text">
         <span class="preheader home-training__preheader">CPD &amp; support</span>
         <h2 id="training-heading" class="home-training__title">Training and support for your RSE team</h2>
         <p class="home-training__intro">
@@ -317,8 +317,8 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     width: 100%;
   }
 
-  .hero-teacher__text-only {
-    max-width: 38rem;
+  .hero-teacher__text {
+    max-width: var(--container-max-hero-text);
   }
 
   .hero-teacher__eyebrow {
@@ -369,8 +369,8 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     width: 100%;
   }
 
-  .home-platform__text-only {
-    max-width: 38rem;
+  .home-platform__text {
+    max-width: var(--container-max-text-col);
   }
 
   .home-platform__preheader {
@@ -391,7 +391,6 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     font-size: var(--text-prose-size-body);
     color: var(--text-body-muted);
     line-height: var(--lh-body);
-    max-width: 36rem;
     margin: 0 0 var(--space-global-md);
   }
 
@@ -439,8 +438,8 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     width: 100%;
   }
 
-  .home-delivery__text-only {
-    max-width: 38rem;
+  .home-delivery__text {
+    max-width: var(--container-max-text-col);
   }
 
   .home-delivery__photo {
@@ -468,7 +467,6 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     font-size: var(--text-prose-size-body);
     color: var(--text-body-muted);
     line-height: var(--lh-body);
-    max-width: 34rem;
     margin: 0 0 var(--space-global-lg);
   }
 
@@ -518,8 +516,8 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     width: 100%;
   }
 
-  .home-training__text-only {
-    max-width: 38rem;
+  .home-training__text {
+    max-width: var(--container-max-text-col);
   }
 
   .home-training__preheader {
@@ -540,7 +538,6 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     font-size: var(--text-prose-size-body);
     color: var(--text-body-muted);
     line-height: var(--lh-body);
-    max-width: 34rem;
     margin: 0 0 var(--space-global-md);
   }
 
@@ -548,7 +545,6 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     font-size: var(--text-card-size-body);
     color: var(--text-body-muted);
     line-height: var(--lh-body);
-    max-width: 34rem;
     margin: 0 0 var(--space-global-lg);
   }
 
@@ -664,7 +660,8 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
 
   .home-ota__intro {
     text-align: center;
-    margin-bottom: var(--space-global-2xl);
+    max-width: var(--container-max-text-col);
+    margin: 0 auto var(--space-global-2xl);
   }
 
   .home-ota__wordmark {
@@ -789,7 +786,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   }
 
   .home-cta__inner {
-    max-width: 40rem;
+    max-width: var(--container-max-text-col);
     margin: 0 auto;
     width: 100%;
     text-align: center;

@@ -111,18 +111,20 @@ const aboutPageJsonLd = {
     <!-- §4.1 Hero -->
     <section class="approach-hero">
       <div class="approach-hero__inner">
-        <span class="approach-hero__eyebrow">How we work</span>
-        <h1 class="approach-hero__title">Our approach</h1>
-        <p class="approach-hero__lede">
-          Tailor Education publishes RSE content for UK schools. This page
-          sets out the thinking, the evidence, and the discipline behind it —
-          how we write, what we align to, how we safeguard, and how we keep
-          the work current.
-        </p>
-        <p class="approach-hero__stance">
-          Every lesson and answer we publish is written, reviewed, and
-          defended by name.
-        </p>
+        <div class="approach-hero__text">
+          <span class="approach-hero__eyebrow">How we work</span>
+          <h1 class="approach-hero__title">Our approach</h1>
+          <p class="approach-hero__lede">
+            Tailor Education publishes RSE content for UK schools. This page
+            sets out the thinking, the evidence, and the discipline behind it —
+            how we write, what we align to, how we safeguard, and how we keep
+            the work current.
+          </p>
+          <p class="approach-hero__stance">
+            Every lesson and answer we publish is written, reviewed, and
+            defended by name.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -378,6 +380,10 @@ const aboutPageJsonLd = {
     width: 100%;
     max-width: var(--container-max-shell);
     padding: var(--space-global-xl) var(--space-global-gutter);
+  }
+
+  .approach-hero__text {
+    max-width: var(--container-max-hero-text);
   }
 
   .approach-hero__eyebrow {

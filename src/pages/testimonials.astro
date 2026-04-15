@@ -56,11 +56,13 @@ const jsonLd =
     <!-- §4.1 Hero -->
     <section class="testimonials-hero">
       <div class="testimonials-hero__inner">
-        <span class="testimonials-hero__eyebrow">Social proof</span>
-        <h1 class="testimonials-hero__title">What schools say</h1>
-        <p class="testimonials-hero__lede">
-          Feedback from the schools, teachers and partners we've worked with.
-        </p>
+        <div class="testimonials-hero__text">
+          <span class="testimonials-hero__eyebrow">Social proof</span>
+          <h1 class="testimonials-hero__title">What schools say</h1>
+          <p class="testimonials-hero__lede">
+            Feedback from the schools, teachers and partners we've worked with.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -307,6 +309,10 @@ const jsonLd =
     width: 100%;
     max-width: var(--container-max-shell);
   }
+
+  .testimonials-hero__text {
+    max-width: var(--container-max-hero-text);
+  }
   .testimonials-hero__eyebrow {
     display: block;
     font-family: var(--font-tailor-body-stack);
@@ -331,7 +337,6 @@ const jsonLd =
     font-weight: var(--font-weight-regular);
     line-height: var(--lh-prose);
     color: var(--text-body);
-    max-width: var(--container-max-prose);
     margin: 0;
   }
 

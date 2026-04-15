@@ -136,14 +136,16 @@ const orgJsonLd = {
   <!-- §1 Hero -->
   <header class="about-hero">
     <div class="about-hero__inner">
-      <span class="about-hero__eyebrow">About Tailor Education</span>
-      <h1 class="about-hero__title">RSE built by teachers, trusted by schools.</h1>
-      <p class="about-hero__lede">
-        Tailor Education is a community-interest company delivering expert
-        relationships and sex education resources, training, and support to UK
-        schools. Everything we publish is written by practising educators and
-        aligned to statutory guidance.
-      </p>
+      <div class="about-hero__text">
+        <span class="about-hero__eyebrow">About Tailor Education</span>
+        <h1 class="about-hero__title">RSE built by teachers, trusted by schools.</h1>
+        <p class="about-hero__lede">
+          Tailor Education is a community-interest company delivering expert
+          relationships and sex education resources, training, and support to UK
+          schools. Everything we publish is written by practising educators and
+          aligned to statutory guidance.
+        </p>
+      </div>
     </div>
   </header>
 
@@ -350,6 +352,10 @@ const orgJsonLd = {
     max-width: var(--container-max-shell);
   }
 
+  .about-hero__text {
+    max-width: var(--container-max-hero-text);
+  }
+
   .about-hero__eyebrow {
     display: block;
     font-family: var(--font-tailor-body-stack);
@@ -376,7 +382,6 @@ const orgJsonLd = {
     font-weight: var(--font-weight-regular);
     line-height: var(--lh-prose);
     color: var(--text-body);
-    max-width: var(--container-max-prose);
     margin: 0;
   }
 

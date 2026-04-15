@@ -50,21 +50,23 @@ const contactPageJsonLd = {
     <!-- §4.1 Hero -->
     <section class="contact-hero">
       <div class="contact-hero__inner">
-        <span class="contact-hero__eyebrow">Contact</span>
-        <h1 class="contact-hero__title">Get in touch</h1>
+        <div class="contact-hero__text">
+          <span class="contact-hero__eyebrow">Contact</span>
+          <h1 class="contact-hero__title">Get in touch</h1>
 
-        {/* Generic lede (default). Inline script below hides this and shows
-            the service-specific variant if a known ?service= param is set. */}
-        <p class="contact-hero__lede" data-contact-lede="generic">
-          Training, delivery, curriculum planning, or a question we
-          haven't listed — fill in a few details and we'll come back to
-          you within a couple of working days.
-        </p>
-        <p class="contact-hero__lede" data-contact-lede="specific" hidden>
-          Enquiring about <em data-contact-lede-service></em>? Fill in a few
-          details and we'll come back to you within a couple of working
-          days.
-        </p>
+          {/* Generic lede (default). Inline script below hides this and shows
+              the service-specific variant if a known ?service= param is set. */}
+          <p class="contact-hero__lede" data-contact-lede="generic">
+            Training, delivery, curriculum planning, or a question we
+            haven't listed — fill in a few details and we'll come back to
+            you within a couple of working days.
+          </p>
+          <p class="contact-hero__lede" data-contact-lede="specific" hidden>
+            Enquiring about <em data-contact-lede-service></em>? Fill in a few
+            details and we'll come back to you within a couple of working
+            days.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -216,6 +218,10 @@ const contactPageJsonLd = {
     width: 100%;
     max-width: var(--container-max-shell);
     padding: var(--space-global-xl) var(--space-global-gutter);
+  }
+
+  .contact-hero__text {
+    max-width: var(--container-max-hero-text);
   }
 
   .contact-hero__eyebrow {

@@ -596,6 +596,8 @@
   --container-max-shell: 72rem;   /* 1152px — default for <lg viewports */
   --container-max-prose: 44rem;   /* 704px — long-form reading measure */
   --container-max-reading-wide: 56rem; /* 896px — post-it metadata band, end-of-answer panel, related questions */
+  --container-max-text-col: 36rem; /* 576px — marketing text column: heading + body share this width in image/text split sections and centred hero/CTA copy */
+  --container-max-hero-text: 48rem; /* 768px — hero copy column (H1 + subtitle share this width) across all page heroes */
 
   /* ------------------------------
      SHELL STRUCTURAL TOKENS
@@ -3254,6 +3256,10 @@ textarea.form-input {
     align-items: center;
 }
 
+.services-hero__text {
+    max-width: var(--container-max-hero-text);
+}
+
 .services-hero__eyebrow {
     display: block;
     font-family: var(--font-tailor-body-stack);
@@ -3623,6 +3629,9 @@ textarea.form-input {
     display: grid;
     gap: var(--space-global-lg);
     align-items: center;
+}
+.service-hero__text {
+    max-width: var(--container-max-hero-text);
 }
 .service-hero__eyebrow {
     display: inline-block;
