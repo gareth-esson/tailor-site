@@ -560,9 +560,16 @@ Earlier audits flagged these as "bypassing `.card` BEM." On closer review they a
 
 ---
 
-*Document version: 2.2 | Date: 15 April 2026 | Supersedes: v2.1 (15 April 2026)*
-*v2.2 changelog: migrates `.blog-filter-chip` / `.testimonial-filter-chip` to*
-*`.chip` + `--chip-*` tokens; promotes `.site-header__skip-link` to global*
-*`.skip-to-content`. Splits the "known drift targets" table into genuine drift*
-*(refactored) and specialised bespoke cards (left as-is with rationale).*
-*Audited against: SYSTEM-RULES.md and CLAUDE-CODE-OPERATING-RULES.md*
+*Document version: 2.3 | Date: 15 April 2026 | Supersedes: v2.2 (15 April 2026)*
+*v2.3 changelog: closes 12 gaps identified by auditing `tailor-site-v2.css`*
+*against the GDH master CSS. Restores `.signpost` as a distinct class (was*
+*collapsed into `.preheader` with wrong size/weight); restores the*
+*signpost-adjacent `h1–h4 { margin-top: 0 }` rule; card defaults back to*
+*`--card-shadow: none` + `--card-border: none` per the doc contract;*
+*`--btn-font-size` back to responsive `clamp()`; `--btn-padding-x/y-sm`*
+*back to em; adds `.glass--solid` class + its four tokens; adds*
+*`--btn-shadow-sm/md/lg`, `--btn-outline-*-on-dark` family,*
+*`--brand-primary-strong`, `--card-gap-tight`, `--text-body-h/s/l`,*
+*`--space-struct-x`, `--spot-icon-stroke`, `--spot-icon-fill-opacity`.*
+*Audited against: SYSTEM-RULES.md, CLAUDE-CODE-OPERATING-RULES.md, and*
+*the GDH master CSS (`guess-design-house-master.css`).*

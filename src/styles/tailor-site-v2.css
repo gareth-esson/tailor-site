@@ -32,6 +32,13 @@
     calc(var(--brand-primary-s) - 33%),
     calc(var(--brand-primary-l) + 25%)
   );
+  /* Darker, more saturated. Hover / emphasis variant of brand primary.
+     Matches the GDH master's formula: H same, S +4, L -20. */
+  --brand-primary-strong: hsl(
+    var(--brand-primary-h),
+    calc(var(--brand-primary-s) + 4%),
+    calc(var(--brand-primary-l) - 20%)
+  );
   /* ====================================
      BRAND SECONDARY – BASE (CHANGE PER CLIENT)
      ==================================== */
@@ -93,7 +100,14 @@
      ==================================== */
   /* Body text base colour — dark blue-grey from Okay to Ask wordmark */
   --text-body: #1E2A3A;
-  /* Muted/meta text relative to body */
+  /* Same body text expressed as HSL components, exposed for downstream
+     hsla() derivations (matches the GDH master's exposure pattern). */
+  --text-body-h: 213;
+  --text-body-s: 33%;
+  --text-body-l: 17%;
+  /* Muted/meta text relative to body. Kept as an explicit HSL value to
+     preserve WCAG AA contrast (4.75:1 on --bg-page); do not regenerate
+     from text-body-h/s/l. */
   --text-body-muted: hsl(213, 10%, 43%);
   /* Headings on light backgrounds */
   --text-heading: #1E2A3A;
@@ -181,6 +195,15 @@
   --btn-outline-border: hsla(var(--brand-accent-h), var(--brand-accent-s), var(--brand-accent-l), 0.35);
   --btn-outline-border-hover: var(--brand-accent);
   --btn-outline-border-width: var(--border-width-xs);
+
+  /* Outline on Dark — used automatically by .surface--dark .btn--outline.
+     Keeps the outline readable on dark surfaces by switching to the
+     accent-soft palette (lighter, desaturated). */
+  --btn-outline-bg-on-dark: transparent;
+  --btn-outline-bg-on-dark-hover: hsla(var(--brand-accent-soft-h), var(--brand-accent-soft-s), var(--brand-accent-soft-l), 0.1);
+  --btn-outline-text-on-dark: var(--brand-accent-soft);
+  --btn-outline-border-on-dark: hsla(var(--brand-accent-soft-h), var(--brand-accent-soft-s), var(--brand-accent-soft-l), 0.4);
+  --btn-outline-border-on-dark-hover: var(--brand-accent-soft);
 
   /* 4. WHITE VARIANTS (FOR BRAND BACKGROUNDS)
      Usage: Use these when the section background is --brand-accent or bright.
@@ -471,7 +494,9 @@
   /* ------------------------------
      TYPOGRAPHY: COMPONENTS & AUX
      ------------------------------ */
-  --btn-font-size: 14px;
+  /* Fluid button type — scales 14.4 → 16px across viewport widths.
+     Matches the GDH master. */
+  --btn-font-size: clamp(0.9rem, 0.8667rem + 0.1667vw, 1rem);
   --btn-font-weight: var(--font-weight-semibold);
   --btn-ls: 0.01em;
   --btn-lh: 1;
@@ -529,14 +554,15 @@
      ------------------------------ */
   --btn-padding-bal: 1.2em;
   --btn-padding-icon: 2.5em;
-  --btn-padding-x: 20px;
-  --btn-padding-y: 10px;
+  --btn-padding-x: 1.6em;
+  --btn-padding-y: 0.8em;
 
-  /* Small Action Buttons */
+  /* Small Action Buttons. All em-based so padding scales with button
+     font-size — matches the standard size. */
   --btn-padding-bal-sm: 1em;
   --btn-padding-icon-sm: 2.2em;
-  --btn-padding-x-sm: 12px;
-  --btn-padding-y-sm: 6px;
+  --btn-padding-x-sm: 1.4em;
+  --btn-padding-y-sm: 0.6em;
 
   /* ------------------------------
      SPACING: STRUCTURE
@@ -544,6 +570,7 @@
      ------------------------------ */
   --space-struct-y-hero: clamp(6rem, 8vw + 3rem, 10rem);
   --space-struct-y-base: clamp(4rem, 5vw + 2rem, 6rem);
+  --space-struct-x: clamp(1rem, 5vw, 15vw);
 
   /* ------------------------------
      SPACING: GLOBAL GRID
@@ -601,6 +628,12 @@
   --shadow-lg: 0 12px 32px rgba(27, 26, 23, 0.08), 0 4px 12px rgba(27, 26, 23, 0.05);
   --shadow-xl: 0 20px 48px rgba(27, 26, 23, 0.10), 0 8px 20px rgba(27, 26, 23, 0.05);
 
+  /* Button-specific shadow scale (tighter spread, smaller blur than the
+     general --shadow-* scale). Matches the GDH master. */
+  --btn-shadow-sm: 0 1px 2px rgba(0,0,0,0.06), 0 1px 1px rgba(0,0,0,0.04);
+  --btn-shadow-md: 0 2px 6px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --btn-shadow-lg: 0 4px 10px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.04);
+
   /* ------------------------------
      INTERACTION BEHAVIOUR
      Usage: Shared timing for all interactive elements
@@ -644,10 +677,18 @@
   --table-hover-bg-on-dark: rgba(255, 255, 255, 0.06);
 
   /* ── UTILITY TEXT (preheader/signpost, subheads, lede, micro) ── */
-  --text-util-preheader-size: 0.875em;
-  --text-util-preheader-weight: 400;
+  /* .signpost — section-level label (above h2/h3). Fixed rem size. */
+  --text-util-signpost-size: var(--text-card-size-h5);   /* 15px */
+  --text-util-signpost-weight: 700;
+  --text-util-signpost-lh: 1.4;
+  --text-util-signpost-ls: 0.15em;
+  --text-util-signpost-mb: 0.25rem;                      /* 4px — tight to heading */
+  /* .preheader — hero/display-level label (above h1/display). Slightly larger. */
+  --text-util-preheader-size: var(--text-card-size-h4);   /* clamp ~1.05–1.15rem */
+  --text-util-preheader-weight: 700;
   --text-util-preheader-lh: 1.4;
   --text-util-preheader-ls: 0.15em;
+  --text-util-preheader-mb: var(--space-global-xs);       /* 8px — more room before big headings */
   --text-util-hero-subhead-size: var(--text-subhead-size-hero);
   --text-util-hero-subhead-weight: 400;
   --text-util-hero-subhead-lh: 1.4;
@@ -685,6 +726,10 @@
   --spot-icon-bg-hover: hsla(var(--brand-accent-h), var(--brand-accent-s), var(--brand-accent-l), 0.16);
   --spot-icon-radius: var(--radius-md);
   --spot-icon-padding: 0.625rem;
+  /* SVG rendering defaults for spot-icons (inline <svg> children
+     should inherit these via currentColor / stroke-width). */
+  --spot-icon-stroke: 1.5px;
+  --spot-icon-fill-opacity: 0.12;
 
   /* ── SIMPLE MODE TOGGLE ──
      A segmented control or switch that lets readers
@@ -716,13 +761,32 @@
    UTILITY TEXT CLASSES
    Full styling managed here
    ========================================= */
-.preheader,
+/* .signpost — small uppercase label above h2/h3. The default choice.
+   Consistent size everywhere. Tight spacing to its heading. */
 .signpost {
+    font-size: var(--text-util-signpost-size);
+    font-weight: var(--text-util-signpost-weight);
+    line-height: var(--text-util-signpost-lh);
+    letter-spacing: var(--text-util-signpost-ls);
+    margin: 0 0 var(--text-util-signpost-mb);  /* reset browser <p> margin */
+    text-transform: uppercase;
+}
+/* .preheader — larger uppercase label above h1/display headings.
+   Used sparingly in hero sections and major CTAs. */
+.preheader {
     font-size: var(--text-util-preheader-size);
     font-weight: var(--text-util-preheader-weight);
     line-height: var(--text-util-preheader-lh);
     letter-spacing: var(--text-util-preheader-ls);
+    margin: 0 0 var(--text-util-preheader-mb);  /* reset browser <p> margin */
     text-transform: uppercase;
+}
+/* Kill heading margin-top after signpost/preheader to prevent margin collapse
+   (so the spacing between label and heading is controlled by the label's
+   margin-bottom alone, not the heading's browser default). */
+.signpost + h1, .signpost + h2, .signpost + h3, .signpost + h4,
+.preheader + h1, .preheader + h2, .preheader + h3, .preheader + h4 {
+    margin-top: 0;
 }
 .hero-subhead {
     font-size: var(--text-util-hero-subhead-size);
@@ -2098,11 +2162,12 @@ textarea.form-input {
 /* ── Card tokens ── */
 :root {
     --card-radius: var(--radius-lg);
-    --card-padding: 16px;
-    --card-gap: 8px;
-    --card-shadow: var(--shadow-sm);
+    --card-padding: var(--space-global-md);
+    --card-gap: var(--space-global-sm);
+    --card-gap-tight: var(--space-global-xs);   /* title → text: tighter coupling */
+    --card-shadow: none;          /* resting shadow lives in .card--lift only */
     --card-bg: var(--bg-page);
-    --card-border: var(--border-width-xs) solid var(--border-subtle);
+    --card-border: none;          /* no resting border — add via variant if needed */
     --card-img-ratio: 56.25%;
     --card-horizontal-img-width: 40%;
     --card-thumbnail-size: 120px;
@@ -2445,10 +2510,14 @@ textarea.form-input {
     --glass-blur: 12px;
     --glass-tint-light: rgba(255, 255, 255, 0.15);
     --glass-tint-light-strong: rgba(255, 255, 255, 0.4);
+    --glass-tint-light-solid: rgba(255, 255, 255, 0.75);
     --glass-tint-dark: rgba(0, 0, 0, 0.25);
     --glass-tint-dark-strong: rgba(0, 0, 0, 0.45);
+    --glass-tint-dark-solid: rgba(0, 0, 0, 0.75);
     --glass-border-light: rgba(255, 255, 255, 0.25);
+    --glass-border-light-solid: rgba(255, 255, 255, 0.5);
     --glass-border-dark: rgba(255, 255, 255, 0.08);
+    --glass-border-dark-solid: rgba(255, 255, 255, 0.15);
     --glass-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
     --glass-shadow-dark: 0 4px 24px rgba(0, 0, 0, 0.15);
 }
@@ -2465,6 +2534,13 @@ textarea.form-input {
 /* Stronger tint for readability on busy backgrounds */
 .glass--strong {
     background: var(--glass-tint-light-strong);
+}
+
+/* Content-heavy tier — full WCAG-safe readability. Use for hero cards,
+   modals over images, anything with body text that must pass contrast. */
+.glass--solid {
+    background: var(--glass-tint-light-solid);
+    border-color: var(--glass-border-light-solid);
 }
 
 /* ── Dark glass (dark frosted overlay) ── */
@@ -2490,6 +2566,12 @@ textarea.form-input {
     background: var(--glass-tint-dark-strong);
 }
 
+/* Dark solid — full WCAG-safe readability on dark surface. */
+.glass--dark.glass--solid {
+    background: var(--glass-tint-dark-solid);
+    border-color: var(--glass-border-dark-solid);
+}
+
 /* ── Dark glass link / focus overrides ── */
 .glass--dark .link-action {
     color: var(--link-action-color-on-dark);
@@ -2508,6 +2590,14 @@ textarea.form-input {
     }
     .glass--dark {
         background: rgba(0, 0, 0, 0.65);
+    }
+    /* Solid tier bumps opacity further so readability is guaranteed
+       without the blur effect. */
+    .glass--solid {
+        background: rgba(255, 255, 255, 0.88);
+    }
+    .glass--dark.glass--solid {
+        background: rgba(0, 0, 0, 0.85);
     }
 }
 
