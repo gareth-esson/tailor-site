@@ -587,9 +587,13 @@
 
   /* ------------------------------
      CONTAINER WIDTHS
-     Outer wrappers used by shell and page sections
+     Outer wrappers used by shell and page sections.
+     --container-max-shell is responsive: 72rem (1152px) up to tablet,
+     then min(90vw, 100rem) from lg (1024px) upwards so content fills
+     ~90% of the viewport on laptops and caps firmly at 1600px on
+     large monitors. The lg override lives in a media query below.
      ------------------------------ */
-  --container-max-shell: 72rem;   /* 1152px — outer wrapper on header/footer/page sections */
+  --container-max-shell: 72rem;   /* 1152px — default for <lg viewports */
   --container-max-prose: 44rem;   /* 704px — long-form reading measure */
   --container-max-reading-wide: 56rem; /* 896px — post-it metadata band, end-of-answer panel, related questions */
 
@@ -757,6 +761,16 @@
   --toggle-mode-padding-y: 0.4em;
   --toggle-mode-padding-x: 1em;
 }
+
+/* Shell container widens to 90vw (capped at 1600px) from lg upwards.
+   Below lg the 72rem default above is used so tablet/mobile layouts
+   keep the existing fit-with-gutter behaviour. */
+@media (min-width: 1024px) {
+  :root {
+    --container-max-shell: min(90vw, 100rem);
+  }
+}
+
 /* =========================================
    UTILITY TEXT CLASSES
    Full styling managed here
