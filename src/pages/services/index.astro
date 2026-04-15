@@ -127,18 +127,17 @@ const closingText =
     },
   }}
 >
-  {/* §1 — Hero (tinted, 2-col text + image, no CTA) ------------------- */}
+  {/* §1 — Hero (full-bleed split: shell-aligned text left, image
+       cropped to fill the right half on lg+; stacks on mobile). --- */}
   <header class="services-hero">
-    <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-      <div class="services-hero__inner">
-        <div class="services-hero__text">
-          <span class="services-hero__eyebrow">{heroEyebrow}</span>
-          <h1 class="services-hero__title">{heroTitle}</h1>
-          <p class="services-hero__subtitle">{heroSubtitle}</p>
-        </div>
-        <div class="services-hero__image">
-          <img src={heroImage} alt={heroImageAlt} loading="eager" />
-        </div>
+    <div class="services-hero__inner">
+      <div class="services-hero__text">
+        <span class="services-hero__eyebrow">{heroEyebrow}</span>
+        <h1 class="services-hero__title">{heroTitle}</h1>
+        <p class="services-hero__subtitle">{heroSubtitle}</p>
+      </div>
+      <div class="services-hero__image">
+        <img src={heroImage} alt={heroImageAlt} loading="eager" />
       </div>
     </div>
   </header>

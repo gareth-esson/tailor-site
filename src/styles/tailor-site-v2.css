@@ -3244,20 +3244,28 @@ textarea.form-input {
    Layout spec: Tailor_Layout_Spec_B5.md v1.0
    ========================================================================== */
 
-/* §1 · Hero (tinted band, 2-col text + image) */
+/* §1 · Hero — full-bleed split.
+   At lg+: text cell shell-aligned on the left, image cell bleeds to
+   the viewport's right edge and fills the section height via
+   object-fit: cover. Below lg: stacks, image natural aspect. */
 .services-hero {
     background: var(--bg-tinted);
     border-bottom: var(--border-width-xs) solid var(--border-subtle);
 }
 
 .services-hero__inner {
+    width: 100%;
     display: grid;
-    gap: var(--space-global-lg);
-    align-items: center;
+    grid-template-columns: 1fr;
 }
 
 .services-hero__text {
     max-width: var(--container-max-hero-text);
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+    padding-left: max(
+        var(--space-global-gutter),
+        calc((100vw - var(--container-max-shell)) / 2)
+    );
 }
 
 .services-hero__eyebrow {
@@ -3288,19 +3296,28 @@ textarea.form-input {
     margin: 0;
 }
 
+.services-hero__image {
+    /* Grid cell — image fills it, full cell height at lg+. */
+    min-height: 100%;
+}
+
 .services-hero__image img {
     display: block;
     width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 3;
+    height: 100%;
+    aspect-ratio: 4 / 3; /* mobile/tablet natural aspect */
     object-fit: cover;
-    border-radius: var(--radius-lg);
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
     .services-hero__inner {
-        grid-template-columns: 1fr 0.8fr;
-        gap: var(--space-global-xl);
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        align-items: stretch;
+    }
+
+    .services-hero__image img {
+        aspect-ratio: auto; /* let cell height govern */
     }
 }
 
@@ -3620,18 +3637,29 @@ textarea.form-input {
     background: var(--bg-page);
 }
 
-/* §1 — Hero (tinted, with required image) */
+/* §1 — Hero — full-bleed split at lg+.
+   Text cell shell-aligned left, image cell bleeds to the viewport's
+   right edge and fills the section height (image cropped via
+   object-fit: cover). Below lg: stacks, image at 4/3. */
 .service-hero {
     background: var(--bg-tinted);
     border-bottom: var(--border-width-xs) solid var(--border-subtle);
 }
 .service-hero__inner {
+    width: 100%;
     display: grid;
-    gap: var(--space-global-lg);
-    align-items: center;
+    grid-template-columns: 1fr;
 }
 .service-hero__text {
     max-width: var(--container-max-hero-text);
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+    padding-left: max(
+        var(--space-global-gutter),
+        calc((100vw - var(--container-max-shell)) / 2)
+    );
+}
+.service-hero__image {
+    min-height: 100%;
 }
 .service-hero__eyebrow {
     display: inline-block;
@@ -3659,12 +3687,11 @@ textarea.form-input {
     margin: 0 0 var(--space-global-md);
 }
 .service-hero__image img {
-    border-radius: var(--radius-lg);
     width: 100%;
-    height: auto;
+    height: 100%;
     object-fit: cover;
     display: block;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 4 / 3; /* mobile/tablet natural aspect */
 }
 
 /* §3 — Service description */
@@ -3857,13 +3884,20 @@ textarea.form-input {
 }
 
 @media (min-width: 768px) {
-    .service-hero__inner {
-        grid-template-columns: 1fr 0.8fr;
-        gap: var(--space-global-xl);
-    }
     .service-features__grid { grid-template-columns: repeat(3, 1fr); }
     .service-process__grid  { grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
     .service-blog__grid     { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 1024px) {
+    .service-hero__inner {
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        align-items: stretch;
+    }
+    .service-hero__image img {
+        aspect-ratio: auto;
+    }
 }
 
 /* =========================================

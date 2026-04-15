@@ -305,20 +305,28 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
      Teacher-first. 8 sections. 1 layer switch.
      ======================================== */
 
-  /* --- §1 Teacher hero --- */
+  /* --- §1 Teacher hero ---
+     Full-bleed split at lg+: text cell shell-aligned on left, image
+     cell bleeds to viewport's right edge and fills the section height
+     (image cropped via object-fit: cover). Below lg the image is
+     hidden (existing .hidden.lg:block) and the text fills the width. */
   .hero-teacher {
     background-color: var(--hero-tailor-bg);
-    padding: var(--space-struct-y-hero) var(--space-global-gutter);
   }
 
   .hero-teacher__inner {
-    max-width: var(--container-max-shell);
-    margin: 0 auto;
     width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
   }
 
   .hero-teacher__text {
     max-width: var(--container-max-hero-text);
+    padding: var(--space-struct-y-hero) var(--space-global-gutter);
+    padding-left: max(
+      var(--space-global-gutter),
+      calc((100vw - var(--container-max-shell)) / 2)
+    );
   }
 
   .hero-teacher__eyebrow {
@@ -350,11 +358,16 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     gap: var(--space-global-sm);
   }
 
+  .hero-photo-wrap {
+    /* Grid cell; image fills it. */
+    min-height: 100%;
+  }
+
   .hero-photo {
     width: 100%;
-    height: auto;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
 
   /* --- §2 Platform --- */
@@ -845,10 +858,9 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
 
   @media (min-width: 1024px) {
     .hero-teacher__inner {
-      display: grid;
-      grid-template-columns: 1fr 0.9fr;
-      gap: var(--space-global-xl);
-      align-items: center;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      align-items: stretch;
     }
 
     .home-platform__inner {
@@ -883,7 +895,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
 
   /* Mobile overrides */
   @media (max-width: 767px) {
-    .hero-teacher {
+    .hero-teacher__text {
       padding-top: var(--space-global-2xl);
       padding-bottom: var(--space-global-2xl);
     }
