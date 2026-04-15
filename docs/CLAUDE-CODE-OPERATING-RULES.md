@@ -23,33 +23,39 @@ If you skip step 1, you will pick the wrong class. There is no shortcut. Reading
 
 This is the catalogue of components in the master CSS. Before writing custom CSS for any of these patterns, use the existing class. If the project's CSS is a fork, the names may have minor variations — grep to confirm.
 
-| Need | Use this | Don't write |
-|------|----------|-------------|
-| Buttons | `.btn` + size + style + optional icon class | Custom button styles |
-| Links in body text | `.link-inline` | Custom underline/colour rules |
-| Standalone "Read more →" link | `.link-action` (size variants: `--card`, `--display`) | Custom arrow CSS |
-| Standalone container (singular) | `.surface` + variant | Custom container with bg + padding |
-| Items in a grid | `.card` + variants + BEM children | Custom flex/grid card layouts |
-| Frosted glass effect | `.glass`, `.glass--strong`, `.glass--solid` (+ `--dark`) | `backdrop-filter: blur` |
-| Status label (static) | `.badge` + variant | Custom inline label styles |
-| Selectable tag (interactive) | `.chip` + variant | Custom interactive tag styles |
-| Block-level message (persistent) | `.alert` + variant | Custom inline alert styles |
-| Floating notification (temporary) | `.toast` + variant | Custom snackbar/notification |
-| Modal dialog | `.modal` + sub-elements | Custom overlay/dialog |
-| Expandable section | `.accordion` (uses native `<details>/<summary>`) | Custom JS accordion |
-| Form field group | `.form-group` + `.form-label` + `.form-input`/`.form-select`/`.form-check` | Custom form layouts |
-| On/off toggle | `.form-toggle` (checkbox-based) | Custom switch from scratch |
-| Range slider | `.form-range` | Custom styled range input |
-| Progress bar | `.progress` (+ `.progress--sm`) with `.progress__bar` | Custom fill bar |
-| Decorative icon (36–64px) | `.spot-icon` + size + modifier | Custom icon container |
-| Functional UI icon (16px) | Lucide icon (or project's icon library) | — |
-| Section label above heading | `.signpost` (default) or `.preheader` (heroes only) | Custom uppercase label |
-| Lead paragraph | `.lede` | Custom intro paragraph styles |
-| Two-column text + image grid | `.split-layout` (+ `--start`, `--reverse`) | Custom 2-col layouts |
-| Sticky horizontal sub-nav | `.page-nav` | Custom sticky nav |
-| Tables | `.table` + modifiers (`--striped`, `--hover`, `--bordered`, `--compact`) | Custom table styles |
-| Pagination | `.pagination` | Custom page number UI |
-| Skip-to-content link | `.skip-to-content` | Custom visually-hidden link |
+**Important:** a fork may only include a subset of the master. The "Status in Tailor" column below records presence in `tailor-site-v2.css` as of this document's date. A component marked `— not yet in Tailor fork` means the class is documented but the CSS hasn't been ported. If a feature needs one of those, add it to `tailor-site-v2.css` following the extension rules in Section 7 (define the token family in `:root` first, follow the BEM-like class pattern, include all states, handle reduced motion) and update this status column.
+
+| Need | Use this | Status in Tailor | Don't write |
+|------|----------|------------------|-------------|
+| Buttons | `.btn` + size + style + optional icon class | ✓ | Custom button styles |
+| Links in body text | `.link-inline` | ✓ | Custom underline/colour rules |
+| Standalone "Read more →" link | `.link-action` (size variants: `--card`, `--display`; muted variant: `--muted`) | ✓ | Custom arrow CSS |
+| Standalone container (singular) | `.surface` + variant | ✓ | Custom container with bg + padding |
+| Items in a grid | `.card` + variants + BEM children | ✓ | Custom flex/grid card layouts |
+| Frosted glass effect | `.glass`, `.glass--strong`, `.glass--solid` (+ `--dark`) | ✓ (`--solid` partial — no dedicated solid tokens) | `backdrop-filter: blur` |
+| Status label (static) | `.badge` + variant | ✓ | Custom inline label styles |
+| Selectable tag (interactive) | `.chip` + variant | ✓ classes, ✗ `--chip-*` tokens | Custom interactive tag styles |
+| Block-level message (persistent) | `.alert` + variant | ✓ (incl. `--support`, `--crisis`, `--ageflag`) | Custom inline alert styles |
+| Floating notification (temporary) | `.toast` + variant | — not yet in Tailor fork | Custom snackbar/notification |
+| Modal dialog | `.modal` + sub-elements | — not yet in Tailor fork | Custom overlay/dialog |
+| Expandable section | `.accordion` (uses native `<details>/<summary>`) | ✓ | Custom JS accordion |
+| Form field group | `.form-group` + `.form-label` + `.form-input`/`.form-select`/`.form-check` | ✓ | Custom form layouts |
+| On/off toggle | `.form-toggle` (checkbox-based) | — not yet in Tailor fork (see `.mode-toggle` for Simple Mode) | Custom switch from scratch |
+| Range slider | `.form-range` | — not yet in Tailor fork | Custom styled range input |
+| Progress bar | `.progress` (+ `.progress--sm`) with `.progress__bar` | — not yet in Tailor fork | Custom fill bar |
+| Decorative icon (36–64px) | `.spot-icon` + size + modifier | ✓ | Custom icon container |
+| Functional UI icon (16px) | Lucide icon (or project's icon library) | ✓ | — |
+| Section label above heading | `.signpost` (default) or `.preheader` (heroes only) | ✓ | Custom uppercase label |
+| Lead paragraph | `.lede` | ✓ | Custom intro paragraph styles |
+| Two-column text + image grid | `.split-layout` (+ `--start`, `--reverse`) | — not yet in Tailor fork | Custom 2-col layouts |
+| Sticky horizontal sub-nav | `.page-nav` | — not yet in Tailor fork | Custom sticky nav |
+| Tables | `.table` + modifiers (`--striped`, `--hover`, `--bordered`, `--compact`) | ✓ | Custom table styles |
+| Pagination | `.pagination` | — not yet in Tailor fork (site uses bespoke `.blog-pagination`) | Custom page number UI |
+| Skip-to-content link | `.skip-to-content` | — not yet in Tailor fork | Custom visually-hidden link |
+| Legal/policy page | `.legal-header` + `.legal-body` | — not yet in Tailor fork | Custom layouts |
+| 404 / error page | `.error-page` + `.error-page__suggestions` | — not yet in Tailor fork (site uses bespoke `.error-404`) | Custom layouts |
+| Search page / empty state | `.search-page` / `.search-empty` | — not yet in Tailor fork | Custom layouts |
+| Downloadable file row | `.doc-row` / `.doc-list` / `.doc-locked` | — not yet in Tailor fork | Custom layouts |
 
 For app-specific components that don't exist (sidebar nav, bottom tray, drag handles, app shell layouts), build them following the same naming and token patterns — see Section 7.
 
@@ -91,7 +97,7 @@ Almost every interactive component has an "on dark" variant. Look for it before 
 ### Rule: pair every surface with its matching text token
 
 Whenever you set a surface (background), set the matching text colour using the system token, not white/black:
-- `.surface--light` → `--text-default`, `--text-muted`, `--text-heading`
+- `.surface--light` → `--text-body`, `--text-body-muted`, `--text-heading`
 - `.surface--dark` → `--text-on-dark`, `--text-muted-on-dark`, `--text-heading-on-dark`
 - `.surface--brand` → check the system; either `--text-on-brand` or treat as dark
 
@@ -320,7 +326,7 @@ Each of these is a real failure mode that has happened. If you start writing cod
 | `background: rgba(0, 0, 0, X)` | A glass class or surface variant |
 | `border-radius: 8px` | `var(--radius-md)` or equivalent |
 | `padding: 16px` | `var(--space-global-sm)` |
-| `font-size: 14px` | `var(--text-sm)` |
+| `font-size: 14px` | A scale-specific token — e.g. `var(--text-card-size-body)`, `var(--text-prose-size-body)` (pick the scale that matches the context; see Section 3 — Typography) |
 | `display: flex; flex-direction: column; border-radius; overflow: hidden` | `.card` |
 | `backdrop-filter: blur` | `.glass`, `.glass--strong`, or `.glass--solid` |
 | `translateY` + `box-shadow` on hover | `.card--lift` |

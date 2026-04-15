@@ -486,6 +486,38 @@ Surface violations as you find them, but don't auto-rewrite the whole codebase i
 - **Search (A4, A5, B10)** — needs its own component design.
 - **Mega menu (D8)** — needs its own component design.
 
+### Master components NOT currently in the Tailor fork
+
+`SYSTEM-RULES.md` describes the full Guess Design House component library. This fork only includes what the site actually uses. The following master components are **documented but not ported** — their classes and tokens don't exist in `tailor-site-v2.css`. If a feature needs one, add it following the extension rules in `CLAUDE-CODE-OPERATING-RULES.md` §7 (define the token family in `:root` first, follow the BEM-like class pattern, include all states, handle reduced motion).
+
+| Master component | Docs section | Notes |
+|---|---|---|
+| `.modal` | SYSTEM-RULES §27 | No modal flows on the current site. |
+| `.toast` | SYSTEM-RULES §21.5 | No toast flows on the current site. |
+| `.progress` | SYSTEM-RULES §26 | No progress bars on the current site. |
+| `.pagination` | SYSTEM-RULES §28 | Site uses bespoke `.blog-pagination` instead. |
+| `.form-toggle` / `.form-range` | SYSTEM-RULES §19 | Simple Mode uses `.mode-toggle` (different pattern). |
+| `.split-layout` | operating rules §1 | Site uses Tailwind utilities for 2-col layouts. |
+| `.page-nav` | operating rules §1 | No sticky sub-nav on the current site. |
+| `.skip-to-content` | operating rules §1 | Accessibility gap — worth adding. |
+| `.legal-header` / `.legal-body` | SYSTEM-RULES §29 | `/privacy` and `/accessibility` are bespoke. |
+| `.error-page` | SYSTEM-RULES §31 | `/404` uses bespoke `.error-404`. |
+| `.search-page` / `.search-empty` | SYSTEM-RULES §31 | `/search` uses bespoke composition. |
+| `.doc-row` / `.doc-locked` | SYSTEM-RULES §30 | No download lists or gated panels on the current site. |
+
+### Known drift targets (existing bespoke components that reinvent system ones)
+
+These are in-site components that duplicate functionality the design system already provides. Each is a Tier-2 refactor candidate — swap the bespoke class for the system component + a thin layout hook, remove the redundant CSS.
+
+| Bespoke class | Where | Should consume |
+|---|---|---|
+| `.topic-chip` (ServiceTopicsStrip), `.blog-filter-chip` (blog index), `.testimonial-filter-chip` (testimonials) | 3 sites | `.chip` + `.chip--active` (note: `--chip-*` token family isn't yet defined in the CSS — add if migrating) |
+| `.end-panel` + `__eyebrow/__heading/__body/__action` (EndOfAnswerPanel) | 1 component, 3 panels | `.card` + `.card__eyebrow/__title/__text/__link` with `.card--lift` |
+| `.feature-card`, `.service-card`, `.service-card--flagship/--secondary`, `.b11-sample-card`, `.topic-hub-card`, `.blog-index-card`, `.glossary-term-card`, `.testimonial-card`, `.about-team-card` | 9 classes across services/, book, about, blog, etc. | `.card` BEM (currently bypass `.card` base entirely) |
+| `.blog-pagination` | blog index | `.pagination` (not yet in fork — port or keep bespoke) |
+| `.error-404` | /404 | `.error-page` (not yet in fork — port or keep bespoke) |
+| Decorative SVGs sized with Tailwind utilities | service pages, feature grids | `.spot-icon` + size/modifier (currently zero uses in src/) |
+
 ---
 
 ## Self-check before shipping any CSS change
@@ -508,5 +540,7 @@ Surface violations as you find them, but don't auto-rewrite the whole codebase i
 
 ---
 
-*Document version: 2.0 | Date: 14 April 2026 | Supersedes: v1.0 (3 April 2026)*
+*Document version: 2.1 | Date: 15 April 2026 | Supersedes: v2.0 (14 April 2026)*
+*v2.1 changelog: adds "Master components NOT currently in the Tailor fork" and*
+*"Known drift targets" tables following the CSS/docs reconciliation audit.*
 *Audited against: SYSTEM-RULES.md and CLAUDE-CODE-OPERATING-RULES.md*
