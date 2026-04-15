@@ -1078,6 +1078,19 @@ h6 { font-weight: var(--heading-weight-h6); }
     border-color: var(--btn-tint-border-hover);
 }
 
+/* Auto-swap on dark surfaces — tokens derive from --brand-accent-soft
+   (lighter, higher-lightness variant) so the button stays readable
+   against --bg-emphasis. Per SYSTEM-RULES.md §8.4. */
+.surface--dark .btn--tint {
+    background: var(--btn-tint-bg-on-dark);
+    color: var(--btn-tint-text-on-dark);
+    border-color: var(--btn-tint-bg-on-dark);
+}
+.surface--dark .btn--tint:hover {
+    background: var(--btn-tint-bg-on-dark-hover);
+    border-color: var(--btn-tint-bg-on-dark-hover);
+}
+
 /* ── STYLE: OUTLINE (Secondary — Bordered) ── */
 .btn--outline {
     background: var(--btn-outline-bg);
@@ -1088,6 +1101,17 @@ h6 { font-weight: var(--heading-weight-h6); }
 .btn--outline:hover {
     background: var(--btn-outline-bg-hover);
     border-color: var(--btn-outline-border-hover);
+}
+
+/* Auto-swap on dark surfaces — same principle as .btn--tint above. */
+.surface--dark .btn--outline {
+    background: var(--btn-outline-bg-on-dark);
+    color: var(--btn-outline-text-on-dark);
+    border-color: var(--btn-outline-border-on-dark);
+}
+.surface--dark .btn--outline:hover {
+    background: var(--btn-outline-bg-on-dark-hover);
+    border-color: var(--btn-outline-border-on-dark-hover);
 }
 
 /* ── STYLE: WHITE PRIMARY (for brand backgrounds) ── */
