@@ -39,13 +39,13 @@ const isContact = pathname === '/contact';
 ---
 
 <header
-  class="site-header sticky top-0 w-full h-[var(--header-height)] z-[var(--z-header)]"
+  class="site-header sticky top-0 w-full h-[var(--header-height)] px-[var(--space-global-gutter)] z-[var(--z-header)]"
   id="site-header"
 >
   <!-- Skip link: visible only on focus -->
   <a href="#main" class="skip-to-content">Skip to main content</a>
 
-  <div class="site-header__inner mx-auto flex h-full w-full items-center max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] gap-[var(--space-global-md)]">
+  <div class="site-header__inner mx-auto flex h-full w-full items-center max-w-[var(--container-max-shell)] gap-[var(--space-global-md)]">
     <!-- Slot 1: Brand -->
     <a href="/" class="site-header__brand flex items-center shrink-0" aria-label="Tailor Education — home">
       <img src="/assets/tailor-logo-lockup-dark.svg" alt="Tailor Education" class="site-header__logo" width="180" height="36" />
