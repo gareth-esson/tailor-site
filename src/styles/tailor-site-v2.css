@@ -569,7 +569,7 @@
      Usage: Section Padding (Fluid)
      ------------------------------ */
   --space-struct-y-hero: clamp(6rem, 8vw + 3rem, 10rem);
-  --space-struct-y-base: clamp(4rem, 5vw + 2rem, 6rem);
+  --space-struct-y-base: clamp(4rem, 5vw + 2rem, 8rem);
   --space-struct-x: clamp(1rem, 5vw, 15vw);
 
   /* ------------------------------
