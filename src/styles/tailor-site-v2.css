@@ -862,6 +862,7 @@ h6 { font-weight: var(--heading-weight-h6); }
 .layer-ota {
     font-family: var(--font-ota-body-stack);
     color: var(--text-ota-body);
+    background: var(--bg-ota-surface);
 }
 .layer-ota h1,
 .layer-ota h2,
