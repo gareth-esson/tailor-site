@@ -3076,7 +3076,7 @@ textarea.form-input {
    Same metaphor as C1's .c1-content-panel.
    ========================================= */
 .c2-content-panel {
-    background: var(--bg-surface);
+    background: var(--bg-page);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
     overflow: hidden;

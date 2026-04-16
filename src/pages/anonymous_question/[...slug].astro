@@ -139,6 +139,7 @@ const postItTopPadding = showAlertBand
   jsonLd={jsonLd}
   preloadImage={postItImage ?? undefined}
 >
+  <div class="surface--ota">
   {/* ─────────────────────────────────────────────
       §1 + §2 — Crisis support (A9) and Age flag (D1)
       A single wrapping section so the two alerts
@@ -306,6 +307,7 @@ const postItTopPadding = showAlertBand
 
   {/* Glossary tooltip runtime */}
   <GlossaryTooltips />
+  </div>
 </BaseLayout>
 
 <style>
@@ -324,7 +326,7 @@ const postItTopPadding = showAlertBand
 
   /* "Book page" panel — white surface that lifts off the --bg-page ground */
   .c1-content-panel {
-    background: var(--bg-surface);
+    background: var(--bg-page);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
     margin-top: var(--space-global-lg);
