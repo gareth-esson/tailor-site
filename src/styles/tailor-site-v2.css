@@ -839,6 +839,13 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+/* OtA pages: lift the warm page ground to body so the header/footer
+   fringes and any scroll overflow stay on the warm surface, not the
+   default white. */
+body:has(.layer-ota) {
+    background-color: var(--bg-ota-surface);
+}
+
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading-stack);
     color: var(--text-heading);
