@@ -353,9 +353,12 @@ const postItTopPadding = showAlertBand
     color: var(--text-ota-heading);
   }
 
-  /* Sticky Simple Mode toggle row (desktop only) */
+  /* Sticky Simple Mode toggle row (desktop only).
+     Background matches the .c1-content-panel (--bg-page) so the sticky
+     row reads as no bg against the panel while still covering scrolled
+     content underneath when sticky. */
   .c1-toggle-sticky {
-    background: var(--bg-surface);
+    background: var(--bg-page);
     margin-bottom: var(--space-global-xl);
   }
 
