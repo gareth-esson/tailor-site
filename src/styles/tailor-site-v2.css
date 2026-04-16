@@ -2917,7 +2917,6 @@ textarea.form-input {
     height: auto;
     transform: rotate(var(--postit-rotation));
     border-radius: var(--radius-sm);
-    box-shadow: var(--postit-shadow);
     mix-blend-mode: multiply;
     background: var(--bg-surface);
 }
