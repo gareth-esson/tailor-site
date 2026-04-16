@@ -2,13 +2,13 @@
 /**
  * Homepage [B1] — /
  * v2: Teacher-first. 8 sections, 1 layer switch.
- * Surface rhythm: dark → white → alt → white → alt → warm → white → dark
+ * Surface rhythm: dark → white → alt → white → alt → white → alt → dark
  * Layer rhythm:   T → T → T → T → T → OtA → T → T
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
-import TopicsOverviewGrid from '../components/TopicsOverviewGrid.astro';
 import QuestionCard from '../components/QuestionCard.astro';
-import { getQuestions } from '../lib/content';
+import { getQuestions, getLandingPages } from '../lib/content';
+import { getTopicIllustrationPath } from '../lib/topic-illustrations';
 import type { QuestionRef } from '../lib/types';
 
 const allQuestions = await getQuestions();
@@ -27,6 +27,18 @@ const featured: QuestionRef[] = answered.slice(0, 3).map((q) => ({
   okayToAskCategory: q.okayToAskCategory,
   contentTags: q.contentTags,
 }));
+
+// §7 Topic carousel data
+const landingPages = await getLandingPages();
+const categoryTokenMap: Record<string, string> = {
+  'Relationships': 'relationships',
+  'Sex & Sexual Health': 'sexual-health',
+  'Puberty & The Body': 'puberty',
+  'Identity & Diversity': 'identity',
+  'Online Safety & Media': 'online-safety',
+  'Safety & Safeguarding': 'safety',
+  'Health & Wellbeing': 'wellbeing',
+};
 
 // Hero photograph — conditionally rendered
 const heroPhoto = '/images/services/tailor-education-secondary-rse-group-activity.webp' as string | null;
@@ -273,10 +285,44 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     </section>
   </div>
 
-  <!-- ═══ §7 TOPICS OVERVIEW ═══ -->
+  <!-- ═══ §7 TOPICS CAROUSEL ═══ -->
   <section class="home-topics" aria-labelledby="topics-heading">
     <div class="home-topics__inner">
-      <TopicsOverviewGrid />
+      <div class="home-topics__header">
+        <h2 id="topics-heading" class="home-topics__title">Topics we cover</h2>
+        <p class="home-topics__intro">
+          Expert-written RSE content across {landingPages.length} curriculum-aligned topics.
+        </p>
+      </div>
+
+      <div class="home-topics__track">
+        {landingPages.map((lp) => {
+          const token = categoryTokenMap[lp.category || ''] || 'relationships';
+          const illustration = getTopicIllustrationPath(lp.slug);
+          return (
+            <a href={`/topics/${lp.slug}`} class="home-topics__card" style={`--cat-color: var(--cat-${token})`}>
+              <div class="home-topics__card-illus">
+                {illustration && <img src={illustration} alt="" loading="lazy" />}
+              </div>
+              <span class="home-topics__card-category">{lp.category}</span>
+              <span class="home-topics__card-title">{lp.title}</span>
+            </a>
+          );
+        })}
+        <a href="/topics/" class="home-topics__card home-topics__card--all">
+          <span class="home-topics__card-title">View all topics</span>
+          <span class="link-action">Browse the full library</span>
+        </a>
+      </div>
+
+      <div class="home-topics__nav" aria-hidden="true">
+        <button class="home-topics__arrow home-topics__arrow--prev" type="button" aria-label="Scroll left" disabled>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="home-topics__arrow home-topics__arrow--next" type="button" aria-label="Scroll right">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
     </div>
   </section>
 
@@ -655,12 +701,12 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
 
   /* --- §6 Okay to Ask ---
      White ground; the section is differentiated from neighbours by the
-     coral OtA wordmark, not by a coral or tinted background. */
+     coral OtA wordmark, not by a surface tint. */
   .home-ota {
     padding: var(--space-struct-y-base) var(--space-global-gutter);
     position: relative;
     overflow: hidden;
-    background: var(--bg-surface);
+    background: var(--bg-page);
   }
 
   .home-ota__inner {
@@ -780,9 +826,9 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     margin-bottom: var(--space-global-2xl);
   }
 
-  /* --- §7 Topics overview --- */
+  /* --- §7 Topics carousel --- */
   .home-topics {
-    background: var(--bg-page);
+    background: var(--bg-surface-alt);
     padding: var(--space-struct-y-base) var(--space-global-gutter);
   }
 
@@ -790,6 +836,161 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     max-width: var(--container-max-shell);
     margin: 0 auto;
     width: 100%;
+  }
+
+  .home-topics__header {
+    margin-bottom: var(--space-global-lg);
+  }
+
+  .home-topics__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h3);
+    font-weight: var(--heading-weight-h2);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-xs);
+  }
+
+  .home-topics__intro {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body-muted);
+    margin: 0;
+    line-height: var(--lh-body);
+  }
+
+  /* Arrow buttons — below carousel, right-aligned */
+  .home-topics__nav {
+    display: none;
+    justify-content: flex-end;
+    gap: var(--space-global-xs);
+    margin-top: var(--space-global-md);
+  }
+
+  @media (min-width: 768px) {
+    .home-topics__nav { display: flex; }
+  }
+
+  .home-topics__arrow {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--radius-circle);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    background: var(--bg-page);
+    color: var(--text-body);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color var(--transition-duration) var(--transition-easing),
+                color var(--transition-duration) var(--transition-easing);
+  }
+
+  .home-topics__arrow:hover:not(:disabled) {
+    border-color: var(--brand-accent);
+    color: var(--brand-accent-text);
+  }
+
+  .home-topics__arrow:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  /* Scroll track */
+  .home-topics__track {
+    display: flex;
+    gap: var(--space-global-md);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: var(--space-global-xs);
+  }
+
+  .home-topics__track::-webkit-scrollbar { display: none; }
+
+  /* Individual card */
+  .home-topics__card {
+    flex: 0 0 auto;
+    width: 15rem;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-xs);
+    padding: var(--space-global-md);
+    background: var(--bg-page);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: inherit;
+    scroll-snap-align: start;
+    transition: border-color var(--transition-duration) var(--transition-easing),
+                box-shadow var(--transition-duration) var(--transition-easing);
+  }
+
+  .home-topics__card:hover {
+    border-color: var(--cat-color, var(--brand-accent));
+    box-shadow: var(--shadow-md);
+  }
+
+  .home-topics__card-illus {
+    width: 3.5rem;
+    height: 3.5rem;
+    background: var(--bg-surface-alt);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .home-topics__card-illus img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .home-topics__card-category {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-h6);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--section-eyebrow-ls);
+    color: var(--cat-color, var(--text-body-muted));
+  }
+
+  .home-topics__card-title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-card-size-h3);
+    font-weight: var(--heading-weight-h3);
+    color: var(--text-heading);
+    line-height: var(--lh-heading-sub);
+  }
+
+  .home-topics__card:hover .home-topics__card-title {
+    color: var(--cat-color, var(--brand-accent-text));
+  }
+
+  /* "View all" trailing card */
+  .home-topics__card--all {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: transparent;
+    border-style: dashed;
+    min-height: 10rem;
+  }
+
+  .home-topics__card--all:hover {
+    background: var(--bg-page);
+    border-style: solid;
+  }
+
+  @media (min-width: 640px) {
+    .home-topics__card { width: 16rem; }
+  }
+
+  @media (min-width: 1024px) {
+    .home-topics__card { width: 18rem; }
   }
 
   /* --- §8 Closing CTA --- */
@@ -919,3 +1120,34 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     }
   }
 </style>
+
+<script>
+  function initTopicsCarousel() {
+    const track = document.querySelector<HTMLElement>('.home-topics__track');
+    const prevBtn = document.querySelector<HTMLButtonElement>('.home-topics__arrow--prev');
+    const nextBtn = document.querySelector<HTMLButtonElement>('.home-topics__arrow--next');
+    if (!track || !prevBtn || !nextBtn) return;
+
+    function updateArrows() {
+      const { scrollLeft, scrollWidth, clientWidth } = track!;
+      prevBtn!.disabled = scrollLeft <= 4;
+      nextBtn!.disabled = scrollLeft + clientWidth >= scrollWidth - 4;
+    }
+
+    function scroll(direction: number) {
+      const card = track!.querySelector<HTMLElement>('.home-topics__card');
+      if (!card) return;
+      const gap = parseFloat(getComputedStyle(track!).gap) || 16;
+      const distance = (card.offsetWidth + gap) * 2;
+      track!.scrollBy({ left: direction * distance, behavior: 'smooth' });
+    }
+
+    prevBtn.addEventListener('click', () => scroll(-1));
+    nextBtn.addEventListener('click', () => scroll(1));
+    track.addEventListener('scroll', updateArrows, { passive: true });
+    updateArrows();
+  }
+
+  document.addEventListener('astro:page-load', initTopicsCarousel);
+  document.addEventListener('DOMContentLoaded', initTopicsCarousel);
+</script>
