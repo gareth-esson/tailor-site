@@ -1,57 +1,69 @@
 ---
 /**
  * Service topics strip — §8 of C5 service pages.
- * Compact single-row topic browser: 6 curated topic chips + "See all" link.
- * Replaces the full TopicsOverviewGrid that v2 used at the bottom of service
- * pages. Full grid still lives at /topics/; this is a conversion-page nudge.
+ * Renders a grid of topic cards (illustration + category + title) for
+ * the topics most relevant to this service. Each service page passes
+ * its own curated `featuredSlugs`; we only show those, so the section
+ * stays focused rather than dumping all 23 topics.
+ *
+ * Card markup/style matches the homepage §7 topic carousel so topics
+ * read as one component across the site.
  */
 import { getLandingPages } from '../lib/content';
+import { getTopicIllustrationPath } from '../lib/topic-illustrations';
 import type { LandingPage } from '../lib/types';
 
 interface Props {
-  /**
-   * Slugs of landing pages to feature (in order). Falls back to first 6
-   * alphabetically if not provided or if any slugs don't resolve.
-   */
-  featuredSlugs?: string[];
+  /** Curated slugs for this service, in order of relevance. */
+  featuredSlugs: string[];
 }
 
-const { featuredSlugs = [] } = Astro.props;
+const { featuredSlugs } = Astro.props;
 
 const allLandingPages = await getLandingPages();
 const totalCount = allLandingPages.length;
 
-// Build ordered list of featured topics from slugs, then backfill if short
+// Resolve curated slugs in order, preserving service-author intent.
 const bySlug = new Map<string, LandingPage>(allLandingPages.map((lp) => [lp.slug, lp]));
-const featured: LandingPage[] = [];
+const topics: LandingPage[] = [];
 for (const slug of featuredSlugs) {
   const lp = bySlug.get(slug);
-  if (lp && !featured.includes(lp)) featured.push(lp);
+  if (lp && !topics.includes(lp)) topics.push(lp);
 }
-if (featured.length < 6) {
-  const alphabetical = [...allLandingPages].sort((a, b) => a.title.localeCompare(b.title));
-  for (const lp of alphabetical) {
-    if (featured.length >= 6) break;
-    if (!featured.includes(lp)) featured.push(lp);
-  }
-}
-const topics = featured.slice(0, 6);
+
+const categoryTokenMap: Record<string, string> = {
+  'Relationships': 'relationships',
+  'Sex & Sexual Health': 'sexual-health',
+  'Puberty & The Body': 'puberty',
+  'Identity & Diversity': 'identity',
+  'Online Safety & Media': 'online-safety',
+  'Safety & Safeguarding': 'safety',
+  'Health & Wellbeing': 'wellbeing',
+};
 ---
 
 <section class="service-topics-strip">
-  <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+  <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
     <div class="service-topics-strip__header">
-      <h2 class="service-topics-strip__label">Explore by topic</h2>
+      <h2 class="service-topics-strip__label">Related topics</h2>
       <a href="/topics/" class="link-action link-action--card">
         See all {totalCount} topic guides
       </a>
     </div>
     <div class="service-topics-strip__grid">
-      {topics.map((lp) => (
-        <a href={`/topics/${lp.slug}`} class="topic-chip">
-          {lp.title}
-        </a>
-      ))}
+      {topics.map((lp) => {
+        const token = categoryTokenMap[lp.category || ''] || 'relationships';
+        const illustration = getTopicIllustrationPath(lp.slug);
+        return (
+          <a href={`/topics/${lp.slug}`} class="service-topic-card" style={`--cat-color: var(--cat-${token})`}>
+            <div class="service-topic-card__illus">
+              {illustration && <img src={illustration} alt="" loading="lazy" />}
+            </div>
+            <span class="service-topic-card__category">{lp.category}</span>
+            <span class="service-topic-card__title">{lp.title}</span>
+          </a>
+        );
+      })}
     </div>
   </div>
 </section>
@@ -67,56 +79,96 @@ const topics = featured.slice(0, 6);
     justify-content: space-between;
     gap: var(--space-global-sm);
     flex-wrap: wrap;
-    margin-bottom: var(--space-global-sm);
+    margin-bottom: var(--space-global-lg);
   }
 
   .service-topics-strip__label {
     font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-card-size-h3);
-    font-weight: var(--heading-weight-h3);
+    font-size: var(--text-display-size-h3);
+    font-weight: var(--heading-weight-h2);
     color: var(--text-heading);
     margin: 0;
   }
 
   .service-topics-strip__grid {
     display: grid;
-    gap: var(--space-global-xs);
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .topic-chip {
-    display: flex;
-    align-items: center;
-    padding: var(--space-global-sm) var(--space-global-md);
-    background: var(--bg-surface);
-    border: var(--border-width-xs) solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-card-size-body);
-    font-weight: var(--font-weight-medium);
-    color: var(--text-heading);
-    text-decoration: none;
-    transition: border-color var(--transition-duration) var(--transition-easing);
-  }
-
-  .topic-chip:hover {
-    border-color: var(--brand-accent);
-  }
-
-  .topic-chip:focus-visible {
-    outline: var(--focus-ring-width) solid var(--focus-ring);
-    outline-offset: var(--focus-ring-offset);
+    gap: var(--space-global-md);
+    grid-template-columns: 1fr;
   }
 
   @media (min-width: 640px) {
     .service-topics-strip__grid {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
     }
   }
 
   @media (min-width: 1024px) {
     .service-topics-strip__grid {
-      grid-template-columns: repeat(6, 1fr);
+      grid-template-columns: repeat(3, 1fr);
     }
+  }
+
+  /* Topic card — matches homepage §7 carousel cards in style. */
+  .service-topic-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-xs);
+    padding: var(--space-global-md);
+    background: var(--bg-page);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color var(--transition-duration) var(--transition-easing),
+                box-shadow var(--transition-duration) var(--transition-easing);
+  }
+
+  .service-topic-card:hover {
+    border-color: var(--cat-color, var(--brand-accent));
+    box-shadow: var(--shadow-md);
+  }
+
+  .service-topic-card:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  .service-topic-card__illus {
+    width: 3.5rem;
+    height: 3.5rem;
+    background: var(--bg-surface-alt);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .service-topic-card__illus img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .service-topic-card__category {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-h6);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--section-eyebrow-ls);
+    color: var(--cat-color, var(--text-body-muted));
+  }
+
+  .service-topic-card__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-card-size-h3);
+    font-weight: var(--heading-weight-h3);
+    color: var(--text-heading);
+    line-height: var(--lh-heading-sub);
+  }
+
+  .service-topic-card:hover .service-topic-card__title {
+    color: var(--cat-color, var(--brand-accent-text));
   }
 </style>
