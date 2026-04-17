@@ -55,12 +55,12 @@ const categoryTokenMap: Record<string, string> = {
         const token = categoryTokenMap[lp.category || ''] || 'relationships';
         const illustration = getTopicIllustrationPath(lp.slug);
         return (
-          <a href={`/topics/${lp.slug}`} class="service-topic-card" style={`--cat-color: var(--cat-${token})`}>
-            <div class="service-topic-card__illus">
+          <a href={`/topics/${lp.slug}`} class="topic-card" style={`--cat-color: var(--cat-${token})`}>
+            <div class="topic-card__illus">
               {illustration && <img src={illustration} alt="" loading="lazy" />}
             </div>
-            <span class="service-topic-card__category">{lp.category}</span>
-            <span class="service-topic-card__title">{lp.title}</span>
+            <span class="topic-card__category">{lp.category}</span>
+            <span class="topic-card__title">{lp.title}</span>
           </a>
         );
       })}
@@ -91,6 +91,6 @@ const categoryTokenMap: Record<string, string> = {
   }
 
   /* Grid and card rules live in tailor-site-v2.css as the global
-     .topic-card-grid and .service-topic-card classes so the pattern
+     .topic-card-grid and .topic-card classes so the pattern
      can be reused across service/topic/landing pages. */
 </style>

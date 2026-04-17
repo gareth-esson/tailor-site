@@ -3294,7 +3294,7 @@ textarea.form-input {
     .topic-card-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
-.service-topic-card {
+.topic-card {
     display: flex;
     flex-direction: column;
     gap: var(--space-global-xs);
@@ -3308,17 +3308,17 @@ textarea.form-input {
                 box-shadow var(--transition-duration) var(--transition-easing);
 }
 
-.service-topic-card:hover {
+.topic-card:hover {
     border-color: var(--cat-color, var(--brand-accent));
     box-shadow: var(--shadow-md);
 }
 
-.service-topic-card:focus-visible {
+.topic-card:focus-visible {
     outline: var(--focus-ring-width) solid var(--focus-ring);
     outline-offset: var(--focus-ring-offset);
 }
 
-.service-topic-card__illus {
+.topic-card__illus {
     width: 3.5rem;
     height: 3.5rem;
     background: var(--bg-surface-alt);
@@ -3330,13 +3330,13 @@ textarea.form-input {
     flex-shrink: 0;
 }
 
-.service-topic-card__illus img {
+.topic-card__illus img {
     width: 100%;
     height: 100%;
     object-fit: contain;
 }
 
-.service-topic-card__category {
+.topic-card__category {
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-card-size-h6);
     font-weight: var(--font-weight-semibold);
@@ -3345,7 +3345,7 @@ textarea.form-input {
     color: var(--cat-color, var(--text-body-muted));
 }
 
-.service-topic-card__title {
+.topic-card__title {
     font-family: var(--font-tailor-heading-stack);
     font-size: var(--text-card-size-h3);
     font-weight: var(--heading-weight-h3);
@@ -3353,7 +3353,7 @@ textarea.form-input {
     line-height: var(--lh-heading-sub);
 }
 
-.service-topic-card:hover .service-topic-card__title {
+.topic-card:hover .topic-card__title {
     color: var(--cat-color, var(--brand-accent-text));
 }
 

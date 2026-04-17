@@ -341,12 +341,12 @@ const displayQuestions = questions
               const token = categoryTokenMap[rp.category || ''] || 'relationships';
               const illustration = getTopicIllustrationPath(rp.slug);
               return (
-                <a href={`/topics/${rp.slug}`} class="service-topic-card" style={`--cat-color: var(--cat-${token})`}>
-                  <div class="service-topic-card__illus">
+                <a href={`/topics/${rp.slug}`} class="topic-card" style={`--cat-color: var(--cat-${token})`}>
+                  <div class="topic-card__illus">
                     {illustration && <img src={illustration} alt="" loading="lazy" />}
                   </div>
-                  <span class="service-topic-card__category">{rp.category}</span>
-                  <span class="service-topic-card__title">{rp.title}</span>
+                  <span class="topic-card__category">{rp.category}</span>
+                  <span class="topic-card__title">{rp.title}</span>
                 </a>
               );
             })}
@@ -561,7 +561,7 @@ const displayQuestions = questions
   }
 
   /* §7 Related topics now use the global .topic-card-grid +
-     .service-topic-card pattern (see tailor-site-v2.css). */
+     .topic-card pattern (see tailor-site-v2.css). */
 
   /* --- Responsive --- */
   @media (min-width: 640px) {
