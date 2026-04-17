@@ -2095,7 +2095,7 @@ textarea.form-input {
     --chip-padding-x: var(--space-global-sm);
     --chip-font-size: var(--text-card-size-body);
     --chip-font-weight: var(--font-weight-semibold);
-    --chip-radius: var(--radius-pill);
+    --chip-radius: var(--radius-base);
     --chip-bg: var(--bg-surface);
     --chip-color: var(--text-body);
     --chip-border: var(--border-subtle);
