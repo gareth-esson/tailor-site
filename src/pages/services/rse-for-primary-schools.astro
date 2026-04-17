@@ -20,6 +20,9 @@ const heroSubtitle =
 const heroImage: string | null = '/images/services/tailor-education-primary-rse-circle-time.webp';
 const heroImageAlt = 'Primary school pupils gathered for a circle-time RSE session led by a Tailor educator';
 
+// §3 description heading — edit per-page for a tailored intro.
+const descriptionHeading = 'About RSE for primary schools';
+
 const descriptionLead =
   'A specialist RSE educator delivers age-appropriate lessons directly to your primary school students. Sessions are designed around the realities of teaching young children about relationships, bodies, boundaries, and staying safe — using language and activities that feel natural for the age group.';
 
@@ -109,6 +112,7 @@ const metaDescription = 'Age-appropriate RSE for KS1 and KS2, delivered by a spe
     <!-- §3 Description -->
     <section class="service-description">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <h2 class="service-section-title">{descriptionHeading}</h2>
         <p class="service-description__lead">{descriptionLead}</p>
         {descriptionBody.map((para) => (<p>{para}</p>))}
         {whatSchoolsGet && (

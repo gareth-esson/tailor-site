@@ -22,6 +22,9 @@ const heroSubtitle =
 const heroImage: string | null = '/images/services/tailor-education-rse-cpd-workshop-facilitator.webp';
 const heroImageAlt = 'A Tailor facilitator leading a CPD workshop for school staff on RSE delivery';
 
+// §3 description heading — edit per-page for a tailored intro.
+const descriptionHeading = 'About RSE Training';
+
 const descriptionLead =
   'The biggest barrier to good RSE in most schools isn\'t policy or curriculum — it\'s teacher confidence. Staff are asked to deliver topics they were never trained in, sometimes with a few hours\' notice, often with no clear framework for what to say when a student asks the question they were dreading.';
 
@@ -111,6 +114,7 @@ const metaDescription = 'CPD-accredited RSE training for school staff, led by sp
 
     <section class="service-description">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <h2 class="service-section-title">{descriptionHeading}</h2>
         <p class="service-description__lead">{descriptionLead}</p>
         {descriptionBody.map((para) => (<p>{para}</p>))}
         {whatSchoolsGet && (

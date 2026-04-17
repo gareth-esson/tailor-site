@@ -21,6 +21,9 @@ const heroSubtitle =
 const heroImage: string | null = '/images/services/tailor-education-rse-year-group-session-school-hall.webp';
 const heroImageAlt = 'A whole year group gathered in the school hall for a Tailor drop day RSE session';
 
+// §3 description heading — edit per-page for a tailored intro.
+const descriptionHeading = 'About Drop Days';
+
 const descriptionLead =
   'Some schools prefer to concentrate their RSE delivery into a single, high-quality day rather than spread it thinly across the year. A drop day brings a specialist educator into your school for a full day of sessions, rotating through year groups or forms so the whole cohort is covered at once.';
 
@@ -102,6 +105,7 @@ const metaDescription = 'A full day of expert-led RSE delivery across multiple y
 
     <section class="service-description">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <h2 class="service-section-title">{descriptionHeading}</h2>
         <p class="service-description__lead">{descriptionLead}</p>
         {descriptionBody.map((para) => (<p>{para}</p>))}
         {whatSchoolsGet && (

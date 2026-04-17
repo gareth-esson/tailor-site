@@ -22,6 +22,9 @@ const heroSubtitle =
 const heroImage: string | null = '/images/services/tailor-education-primary-pupil-rse-worksheet.webp';
 const heroImageAlt = 'A pupil working through a Circuits RSE workbook at their own pace';
 
+// §3 description heading — edit per-page for a tailored intro.
+const descriptionHeading = 'About RSE for SEND & AP';
+
 const descriptionLead =
   'Mainstream RSE lessons assume a classroom that moves at one pace, reads the same way, and processes information the same way. Circuits is designed from the opposite starting point — that every student in a SEND or AP setting is arriving at this content differently, and the delivery should flex to meet them.';
 
@@ -110,6 +113,7 @@ const metaDescription = 'Circuits is a workbook-led, self-paced RSE programme de
 
     <section class="service-description">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <h2 class="service-section-title">{descriptionHeading}</h2>
         <p class="service-description__lead">{descriptionLead}</p>
         {descriptionBody.map((para) => (<p>{para}</p>))}
         {whatSchoolsGet && (
