@@ -50,7 +50,7 @@ const categoryTokenMap: Record<string, string> = {
         See all {totalCount} topic guides
       </a>
     </div>
-    <div class="service-topics-strip__grid">
+    <div class="topic-card-grid">
       {topics.map((lp) => {
         const token = categoryTokenMap[lp.category || ''] || 'relationships';
         const illustration = getTopicIllustrationPath(lp.slug);
@@ -90,85 +90,7 @@ const categoryTokenMap: Record<string, string> = {
     margin: 0;
   }
 
-  .service-topics-strip__grid {
-    display: grid;
-    gap: var(--space-global-md);
-    grid-template-columns: 1fr;
-  }
-
-  @media (min-width: 640px) {
-    .service-topics-strip__grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .service-topics-strip__grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-
-  /* Topic card — matches homepage §7 carousel cards in style. */
-  .service-topic-card {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-global-xs);
-    padding: var(--space-global-md);
-    background: var(--bg-page);
-    border: var(--border-width-xs) solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    text-decoration: none;
-    color: inherit;
-    transition: border-color var(--transition-duration) var(--transition-easing),
-                box-shadow var(--transition-duration) var(--transition-easing);
-  }
-
-  .service-topic-card:hover {
-    border-color: var(--cat-color, var(--brand-accent));
-    box-shadow: var(--shadow-md);
-  }
-
-  .service-topic-card:focus-visible {
-    outline: var(--focus-ring-width) solid var(--focus-ring);
-    outline-offset: var(--focus-ring-offset);
-  }
-
-  .service-topic-card__illus {
-    width: 3.5rem;
-    height: 3.5rem;
-    background: var(--bg-surface-alt);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .service-topic-card__illus img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-
-  .service-topic-card__category {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-card-size-h6);
-    font-weight: var(--font-weight-semibold);
-    text-transform: uppercase;
-    letter-spacing: var(--section-eyebrow-ls);
-    color: var(--cat-color, var(--text-body-muted));
-  }
-
-  .service-topic-card__title {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-card-size-h3);
-    font-weight: var(--heading-weight-h3);
-    color: var(--text-heading);
-    line-height: var(--lh-heading-sub);
-  }
-
-  .service-topic-card:hover .service-topic-card__title {
-    color: var(--cat-color, var(--brand-accent-text));
-  }
+  /* Grid and card rules live in tailor-site-v2.css as the global
+     .topic-card-grid and .service-topic-card classes so the pattern
+     can be reused across service/topic/landing pages. */
 </style>

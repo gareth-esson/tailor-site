@@ -336,12 +336,20 @@ const displayQuestions = questions
       <section class="landing-related">
         <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
           <h2 class="landing-section__title">Related topics</h2>
-          <div class="landing-related__pills">
-            {relatedPages.map((rp) => (
-              <a href={`/topics/${rp.slug}`} class="landing-pill">
-                {rp.title}
-              </a>
-            ))}
+          <div class="topic-card-grid">
+            {relatedPages.map((rp) => {
+              const token = categoryTokenMap[rp.category || ''] || 'relationships';
+              const illustration = getTopicIllustrationPath(rp.slug);
+              return (
+                <a href={`/topics/${rp.slug}`} class="service-topic-card" style={`--cat-color: var(--cat-${token})`}>
+                  <div class="service-topic-card__illus">
+                    {illustration && <img src={illustration} alt="" loading="lazy" />}
+                  </div>
+                  <span class="service-topic-card__category">{rp.category}</span>
+                  <span class="service-topic-card__title">{rp.title}</span>
+                </a>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -552,32 +560,8 @@ const displayQuestions = questions
     margin-top: var(--space-global-xs);
   }
 
-  /* --- §7 Related topic pills --- */
-  .landing-related__pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-global-xs);
-  }
-
-  .landing-pill {
-    display: inline-block;
-    padding: var(--space-global-xs) var(--space-global-sm);
-    background: var(--bg-surface);
-    border: var(--border-width-xs) solid var(--border-subtle);
-    border-radius: var(--radius-pill);
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-card-size-body);
-    font-weight: var(--font-weight-medium);
-    color: var(--text-body);
-    text-decoration: none;
-    transition: border-color var(--transition-duration) var(--transition-easing),
-                color var(--transition-duration) var(--transition-easing);
-  }
-
-  .landing-pill:hover {
-    border-color: var(--brand-accent);
-    color: var(--brand-accent-text);
-  }
+  /* §7 Related topics now use the global .topic-card-grid +
+     .service-topic-card pattern (see tailor-site-v2.css). */
 
   /* --- Responsive --- */
   @media (min-width: 640px) {
