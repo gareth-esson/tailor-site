@@ -8,7 +8,6 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GlossaryTooltips from '../../components/GlossaryTooltips.astro';
 import QuestionCard from '../../components/QuestionCard.astro';
-import SignpostingBlock from '../../components/SignpostingBlock.astro';
 import { getQuestions } from '../../lib/content';
 import type { QuestionRef } from '../../lib/types';
 
@@ -150,17 +149,6 @@ const otaCategories = [
       </div>
     </section>
 
-    {/* ── §5 Signposting ── */}
-    <section
-      class="w-full py-[var(--space-struct-y-base)] px-[var(--space-global-gutter)]"
-      style="background: var(--safeguarding-support-bg);"
-      role="complementary"
-      aria-label="Support services"
-    >
-      <div class="mx-auto w-full max-w-[var(--container-max-reading-wide)]">
-        <SignpostingBlock services={['Childline', 'Brook', 'The Mix']} />
-      </div>
-    </section>
 
   </div>
 
