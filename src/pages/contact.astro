@@ -111,46 +111,6 @@ const contactPageJsonLd = {
       </div>
     </section>
 
-    <!-- §4.4 Safeguarding note -->
-    <section
-      class="contact-safeguarding"
-      aria-labelledby="contact-safeguarding-title"
-    >
-      <div class="contact-safeguarding__inner">
-        <div class="contact-safeguarding__panel" role="note">
-          <h2
-            id="contact-safeguarding-title"
-            class="contact-safeguarding__title"
-          >
-            In a crisis? Please don't use this form.
-          </h2>
-          <p class="contact-safeguarding__intro">
-            This form isn't monitored for crisis contact and we can't
-            respond in real time. If you or a young person needs help
-            right now, use one of the routes below.
-          </p>
-          <ul class="contact-safeguarding__list">
-            <li>
-              If someone is in immediate danger, call
-              <a href="tel:999">999</a>.
-            </li>
-            <li>
-              Concerned about a child: NSPCC helpline
-              <a href="tel:08088005000">0808 800 5000</a>.
-            </li>
-            <li>
-              If you're a young person needing to talk: Childline
-              <a href="tel:08001111">0800 1111</a> (free, confidential).
-            </li>
-            <li>
-              Schools: your local authority designated officer (LADO) is
-              the first point of contact for concerns involving a
-              professional.
-            </li>
-          </ul>
-        </div>
-      </div>
-    </section>
   </div>
 
   <script>
@@ -352,71 +312,4 @@ const contactPageJsonLd = {
     }
   }
 
-  /* -------------------------------------------------------------------- */
-  /* §4.4 Safeguarding note                                               */
-  /* -------------------------------------------------------------------- */
-  .contact-safeguarding {
-    width: 100%;
-    background: var(--bg-page);
-  }
-
-  .contact-safeguarding__inner {
-    margin-inline: auto;
-    width: 100%;
-    max-width: var(--container-max-prose);
-    padding: var(--space-global-xl) var(--space-global-gutter)
-      var(--space-struct-y-base);
-  }
-
-  .contact-safeguarding__panel {
-    background: var(--bg-surface);
-    border: var(--border-width-xs) solid var(--border-subtle);
-    border-left: var(--border-width-md) solid var(--state-warning);
-    border-radius: var(--radius-lg);
-    padding: var(--space-global-lg);
-  }
-
-  .contact-safeguarding__title {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-prose-size-h3);
-    font-weight: var(--heading-weight-h3);
-    line-height: var(--lh-heading-sub);
-    color: var(--text-heading);
-    margin: 0 0 var(--space-global-sm);
-  }
-
-  .contact-safeguarding__intro {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-prose-size-body);
-    color: var(--text-body);
-    line-height: var(--lh-body);
-    margin: 0 0 var(--space-global-md);
-  }
-
-  .contact-safeguarding__list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-global-sm);
-  }
-
-  .contact-safeguarding__list li {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-card-size-body);
-    color: var(--text-body);
-    line-height: var(--lh-body);
-  }
-
-  .contact-safeguarding__list a {
-    color: var(--brand-accent-text);
-    text-decoration: underline;
-  }
-
-  @media (max-width: 639px) {
-    .contact-safeguarding__panel {
-      padding: var(--space-global-md);
-    }
-  }
 </style>
