@@ -8,10 +8,10 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaExploreLessons from '../../components/CtaExploreLessons.astro';
 import CtaBringToSchool from '../../components/CtaBringToSchool.astro';
+import QuestionCard from '../../components/QuestionCard.astro';
 import { getLandingPages, getQuestions, getGlossaryTerms, getBlogPosts, getGlossaryIndex, getCurriculumStatements } from '../../lib/content';
 import { renderBlocks } from '../../lib/render-blocks';
 import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
-import { getPostItImagePath } from '../../lib/post-it-images';
 import type { LandingPage, Question, GlossaryTerm, BlogPost, CurriculumStatement } from '../../lib/types';
 import topicAliases from '../../../docs/topic-aliases.json';
 
@@ -153,9 +153,10 @@ const jsonLd = {
   },
 };
 
-// Questions: limit to 6 with post-it + simpleAnswer for b11-sample-card display
+// Questions: limit to 6 answered questions with a post-it scan (so the
+// QuestionCard has something to show in its image slot).
 const displayQuestions = questions
-  .filter((q) => q.body.length > 0 && q.hasPostItScan && q.simpleAnswer?.length > 0)
+  .filter((q) => q.body.length > 0 && q.hasPostItScan)
   .slice(0, 6);
 
 ---
@@ -268,34 +269,14 @@ const displayQuestions = questions
     {displayQuestions.length > 0 && (
       <section class="landing-questions">
         <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-          <h2 class="landing-section__title">Questions young people ask</h2>
-          <div class="landing-questions__stack">
-            {displayQuestions.map((q) => {
-              const postItImage = getPostItImagePath(q.slug);
-              return (
-                <a href={`/anonymous_question/${q.slug}`} class="b11-sample-card">
-                  {postItImage && (
-                    <img
-                      src={postItImage}
-                      alt=""
-                      class="b11-sample-card__postit"
-                      loading="lazy"
-                    />
-                  )}
-                  <div class="b11-sample-card__body">
-                    {q.okayToAskCategory && (
-                      <span class="b11-sample-card__eyebrow">{q.okayToAskCategory}</span>
-                    )}
-                    <div class="b11-sample-card__question">{q.question}</div>
-                    {q.simpleAnswer && (
-                      <p class="b11-sample-card__excerpt">{q.simpleAnswer}</p>
-                    )}
-                    <span class="b11-sample-card__link">Read the full answer</span>
-                  </div>
-                </a>
-              );
-            })}
-          </div>
+          <h2 class="landing-section__title">Questions young people ask about {landingPage.title}</h2>
+          <ul class="landing-questions__grid" role="list">
+            {displayQuestions.map((q) => (
+              <li>
+                <QuestionCard question={q} />
+              </li>
+            ))}
+          </ul>
           {questions.length > 6 && (
             <div class="landing-questions__more">
               <a href="/questions/" class="btn btn--sm btn--tint has-icon-hover">
@@ -529,11 +510,27 @@ const displayQuestions = questions
     margin: 0 0 var(--space-global-md);
   }
 
-  /* --- §4 Questions --- */
-  .landing-questions__stack {
-    display: flex;
-    flex-direction: column;
+  /* --- §4 Questions — grid of shared QuestionCards --- */
+  .landing-questions__grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
     gap: var(--space-global-md);
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  @media (min-width: 640px) {
+    .landing-questions__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .landing-questions__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 
   .landing-questions__more {
