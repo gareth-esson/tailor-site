@@ -39,16 +39,6 @@ posts.forEach((p) => {
   }
 });
 
-// Topic — deduplicated, preserving first-appearance order.
-type TopicChip = { slug: string; title: string };
-const topicMap = new Map<string, TopicChip>();
-posts.forEach((p) => {
-  (p.topics ?? []).forEach((t) => {
-    if (!topicMap.has(t.title)) topicMap.set(t.title, { slug: t.slug, title: t.title });
-  });
-});
-const topics: TopicChip[] = [...topicMap.values()];
-
 // --- Load-more gating ----------------------------------------------------
 const POSTS_PER_PAGE = 12;
 const showLoadMore = posts.length > 24;
@@ -97,7 +87,7 @@ const jsonLd = posts.length > 0
   </header>
 
   <div class="blog-index">
-    {/* §2 — Filter bar (category + topic) ------------------------------- */}
+    {/* §2 — Filter bar (category) ---------------------------------------- */}
     <section class="blog-filters" aria-label="Filter posts" data-pagefind-ignore="all">
       <div class="blog-filters__inner">
 
@@ -123,18 +113,6 @@ const jsonLd = posts.length > 0
           </div>
         </div>
 
-        {topics.length > 0 && (
-          <div class="blog-filters__row" role="toolbar" aria-label="Filter by topic">
-            <span class="blog-filters__label" id="filter-topic-label">Topic</span>
-            <div class="blog-filters__scroll" aria-labelledby="filter-topic-label">
-              <button class="chip blog-filter-chip is-active" type="button" data-filter-type="topic" data-filter-value="all" aria-pressed="true" tabindex="0">All</button>
-              {topics.map((t) => (
-                <button class="chip blog-filter-chip" type="button" data-filter-type="topic" data-filter-value={t.title} aria-pressed="false" tabindex={-1}>{t.title}</button>
-              ))}
-            </div>
-          </div>
-        )}
-
         <p class="blog-filters__count" aria-live="polite">
           Showing {Math.min(cards.length, POSTS_PER_PAGE)} of {cards.length} posts
         </p>
@@ -151,7 +129,6 @@ const jsonLd = posts.length > 0
               <li
                 class="blog-grid__item"
                 data-category={post.category ?? ''}
-                data-topics={post.topics.length > 0 ? `|${post.topics.map((t) => t.title).join('|')}|` : ''}
               >
                 <a href={`/blog/${post.slug}/`} class="blog-index-card">
                   <div class="blog-index-card__img">
@@ -625,7 +602,6 @@ const jsonLd = posts.length > 0
 
     const items = Array.from(grid.querySelectorAll<HTMLLIElement>('.blog-grid__item'));
     let currentCategory = 'all';
-    let currentTopic    = 'all';
     let batchesShown    = 1;
 
     // ─── Scroll track fade affordance ──────────────────────────────
@@ -643,15 +619,10 @@ const jsonLd = posts.length > 0
     function hydrateFromURL() {
       const params = new URLSearchParams(window.location.search);
       const cat = params.get('category');
-      const top = params.get('topic');
       if (cat) currentCategory = cat;
-      if (top) currentTopic    = top;
       chips.forEach((chip) => {
-        const type  = chip.dataset.filterType;
         const value = chip.dataset.filterValue || 'all';
-        const active =
-          (type === 'category' && value === currentCategory) ||
-          (type === 'topic'    && value === currentTopic);
+        const active = value === currentCategory;
         chip.classList.toggle('is-active', active);
         chip.setAttribute('aria-pressed', active ? 'true' : 'false');
         chip.tabIndex = active ? 0 : -1;
@@ -661,7 +632,6 @@ const jsonLd = posts.length > 0
     function pushURL() {
       const params = new URLSearchParams();
       if (currentCategory !== 'all') params.set('category', currentCategory);
-      if (currentTopic    !== 'all') params.set('topic',    currentTopic);
       const qs = params.toString();
       const next = qs ? `${window.location.pathname}?${qs}` : window.location.pathname;
       window.history.replaceState(null, '', next);
@@ -669,10 +639,7 @@ const jsonLd = posts.length > 0
 
     // ─── Filtering + rendering ─────────────────────────────────────
     function matchesFilters(item: HTMLLIElement): boolean {
-      const categoryOk = currentCategory === 'all' || item.dataset.category === currentCategory;
-      const topicsAttr = item.dataset.topics || '';
-      const topicOk    = currentTopic === 'all' || topicsAttr.includes(`|${currentTopic}|`);
-      return categoryOk && topicOk;
+      return currentCategory === 'all' || item.dataset.category === currentCategory;
     }
 
     function render(opts: { focusFirstNew?: boolean } = {}) {
@@ -715,20 +682,16 @@ const jsonLd = posts.length > 0
     function activateChip(btn: HTMLButtonElement) {
       if (btn.getAttribute('aria-disabled') === 'true') return;
 
-      const type  = btn.dataset.filterType as 'category' | 'topic';
       const value = btn.dataset.filterValue || 'all';
 
-      document
-        .querySelectorAll<HTMLButtonElement>(`.blog-filter-chip[data-filter-type="${type}"]`)
-        .forEach((b) => {
-          const isThis = b === btn;
-          b.classList.toggle('is-active', isThis);
-          b.setAttribute('aria-pressed', isThis ? 'true' : 'false');
-          b.tabIndex = isThis ? 0 : -1;
-        });
+      chips.forEach((b) => {
+        const isThis = b === btn;
+        b.classList.toggle('is-active', isThis);
+        b.setAttribute('aria-pressed', isThis ? 'true' : 'false');
+        b.tabIndex = isThis ? 0 : -1;
+      });
 
-      if (type === 'category') currentCategory = value;
-      else                      currentTopic    = value;
+      currentCategory = value;
       batchesShown = 1;
       pushURL();
       render();
@@ -766,7 +729,6 @@ const jsonLd = posts.length > 0
     // ─── Empty state "Clear filters" ───────────────────────────────
     document.querySelector<HTMLButtonElement>('.blog-empty__clear')?.addEventListener('click', () => {
       currentCategory = 'all';
-      currentTopic    = 'all';
       batchesShown    = 1;
       chips.forEach((b) => {
         const isAll = b.dataset.filterValue === 'all';
