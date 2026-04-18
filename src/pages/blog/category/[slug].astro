@@ -1,0 +1,369 @@
+---
+/**
+ * Blog category page — /blog/category/{slug}
+ * Static route for each canonical blog category. Mirrors the
+ * blog-index card grid, scoped to a single category, with no
+ * filter chips (the URL is the filter).
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getBlogPosts } from '../../../lib/content';
+import { formatDate, deriveExcerpt, sortPostsForIndex } from '../../../lib/blog-helpers';
+
+export async function getStaticPaths() {
+  // Canonical categories — kept in sync with the chip list in
+  // src/pages/blog/index.astro (CATEGORY_ORDER). `title` must match
+  // the BlogPost.category string coming from Notion exactly.
+  const categories = [
+    {
+      slug: 'rse-in-practice',
+      title: 'RSE in Practice',
+      description: 'Teaching notes, classroom strategies and guidance from our specialist team.',
+    },
+    {
+      slug: 'guidance-and-policy',
+      title: 'Guidance and Policy',
+      description: 'Where statutory guidance and school policy meet what actually works in the classroom.',
+    },
+    {
+      slug: 'our-work',
+      title: 'Our Work',
+      description: 'Projects and workshops we\u2019ve delivered with museums, universities, drama schools and the third sector.',
+    },
+  ];
+
+  return categories.map((category) => ({
+    params: { slug: category.slug },
+    props: { category },
+  }));
+}
+
+interface Props {
+  category: { slug: string; title: string; description: string };
+}
+
+const { category } = Astro.props;
+
+const allPosts = await getBlogPosts();
+const filtered = allPosts.filter((p) => p.category === category.title);
+const posts = sortPostsForIndex(filtered);
+
+const cards = posts.map((p) => ({
+  ...p,
+  excerpt: deriveExcerpt(p.body, 140),
+  dateLabel: formatDate(p.publishedDate),
+}));
+
+const canonicalPath = `/blog/category/${category.slug}/`;
+const metaTitle = `${category.title} — Tailor Education Blog`;
+---
+
+<BaseLayout
+  title={metaTitle}
+  description={category.description}
+  canonicalPath={canonicalPath}
+>
+  {/* §1 — Hero ---------------------------------------------------------- */}
+  <header class="blog-cat-hero">
+    <div class="blog-cat-hero__inner">
+      <div class="blog-cat-hero__text">
+        <span class="blog-cat-hero__eyebrow">Blog &middot; Category</span>
+        <h1 class="blog-cat-hero__title">{category.title}</h1>
+        <p class="blog-cat-hero__intro">{category.description}</p>
+        <p class="blog-cat-hero__back">
+          <a href="/blog/" class="link-action">Browse all posts</a>
+        </p>
+      </div>
+    </div>
+  </header>
+
+  {/* §2 — Post grid ---------------------------------------------------- */}
+  <section class="blog-cat-grid-section">
+    <div class="blog-cat-grid-section__inner">
+      {cards.length > 0 ? (
+        <ul class="blog-grid" role="list">
+          {cards.map((post, i) => (
+            <li class="blog-grid__item">
+              <a href={`/blog/${post.slug}/`} class="blog-index-card">
+                <div class="blog-index-card__img">
+                  {post.featuredImage
+                    ? <img src={post.featuredImage} alt="" loading={i < 3 ? 'eager' : 'lazy'} />
+                    : <div class="blog-index-card__img-fallback" aria-hidden="true" />}
+                </div>
+                <div class="blog-index-card__body">
+                  {post.category && <div class="blog-index-card__eyebrow">{post.category}</div>}
+                  <h3 class="blog-index-card__title">{post.title}</h3>
+                  {post.excerpt && <p class="blog-index-card__excerpt">{post.excerpt}</p>}
+                  <div class="blog-index-card__meta">
+                    {post.author && <span class="blog-index-card__author">By {post.author}</span>}
+                    {post.author && post.dateLabel && <span class="blog-index-card__meta-sep" aria-hidden="true">&middot;</span>}
+                    {post.dateLabel && post.publishedDate && (
+                      <time datetime={post.publishedDate} class="blog-index-card__date">{post.dateLabel}</time>
+                    )}
+                  </div>
+                  {post.topics.length > 0 && (
+                    <div class="blog-index-card__topics">
+                      {post.topics.slice(0, 3).map((t, ti) => (
+                        <span class="blog-index-card__topic">
+                          {t.title}
+                          {ti < Math.min(post.topics.length, 3) - 1 && <span class="blog-index-card__topic-sep" aria-hidden="true"> &middot; </span>}
+                        </span>
+                      ))}
+                      {post.topics.length > 3 && (
+                        <span class="blog-index-card__topic blog-index-card__topic--more">+{post.topics.length - 3} more</span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div class="blog-empty">
+          <h2 class="blog-empty__title">No posts in {category.title} yet</h2>
+          <p class="blog-empty__body">Check back soon, or browse all posts.</p>
+          <div class="blog-empty__actions">
+            <a class="btn btn--std btn--primary has-icon-hover" href="/blog/">Browse all posts</a>
+            <a class="btn btn--std btn--tint has-icon-hover" href="/topics/">Browse topics</a>
+          </div>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Hero — tinted band matching /blog/ */
+  .blog-cat-hero {
+    width: 100%;
+    background: var(--bg-tinted);
+    border-bottom: var(--border-width-xs) solid var(--border-subtle);
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+  }
+
+  .blog-cat-hero__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-shell);
+  }
+
+  .blog-cat-hero__text {
+    max-width: var(--container-max-hero-text);
+  }
+
+  .blog-cat-hero__eyebrow {
+    display: block;
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--section-eyebrow-ls);
+    color: var(--brand-accent-text);
+    margin: 0 0 var(--space-global-xs);
+  }
+
+  .blog-cat-hero__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h1);
+    font-weight: var(--heading-weight-h1);
+    line-height: var(--lh-display);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .blog-cat-hero__intro {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-body);
+    color: var(--text-body-muted);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .blog-cat-hero__back {
+    margin: 0;
+  }
+
+  /* Grid wrapper */
+  .blog-cat-grid-section {
+    width: 100%;
+    background: var(--bg-page);
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+  }
+
+  .blog-cat-grid-section__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-shell);
+  }
+
+  .blog-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-global-lg);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  @media (min-width: 640px) {
+    .blog-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (min-width: 1024px) {
+    .blog-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* Card — mirrors blog index card (Astro scoping requires duplication). */
+  .blog-index-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--bg-page);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--shadow-xs);
+    transition:
+      box-shadow var(--transition-duration) var(--transition-easing),
+      border-color var(--transition-duration) var(--transition-easing),
+      transform var(--transition-duration) var(--transition-easing);
+  }
+
+  .blog-index-card:hover,
+  .blog-index-card:focus-visible {
+    box-shadow: var(--shadow-lg);
+    border-color: var(--brand-accent);
+    transform: translateY(var(--card-lift-distance));
+  }
+
+  .blog-index-card__img {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    overflow: hidden;
+    background: var(--bg-surface-alt);
+  }
+
+  .blog-index-card__img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .blog-index-card__img-fallback {
+    width: 100%;
+    height: 100%;
+    background: var(--bg-tinted);
+  }
+
+  .blog-index-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-xs);
+    padding: var(--space-global-md);
+    flex: 1;
+  }
+
+  .blog-index-card__eyebrow {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-h6);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: var(--card-eyebrow-ls);
+    color: var(--brand-accent-text);
+    line-height: var(--lh-card);
+    margin: 0;
+  }
+
+  .blog-index-card__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-card-size-h3);
+    font-weight: var(--heading-weight-h3);
+    line-height: var(--lh-heading-sub);
+    color: var(--text-heading);
+    margin: 0;
+  }
+
+  .blog-index-card__excerpt {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-body);
+    color: var(--text-body-muted);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .blog-index-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-global-xs);
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-card);
+    color: var(--text-body-muted);
+    margin-top: var(--space-global-xs);
+  }
+
+  .blog-index-card__topics {
+    display: flex;
+    flex-wrap: wrap;
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-h6);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--lh-card);
+    color: var(--brand-accent-text);
+    margin-top: var(--space-global-xs);
+  }
+
+  .blog-index-card__topic--more {
+    color: var(--text-body-muted);
+    font-weight: var(--font-weight-regular);
+  }
+
+  /* Empty state */
+  .blog-empty {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-prose);
+    text-align: left;
+  }
+
+  .blog-empty__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h3);
+    font-weight: var(--heading-weight-h3);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .blog-empty__body {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    line-height: var(--lh-body);
+    color: var(--text-body-muted);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .blog-empty__actions {
+    display: flex;
+    gap: var(--space-global-sm);
+    flex-wrap: wrap;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .blog-index-card { transition: none; }
+    .blog-index-card:hover,
+    .blog-index-card:focus-visible { transform: none; }
+  }
+</style>

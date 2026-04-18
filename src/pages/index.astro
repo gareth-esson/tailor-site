@@ -215,6 +215,49 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     </div>
   </section>
 
+  <!-- ═══ §5.5 SELECTED PROJECTS ═══ -->
+  <section class="home-projects" aria-labelledby="projects-heading">
+    <div class="home-projects__inner">
+      <span class="preheader home-projects__preheader">Selected projects</span>
+      <h2 id="projects-heading" class="home-projects__title">We also work outside schools</h2>
+      <p class="home-projects__body">
+        We work with museums, universities, drama schools and the third sector on RSE projects for adults and young people in different settings. The sessions and workshops we've delivered for these partners feed directly back into what we teach in classrooms.
+      </p>
+
+      <ul class="home-projects__logos" role="list">
+        <li class="home-projects__logo-item">
+          {/* British Red Cross — emblem is protected under the Geneva
+              Conventions Act 1957; must render in its authorised red.
+              No monochrome filter is applied. */}
+          <img src="/assets/logos/british-red-cross.svg" alt="The British Red Cross" class="home-projects__logo home-projects__logo--colour" loading="lazy" />
+        </li>
+        <li class="home-projects__logo-item">
+          {/* Square logos under-read at equal height against wide logos;
+              taller modifier balances the row's optical weight. */}
+          <img src="/assets/logos/somerset-house.svg" alt="Somerset House" class="home-projects__logo home-projects__logo--square" loading="lazy" />
+        </li>
+        <li class="home-projects__logo-item">
+          <img src="/assets/logos/kings-college-london.svg" alt="King's College London" class="home-projects__logo" loading="lazy" />
+        </li>
+        <li class="home-projects__logo-item">
+          <img src="/assets/logos/british-museum.svg" alt="The British Museum" class="home-projects__logo" loading="lazy" />
+        </li>
+        <li class="home-projects__logo-item">
+          <img src="/assets/logos/rada.svg" alt="Royal Academy of Dramatic Art" class="home-projects__logo" loading="lazy" />
+        </li>
+        <li class="home-projects__logo-item">
+          <img src="/assets/logos/tate-modern.svg" alt="Tate Modern" class="home-projects__logo" loading="lazy" />
+        </li>
+      </ul>
+
+      <div class="home-projects__action">
+        <a href="/blog/category/our-work" class="btn btn--std btn--tint has-icon-hover">
+          See our projects
+        </a>
+      </div>
+    </div>
+  </section>
+
   <!-- ═══ §6 OKAY TO ASK (single OtA layer switch) ═══ -->
   <div class="layer-ota">
     <section class="home-ota" aria-labelledby="ota-heading">
@@ -683,6 +726,102 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
 
   .home-trust__action {
     margin-top: var(--space-global-lg);
+  }
+
+  /* --- §5.5 Selected projects ---
+     White ground (matches §2/§4), centred editorial block with a
+     monochrome logo strip. Logos are tinted dark via a `brightness(0)`
+     filter so mixed partner SVGs read at a uniform visual weight. */
+  .home-projects {
+    background: var(--bg-page);
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+  }
+
+  .home-projects__inner {
+    max-width: var(--container-max-reading-wide);
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+  }
+
+  .home-projects__preheader {
+    color: var(--text-heading-muted);
+    margin-bottom: var(--space-global-xs);
+  }
+
+  .home-projects__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h2);
+    font-weight: var(--heading-weight-h2);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .home-projects__body {
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body-muted);
+    line-height: var(--lh-body);
+    margin: 0 auto var(--space-global-xl);
+    max-width: var(--container-max-prose);
+  }
+
+  .home-projects__logos {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-global-xl);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-global-xl);
+  }
+
+  .home-projects__logo-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .home-projects__logo {
+    display: block;
+    height: 3rem;
+    width: auto;
+    max-width: 11rem;
+    object-fit: contain;
+    filter: grayscale(1) opacity(0.65);
+  }
+
+  /* Full-colour override — for logos under mark-protection rules that
+     preclude monochrome treatment (e.g. Red Cross emblem). */
+  .home-projects__logo--colour {
+    filter: none;
+  }
+
+  /* Square-logo height bump — compensates for optical under-weighting
+     of square marks against wide ones at equal height. Sized so the
+     square's bounding-box area roughly matches a wide logo's. */
+  .home-projects__logo--square {
+    height: 5.5rem;
+  }
+
+  .home-projects__action {
+    display: flex;
+    justify-content: center;
+  }
+
+  @media (max-width: 767px) {
+    .home-projects__logos {
+      gap: var(--space-global-lg);
+    }
+
+    .home-projects__logo {
+      height: 2.5rem;
+    }
+
+    .home-projects__logo--square {
+      height: 4.5rem;
+    }
   }
 
   /* --- §6 Okay to Ask ---
