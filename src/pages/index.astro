@@ -55,8 +55,8 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
 ---
 
 <BaseLayout
-  title="Tailor Education — Expert RSE for schools"
-  description="Expert RSE resources, training and delivery for schools. Curriculum-aligned lessons, CPD, and the Okay to Ask project — from Tailor Education."
+  title="Tailor Education — RSE workshops, training and delivery for UK schools"
+  description="Expert RSE for UK primary and secondary schools. In-school teaching, CPD, and the Okay to Ask book."
   canonicalPath="/"
 >
   <!-- ═══ §1 TEACHER HERO ═══ -->
@@ -64,16 +64,16 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     <div class="hero-teacher__inner">
       <div class="hero-teacher__text">
         <p class="preheader hero-teacher__eyebrow">Tailor Education</p>
-        <h1 id="hero-heading" class="hero-teacher__title">Expert RSE lessons and training for schools</h1>
+        <h1 id="hero-heading" class="hero-teacher__title">Expert RSE for UK schools</h1>
         <p class="hero-teacher__subtitle">
-          Curriculum-aligned relationships and sex education for UK schools. Written by specialists, built for teachers.
+          In-school RSE teaching, plus CPD for the teams that take it on themselves.
         </p>
         <div class="hero-teacher__actions">
-          <a href="/topics" class="btn btn--std btn--primary has-icon-hover">
-            Explore RSE lessons
+          <a href="/services" class="btn btn--std btn--primary has-icon-hover">
+            Explore our services
           </a>
-          <a href="/services" class="btn btn--std btn--tint has-icon-hover">
-            Bring Tailor to your school
+          <a href="/topics" class="btn btn--std btn--tint has-icon-hover">
+            Preview the lesson library
           </a>
         </div>
       </div>
@@ -85,40 +85,8 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     </div>
   </section>
 
-  <!-- ═══ §2 PLATFORM / TAILOR TEACH ═══ -->
-  <section class="home-platform" aria-labelledby="platform-heading">
-    <div class="home-platform__inner">
-      <div class="home-platform__text">
-        <span class="preheader home-platform__preheader">Tailor Teach</span>
-        <h2 id="platform-heading" class="home-platform__title">Expert-authored RSE lessons, ready to teach</h2>
-        <p class="home-platform__intro">
-          The Tailor Teach app gives your team structured, curriculum-aligned RSE lessons written by subject specialists. Every lesson is ready to deliver — no preparation needed.
-        </p>
-        <ul class="home-platform__features">
-          <li>Expert-authored, curriculum-aligned content</li>
-          <li>Structured by topic and key stage</li>
-          <li>Built for teacher confidence</li>
-          <li>Simple Mode and accessibility built in</li>
-        </ul>
-        <a href="/topics" class="btn btn--std btn--primary has-icon-hover">
-          Explore the lesson library
-        </a>
-      </div>
-      {appScreenshot && (
-        <div class="hidden lg:block">
-          <img
-            src={appScreenshot}
-            alt="Screenshot of the Tailor Teach lesson interface"
-            class="home-platform__screenshot"
-            loading="lazy"
-          />
-        </div>
-      )}
-    </div>
-  </section>
-
-  <!-- ═══ §3 DELIVERY ═══ -->
-  <section class="home-delivery surface--alt" aria-labelledby="delivery-heading">
+  <!-- ═══ §2 IN-SCHOOL DELIVERY (was §3) ═══ -->
+  <section class="home-delivery" aria-labelledby="delivery-heading">
     <div class="home-delivery__inner">
       {deliveryPhoto && (
         <div class="hidden lg:block">
@@ -132,10 +100,27 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
       )}
       <div class="home-delivery__text">
         <span class="preheader home-delivery__preheader">In-school delivery</span>
-        <h2 id="delivery-heading" class="home-delivery__title">We deliver RSE in your school</h2>
+        <h2 id="delivery-heading" class="home-delivery__title">RSE, taught directly in your school</h2>
         <p class="home-delivery__desc">
-          Our qualified facilitators come to your school and deliver curriculum-aligned RSE directly. Expert-led, sensitive, age-appropriate. Your school gets lesson delivery, teacher guidance, parent communication, and follow-up.
+          Most of what Tailor does is direct teaching. A school that wants an external specialist on RSE books a Tailor educator, and one of us takes the lessons. We work across primary, secondary, SEND and alternative provision.
         </p>
+        <p class="home-delivery__desc">
+          Every lesson is written for your class. We'll ask your PSHE lead what we need to know going in — a recent safeguarding issue, a topic that needs more time, a pupil to plan around — and shape the session around what you tell us. After we've taught it, your staff get a written debrief and notes they can use the next week.
+        </p>
+        <ol class="home-delivery__steps">
+          <li class="home-delivery__step">
+            <span class="home-delivery__step-num" aria-hidden="true">1</span>
+            <span class="home-delivery__step-text">You tell us what you need</span>
+          </li>
+          <li class="home-delivery__step">
+            <span class="home-delivery__step-num" aria-hidden="true">2</span>
+            <span class="home-delivery__step-text">We plan with your PSHE lead</span>
+          </li>
+          <li class="home-delivery__step">
+            <span class="home-delivery__step-num" aria-hidden="true">3</span>
+            <span class="home-delivery__step-text">We teach the lesson and leave you with notes</span>
+          </li>
+        </ol>
         <a href="/services" class="btn btn--std btn--primary has-icon-hover">
           Explore delivery options
         </a>
@@ -143,21 +128,21 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     </div>
   </section>
 
-  <!-- ═══ §4 TRAINING & SUPPORT ═══ -->
-  <section class="home-training" aria-labelledby="training-heading">
+  <!-- ═══ §3 TRAINING & SUPPORT (was §4) ═══ -->
+  <section class="home-training surface--alt" aria-labelledby="training-heading">
     <div class="home-training__inner">
       <div class="home-training__text">
-        <span class="preheader home-training__preheader">CPD &amp; support</span>
-        <h2 id="training-heading" class="home-training__title">Training and support for your RSE team</h2>
+        <span class="preheader home-training__preheader">Training and CPD</span>
+        <h2 id="training-heading" class="home-training__title">Help your team teach this with confidence</h2>
         <p class="home-training__intro">
-          We don't just provide resources — we help your team feel confident, compliant, and supported in delivering RSE.
+          RSE is hard to teach well if you haven't been trained in it. Most teaching teams haven't. That gap shows up the moment a year 9 puts their hand up with something you didn't prep for, or when the parent email arrives the day after a contentious topic.
         </p>
         <p class="home-training__detail">
-          CPD workshops, RSE policy development, curriculum mapping across key stages, and DfE statutory alignment — in-school or online.
+          Our CPD is built around what we use ourselves in classrooms — the subject knowledge, the strategies for the harder conversations, the read of the statutory guidance that lets a head of PSHE plan a year of RSE without panic-checking the document every term. Sessions run in your school or online, around the school calendar.
         </p>
         <div class="home-training__actions">
           <a href="/services/rse-training" class="btn btn--std btn--primary has-icon-hover">
-            Explore training options
+            Explore training
           </a>
           <a href="/contact" class="btn btn--std btn--tint has-icon-hover">
             Talk to us about support
@@ -177,12 +162,44 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     </div>
   </section>
 
+  <!-- ═══ §4 TAILOR TEACH (was §2; coming-soon framing) ═══ -->
+  <section class="home-platform" aria-labelledby="platform-heading">
+    <div class="home-platform__inner">
+      <div class="home-platform__text">
+        <span class="preheader home-platform__preheader">Tailor Teach · Coming soon</span>
+        <h2 id="platform-heading" class="home-platform__title">A lesson library for teaching teams</h2>
+        <p class="home-platform__intro">
+          Tailor Teach is what we're building for the teams who want to take RSE on themselves. The lessons inside are written by Tailor specialists and mapped to the DfE statutory guidance and the PSHE Association Programme of Study. The browse layer is live today. The cloning and adaptation tools are on the way.
+        </p>
+        <ul class="home-platform__features">
+          <li>Lessons written by practising RSE specialists</li>
+          <li>Mapped to DfE and PSHE Association frameworks</li>
+          <li>Browse by topic or key stage</li>
+          <li>Simple Mode and accessibility built in</li>
+        </ul>
+        <a href="/topics" class="btn btn--std btn--primary has-icon-hover">
+          Browse the topic library
+        </a>
+      </div>
+      {appScreenshot && (
+        <div class="hidden lg:block">
+          <img
+            src={appScreenshot}
+            alt="Screenshot of the Tailor Teach lesson interface"
+            class="home-platform__screenshot"
+            loading="lazy"
+          />
+        </div>
+      )}
+    </div>
+  </section>
+
   <!-- ═══ §5 TRUST SIGNALS ═══ -->
   <section class="home-trust surface--alt" aria-labelledby="trust-heading">
     <div class="home-trust__inner">
       <div class="home-trust__badges-wrap">
-        <span class="preheader home-trust__preheader">Frameworks &amp; standards</span>
-        <h2 id="trust-heading" class="home-trust__title">Aligned with national and international frameworks</h2>
+        <span class="preheader home-trust__preheader">Frameworks and standards</span>
+        <h2 id="trust-heading" class="home-trust__title">Aligned with the guidance schools are held to</h2>
         <div class="home-trust__badges">
           <div class="trust-badge">
             <span>DfE Statutory RSE Guidance</span>
@@ -271,9 +288,9 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
             width="160"
             height="28"
           />
-          <h2 id="ota-heading" class="home-ota__title">Okay to Ask — honest answers for young people</h2>
+          <h2 id="ota-heading" class="home-ota__title">Honest answers to the questions young people ask</h2>
           <p class="home-ota__text">
-            Real questions from real young people, answered honestly. No judgement, no awkwardness. A free resource from Tailor Education.
+            Okay to Ask started as a stack of post-its. Anonymous questions, written by pupils at the end of lessons, who wanted a proper answer but didn't want to put their name on it. We grouped the repeats, and an RSE specialist wrote the answers. The site is free to read, and there's a book now, too.
           </p>
         </div>
 
@@ -304,8 +321,8 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
             />
             <div class="home-ota__book-text">
               <span class="home-ota__book-eyebrow">The Okay to Ask book</span>
-              <h3 class="home-ota__book-title">The book that answers the questions young people really ask</h3>
-              <p class="home-ota__book-desc">Real questions, honest answers, post-it notes and all.</p>
+              <h3 class="home-ota__book-title">The book that answers the questions young people send in</h3>
+              <p class="home-ota__book-desc">The original post-it notes with the answers written out in full.</p>
               <span class="link-action">Buy the book</span>
             </div>
           </a>
@@ -358,16 +375,16 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   <!-- ═══ §8 CLOSING CTA ═══ -->
   <section class="home-cta surface--dark" aria-labelledby="cta-heading">
     <div class="home-cta__inner">
-      <h2 id="cta-heading" class="home-cta__title">Ready to bring expert RSE to your school?</h2>
+      <h2 id="cta-heading" class="home-cta__title">Want to talk about RSE at your school?</h2>
       <p class="home-cta__subtitle">
-        Whether you need lessons, training, or delivery — we're here to help.
+        Tell us where you're starting from, and we'll work out what Tailor can do.
       </p>
       <div class="home-cta__actions">
         <a href="/contact" class="btn btn--std btn--primary has-icon-hover">
           Get in touch
         </a>
-        <a href="/topics" class="btn btn--std btn--tint has-icon-hover">
-          Explore lessons
+        <a href="/services" class="btn btn--std btn--tint has-icon-hover">
+          Explore services
         </a>
       </div>
     </div>
