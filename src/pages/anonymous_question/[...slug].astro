@@ -21,7 +21,7 @@
  * layout-only change.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getQuestions, getGlossaryIndex, getTopics } from '../../lib/content';
+import { getQuestions, getGlossaryIndex, getTopics, getLandingPages } from '../../lib/content';
 import { renderBlocks } from '../../lib/render-blocks';
 import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
 import { getPostItImagePath } from '../../lib/post-it-images';
@@ -43,6 +43,16 @@ export async function getStaticPaths() {
   const glossaryIndex = await getGlossaryIndex();
   const topics = await getTopics();
   const topicMap = new Map(topics.map((t) => [t.id, t]));
+  const landingPages = await getLandingPages();
+  // Map granular topic ID → landing page slug
+  const granularToLandingSlug = new Map<string, string>();
+  for (const lp of landingPages) {
+    for (const gid of lp.granularTopicIds) {
+      if (!granularToLandingSlug.has(gid)) {
+        granularToLandingSlug.set(gid, lp.slug);
+      }
+    }
+  }
 
   return questions.map((q) => ({
     params: { slug: q.slug },
@@ -51,6 +61,7 @@ export async function getStaticPaths() {
       allQuestions: questions,
       glossaryIndex,
       fullTopic: q.topicIds[0] ? topicMap.get(q.topicIds[0]) || null : null,
+      landingPageSlug: q.topicIds[0] ? (granularToLandingSlug.get(q.topicIds[0]) ?? '') : '',
     },
   }));
 }
@@ -60,9 +71,10 @@ interface Props {
   allQuestions: Question[];
   glossaryIndex: GlossaryIndex;
   fullTopic: Topic | null;
+  landingPageSlug: string;
 }
 
-const { question, allQuestions, glossaryIndex, fullTopic } = Astro.props;
+const { question, allQuestions, glossaryIndex, fullTopic, landingPageSlug } = Astro.props;
 
 // --- Data preparation ---
 
@@ -87,7 +99,7 @@ const simpleWithTooltips = injectGlossaryTooltips(simpleAnswerHtml, glossaryInde
 const relatedQuestions = selectRelatedQuestions(question, allQuestions);
 
 const topicName = question.topic?.name || 'this topic';
-const topicSlug = question.topic?.slug || '';
+const topicSlug = landingPageSlug;
 
 // Category chip shown at the top of the post-it column.
 const categoryBadgeMap: Record<string, string> = {
@@ -260,8 +272,7 @@ const postItTopPadding = showAlertBand
       Cool blue ground separates support info from answer content. */}
   {question.signposting.length > 0 && (
     <section
-      class="w-full pt-[var(--space-global-2xl)] pb-[var(--space-struct-y-base)] px-[var(--space-global-gutter)]"
-      style="background: var(--safeguarding-support-bg);"
+      class="surface--dark w-full pt-[var(--space-global-2xl)] pb-[var(--space-struct-y-base)] px-[var(--space-global-gutter)]"
       aria-label="Support services"
     >
       <div class="mx-auto w-full max-w-[var(--container-max-reading-wide)]">

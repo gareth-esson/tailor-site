@@ -106,4 +106,18 @@ if (resolvedServices.length === 0) return;
     outline-offset: var(--focus-ring-offset);
     border-radius: var(--radius-xs);
   }
+
+  /* On-dark surface overrides — when section carries .surface--dark */
+  :global(.surface--dark) .signposting__heading {
+    color: var(--text-on-dark);
+  }
+  :global(.surface--dark) .signposting__desc {
+    color: var(--text-muted-on-dark);
+  }
+  :global(.surface--dark) .signposting__link {
+    color: var(--link-action-color-on-dark);
+  }
+  :global(.surface--dark) .signposting__link:focus-visible {
+    outline-color: var(--link-action-color-on-dark);
+  }
 </style>

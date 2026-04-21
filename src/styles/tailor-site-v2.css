@@ -2045,6 +2045,11 @@ textarea.form-input {
 .alert--support .alert__icon {
     color: var(--safeguarding-support-icon);
 }
+.surface--dark .alert--support {
+    background: var(--glass-tint-dark);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: var(--text-on-dark);
+}
 
 .alert--crisis {
     background: var(--safeguarding-crisis-bg);
