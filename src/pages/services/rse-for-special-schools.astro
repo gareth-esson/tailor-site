@@ -45,12 +45,6 @@ const featureCards = [
   { title: 'Sensitive topics handled with expertise', description: 'Puberty, personal safety, privacy, and hygiene approached with care — easing anxieties for staff while giving pupils the support they need.' },
 ];
 
-const processSteps = [
-  { number: 1, title: 'We learn your school', description: 'Pre-delivery planning with your SENCO and class teams — cohort needs, communication styles, relevant topics, and any student-specific considerations.' },
-  { number: 2, title: 'We deliver', description: 'A specialist educator delivers tailored sessions directly to your students, using the methods agreed in planning and flexing in the room as needed.' },
-  { number: 3, title: 'We support your team', description: 'Post-session debrief for staff, a record of what was covered, and ongoing support to help RSE continue between our visits.' },
-];
-
 const testimonialQuote =
   'You\'ve broken a wall of silence here at the academy and students are certainly more interested in opening up and seeking help and support in this area. The students even gave feedback that they wanted you to return and talk about other issues.';
 const testimonialSource = 'Victoria Oladele, Careers First Academy';
@@ -138,23 +132,6 @@ const metaDescription = 'Specialist RSE for pupils with profound and complex lea
         </div>
       </div>
     </section>
-
-    {processSteps && (
-      <section class="service-process">
-        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-          <h2 class="service-section-title">How it works</h2>
-          <div class="service-process__grid">
-            {processSteps.map((step) => (
-              <div class="process-step">
-                <div class="process-step__number">{step.number}</div>
-                <h3 class="process-step__title">{step.title}</h3>
-                <p class="process-step__text">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    )}
 
     <section class="service-proof-band">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">

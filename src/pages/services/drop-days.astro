@@ -40,9 +40,6 @@ const featureCards = [
   { title: 'Post-day summary and follow-up', description: 'Written debrief for staff including talking points, disclosure watch-list, and recommended follow-up activities.' },
 ];
 
-// Drop days has no dedicated process block in v3 — the flow is self-explanatory
-const processSteps = null;
-
 const testimonialQuote =
   'One day, every student in the year group covered — and delivered better than anything we could have put together ourselves. It let us protect the rest of the curriculum while still doing RSE properly.';
 const testimonialSource = 'Assistant Head, secondary school';
@@ -130,23 +127,6 @@ const metaDescription = 'A full day of expert-led RSE delivery across multiple y
         </div>
       </div>
     </section>
-
-    {processSteps && (
-      <section class="service-process">
-        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-          <h2 class="service-section-title">How it works</h2>
-          <div class="service-process__grid">
-            {processSteps.map((step) => (
-              <div class="process-step">
-                <div class="process-step__number">{step.number}</div>
-                <h3 class="process-step__title">{step.title}</h3>
-                <p class="process-step__text">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    )}
 
     <section class="service-proof-band">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">

@@ -44,12 +44,6 @@ const featureCards = [
   { title: 'CPD certification and resource pack', description: 'All attendees receive CPD accreditation and a written resource pack to reference after the training.' },
 ];
 
-const processSteps = [
-  { number: 1, title: 'We scope together', description: 'Pre-training call to agree focus areas, the balance of topics, and anything specific your staff are struggling with.' },
-  { number: 2, title: 'We train', description: 'Half-day, full-day, or multi-session delivery — in person at your school or remotely, led by a specialist educator.' },
-  { number: 3, title: 'Staff are ready', description: 'CPD certification, a written resource pack, and follow-up support for anything that comes up afterwards.' },
-];
-
 const testimonialQuote =
   'Easily the most practical CPD our department has ever had. Staff left with actual phrases and scripts, not just a warm feeling about the importance of RSE. Three months on, our team is still referencing it.';
 const testimonialSource = 'PSHE Coordinator, MAT';
@@ -137,23 +131,6 @@ const metaDescription = 'CPD-accredited RSE training for school staff, led by sp
         </div>
       </div>
     </section>
-
-    {processSteps && (
-      <section class="service-process">
-        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-          <h2 class="service-section-title">How it works</h2>
-          <div class="service-process__grid">
-            {processSteps.map((step) => (
-              <div class="process-step">
-                <div class="process-step__number">{step.number}</div>
-                <h3 class="process-step__title">{step.title}</h3>
-                <p class="process-step__text">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    )}
 
     <section class="service-proof-band">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">

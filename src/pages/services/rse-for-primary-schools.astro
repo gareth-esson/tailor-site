@@ -40,12 +40,6 @@ const featureCards = [
   { title: 'Parent-facing information', description: 'On request — a clear document explaining what was covered and why, so schools can communicate their approach confidently.' },
 ];
 
-const processSteps = [
-  { number: 1, title: 'We plan together', description: 'Pre-visit consultation to agree topics, year groups, and the approach that fits your school.' },
-  { number: 2, title: 'We deliver', description: 'A specialist educator delivers age-appropriate sessions directly to your students.' },
-  { number: 3, title: 'You get results', description: 'Staff summary, follow-up resources, and students who can have the conversations that matter.' },
-];
-
 const testimonialQuote =
   'The children were completely engaged. The educator pitched it perfectly for our Year 5s — honest and clear without being overwhelming. Several parents commented on how well their children talked about the session at home.';
 const testimonialSource = 'PSHE Lead, primary school';
@@ -136,24 +130,6 @@ const metaDescription = 'Age-appropriate RSE for KS1 and KS2, delivered by a spe
         </div>
       </div>
     </section>
-
-    <!-- §5 Process steps -->
-    {processSteps && (
-      <section class="service-process">
-        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-          <h2 class="service-section-title">How it works</h2>
-          <div class="service-process__grid">
-            {processSteps.map((step) => (
-              <div class="process-step">
-                <div class="process-step__number">{step.number}</div>
-                <h3 class="process-step__title">{step.title}</h3>
-                <p class="process-step__text">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    )}
 
     <!-- §6 Dark proof band -->
     <section class="service-proof-band">

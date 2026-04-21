@@ -40,12 +40,6 @@ const featureCards = [
   { title: 'Post-session staff debrief', description: 'Written summary with talking points and follow-up recommendations for form tutors and pastoral staff.' },
 ];
 
-const processSteps = [
-  { number: 1, title: 'We plan together', description: 'Pre-visit consultation to agree topics, year groups, cohort context, and anything sensitive happening in the school.' },
-  { number: 2, title: 'We deliver', description: 'A specialist educator leads discussion-based sessions directly with your students.' },
-  { number: 3, title: 'You get results', description: 'Written debrief, disclosure watch-list, and students who can name what\'s healthy and what isn\'t.' },
-];
-
 const testimonialQuote =
   'The sessions were exactly what our students needed. Delivered with sensitivity, honesty, and real expertise — the kind of RSE we want but can\'t always deliver ourselves.';
 const testimonialSource = 'Head of PSHE, secondary school';
@@ -133,23 +127,6 @@ const metaDescription = 'Discussion-led RSE for KS3 and KS4, delivered by specia
         </div>
       </div>
     </section>
-
-    {processSteps && (
-      <section class="service-process">
-        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-          <h2 class="service-section-title">How it works</h2>
-          <div class="service-process__grid">
-            {processSteps.map((step) => (
-              <div class="process-step">
-                <div class="process-step__number">{step.number}</div>
-                <h3 class="process-step__title">{step.title}</h3>
-                <p class="process-step__text">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    )}
 
     <section class="service-proof-band">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">

@@ -43,12 +43,6 @@ const featureCards = [
   { title: '1:1 or small group delivery', description: 'Flexible grouping — 1:1 where that works, small groups where connection helps. We agree it with your SEND or AP team beforehand.' },
 ];
 
-const processSteps = [
-  { number: 1, title: 'We adapt', description: 'Planning call with your SENCO or AP lead to agree topics, pace, grouping, and any student-specific considerations.' },
-  { number: 2, title: 'They learn at their pace', description: 'A specialist educator works through workbooks with your students — self-paced, low-pressure, on their terms.' },
-  { number: 3, title: 'They keep the workbook', description: 'The workbook stays with the student as a reference they can return to. Staff get a debrief on progress and anything flagged.' },
-];
-
 const testimonialQuote =
   'Our students engaged in a way they rarely do with whole-class sessions. The workbooks gave them something concrete to hold, and the fact they got to keep them mattered more than I expected.';
 const testimonialSource = 'SENCO, alternative provision';
@@ -136,23 +130,6 @@ const metaDescription = 'Circuits is a workbook-led, self-paced RSE programme de
         </div>
       </div>
     </section>
-
-    {processSteps && (
-      <section class="service-process">
-        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-          <h2 class="service-section-title">How it works</h2>
-          <div class="service-process__grid">
-            {processSteps.map((step) => (
-              <div class="process-step">
-                <div class="process-step__number">{step.number}</div>
-                <h3 class="process-step__title">{step.title}</h3>
-                <p class="process-step__text">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    )}
 
     <section class="service-proof-band">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
