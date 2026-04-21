@@ -43,7 +43,10 @@
       "permanent": true
     },
 
+    { "source": "/topic/:slug/", "destination": "/topics/:slug/", "permanent": true },
     { "source": "/topic/:slug", "destination": "/topics/:slug", "permanent": true },
+    { "source": "/topics/mental-health-education/", "destination": "/topics/mental-health-and-wellbeing/", "permanent": true },
+    { "source": "/topics/mental-health-education", "destination": "/topics/mental-health-and-wellbeing/", "permanent": true },
     { "source": "/category/:slug", "destination": "/topics/", "permanent": true },
     { "source": "/project_category/:slug", "destination": "/topics/", "permanent": true },
 
