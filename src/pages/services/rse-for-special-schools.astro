@@ -1,0 +1,215 @@
+---
+/**
+ * Service page [C5] — /services/rse-for-special-schools
+ * RSE delivery for special schools — pupils with profound and complex
+ * learning needs (PMLD, SLD, ASC), all on EHCPs, in whole-school SEND
+ * placements. Distinct from the Circuits workbook programme
+ * (rse-for-send-and-ap), which serves SEND units in mainstream schools
+ * and alternative provision.
+ * Tailor layer, v3.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
+import ServiceTopicsStrip from '../../components/ServiceTopicsStrip.astro';
+import { getBlogPosts } from '../../lib/content';
+
+// --- Data ----------------------------------------------------------
+const slug = 'rse-for-special-schools';
+const title = 'RSE for Special Schools';
+const serviceParam = 'RSE for Special Schools';
+const serviceName = 'RSE for Special Schools';
+
+const heroSubtitle =
+  'Specialist RSE for pupils with profound and complex learning needs — designed around each student\'s communication style, sensory profile, and developmental stage, not adapted from a mainstream lesson plan.';
+
+const heroImage: string | null = null;
+const heroImageAlt = '';
+
+const descriptionHeading = 'About RSE for Special Schools';
+
+const descriptionLead =
+  'Special schools serve pupils whose learning needs require RSE designed from the ground up — not a simplified version of a mainstream lesson, but provision built around the communication styles, sensory needs, and lived experience of students with profound and complex needs.';
+
+const descriptionBody = [
+  'At Tailor Education, we have worked with special schools for years, developing an understanding of what RSE looks like when every pupil has an EHCP and most are working significantly below age-related expectations. Our sessions use multi-sensory teaching methods, draw on close collaboration with your SENCO and class teams, and are planned carefully in advance so content is pitched right for every individual.',
+  'We cover the topics that matter most for special school pupils: body awareness, personal safety, healthy relationships, and puberty — handled with specialist expertise and real care. Every session is built around your cohort, not slotted in from a generic pack.',
+];
+
+const whatSchoolsGet =
+  'Pupils who understand their bodies, can recognise safe and unsafe situations, and have been given the language and opportunity to talk about relationships in a supported way. Staff who feel equipped to continue those conversations. A school that can say RSE is genuinely happening — not just on paper.';
+
+const featureCards = [
+  { title: 'Curriculum adapted for complex needs', description: 'Lesson plans modified to align with the cognitive, emotional, and physical abilities of your pupils — accessible, relevant, and right for the room.' },
+  { title: 'Multi-sensory teaching methods', description: 'Visual aids, tactile learning tools, and interactive activities that cater to different learning and communication styles.' },
+  { title: 'Safe, empathetic learning environment', description: 'Educators trained to foster a patient, nurturing space — open communication without pressure, and students supported to engage on their own terms.' },
+  { title: 'Close collaboration with school staff', description: 'We work with your SENCO, class teachers, and support staff before and after delivery, so RSE integrates with students\' broader educational plans.' },
+  { title: 'Sensitive topics handled with expertise', description: 'Puberty, personal safety, privacy, and hygiene approached with care — easing anxieties for staff while giving students the support they need.' },
+  { title: 'Sustainable programme support', description: 'Policy guidance, all-staff training, and parental engagement resources to help RSE become an embedded part of your school\'s provision, not a one-off event.' },
+];
+
+const processSteps = [
+  { number: 1, title: 'We learn your school', description: 'Pre-delivery planning with your SENCO and class teams — cohort needs, communication styles, relevant topics, and any student-specific considerations.' },
+  { number: 2, title: 'We deliver', description: 'A specialist educator delivers tailored sessions directly to your students, using the methods agreed in planning and flexing in the room as needed.' },
+  { number: 3, title: 'We support your team', description: 'Post-session debrief for staff, a record of what was covered, and ongoing support to help RSE continue between our visits.' },
+];
+
+const testimonialQuote =
+  'You\'ve broken a wall of silence here at the academy and students are certainly more interested in opening up and seeking help and support in this area. The students even gave feedback that they wanted you to return and talk about other issues.';
+const testimonialSource = 'Victoria Oladele, Careers First Academy';
+
+const featuredTopicSlugs = [
+  'personal-safety',
+  'healthy-relationships',
+  'puberty',
+  'body-image',
+  'friendships',
+  'consent',
+];
+
+// --- Content --------------------------------------------------------
+const allPosts = await getBlogPosts();
+const relatedPosts = allPosts.filter((p) => p.serviceLink === 'delivery').slice(0, 3);
+
+const metaTitle = 'RSE for Special Schools — RSE for Schools | Tailor Education';
+const metaDescription = 'Specialist RSE for pupils with profound and complex learning needs, designed for special school settings and delivered by expert educators.';
+---
+
+<BaseLayout
+  title={metaTitle}
+  description={metaDescription}
+  canonicalPath={`/services/${slug}/`}
+  ogImage={heroImage ?? undefined}
+  jsonLd={{
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: title,
+    description: metaDescription,
+    provider: { '@type': 'Organization', name: 'Tailor Education', url: 'https://tailoreducation.org.uk' },
+  }}
+>
+  <article class="service-page" data-pagefind-body>
+
+    <header class="service-hero">
+      <div class="service-hero__inner">
+        <div class="service-hero__text">
+            <span class="service-hero__eyebrow">Services</span>
+            <h1 class="service-hero__title">{title}</h1>
+            <p class="service-hero__subtitle">{heroSubtitle}</p>
+            <a
+              href={`/contact?service=${encodeURIComponent(serviceParam)}`}
+              class="btn btn--std btn--primary has-icon-hover"
+              data-analytics-event="cta_click"
+              data-analytics-cta-type="hero_enquire"
+              data-analytics-service-type={serviceParam}
+            >Enquire now</a>
+          </div>
+          <div class="service-hero__image">
+            {heroImage ? (
+              <img src={heroImage} alt={heroImageAlt} loading="eager" />
+            ) : (
+              <div class="service-hero__image-placeholder">Hero photography required — source before launch</div>
+            )}
+          </div>
+        </div>
+    </header>
+
+    <section class="service-description">
+      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <h2 class="service-section-title">{descriptionHeading}</h2>
+        <p class="service-description__lead">{descriptionLead}</p>
+        {descriptionBody.map((para) => (<p>{para}</p>))}
+        {whatSchoolsGet && (
+          <>
+            <h2 class="service-description__sub-title">What schools get</h2>
+            <p>{whatSchoolsGet}</p>
+          </>
+        )}
+      </div>
+    </section>
+
+    <section class="service-features">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <h2 class="service-section-title">What's included</h2>
+        <div class="service-features__grid">
+          {featureCards.map((card) => (
+            <div class="feature-card">
+              <h3 class="feature-card__title">{card.title}</h3>
+              <p class="feature-card__text">{card.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {processSteps && (
+      <section class="service-process">
+        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+          <h2 class="service-section-title">How it works</h2>
+          <div class="service-process__grid">
+            {processSteps.map((step) => (
+              <div class="process-step">
+                <div class="process-step__number">{step.number}</div>
+                <h3 class="process-step__title">{step.title}</h3>
+                <p class="process-step__text">{step.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <section class="service-proof-band">
+      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <div class="service-proof-band__inner">
+          {testimonialQuote && (
+            <>
+              <blockquote>
+                <p class="service-proof-band__quote">"{testimonialQuote}"</p>
+              </blockquote>
+              <span class="service-proof-band__source">— {testimonialSource}</span>
+            </>
+          )}
+          <div class="service-proof-band__cta-wrap">
+            <a
+              href={`/contact?service=${encodeURIComponent(serviceParam)}`}
+              class="btn btn--std btn--white-primary has-icon-hover"
+              data-analytics-event="cta_click"
+              data-analytics-cta-type="proof_band_enquire"
+              data-analytics-service-type={serviceParam}
+            >Enquire about {serviceName}</a>
+            <a href="/testimonials" class="link-action link-action--muted link-action--card">Read more testimonials</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {relatedPosts.length > 0 && (
+      <section class="service-blog">
+        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+          <h2 class="service-section-title">Related articles</h2>
+          <div class="service-blog__grid">
+            {relatedPosts.map((bp) => (
+              <a href={`/blog/${bp.slug}`} class="card card--lift service-blog-card">
+                {bp.featuredImage && (
+                  <div class="service-blog-card__img">
+                    <img src={bp.featuredImage} alt="" loading="lazy" />
+                  </div>
+                )}
+                <div class="card__body">
+                  {bp.targetAudience && <div class="card__eyebrow">{bp.targetAudience}</div>}
+                  <h3 class="card__title">{bp.title}</h3>
+                  {bp.author && <div class="service-blog-card__author">By {bp.author}</div>}
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <ServiceTopicsStrip featuredSlugs={featuredTopicSlugs} />
+
+    <CtaServiceEnquiry serviceName={serviceName} serviceParam={serviceParam} variant="alt" />
+
+  </article>
+</BaseLayout>
