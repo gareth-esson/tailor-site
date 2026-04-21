@@ -9,9 +9,8 @@ import { getQuestions } from '../lib/content';
 import { getPostItImagePath } from '../lib/post-it-images';
 
 // Purchase configuration
-const isOnSale = false;
-const bookPrice = '14.99';
-const stripeCheckoutUrl = import.meta.env.BOOK_STRIPE_URL || null;
+const isOnSale = true;
+const bookPrice = '36.99';
 
 const allQuestions = await getQuestions();
 
@@ -54,13 +53,11 @@ const testimonial = null as { quote: string; cite: string } | null;
           <p class="book-hero__pitch">
             152 anonymous questions written by young people in schools — each answered with honesty, care, and no judgement. Post-it notes and all.
           </p>
-          {isOnSale && stripeCheckoutUrl ? (
+          {isOnSale ? (
             <a
-              href={stripeCheckoutUrl}
+              href="/book/order"
               class="btn btn--std btn--primary has-icon-hover"
-              target="_blank"
-              rel="noopener"
-              aria-label={`Buy the Okay to Ask book — £${bookPrice} — opens Stripe checkout`}
+              aria-label={`Buy the Okay to Ask book — £${bookPrice}`}
             >
               Buy the book — £{bookPrice}
             </a>
@@ -134,11 +131,9 @@ const testimonial = null as { quote: string; cite: string } | null;
         <Fragment>
           <p class="book-purchase__price">£{bookPrice}</p>
           <a
-            href={stripeCheckoutUrl || '/contact?service=Other'}
+            href="/book/order"
             class="btn btn--std btn--primary has-icon-hover book-purchase__btn"
-            target={stripeCheckoutUrl ? '_blank' : undefined}
-            rel={stripeCheckoutUrl ? 'noopener' : undefined}
-            aria-label="Buy the Okay to Ask book — opens Stripe checkout"
+            aria-label="Buy the Okay to Ask book"
           >
             Buy the book
           </a>

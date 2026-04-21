@@ -1,0 +1,548 @@
+---
+/**
+ * Book order form [B11-order] — /book/order
+ * Captures buyer details before redirecting to Stripe checkout.
+ * Conditional fields appear based on buyer type selection.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Order — Okay to Ask Book"
+  description="Order the Okay to Ask book. Enter your details and we'll redirect you to our secure checkout."
+  canonicalPath="/book/order"
+  layer="ota"
+>
+  <section class="book-order" aria-labelledby="order-heading">
+    <div class="book-order__outer">
+
+      <div class="book-order__header">
+        <a href="/book" class="book-order__back link-action">← Back to book page</a>
+        <h1 id="order-heading" class="book-order__title">Order your copy</h1>
+        <p class="book-order__intro">
+          Fill in your details below, then you'll be taken to our secure Stripe checkout to pay.
+          Free UK delivery · £36.99
+        </p>
+      </div>
+
+      <!-- ── Form ── -->
+      <form class="book-order-form" id="book-order-form" novalidate>
+
+        <!-- §1 Contact details -->
+        <fieldset class="book-order-form__section">
+          <legend class="book-order-form__legend">Your details</legend>
+
+          <div class="form-group" data-field="name">
+            <label class="form-label" for="bo-name">Name <span aria-hidden="true">*</span></label>
+            <input class="form-input" type="text" id="bo-name" name="name" required autocomplete="name" aria-describedby="bo-name-error" />
+            <p class="form-error" id="bo-name-error" role="alert" hidden>Please enter your name</p>
+          </div>
+
+          <div class="form-group" data-field="email">
+            <label class="form-label" for="bo-email">Email <span aria-hidden="true">*</span></label>
+            <input class="form-input" type="email" id="bo-email" name="email" required autocomplete="email" aria-describedby="bo-email-error" />
+            <p class="form-error" id="bo-email-error" role="alert" hidden>Please enter a valid email address</p>
+          </div>
+        </fieldset>
+
+        <!-- §2 Shipping address -->
+        <fieldset class="book-order-form__section">
+          <legend class="book-order-form__legend">Shipping address <span class="book-order-form__legend-note">(UK only)</span></legend>
+
+          <div class="form-group" data-field="address_line1">
+            <label class="form-label" for="bo-addr1">Address line 1 <span aria-hidden="true">*</span></label>
+            <input class="form-input" type="text" id="bo-addr1" name="address_line1" required autocomplete="address-line1" aria-describedby="bo-addr1-error" />
+            <p class="form-error" id="bo-addr1-error" role="alert" hidden>Please enter your address</p>
+          </div>
+
+          <div class="form-group" data-field="address_line2">
+            <label class="form-label" for="bo-addr2">Address line 2</label>
+            <input class="form-input" type="text" id="bo-addr2" name="address_line2" autocomplete="address-line2" />
+          </div>
+
+          <div class="book-order-form__row">
+            <div class="form-group" data-field="city">
+              <label class="form-label" for="bo-city">Town / city <span aria-hidden="true">*</span></label>
+              <input class="form-input" type="text" id="bo-city" name="city" required autocomplete="address-level2" aria-describedby="bo-city-error" />
+              <p class="form-error" id="bo-city-error" role="alert" hidden>Please enter your town or city</p>
+            </div>
+
+            <div class="form-group" data-field="postcode">
+              <label class="form-label" for="bo-postcode">Postcode <span aria-hidden="true">*</span></label>
+              <input class="form-input" type="text" id="bo-postcode" name="postcode" required autocomplete="postal-code" aria-describedby="bo-postcode-error" inputmode="text" style="text-transform: uppercase;" />
+              <p class="form-error" id="bo-postcode-error" role="alert" hidden>Please enter a valid UK postcode</p>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- §3 Who are you? -->
+        <fieldset class="book-order-form__section">
+          <legend class="book-order-form__legend">About you</legend>
+          <p class="book-order-form__hint">This helps us understand who's buying the book. It won't affect your order.</p>
+
+          <div class="form-group" data-field="buyer_type">
+            <label class="form-label" for="bo-buyer-type">Who are you? <span aria-hidden="true">*</span></label>
+            <select class="form-select" id="bo-buyer-type" name="buyer_type" required aria-describedby="bo-buyer-type-error">
+              <option value="">Please select</option>
+              <option value="individual">Individual / parent / carer</option>
+              <option value="teacher">Teacher or school staff</option>
+              <option value="school_leader">School leader</option>
+              <option value="commissioner">Education commissioner / LA / trust</option>
+            </select>
+            <p class="form-error" id="bo-buyer-type-error" role="alert" hidden>Please select an option</p>
+          </div>
+
+          <!-- School name — visible for teacher + school_leader -->
+          <div class="form-group conditional-field" id="field-school-name" data-field="school_name" hidden>
+            <label class="form-label" for="bo-school-name">School name <span aria-hidden="true">*</span></label>
+            <input class="form-input" type="text" id="bo-school-name" name="school_name" autocomplete="organization" aria-describedby="bo-school-name-error" />
+            <p class="form-error" id="bo-school-name-error" role="alert" hidden>Please enter your school name</p>
+          </div>
+
+          <!-- Org name — visible for commissioner -->
+          <div class="form-group conditional-field" id="field-org-name" data-field="org_name" hidden>
+            <label class="form-label" for="bo-org-name">Organisation name <span aria-hidden="true">*</span></label>
+            <input class="form-input" type="text" id="bo-org-name" name="org_name" autocomplete="organization" aria-describedby="bo-org-name-error" />
+            <p class="form-error" id="bo-org-name-error" role="alert" hidden>Please enter your organisation name</p>
+          </div>
+
+          <!-- Role — visible for school_leader + commissioner -->
+          <div class="form-group conditional-field" id="field-role" data-field="role" hidden>
+            <label class="form-label" for="bo-role">Your role</label>
+            <input class="form-input" type="text" id="bo-role" name="role" placeholder="e.g. Head teacher, SENCO, Director of Education" />
+          </div>
+
+          <!-- Key stage / subject — visible for teacher -->
+          <div class="form-group conditional-field" id="field-key-stage" data-field="key_stage" hidden>
+            <label class="form-label" for="bo-key-stage">Key stage or subject</label>
+            <input class="form-input" type="text" id="bo-key-stage" name="key_stage" placeholder="e.g. KS3 PSHE, Year 9 science" />
+          </div>
+
+          <!-- Bulk / sessions interest — visible for school_leader + commissioner -->
+          <div class="conditional-field" id="field-interested" hidden>
+            <label class="book-order-form__checkbox-label">
+              <input class="book-order-form__checkbox" type="checkbox" id="bo-interested" name="interested_in_more" value="true" />
+              <span id="interested-label-text">Interested in bulk copies or RSE sessions?</span>
+            </label>
+          </div>
+
+          <!-- Contact preference — visible when interested checkbox ticked -->
+          <div class="form-group conditional-field" id="field-contact-pref" hidden>
+            <label class="form-label" for="bo-contact-pref">Best way to reach you</label>
+            <input class="form-input" type="text" id="bo-contact-pref" name="contact_pref" placeholder="Phone number or email address" />
+            <p class="form-hint">So we can get back to you directly.</p>
+          </div>
+        </fieldset>
+
+        <div class="book-order-form__footer">
+          <button type="submit" class="btn btn--std btn--primary" id="bo-submit">
+            Continue to payment
+          </button>
+          <p class="book-order-form__secure-note">You'll be taken to Stripe to pay securely. £36.99 · Free UK delivery.</p>
+        </div>
+      </form>
+
+      <!-- Success state (briefly shown before redirect) -->
+      <div class="book-order-redirect" id="book-order-redirect" hidden>
+        <div class="book-order-redirect__card">
+          <p class="book-order-redirect__text">Details saved — taking you to checkout…</p>
+        </div>
+      </div>
+
+      <!-- Error state -->
+      <div class="book-order-error-banner" id="book-order-error" hidden>
+        <div class="alert alert--error">
+          <div class="alert__content">
+            <div class="alert__title">Something went wrong</div>
+            <div class="alert__body">
+              <p id="book-order-error-msg">We couldn't process your order. Please try again, or <a href="/contact">contact us</a>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  function initBookOrderForm() {
+    const form      = document.getElementById('book-order-form') as HTMLFormElement | null;
+    const submitBtn = document.getElementById('bo-submit') as HTMLButtonElement | null;
+    const redirectEl = document.getElementById('book-order-redirect');
+    const errorEl   = document.getElementById('book-order-error');
+    const errorMsg  = document.getElementById('book-order-error-msg');
+    if (!form || !submitBtn || !redirectEl || !errorEl) return;
+
+    const buyerTypeSelect  = document.getElementById('bo-buyer-type') as HTMLSelectElement;
+    const interestedCheck  = document.getElementById('bo-interested') as HTMLInputElement;
+    const interestedLabel  = document.getElementById('interested-label-text');
+
+    const fieldSchoolName  = document.getElementById('field-school-name');
+    const fieldOrgName     = document.getElementById('field-org-name');
+    const fieldRole        = document.getElementById('field-role');
+    const fieldKeyStage    = document.getElementById('field-key-stage');
+    const fieldInterested  = document.getElementById('field-interested');
+    const fieldContactPref = document.getElementById('field-contact-pref');
+
+    const schoolNameInput  = document.getElementById('bo-school-name') as HTMLInputElement;
+    const orgNameInput     = document.getElementById('bo-org-name') as HTMLInputElement;
+
+    function updateConditionalFields() {
+      const type = buyerTypeSelect?.value ?? '';
+
+      const showSchool     = type === 'teacher' || type === 'school_leader';
+      const showOrg        = type === 'commissioner';
+      const showRole       = type === 'school_leader' || type === 'commissioner';
+      const showKeyStage   = type === 'teacher';
+      const showInterested = type === 'school_leader' || type === 'commissioner';
+
+      setVisible(fieldSchoolName, showSchool);
+      setVisible(fieldOrgName,    showOrg);
+      setVisible(fieldRole,       showRole);
+      setVisible(fieldKeyStage,   showKeyStage);
+      setVisible(fieldInterested, showInterested);
+
+      // Required attrs
+      if (schoolNameInput) schoolNameInput.required = showSchool;
+      if (orgNameInput)    orgNameInput.required    = showOrg;
+
+      // Update interest label copy
+      if (interestedLabel) {
+        interestedLabel.textContent = type === 'commissioner'
+          ? 'Interested in bulk orders or training programmes?'
+          : 'Interested in bulk copies or RSE sessions?';
+      }
+
+      // Reset contact pref if section is hidden
+      if (!showInterested && interestedCheck) {
+        interestedCheck.checked = false;
+      }
+      updateContactPref();
+    }
+
+    function updateContactPref() {
+      const type = buyerTypeSelect?.value ?? '';
+      const showInterested = type === 'school_leader' || type === 'commissioner';
+      const show = showInterested && interestedCheck?.checked;
+      setVisible(fieldContactPref, !!show);
+    }
+
+    function setVisible(el: HTMLElement | null, visible: boolean) {
+      if (!el) return;
+      el.hidden = !visible;
+    }
+
+    buyerTypeSelect?.addEventListener('change', updateConditionalFields);
+    interestedCheck?.addEventListener('change', updateContactPref);
+
+    // Postcode uppercase as user types
+    const postcodeInput = document.getElementById('bo-postcode') as HTMLInputElement | null;
+    postcodeInput?.addEventListener('input', () => {
+      const pos = postcodeInput.selectionStart;
+      postcodeInput.value = postcodeInput.value.toUpperCase();
+      postcodeInput.setSelectionRange(pos, pos);
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorEl.hidden = true;
+
+      // Clear previous errors
+      form.querySelectorAll('.form-group--error').forEach((g) => g.classList.remove('form-group--error'));
+      form.querySelectorAll('.form-error').forEach((el) => ((el as HTMLElement).hidden = true));
+
+      const data = new FormData(form);
+      let valid = true;
+
+      function requireField(fieldName: string, errorId: string) {
+        const val = (data.get(fieldName) as string || '').trim();
+        if (!val) {
+          const group = form.querySelector(`[data-field="${fieldName}"]`);
+          if (group) {
+            group.classList.add('form-group--error');
+            const err = document.getElementById(errorId);
+            if (err) err.hidden = false;
+          }
+          valid = false;
+        }
+      }
+
+      requireField('name',          'bo-name-error');
+      requireField('email',         'bo-email-error');
+      requireField('address_line1', 'bo-addr1-error');
+      requireField('city',          'bo-city-error');
+      requireField('postcode',      'bo-postcode-error');
+      requireField('buyer_type',    'bo-buyer-type-error');
+
+      // Email format
+      const email = (data.get('email') as string || '').trim();
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        const group = form.querySelector('[data-field="email"]');
+        group?.classList.add('form-group--error');
+        const err = document.getElementById('bo-email-error');
+        if (err) { err.textContent = 'Please enter a valid email address'; err.hidden = false; }
+        valid = false;
+      }
+
+      // Conditional required fields
+      const buyerType = (data.get('buyer_type') as string || '');
+      if ((buyerType === 'teacher' || buyerType === 'school_leader') && !(data.get('school_name') as string || '').trim()) {
+        requireField('school_name', 'bo-school-name-error');
+      }
+      if (buyerType === 'commissioner' && !(data.get('org_name') as string || '').trim()) {
+        requireField('org_name', 'bo-org-name-error');
+      }
+
+      if (!valid) return;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Saving details…';
+
+      try {
+        const payload: Record<string, unknown> = {
+          name:          (data.get('name') as string).trim(),
+          email:         (data.get('email') as string).trim(),
+          address_line1: (data.get('address_line1') as string).trim(),
+          address_line2: (data.get('address_line2') as string || '').trim(),
+          city:          (data.get('city') as string).trim(),
+          postcode:      (data.get('postcode') as string).trim(),
+          buyer_type:    buyerType,
+          school_name:   (data.get('school_name') as string || '').trim(),
+          org_name:      (data.get('org_name') as string || '').trim(),
+          role:          (data.get('role') as string || '').trim(),
+          key_stage:     (data.get('key_stage') as string || '').trim(),
+          interested_in_more: data.get('interested_in_more') === 'true',
+          contact_pref:  (data.get('contact_pref') as string || '').trim(),
+        };
+
+        const response = await fetch('/api/book-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        const result = await response.json() as { stripeUrl?: string; error?: string };
+
+        if (response.ok && result.stripeUrl) {
+          form.hidden = true;
+          redirectEl.hidden = false;
+          const prefillEmail = encodeURIComponent((payload.email as string) || '');
+          const dest = prefillEmail ? `${result.stripeUrl}?prefilled_email=${prefillEmail}` : result.stripeUrl;
+          window.location.href = dest;
+        } else {
+          throw new Error(result.error || 'Unknown error');
+        }
+      } catch (err) {
+        errorEl.hidden = false;
+        if (errorMsg && err instanceof Error && err.message !== 'Unknown error') {
+          errorMsg.innerHTML = `${err.message} — or <a href="/contact">contact us</a>.`;
+        }
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Continue to payment';
+      }
+    });
+  }
+
+  initBookOrderForm();
+  document.addEventListener('astro:after-swap', initBookOrderForm);
+</script>
+
+<style>
+  .book-order {
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+    min-height: 60vh;
+  }
+
+  .book-order__outer {
+    max-width: var(--container-max-prose);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .book-order__header {
+    margin-bottom: var(--space-global-xl);
+  }
+
+  .book-order__back {
+    display: inline-flex;
+    font-size: var(--text-card-size-body);
+    margin-bottom: var(--space-global-md);
+  }
+
+  .book-order__title {
+    font-size: var(--text-display-size-h2);
+    font-weight: var(--heading-ota-weight-h1, 700);
+    line-height: var(--lh-heading);
+    color: var(--text-ota-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .book-order__intro {
+    font-size: var(--text-prose-size-body);
+    color: var(--text-ota-muted);
+    margin: 0;
+  }
+
+  /* Form structure */
+  .book-order-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-xl);
+  }
+
+  .book-order-form__section {
+    border: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-md);
+  }
+
+  .book-order-form__legend {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h3);
+    font-weight: var(--heading-ota-weight-h2, 700);
+    color: var(--text-ota-heading);
+    margin-bottom: var(--space-global-sm);
+    padding: 0;
+    float: left;
+    width: 100%;
+  }
+
+  .book-order-form__legend-note {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-regular);
+    color: var(--text-ota-muted);
+  }
+
+  .book-order-form__hint {
+    font-size: var(--text-card-size-body);
+    color: var(--text-ota-muted);
+    margin: 0;
+  }
+
+  .book-order-form__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-global-md);
+  }
+
+  /* Shared form primitives (mirrors EnquiryForm) */
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .form-label {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-heading);
+  }
+
+  .form-label span {
+    color: var(--state-error);
+  }
+
+  .form-input,
+  .form-select {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body);
+    padding: 0.625rem 0.75rem;
+    background: var(--bg-surface);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    transition: border-color var(--transition-duration) var(--transition-easing);
+  }
+
+  .form-input:focus,
+  .form-select:focus {
+    outline: 2px solid var(--brand-accent);
+    outline-offset: 2px;
+    border-color: var(--brand-accent);
+  }
+
+  .form-group--error .form-input,
+  .form-group--error .form-select {
+    border-color: var(--state-error);
+  }
+
+  .form-error {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    color: var(--state-error);
+    margin: 0;
+  }
+
+  .form-hint {
+    font-size: var(--text-card-size-body);
+    color: var(--text-ota-muted);
+    margin: 0;
+  }
+
+  /* Checkbox */
+  .book-order-form__checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-global-sm);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body);
+    cursor: pointer;
+  }
+
+  .book-order-form__checkbox {
+    width: 1.125rem;
+    height: 1.125rem;
+    accent-color: var(--brand-accent);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  /* Footer */
+  .book-order-form__footer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-global-sm);
+  }
+
+  .book-order-form__secure-note {
+    font-size: var(--text-card-size-body);
+    color: var(--text-ota-muted);
+    margin: 0;
+  }
+
+  /* Redirect / error states */
+  .book-order-redirect {
+    margin-top: var(--space-global-xl);
+  }
+
+  .book-order-redirect__card {
+    padding: var(--space-global-lg);
+    background: var(--state-success-soft);
+    border-radius: var(--radius-lg);
+    text-align: center;
+  }
+
+  .book-order-redirect__text {
+    font-size: var(--text-prose-size-body);
+    color: var(--state-success-text);
+    margin: 0;
+  }
+
+  .book-order-error-banner {
+    margin-top: var(--space-global-lg);
+  }
+
+  @media (max-width: 480px) {
+    /* 480px ≈ --breakpoint-xs */
+    .book-order-form__row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

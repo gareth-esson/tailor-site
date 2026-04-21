@@ -1,0 +1,114 @@
+---
+/**
+ * Book order confirmed [B11-confirmed] — /book/order-confirmed
+ * Stripe success URL landing page. Shown after payment completes.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Order confirmed — Okay to Ask Book"
+  description="Your order for the Okay to Ask book has been placed. Thank you."
+  canonicalPath="/book/order-confirmed"
+  layer="ota"
+>
+  <section class="order-confirmed" aria-labelledby="confirmed-heading">
+    <div class="order-confirmed__outer">
+
+      <div class="order-confirmed__card">
+        <div class="order-confirmed__icon" aria-hidden="true">✓</div>
+        <h1 id="confirmed-heading" class="order-confirmed__title">Order confirmed</h1>
+        <p class="order-confirmed__body">
+          Thank you — your payment has gone through and your copy of the Okay to Ask book is on its way.
+          You'll receive a receipt from Stripe shortly.
+        </p>
+        <p class="order-confirmed__body">
+          We aim to dispatch within 2 working days. If you have any questions about your order, get in touch at <a class="order-confirmed__link" href="mailto:otabook@tailoreducation.org.uk">otabook@tailoreducation.org.uk</a>.
+        </p>
+      </div>
+
+      <div class="order-confirmed__actions">
+        <a href="/questions/" class="btn btn--std btn--primary has-icon-hover">
+          Browse all 152 questions
+        </a>
+        <a href="/" class="btn btn--std btn--tint has-icon-hover">
+          Back to Tailor Education
+        </a>
+      </div>
+
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .order-confirmed {
+    padding: var(--space-struct-y-hero) var(--space-global-gutter);
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+  }
+
+  .order-confirmed__outer {
+    max-width: var(--container-max-prose);
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-xl);
+  }
+
+  .order-confirmed__card {
+    padding: var(--space-global-xl);
+    background: var(--state-success-soft);
+    border-radius: var(--radius-xl);
+    text-align: center;
+  }
+
+  .order-confirmed__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--radius-full);
+    background: var(--state-success);
+    color: var(--bg-surface);
+    font-size: var(--text-display-size-h3);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--space-global-md);
+  }
+
+  .order-confirmed__title {
+    font-size: var(--text-display-size-h2);
+    font-weight: var(--heading-ota-weight-h1, 700);
+    line-height: var(--lh-heading);
+    color: var(--state-success-text);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .order-confirmed__body {
+    font-size: var(--text-prose-size-body);
+    color: var(--state-success-text);
+    line-height: var(--lh-body);
+    margin: 0 0 var(--space-global-sm);
+    max-width: var(--container-max-text-col);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .order-confirmed__body:last-child {
+    margin-bottom: 0;
+  }
+
+  .order-confirmed__link {
+    color: var(--state-success-text);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .order-confirmed__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-global-md);
+    justify-content: center;
+  }
+</style>
