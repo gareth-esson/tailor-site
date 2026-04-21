@@ -463,55 +463,7 @@ const jsonLd =
     quotes: "\201C" "\201D" "\2018" "\2019";
   }
 
-  .testimonial-card__quote {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-prose-size-body);
-    font-weight: var(--font-weight-regular);
-    line-height: var(--lh-prose);
-    color: var(--text-body);
-    margin: 0 0 var(--space-global-sm);
-  }
-  .testimonial-card__quote::before { content: open-quote; }
-  .testimonial-card__quote::after  { content: close-quote; }
-
-  .testimonial-card__footer {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-global-xs);
-  }
-
-  .testimonial-card__attribution {
-    display: flex;
-    flex-direction: column;
-    gap: 0.125rem; /* --space-global-3xs unavailable — raw value */
-    font-style: normal; /* override browser <cite> italic */
-  }
-
-  .testimonial-card__name {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-card-size-body);
-    font-weight: var(--font-weight-semibold);
-    color: var(--text-heading);
-  }
-  .testimonial-card__role,
-  .testimonial-card__org {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-card-size-body);
-    font-weight: var(--font-weight-regular);
-    color: var(--text-body-muted);
-  }
-
-  .testimonial-card__service-pill {
-    display: inline-block;
-    align-self: flex-start;
-    background: var(--bg-tinted);
-    color: var(--brand-accent-text);
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-card-size-body);
-    font-weight: var(--font-weight-medium);
-    padding: 0.125rem var(--space-global-xs);
-    border-radius: var(--radius-pill);
-  }
+  /* Inner-card typography and layout live in TestimonialCard.astro */
 
   /* -------------------------------------------------------------------- */
   /* §4.4 Empty state (filtered — shown by JS when 0 matches)             */

@@ -21,6 +21,19 @@ const { testimonial, variant = 'card', showServiceTag = variant === 'card' } = A
 const sourceLine = [testimonial.name, testimonial.role, testimonial.organisation]
   .filter(Boolean)
   .join(', ');
+
+const AVATAR_MAP: Record<string, string> = {
+  'Ashley Summercorn':        '/images/avatars/avatar-ashley-summercorn.webp',
+  'Dorothée Boulanger':       '/images/avatars/avatar-dorothee-boulanger.webp',
+  'Natalie Rutstein':         '/images/avatars/avatar-natalie-rutstein.webp',
+  'Phoebe Davis':             '/images/avatars/avatar-phoebe-davis.webp',
+  'Sara Stafford':            '/images/avatars/avatar-sara-stafford.webp',
+  'Valeria Ragni':            '/images/avatars/avatar-valeria-ragni.webp',
+  'Victoria Oladele':         '/images/avatars/avatar-victoria-oladele.webp',
+  'Anonymous workshop participant': '/images/avatars/avatar-pupil.webp',
+};
+
+const avatar = AVATAR_MAP[testimonial.name] ?? null;
 ---
 
 {variant === 'card' ? (
@@ -31,15 +44,20 @@ const sourceLine = [testimonial.name, testimonial.role, testimonial.organisation
   >
     <p class="testimonial-card__quote">{testimonial.quote}</p>
     <footer class="testimonial-card__footer">
-      <cite class="testimonial-card__attribution">
-        <span class="testimonial-card__name">{testimonial.name}</span>
-        {testimonial.role && (
-          <span class="testimonial-card__role">{testimonial.role}</span>
+      <div class="testimonial-card__attribution-row">
+        {avatar && (
+          <img class="testimonial-card__avatar" src={avatar} alt="" aria-hidden="true" width="48" height="48" loading="lazy" />
         )}
-        {testimonial.organisation && (
-          <span class="testimonial-card__org">{testimonial.organisation}</span>
-        )}
-      </cite>
+        <cite class="testimonial-card__attribution">
+          <span class="testimonial-card__name">{testimonial.name}</span>
+          {testimonial.role && (
+            <span class="testimonial-card__role">{testimonial.role}</span>
+          )}
+          {testimonial.organisation && (
+            <span class="testimonial-card__org">{testimonial.organisation}</span>
+          )}
+        </cite>
+      </div>
       {showServiceTag && testimonial.serviceTags[0] && (
         <span class="testimonial-card__service-pill">{testimonial.serviceTags[0]}</span>
       )}
@@ -55,3 +73,69 @@ const sourceLine = [testimonial.name, testimonial.role, testimonial.organisation
     )}
   </>
 )}
+
+<style>
+  .testimonial-card__quote {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-prose);
+    color: var(--text-body);
+    margin: 0 0 var(--space-global-sm);
+  }
+  .testimonial-card__quote::before { content: open-quote; }
+  .testimonial-card__quote::after  { content: close-quote; }
+
+  .testimonial-card__footer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-xs);
+  }
+
+  .testimonial-card__attribution-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-global-sm);
+  }
+
+  .testimonial-card__avatar {
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--radius-pill);
+    flex-shrink: 0;
+    object-fit: cover;
+  }
+
+  .testimonial-card__attribution {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    font-style: normal;
+  }
+
+  .testimonial-card__name {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-heading);
+  }
+  .testimonial-card__role,
+  .testimonial-card__org {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-regular);
+    color: var(--text-body-muted);
+  }
+
+  .testimonial-card__service-pill {
+    display: inline-block;
+    align-self: flex-start;
+    background: var(--bg-tinted);
+    color: var(--brand-accent-text);
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-medium);
+    padding: 0.125rem var(--space-global-xs);
+    border-radius: var(--radius-pill);
+  }
+</style>
