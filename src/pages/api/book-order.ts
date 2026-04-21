@@ -1,20 +1,23 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
+import { createClient } from 'redis';
 
 /**
  * Book order endpoint [B11-order].
  *
- * Captures buyer details via Resend before redirecting to Stripe.
- * Returns { stripeUrl } on success so the client can redirect.
+ * Saves buyer details to Redis under a UUID, then returns the Stripe
+ * URL with client_reference_id={uuid} appended. The actual order email
+ * is sent by /api/stripe-webhook only after payment is confirmed.
  *
- * Defences mirror /api/enquiry: Content-Type gate, body size cap,
- * per-field length limits, CR/LF stripping, in-memory rate limit.
+ * Defences: Content-Type gate, body size cap, per-field length limits,
+ * CR/LF stripping, in-memory rate limit.
  */
 
 const MAX_BODY_BYTES = 8 * 1024;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX_REQUESTS = 5;
+const ORDER_TTL_SECONDS = 60 * 60 * 24; // 24 hours
 
 const rateLimitBuckets = new Map<string, number[]>();
 
@@ -57,12 +60,19 @@ function validateField(
 const VALID_BUYER_TYPES = ['individual', 'teacher', 'school_leader', 'commissioner'] as const;
 type BuyerType = typeof VALID_BUYER_TYPES[number];
 
-const BUYER_TYPE_LABELS: Record<BuyerType, string> = {
-  individual: 'Individual / parent / carer',
-  teacher: 'Teacher or school staff',
-  school_leader: 'School leader',
-  commissioner: 'Education commissioner / LA / trust',
-};
+// Module-level Redis client — reused across warm invocations.
+let redisClient: ReturnType<typeof createClient> | null = null;
+
+async function getRedis() {
+  if (!redisClient) {
+    redisClient = createClient({ url: import.meta.env.REDIS_URL });
+    redisClient.on('error', (err) => console.error('Redis error:', err));
+  }
+  if (!redisClient.isOpen) {
+    await redisClient.connect();
+  }
+  return redisClient;
+}
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
   try {
@@ -91,7 +101,6 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       return json({ error: 'Invalid JSON' }, 400);
     }
 
-    // Core fields — required for everyone
     const name         = validateField(body.name,          { required: true,  max: 120 });
     const email        = validateField(body.email,         { required: true,  max: 254 });
     const addressLine1 = validateField(body.address_line1, { required: true,  max: 200 });
@@ -110,44 +119,32 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       return json({ error: 'Invalid email' }, 400);
     }
 
-    // Validate postcode is vaguely UK-shaped (loose check)
     if (!/^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i.test(postcode)) {
       return json({ error: 'Please enter a valid UK postcode' }, 400);
     }
 
-    // Buyer type
     const rawBuyerType = typeof body.buyer_type === 'string' ? body.buyer_type : '';
     if (!VALID_BUYER_TYPES.includes(rawBuyerType as BuyerType)) {
       return json({ error: 'Invalid buyer type' }, 400);
     }
     const buyerType = rawBuyerType as BuyerType;
 
-    // Conditional fields
-    const schoolName       = validateField(body.school_name,       { required: false, max: 200 });
-    const orgName          = validateField(body.org_name,          { required: false, max: 200 });
-    const role             = validateField(body.role,              { required: false, max: 120 });
-    const keyStage         = validateField(body.key_stage,         { required: false, max: 80  });
-    const contactPref      = validateField(body.contact_pref,      { required: false, max: 200 });
+    const schoolName       = validateField(body.school_name,  { required: false, max: 200 });
+    const orgName          = validateField(body.org_name,     { required: false, max: 200 });
+    const role             = validateField(body.role,         { required: false, max: 120 });
+    const keyStage         = validateField(body.key_stage,    { required: false, max: 80  });
+    const contactPref      = validateField(body.contact_pref, { required: false, max: 200 });
     const interestedInMore = body.interested_in_more === true;
 
     if (schoolName == null || orgName == null || role == null || keyStage == null || contactPref == null) {
       return json({ error: 'Optional field exceeded length limit' }, 400);
     }
 
-    // School name required for teacher / school leader
     if ((buyerType === 'teacher' || buyerType === 'school_leader') && !schoolName) {
       return json({ error: 'School name is required' }, 400);
     }
-
-    // Org name required for commissioner
     if (buyerType === 'commissioner' && !orgName) {
       return json({ error: 'Organisation name is required' }, 400);
-    }
-
-    const resendKey = import.meta.env.RESEND_API_KEY;
-    if (!resendKey) {
-      console.error('RESEND_API_KEY not configured');
-      return json({ error: 'Server configuration error' }, 500);
     }
 
     const stripeUrl = import.meta.env.BOOK_STRIPE_URL;
@@ -156,62 +153,33 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       return json({ error: 'Server configuration error' }, 500);
     }
 
-    // Build email body
-    const addressBlock = [addressLine1, addressLine2, city, postcode.toUpperCase()]
-      .filter(Boolean)
-      .join('\n');
-
-    const lines: (string | null)[] = [
-      `Name: ${name}`,
-      `Email: ${email}`,
-      ``,
-      `--- Shipping address ---`,
-      addressBlock,
-      ``,
-      `--- Buyer profile ---`,
-      `Type: ${BUYER_TYPE_LABELS[buyerType]}`,
-      schoolName  ? `School: ${schoolName}`       : null,
-      orgName     ? `Organisation: ${orgName}`     : null,
-      role        ? `Role: ${role}`                : null,
-      keyStage    ? `Key stage / subject: ${keyStage}` : null,
-    ];
-
-    if (interestedInMore) {
-      lines.push(``, `--- Follow-up interest ---`);
-      if (buyerType === 'school_leader') {
-        lines.push('Interested in: bulk copies / RSE sessions');
-      } else if (buyerType === 'commissioner') {
-        lines.push('Interested in: bulk orders / training programmes');
-      }
-      if (contactPref) {
-        lines.push(`Preferred contact: ${contactPref}`);
-      }
+    if (!import.meta.env.REDIS_URL) {
+      console.error('REDIS_URL not configured');
+      return json({ error: 'Server configuration error' }, 500);
     }
 
-    const emailBody = lines.filter((l) => l !== null).join('\n');
+    // Store order data in Redis — expires after 24 h if payment never completes.
+    const orderId = crypto.randomUUID();
+    const orderData = {
+      name, email,
+      address_line1: addressLine1,
+      address_line2: addressLine2,
+      city, postcode,
+      buyer_type: buyerType,
+      school_name: schoolName,
+      org_name: orgName,
+      role, key_stage: keyStage,
+      interested_in_more: interestedInMore,
+      contact_pref: contactPref,
+    };
 
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${resendKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: 'Okay to Ask Book <noreply@mail.tailoreducation.org.uk>',
-        to: ['otabook@tailoreducation.org.uk'],
-        subject: `New book order — ${name}`,
-        text: emailBody,
-        reply_to: email,
-      }),
-    });
+    const redis = await getRedis();
+    await redis.set(`order:${orderId}`, JSON.stringify(orderData), { EX: ORDER_TTL_SECONDS });
 
-    if (!res.ok) {
-      const err = await res.text();
-      console.error('Resend error:', err);
-      return json({ error: 'Failed to send confirmation' }, 500);
-    }
+    const prefillEmail = encodeURIComponent(email);
+    const dest = `${stripeUrl}?client_reference_id=${orderId}&prefilled_email=${prefillEmail}`;
 
-    return json({ stripeUrl }, 200);
+    return json({ stripeUrl: dest }, 200);
   } catch (err) {
     console.error('Book order API error:', err);
     return json({ error: 'Internal error' }, 500);
