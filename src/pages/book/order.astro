@@ -21,7 +21,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         <h1 id="order-heading" class="book-order__title">Order your copy</h1>
         <p class="book-order__intro">
           Fill in your details below, then you'll be taken to our secure Stripe checkout to pay.
-          Free UK delivery · £14.99
+          Free UK delivery · £36.99
         </p>
       </div>
 
@@ -138,7 +138,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           <button type="submit" class="btn btn--std btn--primary" id="bo-submit">
             Continue to payment
           </button>
-          <p class="book-order-form__secure-note">You'll be taken to Stripe to pay securely. £14.99 · Free UK delivery.</p>
+          <p class="book-order-form__secure-note">You'll be taken to Stripe to pay securely. £36.99 · Free UK delivery.</p>
         </div>
       </form>
 
@@ -327,7 +327,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         if (response.ok && result.stripeUrl) {
           form.hidden = true;
           redirectEl.hidden = false;
-          window.location.href = result.stripeUrl;
+          const prefillEmail = encodeURIComponent((payload.email as string) || '');
+          const dest = prefillEmail ? `${result.stripeUrl}?prefilled_email=${prefillEmail}` : result.stripeUrl;
+          window.location.href = dest;
         } else {
           throw new Error(result.error || 'Unknown error');
         }
