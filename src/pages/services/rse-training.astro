@@ -8,7 +8,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
 import ServiceTopicsStrip from '../../components/ServiceTopicsStrip.astro';
-import { getBlogPosts } from '../../lib/content';
+import { getBlogPosts, getTestimonialsByService } from '../../lib/content';
 
 // --- Data ----------------------------------------------------------
 const slug = 'rse-training';
@@ -44,9 +44,11 @@ const featureCards = [
   { title: 'CPD certification and resource pack', description: 'All attendees receive CPD accreditation and a written resource pack to reference after the training.' },
 ];
 
-const testimonialQuote =
-  'Easily the most practical CPD our department has ever had. Staff left with actual phrases and scripts, not just a warm feeling about the importance of RSE. Three months on, our team is still referencing it.';
-const testimonialSource = 'PSHE Coordinator, MAT';
+const [proofTestimonial] = await getTestimonialsByService('RSE training');
+const testimonialQuote = proofTestimonial?.quote ?? null;
+const testimonialSource = proofTestimonial
+  ? [proofTestimonial.name, proofTestimonial.role, proofTestimonial.organisation].filter(Boolean).join(', ')
+  : null;
 
 const featuredTopicSlugs = [
   'consent',

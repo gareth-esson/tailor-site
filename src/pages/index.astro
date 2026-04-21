@@ -7,11 +7,13 @@
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import QuestionCard from '../components/QuestionCard.astro';
-import { getQuestions, getLandingPages } from '../lib/content';
+import { getQuestions, getLandingPages, getTestimonials } from '../lib/content';
 import { getTopicIllustrationPath } from '../lib/topic-illustrations';
 import type { QuestionRef } from '../lib/types';
 
 const allQuestions = await getQuestions();
+const allTestimonials = await getTestimonials();
+const homeTestimonial = allTestimonials[0] ?? null;
 
 // Featured questions: pick 3 answered questions with post-it scans
 const answered = allQuestions.filter((q) => q.body.length > 0 && q.hasPostItScan);
@@ -216,19 +218,23 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
         </div>
       </div>
 
+      {homeTestimonial && (
       <div class="home-trust__quote-wrap">
         <blockquote class="home-trust__quote">
           <p class="home-trust__quote-text">
-            "Tailor Education's content is some of the best RSE material I've seen. Thoughtful, inclusive, and genuinely useful."
+            "{homeTestimonial.quote}"
           </p>
           <div class="home-trust__attribution">
-            <cite class="home-trust__cite">PSHE Coordinator</cite>
+            <cite class="home-trust__cite">
+              {[homeTestimonial.name, homeTestimonial.role, homeTestimonial.organisation].filter(Boolean).join(', ')}
+            </cite>
           </div>
         </blockquote>
         <div class="home-trust__action">
           <a href="/our-approach" class="btn btn--std btn--tint has-icon-hover">See our approach</a>
         </div>
       </div>
+      )}
     </div>
   </section>
 

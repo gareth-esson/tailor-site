@@ -11,7 +11,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
 import ServiceTopicsStrip from '../../components/ServiceTopicsStrip.astro';
-import { getBlogPosts } from '../../lib/content';
+import { getBlogPosts, getTestimonialsByService } from '../../lib/content';
 
 // --- Data ----------------------------------------------------------
 const slug = 'rse-for-special-schools';
@@ -45,9 +45,11 @@ const featureCards = [
   { title: 'Sensitive topics handled with expertise', description: 'Puberty, personal safety, privacy, and hygiene approached with care — easing anxieties for staff while giving pupils the support they need.' },
 ];
 
-const testimonialQuote =
-  'You\'ve broken a wall of silence here at the academy and students are certainly more interested in opening up and seeking help and support in this area. The students even gave feedback that they wanted you to return and talk about other issues.';
-const testimonialSource = 'Victoria Oladele, Careers First Academy';
+const [proofTestimonial] = await getTestimonialsByService('RSE delivery');
+const testimonialQuote = proofTestimonial?.quote ?? null;
+const testimonialSource = proofTestimonial
+  ? [proofTestimonial.name, proofTestimonial.role, proofTestimonial.organisation].filter(Boolean).join(', ')
+  : null;
 
 const featuredTopicSlugs = [
   'personal-safety',

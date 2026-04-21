@@ -6,7 +6,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
 import ServiceTopicsStrip from '../../components/ServiceTopicsStrip.astro';
-import { getBlogPosts } from '../../lib/content';
+import { getBlogPosts, getTestimonialsByService } from '../../lib/content';
 
 // --- Data ----------------------------------------------------------
 const slug = 'rse-for-secondary-schools';
@@ -40,9 +40,11 @@ const featureCards = [
   { title: 'Post-session staff debrief', description: 'Written summary with talking points and follow-up recommendations for form tutors and pastoral staff.' },
 ];
 
-const testimonialQuote =
-  'The sessions were exactly what our students needed. Delivered with sensitivity, honesty, and real expertise — the kind of RSE we want but can\'t always deliver ourselves.';
-const testimonialSource = 'Head of PSHE, secondary school';
+const [proofTestimonial] = await getTestimonialsByService('RSE delivery');
+const testimonialQuote = proofTestimonial?.quote ?? null;
+const testimonialSource = proofTestimonial
+  ? [proofTestimonial.name, proofTestimonial.role, proofTestimonial.organisation].filter(Boolean).join(', ')
+  : null;
 
 const featuredTopicSlugs = [
   'consent',
