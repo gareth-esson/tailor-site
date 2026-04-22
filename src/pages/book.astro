@@ -129,7 +129,7 @@ const testimonial = null as { quote: string; cite: string } | null;
           <p class="book-purchase__price">£{bookPrice}</p>
           <a
             href="/book/order"
-            class="btn btn--std btn--primary has-icon-hover book-purchase__btn"
+            class="btn btn--std btn--primary has-icon-hover"
             aria-label="Buy the Okay to Ask book"
           >
             Buy the book
@@ -138,7 +138,7 @@ const testimonial = null as { quote: string; cite: string } | null;
       ) : (
         <Fragment>
           <p class="book-purchase__price-coming">Coming soon — £{bookPrice}</p>
-          <a href="/contact?service=Other" class="btn btn--std btn--primary has-icon-hover book-purchase__btn">
+          <a href="/contact?service=Other" class="btn btn--std btn--primary has-icon-hover">
             Register your interest
           </a>
         </Fragment>
@@ -389,9 +389,7 @@ const testimonial = null as { quote: string; cite: string } | null;
     margin: 0 0 var(--space-global-md);
   }
 
-  .book-purchase__btn {
-    padding: var(--space-global-md) var(--space-global-xl);
-  }
+
 
   .book-purchase__info {
     font-size: var(--text-card-size-body);
