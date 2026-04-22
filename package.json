@@ -4,8 +4,8 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && npx pagefind --site dist/client --output-path dist/client/pagefind",
-    "build:index": "npx pagefind --site dist/client --output-path dist/client/pagefind",
+    "build": "astro build && npx pagefind --site .vercel/output/static --output-path .vercel/output/static/pagefind",
+    "build:index": "npx pagefind --site .vercel/output/static --output-path .vercel/output/static/pagefind",
     "preview": "astro preview",
     "astro": "astro"
   },
