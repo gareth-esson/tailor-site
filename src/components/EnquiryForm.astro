@@ -3,6 +3,7 @@
  * Enquiry form [E1].
  * Service type can be pre-selected via URL parameter (?service=...).
  * States: empty, partially filled, validation errors, submitting, success.
+ * School field: combobox against GIAS register; must pick from list or skip.
  */
 interface Props {
   /** Pre-selected service from URL param */
@@ -51,17 +52,61 @@ const serviceOptions = [
   </div>
 
   <div class="form-group" data-field="school">
-    <label class="form-label" for="enquiry-school">School name <span aria-hidden="true">*</span></label>
-    <input
-      class="form-input"
-      type="text"
-      id="enquiry-school"
-      name="school"
-      required
-      autocomplete="organization"
-      aria-describedby="enquiry-school-error"
-    />
-    <p class="form-error" id="enquiry-school-error" role="alert" hidden>Please enter your school name</p>
+    <label class="form-label" for="enquiry-school-input">
+      School name <span aria-hidden="true">*</span>
+    </label>
+
+    <!-- data-state: idle | searching | selected | skipped -->
+    <div class="school-combobox" id="school-combobox" data-state="idle">
+
+      <div class="school-combobox__search-wrap">
+        <input
+          class="form-input school-combobox__input"
+          type="text"
+          id="enquiry-school-input"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="Start typing your school name…"
+          role="combobox"
+          aria-autocomplete="list"
+          aria-haspopup="listbox"
+          aria-controls="school-combobox-list"
+          aria-expanded="false"
+        />
+        <ul
+          class="school-combobox__list"
+          id="school-combobox-list"
+          role="listbox"
+          aria-label="School suggestions"
+        ></ul>
+      </div>
+
+      <div class="school-combobox__selected-wrap">
+        <p class="school-combobox__selected-name" id="school-selected-name"></p>
+        <button type="button" class="school-combobox__action-btn" id="school-change-btn">
+          Change school
+        </button>
+      </div>
+
+      <div class="school-combobox__skipped-wrap">
+        <p class="school-combobox__skipped-label">No school selected</p>
+        <button type="button" class="school-combobox__action-btn" id="school-unskip-btn">
+          Search again
+        </button>
+      </div>
+
+      <button type="button" class="school-combobox__skip-btn" id="school-skip-btn">
+        Skip — school not in England or not found
+      </button>
+    </div>
+
+    <!-- Hidden fields populated by combobox JS -->
+    <input type="hidden" id="enquiry-school-name" name="school" value="">
+    <input type="hidden" id="enquiry-school-urn" name="school_urn" value="">
+
+    <p class="form-error" id="enquiry-school-error" role="alert" hidden>
+      Please select your school or click Skip
+    </p>
   </div>
 
   <div class="form-group" data-field="service">
@@ -143,12 +188,183 @@ const serviceOptions = [
 </div>
 
 <script>
+  // ── School combobox ────────────────────────────────────────────────────────
+
+  function initSchoolCombobox() {
+    const combobox    = document.getElementById('school-combobox');
+    const input       = document.getElementById('enquiry-school-input') as HTMLInputElement | null;
+    const list        = document.getElementById('school-combobox-list') as HTMLUListElement | null;
+    const selectedEl  = document.getElementById('school-selected-name');
+    const changeBtn   = document.getElementById('school-change-btn');
+    const skipBtn     = document.getElementById('school-skip-btn');
+    const unskipBtn   = document.getElementById('school-unskip-btn');
+    const hiddenName  = document.getElementById('enquiry-school-name') as HTMLInputElement | null;
+    const hiddenUrn   = document.getElementById('enquiry-school-urn') as HTMLInputElement | null;
+
+    if (!combobox || !input || !list || !selectedEl || !changeBtn || !skipBtn || !unskipBtn || !hiddenName || !hiddenUrn) return;
+
+    type SchoolResult = { urn: number; name: string; local_authority: string; phase: string };
+
+    let debounceTimer: number | null = null;
+    let activeIndex = -1;
+    let results: SchoolResult[] = [];
+
+    function setState(state: 'idle' | 'searching' | 'selected' | 'skipped') {
+      combobox.setAttribute('data-state', state);
+    }
+
+    function closeList() {
+      list.innerHTML = '';
+      input.setAttribute('aria-expanded', 'false');
+      input.removeAttribute('aria-activedescendant');
+      activeIndex = -1;
+      results = [];
+    }
+
+    function renderList(items: SchoolResult[]) {
+      results = items;
+      list.innerHTML = '';
+      if (items.length === 0) {
+        input.setAttribute('aria-expanded', 'false');
+        return;
+      }
+      items.forEach((school, i) => {
+        const li = document.createElement('li');
+        li.id = `school-option-${i}`;
+        li.className = 'school-combobox__option';
+        li.setAttribute('role', 'option');
+        li.setAttribute('aria-selected', 'false');
+
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'school-combobox__option-name';
+        nameSpan.textContent = school.name;
+
+        const metaSpan = document.createElement('span');
+        metaSpan.className = 'school-combobox__option-meta';
+        metaSpan.textContent = [school.local_authority, school.phase].filter(Boolean).join(' · ');
+
+        li.appendChild(nameSpan);
+        li.appendChild(metaSpan);
+
+        li.addEventListener('mousedown', (e) => {
+          e.preventDefault(); // keep focus on input so blur doesn't fire first
+          selectSchool(school);
+        });
+        list.appendChild(li);
+      });
+      input.setAttribute('aria-expanded', 'true');
+      activeIndex = -1;
+    }
+
+    function selectSchool(school: SchoolResult) {
+      hiddenName.value = school.name;
+      hiddenUrn.value = String(school.urn);
+      selectedEl.textContent = school.local_authority
+        ? `${school.name} — ${school.local_authority}`
+        : school.name;
+      setState('selected');
+      closeList();
+      input.value = '';
+    }
+
+    function updateActiveItem() {
+      const items = list.querySelectorAll('.school-combobox__option');
+      items.forEach((item, i) => {
+        item.classList.toggle('school-combobox__option--active', i === activeIndex);
+        item.setAttribute('aria-selected', i === activeIndex ? 'true' : 'false');
+      });
+      if (activeIndex >= 0) {
+        input.setAttribute('aria-activedescendant', `school-option-${activeIndex}`);
+      } else {
+        input.removeAttribute('aria-activedescendant');
+      }
+    }
+
+    input.addEventListener('input', () => {
+      const q = input.value.trim();
+      if (debounceTimer !== null) clearTimeout(debounceTimer);
+
+      if (q.length < 3) {
+        closeList();
+        setState(q.length > 0 ? 'searching' : 'idle');
+        return;
+      }
+
+      setState('searching');
+
+      debounceTimer = window.setTimeout(async () => {
+        try {
+          const res = await fetch(`/api/schools?q=${encodeURIComponent(q)}`);
+          if (!res.ok) return;
+          const data: SchoolResult[] = await res.json();
+          renderList(data);
+        } catch {
+          // fail silently — skip link is always available
+        }
+      }, 300);
+    });
+
+    input.addEventListener('keydown', (e) => {
+      const items = list.querySelectorAll('.school-combobox__option');
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (items.length === 0) return;
+        activeIndex = Math.min(activeIndex + 1, items.length - 1);
+        updateActiveItem();
+        (items[activeIndex] as HTMLElement).scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (items.length === 0) return;
+        activeIndex = Math.max(activeIndex - 1, -1);
+        updateActiveItem();
+        if (activeIndex >= 0) (items[activeIndex] as HTMLElement).scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (activeIndex >= 0 && results[activeIndex]) {
+          selectSchool(results[activeIndex]);
+        }
+      } else if (e.key === 'Escape') {
+        closeList();
+        setState('idle');
+      }
+    });
+
+    input.addEventListener('blur', () => {
+      // Delay so mousedown on a list option fires before blur closes the list
+      setTimeout(closeList, 150);
+    });
+
+    changeBtn.addEventListener('click', () => {
+      hiddenName.value = '';
+      hiddenUrn.value = '';
+      setState('idle');
+      input.focus();
+    });
+
+    skipBtn.addEventListener('click', () => {
+      hiddenName.value = '';
+      hiddenUrn.value = '';
+      closeList();
+      setState('skipped');
+    });
+
+    unskipBtn.addEventListener('click', () => {
+      setState('idle');
+      input.focus();
+    });
+  }
+
+  // ── Enquiry form ───────────────────────────────────────────────────────────
+
   function initEnquiryForm() {
-    const form = document.getElementById('enquiry-form') as HTMLFormElement | null;
+    const form      = document.getElementById('enquiry-form') as HTMLFormElement | null;
     const successEl = document.getElementById('enquiry-success');
-    const errorEl = document.getElementById('enquiry-error');
+    const errorEl   = document.getElementById('enquiry-error');
     const submitBtn = document.getElementById('enquiry-submit') as HTMLButtonElement | null;
     if (!form || !successEl || !errorEl || !submitBtn) return;
+
+    initSchoolCombobox();
 
     // Pre-fill service from URL param
     const params = new URLSearchParams(window.location.search);
@@ -184,12 +400,11 @@ const serviceOptions = [
       form.querySelectorAll('.form-group--error').forEach((g) => g.classList.remove('form-group--error'));
       form.querySelectorAll('.form-error').forEach((e) => ((e as HTMLElement).hidden = true));
 
-      // Validate
       let valid = true;
       const data = new FormData(form);
 
-      const requiredFields = ['name', 'email', 'school', 'service'];
-      for (const field of requiredFields) {
+      // Standard required fields
+      for (const field of ['name', 'email', 'service'] as const) {
         const value = (data.get(field) as string || '').trim();
         if (!value) {
           const group = form.querySelector(`[data-field="${field}"]`);
@@ -200,6 +415,19 @@ const serviceOptions = [
           }
           valid = false;
         }
+      }
+
+      // School combobox: must be selected or explicitly skipped
+      const combobox = document.getElementById('school-combobox');
+      const schoolState = combobox?.getAttribute('data-state');
+      if (schoolState !== 'selected' && schoolState !== 'skipped') {
+        const group = form.querySelector('[data-field="school"]');
+        if (group) {
+          group.classList.add('form-group--error');
+          const err = group.querySelector('.form-error') as HTMLElement;
+          if (err) err.hidden = false;
+        }
+        valid = false;
       }
 
       // Email format check
@@ -216,9 +444,10 @@ const serviceOptions = [
 
       if (!valid) return;
 
-      // Submit
       submitBtn.disabled = true;
       submitBtn.textContent = 'Sending\u2026';
+
+      const schoolUrn = (data.get('school_urn') as string || '').trim();
 
       try {
         const response = await fetch('/api/enquiry', {
@@ -227,7 +456,8 @@ const serviceOptions = [
           body: JSON.stringify({
             name: data.get('name'),
             email: data.get('email'),
-            school: data.get('school'),
+            school: data.get('school') || null,
+            school_urn: schoolUrn ? Number(schoolUrn) : null,
             service: data.get('service'),
             keystage: data.get('keystage'),
             timing: data.get('timing'),
@@ -312,12 +542,173 @@ const serviceOptions = [
     border-color: var(--state-error);
   }
 
+  .form-group--error .school-combobox__input {
+    border-color: var(--state-error);
+  }
+
   .form-error {
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-card-size-body);
     color: var(--state-error);
     margin: 0;
   }
+
+  /* ── School combobox ─────────────────────────────────────────────────────── */
+
+  .school-combobox {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-xs);
+  }
+
+  /* Search wrap: relative so the dropdown can be absolutely positioned */
+  .school-combobox__search-wrap {
+    position: relative;
+  }
+
+  .school-combobox__input {
+    width: 100%;
+  }
+
+  /* Dropdown list */
+  .school-combobox__list {
+    position: absolute;
+    top: calc(100% + 2px);
+    left: 0;
+    right: 0;
+    z-index: 100;
+    margin: 0;
+    padding: var(--space-global-xs) 0;
+    list-style: none;
+    background: var(--bg-surface);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
+    max-height: 16rem;
+    overflow-y: auto;
+  }
+
+  /* List items are JS-injected, so these must be :global() */
+  :global(.school-combobox__option) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+  }
+
+  :global(.school-combobox__option:hover),
+  :global(.school-combobox__option--active) {
+    background: var(--brand-accent-soft);
+  }
+
+  :global(.school-combobox__option-name) {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-heading);
+  }
+
+  :global(.school-combobox__option-meta) {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    color: var(--text-muted);
+  }
+
+  /* Selected state display */
+  .school-combobox__selected-wrap {
+    display: none;
+    align-items: center;
+    gap: var(--space-global-sm);
+    padding: 0.625rem 0.75rem;
+    background: var(--brand-accent-soft);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+  }
+
+  .school-combobox__selected-name {
+    flex: 1;
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-heading);
+    margin: 0;
+  }
+
+  /* Skipped state display */
+  .school-combobox__skipped-wrap {
+    display: none;
+    align-items: center;
+    gap: var(--space-global-sm);
+    padding: 0.625rem 0.75rem;
+    background: var(--bg-surface-alt);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+  }
+
+  .school-combobox__skipped-label {
+    flex: 1;
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  /* Action button (Change / Search again) */
+  .school-combobox__action-btn {
+    flex-shrink: 0;
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    color: var(--link-default);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .school-combobox__action-btn:hover {
+    color: var(--brand-accent-strong);
+  }
+
+  /* Skip link */
+  .school-combobox__skip-btn {
+    align-self: flex-start;
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .school-combobox__skip-btn:hover {
+    color: var(--text-body);
+  }
+
+  /* ── Combobox state visibility ───────────────────────────────────────────── */
+
+  .school-combobox[data-state="selected"] .school-combobox__search-wrap,
+  .school-combobox[data-state="selected"] .school-combobox__skip-btn,
+  .school-combobox[data-state="skipped"] .school-combobox__search-wrap,
+  .school-combobox[data-state="skipped"] .school-combobox__skip-btn {
+    display: none;
+  }
+
+  .school-combobox[data-state="selected"] .school-combobox__selected-wrap {
+    display: flex;
+  }
+
+  .school-combobox[data-state="skipped"] .school-combobox__skipped-wrap {
+    display: flex;
+  }
+
+  /* ── Success / Error states ──────────────────────────────────────────────── */
 
   .enquiry-success__card {
     padding: var(--space-global-lg);

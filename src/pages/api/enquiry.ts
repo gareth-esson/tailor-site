@@ -98,16 +98,26 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     // Per-field validation.
     const name = validateField(body.name, { required: true, max: 120 });
     const email = validateField(body.email, { required: true, max: 254 });
-    const school = validateField(body.school, { required: true, max: 200 });
+    const school = validateField(body.school, { required: false, max: 200 });
     const service = validateField(body.service, { required: true, max: 120 });
     const keystage = validateField(body.keystage, { required: false, max: 80 });
     const timing = validateField(body.timing, { required: false, max: 120 });
     const message = validateField(body.message, { required: false, max: 3000, allowNewlines: true });
 
-    if (name == null || email == null || school == null || service == null) {
+    // school_urn: optional positive integer
+    let schoolUrn: number | null = null;
+    if (body.school_urn != null && body.school_urn !== '') {
+      const raw = Number(body.school_urn);
+      if (!Number.isInteger(raw) || raw <= 0 || raw > 9_999_999) {
+        return json({ error: 'Invalid school_urn' }, 400);
+      }
+      schoolUrn = raw;
+    }
+
+    if (name == null || email == null || service == null) {
       return json({ error: 'Missing or invalid required field' }, 400);
     }
-    if (keystage == null || timing == null || message == null) {
+    if (school == null || keystage == null || timing == null || message == null) {
       return json({ error: 'Optional field exceeded length limit' }, 400);
     }
 
@@ -123,10 +133,14 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       return json({ error: 'Server configuration error' }, 500);
     }
 
+    const schoolLine = school
+      ? (schoolUrn ? `School: ${school} (URN: ${schoolUrn})` : `School: ${school}`)
+      : 'School: not provided';
+
     const emailBody = [
       `Name: ${name}`,
       `Email: ${email}`,
-      `School: ${school}`,
+      schoolLine,
       `Service: ${service}`,
       keystage ? `Key stage / year group: ${keystage}` : null,
       timing ? `Preferred timing: ${timing}` : null,
@@ -144,7 +158,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       body: JSON.stringify({
         from: 'Tailor Education <noreply@mail.tailoreducation.org.uk>',
         to: ['hello@tailoreducation.org.uk'],
-        subject: `New enquiry: ${service} — ${school}`,
+        subject: school ? `New enquiry: ${service} — ${school}` : `New enquiry: ${service}`,
         text: emailBody,
         reply_to: email,
       }),

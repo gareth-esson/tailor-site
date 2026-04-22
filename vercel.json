@@ -8,7 +8,19 @@
     },
     {
       "source": "/(.*)",
+      "has": [{ "type": "host", "value": "www.oktoask.co.uk" }],
+      "destination": "https://tailoreducation.org.uk/questions/",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
       "has": [{ "type": "host", "value": "oktoask.org.uk" }],
+      "destination": "https://tailoreducation.org.uk/questions/",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "www.oktoask.org.uk" }],
       "destination": "https://tailoreducation.org.uk/questions/",
       "permanent": true
     },
@@ -20,7 +32,19 @@
     },
     {
       "source": "/(.*)",
+      "has": [{ "type": "host", "value": "www.okaytoask.co.uk" }],
+      "destination": "https://tailoreducation.org.uk/questions/",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
       "has": [{ "type": "host", "value": "okaytoask.org.uk" }],
+      "destination": "https://tailoreducation.org.uk/questions/",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "www.okaytoask.org.uk" }],
       "destination": "https://tailoreducation.org.uk/questions/",
       "permanent": true
     },
@@ -32,7 +56,19 @@
     },
     {
       "source": "/(.*)",
+      "has": [{ "type": "host", "value": "www.nosillyquestions.co.uk" }],
+      "destination": "https://tailoreducation.org.uk/questions/",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
       "has": [{ "type": "host", "value": "nosillyquestions.org.uk" }],
+      "destination": "https://tailoreducation.org.uk/questions/",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "www.nosillyquestions.org.uk" }],
       "destination": "https://tailoreducation.org.uk/questions/",
       "permanent": true
     },
