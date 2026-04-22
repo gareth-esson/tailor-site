@@ -975,6 +975,10 @@ h6 { font-weight: var(--heading-weight-h6); }
     white-space: nowrap;
 }
 
+@media (max-width: 639px) { /* below Tailwind sm: 640px */
+    .btn { text-align: center; }
+}
+
 /* ── SIZE: STANDARD ── */
 .btn--std {
     padding: var(--btn-padding-y) var(--btn-padding-x);

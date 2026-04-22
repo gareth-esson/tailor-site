@@ -56,13 +56,13 @@ const testimonial = null as { quote: string; cite: string } | null;
           {isOnSale ? (
             <a
               href="/book/order"
-              class="btn btn--std btn--primary has-icon-hover"
+              class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto"
               aria-label={`Buy the Okay to Ask book — £${bookPrice}`}
             >
               Buy the book — £{bookPrice}
             </a>
           ) : (
-            <a href="/contact?service=Other" class="btn btn--std btn--primary has-icon-hover">
+            <a href="/contact?service=Other" class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto">
               Register your interest
             </a>
           )}
@@ -129,7 +129,7 @@ const testimonial = null as { quote: string; cite: string } | null;
           <p class="book-purchase__price">£{bookPrice}</p>
           <a
             href="/book/order"
-            class="btn btn--std btn--primary has-icon-hover"
+            class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto"
             aria-label="Buy the Okay to Ask book"
           >
             Buy the book
@@ -138,7 +138,7 @@ const testimonial = null as { quote: string; cite: string } | null;
       ) : (
         <Fragment>
           <p class="book-purchase__price-coming">Coming soon — £{bookPrice}</p>
-          <a href="/contact?service=Other" class="btn btn--std btn--primary has-icon-hover">
+          <a href="/contact?service=Other" class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto">
             Register your interest
           </a>
         </Fragment>
@@ -160,7 +160,7 @@ const testimonial = null as { quote: string; cite: string } | null;
           ))}
         </div>
         <div class="book-samples__more">
-          <a href="/questions/" class="btn btn--std btn--tint has-icon-hover">
+          <a href="/questions/" class="btn btn--std btn--tint has-icon-hover w-full sm:w-auto">
             Browse all 152 questions
           </a>
         </div>

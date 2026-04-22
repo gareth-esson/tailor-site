@@ -34,7 +34,7 @@ const service = hasService ? serviceMap[serviceLink!] : null;
         <p class="cta-blog-bottom__text">Talk to us about how Tailor Education can support your school.</p>
         <a
           href={`/contact?service=${encodeURIComponent(service.param)}`}
-          class="btn btn--std btn--primary has-icon-hover"
+          class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto"
           data-analytics-event="cta_click"
           data-analytics-cta-type="blog_to_service"
           data-analytics-service-type={serviceLink}
@@ -53,7 +53,7 @@ const service = hasService ? serviceMap[serviceLink!] : null;
         <p class="cta-blog-bottom__text">Browse expert-written RSE lessons in the Tailor library.</p>
         <a
           href={`/topics/${primaryTopic.slug}`}
-          class="btn btn--std btn--primary has-icon-hover"
+          class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto"
           data-analytics-event="cta_click"
           data-analytics-cta-type="blog_to_app"
           data-analytics-target={`/topics/${primaryTopic.slug}`}
