@@ -98,11 +98,21 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     // Per-field validation.
     const name = validateField(body.name, { required: true, max: 120 });
     const email = validateField(body.email, { required: true, max: 254 });
+    const role = validateField(body.role, { required: true, max: 32 });
     const school = validateField(body.school, { required: false, max: 200 });
+    const organisation = validateField(body.organisation, { required: false, max: 200 });
     const service = validateField(body.service, { required: true, max: 120 });
     const keystage = validateField(body.keystage, { required: false, max: 80 });
-    const timing = validateField(body.timing, { required: false, max: 120 });
     const message = validateField(body.message, { required: false, max: 3000, allowNewlines: true });
+
+    // Role must be one of the known values.
+    const allowedRoles = new Set([
+      'teacher', 'senior_leader', 'governor', 'parent',
+      'youth_worker', 'commissioner', 'funder', 'researcher', 'press', 'other',
+    ]);
+    if (role != null && !allowedRoles.has(role)) {
+      return json({ error: 'Invalid role' }, 400);
+    }
 
     // school_urn: optional positive integer
     let schoolUrn: number | null = null;
@@ -114,10 +124,10 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       schoolUrn = raw;
     }
 
-    if (name == null || email == null || service == null) {
+    if (name == null || email == null || role == null || service == null) {
       return json({ error: 'Missing or invalid required field' }, 400);
     }
-    if (school == null || keystage == null || timing == null || message == null) {
+    if (school == null || organisation == null || keystage == null || message == null) {
       return json({ error: 'Optional field exceeded length limit' }, 400);
     }
 
@@ -133,17 +143,35 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       return json({ error: 'Server configuration error' }, 500);
     }
 
+    const roleLabels: Record<string, string> = {
+      teacher:       'Teacher / Teaching assistant',
+      senior_leader: 'Senior leader',
+      governor:      'Governor / Trustee',
+      parent:        'Parent / Carer',
+      youth_worker:  'Youth worker',
+      commissioner:  'Commissioner',
+      funder:        'Funder',
+      researcher:    'Researcher / Academic',
+      press:         'Press / Media',
+      other:         'Other',
+    };
+    const roleLabel = roleLabels[role] ?? role;
+
     const schoolLine = school
       ? (schoolUrn ? `School: ${school} (URN: ${schoolUrn})` : `School: ${school}`)
-      : 'School: not provided';
+      : null;
+    const orgLine = organisation
+      ? (role === 'press' ? `Publication: ${organisation}` : `Organisation: ${organisation}`)
+      : null;
 
     const emailBody = [
       `Name: ${name}`,
       `Email: ${email}`,
+      `Role: ${roleLabel}`,
       schoolLine,
+      orgLine,
       `Service: ${service}`,
       keystage ? `Key stage / year group: ${keystage}` : null,
-      timing ? `Preferred timing: ${timing}` : null,
       message ? `\nMessage:\n${message}` : null,
     ]
       .filter(Boolean)
@@ -158,7 +186,11 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       body: JSON.stringify({
         from: 'Tailor Education <noreply@mail.tailoreducation.org.uk>',
         to: ['hello@tailoreducation.org.uk'],
-        subject: school ? `New enquiry: ${service} — ${school}` : `New enquiry: ${service}`,
+        subject: (() => {
+          const ctx = school || organisation;
+          const prefix = role === 'press' ? 'Press enquiry' : 'New enquiry';
+          return ctx ? `${prefix}: ${service} — ${ctx}` : `${prefix}: ${service}`;
+        })(),
         text: emailBody,
         reply_to: email,
       }),

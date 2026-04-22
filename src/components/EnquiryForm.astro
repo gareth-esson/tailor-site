@@ -20,11 +20,25 @@ const serviceOptions = [
   { value: 'RSE policy & curriculum planning', label: 'RSE policy & curriculum planning' },
   { value: 'Other', label: 'Other' },
 ];
+
+const roleOptions = [
+  { value: '',              label: 'Please select' },
+  { value: 'teacher',       label: 'Teacher / Teaching assistant' },
+  { value: 'senior_leader', label: 'Senior leader (Head / Deputy / Assistant Head)' },
+  { value: 'governor',      label: 'Governor / Trustee' },
+  { value: 'parent',        label: 'Parent / Carer' },
+  { value: 'youth_worker',  label: 'Youth worker' },
+  { value: 'commissioner',  label: 'Commissioner (LA / MAT / Trust)' },
+  { value: 'funder',        label: 'Funder' },
+  { value: 'researcher',    label: 'Researcher / Academic' },
+  { value: 'press',         label: 'Press / Media' },
+  { value: 'other',         label: 'Other' },
+];
 ---
 
 <form class="enquiry-form" id="enquiry-form" novalidate>
   <div class="form-group" data-field="name">
-    <label class="form-label" for="enquiry-name">Name <span aria-hidden="true">*</span></label>
+    <label class="form-label" for="enquiry-name">Name <span class="form-label__req" aria-hidden="true">*</span></label>
     <input
       class="form-input"
       type="text"
@@ -38,7 +52,7 @@ const serviceOptions = [
   </div>
 
   <div class="form-group" data-field="email">
-    <label class="form-label" for="enquiry-email">Email <span aria-hidden="true">*</span></label>
+    <label class="form-label" for="enquiry-email">Email <span class="form-label__req" aria-hidden="true">*</span></label>
     <input
       class="form-input"
       type="email"
@@ -51,9 +65,26 @@ const serviceOptions = [
     <p class="form-error" id="enquiry-email-error" role="alert" hidden>Please enter a valid email address</p>
   </div>
 
-  <div class="form-group" data-field="school">
+  <div class="form-group" data-field="role">
+    <label class="form-label" for="enquiry-role">Your role <span class="form-label__req" aria-hidden="true">*</span></label>
+    <select
+      class="form-select"
+      id="enquiry-role"
+      name="role"
+      required
+      aria-describedby="enquiry-role-error"
+    >
+      {roleOptions.map((opt) => (
+        <option value={opt.value}>{opt.label}</option>
+      ))}
+    </select>
+    <p class="form-error" id="enquiry-role-error" role="alert" hidden>Please select your role</p>
+  </div>
+
+  <div class="form-group" data-field="school" data-show-for="teacher senior_leader governor parent" hidden>
     <label class="form-label" for="enquiry-school-input">
-      School name <span aria-hidden="true">*</span>
+      <span id="enquiry-school-label-text">School name</span>
+      <span id="enquiry-school-label-required" class="form-label__req" aria-hidden="true">*</span>
     </label>
 
     <!-- data-state: idle | searching | selected | skipped -->
@@ -109,8 +140,24 @@ const serviceOptions = [
     </p>
   </div>
 
+  <div class="form-group" data-field="organisation" data-show-for="youth_worker commissioner funder researcher press" hidden>
+    <label class="form-label" for="enquiry-organisation">
+      <span id="enquiry-organisation-label-text">Organisation name</span>
+      <span id="enquiry-organisation-label-required" class="form-label__req" aria-hidden="true">*</span>
+    </label>
+    <input
+      class="form-input"
+      type="text"
+      id="enquiry-organisation"
+      name="organisation"
+      autocomplete="organization"
+      aria-describedby="enquiry-organisation-error"
+    />
+    <p class="form-error" id="enquiry-organisation-error" role="alert" hidden>Please enter your organisation</p>
+  </div>
+
   <div class="form-group" data-field="service">
-    <label class="form-label" for="enquiry-service">Service interested in <span aria-hidden="true">*</span></label>
+    <label class="form-label" for="enquiry-service">Service interested in <span class="form-label__req" aria-hidden="true">*</span></label>
     <select
       class="form-select"
       id="enquiry-service"
@@ -130,23 +177,13 @@ const serviceOptions = [
     <p class="form-error" id="enquiry-service-error" role="alert" hidden>Please select a service</p>
   </div>
 
-  <div class="form-group" data-field="keystage">
+  <div class="form-group" data-field="keystage" data-show-for="teacher senior_leader governor" hidden>
     <label class="form-label" for="enquiry-keystage">Key stage or year group</label>
     <input
       class="form-input"
       type="text"
       id="enquiry-keystage"
       name="keystage"
-    />
-  </div>
-
-  <div class="form-group" data-field="timing">
-    <label class="form-label" for="enquiry-timing">Preferred timing</label>
-    <input
-      class="form-input"
-      type="text"
-      id="enquiry-timing"
-      name="timing"
     />
   </div>
 
@@ -379,6 +416,33 @@ const serviceOptions = [
       }
     }
 
+    // Role-driven conditional fields
+    const roleSelect   = form.querySelector('#enquiry-role') as HTMLSelectElement | null;
+    const orgLabel     = document.getElementById('enquiry-organisation-label-text');
+    const orgRequired  = document.getElementById('enquiry-organisation-label-required');
+    const schoolRequired = document.getElementById('enquiry-school-label-required');
+
+    // Roles where school is required vs. optional (parent)
+    const schoolRequiredRoles = new Set(['teacher', 'senior_leader', 'governor']);
+    // Roles where organisation is required vs. optional (researcher)
+    const orgRequiredRoles    = new Set(['youth_worker', 'commissioner', 'funder', 'press']);
+
+    function applyRoleVisibility() {
+      const role = roleSelect?.value || '';
+      form.querySelectorAll<HTMLElement>('[data-show-for]').forEach((group) => {
+        const allowed = (group.dataset.showFor || '').split(/\s+/);
+        group.hidden = !allowed.includes(role);
+      });
+
+      // Label swap: Press → "Publication"; required asterisk reflects role
+      if (orgLabel) orgLabel.textContent = role === 'press' ? 'Publication' : 'Organisation name';
+      if (orgRequired) orgRequired.hidden = !orgRequiredRoles.has(role);
+      if (schoolRequired) schoolRequired.hidden = role === 'parent';
+    }
+
+    roleSelect?.addEventListener('change', applyRoleVisibility);
+    applyRoleVisibility();
+
     // Track form focus (enquiry started)
     let startedTracked = false;
     form.addEventListener('focusin', () => {
@@ -404,7 +468,7 @@ const serviceOptions = [
       const data = new FormData(form);
 
       // Standard required fields
-      for (const field of ['name', 'email', 'service'] as const) {
+      for (const field of ['name', 'email', 'role', 'service'] as const) {
         const value = (data.get(field) as string || '').trim();
         if (!value) {
           const group = form.querySelector(`[data-field="${field}"]`);
@@ -417,17 +481,36 @@ const serviceOptions = [
         }
       }
 
-      // School combobox: must be selected or explicitly skipped
-      const combobox = document.getElementById('school-combobox');
-      const schoolState = combobox?.getAttribute('data-state');
-      if (schoolState !== 'selected' && schoolState !== 'skipped') {
-        const group = form.querySelector('[data-field="school"]');
-        if (group) {
-          group.classList.add('form-group--error');
-          const err = group.querySelector('.form-error') as HTMLElement;
-          if (err) err.hidden = false;
+      const role = (data.get('role') as string || '').trim();
+
+      // School combobox: only when visible for this role. Required for
+      // teacher/senior_leader/governor (must select or skip); optional for parent.
+      if (schoolRequiredRoles.has(role)) {
+        const combobox = document.getElementById('school-combobox');
+        const schoolState = combobox?.getAttribute('data-state');
+        if (schoolState !== 'selected' && schoolState !== 'skipped') {
+          const group = form.querySelector('[data-field="school"]');
+          if (group) {
+            group.classList.add('form-group--error');
+            const err = group.querySelector('.form-error') as HTMLElement;
+            if (err) err.hidden = false;
+          }
+          valid = false;
         }
-        valid = false;
+      }
+
+      // Organisation: required for youth_worker/commissioner/funder/press.
+      if (orgRequiredRoles.has(role)) {
+        const org = (data.get('organisation') as string || '').trim();
+        if (!org) {
+          const group = form.querySelector('[data-field="organisation"]');
+          if (group) {
+            group.classList.add('form-group--error');
+            const err = group.querySelector('.form-error') as HTMLElement;
+            if (err) err.hidden = false;
+          }
+          valid = false;
+        }
       }
 
       // Email format check
@@ -448,6 +531,9 @@ const serviceOptions = [
       submitBtn.textContent = 'Sending\u2026';
 
       const schoolUrn = (data.get('school_urn') as string || '').trim();
+      const showsSchool = schoolRequiredRoles.has(role) || role === 'parent';
+      const showsOrg    = orgRequiredRoles.has(role) || role === 'researcher';
+      const showsKs     = schoolRequiredRoles.has(role);
 
       try {
         const response = await fetch('/api/enquiry', {
@@ -456,11 +542,12 @@ const serviceOptions = [
           body: JSON.stringify({
             name: data.get('name'),
             email: data.get('email'),
-            school: data.get('school') || null,
-            school_urn: schoolUrn ? Number(schoolUrn) : null,
+            role,
+            school: showsSchool ? (data.get('school') || null) : null,
+            school_urn: showsSchool && schoolUrn ? Number(schoolUrn) : null,
+            organisation: showsOrg ? (data.get('organisation') || null) : null,
             service: data.get('service'),
-            keystage: data.get('keystage'),
-            timing: data.get('timing'),
+            keystage: showsKs ? (data.get('keystage') || null) : null,
             message: data.get('message'),
           }),
         });
@@ -509,7 +596,7 @@ const serviceOptions = [
     color: var(--text-heading);
   }
 
-  .form-label span {
+  .form-label__req {
     color: var(--state-error);
   }
 
