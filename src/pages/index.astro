@@ -109,21 +109,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
         <p class="home-delivery__desc">
           Every lesson is written for your class. We'll ask your PSHE lead what we need to know going in — a recent safeguarding issue, a topic that needs more time, a pupil to plan around — and shape the session around what you tell us. After we've taught it, your staff get a written debrief and notes they can use the next week.
         </p>
-        <ol class="home-delivery__steps">
-          <li class="home-delivery__step">
-            <span class="home-delivery__step-num" aria-hidden="true">1</span>
-            <span class="home-delivery__step-text">You tell us what you need</span>
-          </li>
-          <li class="home-delivery__step">
-            <span class="home-delivery__step-num" aria-hidden="true">2</span>
-            <span class="home-delivery__step-text">We plan with your PSHE lead</span>
-          </li>
-          <li class="home-delivery__step">
-            <span class="home-delivery__step-num" aria-hidden="true">3</span>
-            <span class="home-delivery__step-text">We teach the lesson and leave you with notes</span>
-          </li>
-        </ol>
-        <a href="/services" class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto">
+<a href="/services" class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto">
           Explore delivery options
         </a>
       </div>
@@ -581,34 +567,6 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     margin: 0 0 var(--space-global-lg);
   }
 
-  .home-delivery__steps {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 var(--space-global-lg);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-global-md);
-  }
-
-  .home-delivery__step {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--space-global-sm);
-  }
-
-  .home-delivery__step-num {
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: var(--radius-circle);
-    background: var(--brand-primary);
-    color: var(--text-on-dark);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 0.75rem;
-    font-weight: var(--font-weight-bold);
-  }
 
   .home-delivery__step-text {
     font-size: var(--text-card-size-body);
@@ -1186,9 +1144,6 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
       grid-template-columns: repeat(2, 1fr);
     }
 
-    .home-delivery__steps {
-      flex-direction: row;
-    }
   }
 
   @media (min-width: 768px) {
