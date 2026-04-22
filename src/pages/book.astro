@@ -5,8 +5,8 @@
  * Surface rhythm: warm → ground → warm → book-panel → ground → deeper-warm
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
+import QuestionCard from '../components/QuestionCard.astro';
 import { getQuestions } from '../lib/content';
-import { getPostItImagePath } from '../lib/post-it-images';
 
 // Purchase configuration
 const isOnSale = true;
@@ -154,32 +154,10 @@ const testimonial = null as { quote: string; cite: string } | null;
         <p class="book-samples__sub">
           Every question in the book is answered on this site too. Here are a few to try.
         </p>
-        <div class="book-samples__stack">
-          {sampleQuestions.map((q) => {
-            const postItImage = getPostItImagePath(q.slug);
-            return (
-              <a href={`/anonymous_question/${q.slug}`} class="b11-sample-card">
-                {postItImage && (
-                  <img
-                    src={postItImage}
-                    alt=""
-                    class="b11-sample-card__postit"
-                    loading="lazy"
-                  />
-                )}
-                <div class="b11-sample-card__body">
-                  {q.okayToAskCategory && (
-                    <span class="b11-sample-card__eyebrow">{q.okayToAskCategory}</span>
-                  )}
-                  <div class="b11-sample-card__question">{q.question}</div>
-                  {q.simpleAnswer && (
-                    <p class="b11-sample-card__excerpt">{q.simpleAnswer}</p>
-                  )}
-                  <span class="b11-sample-card__link">Read the full answer</span>
-                </div>
-              </a>
-            );
-          })}
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-[var(--space-global-md)]">
+          {sampleQuestions.map((q) => (
+            <QuestionCard question={q} />
+          ))}
         </div>
         <div class="book-samples__more">
           <a href="/questions/" class="btn btn--std btn--tint has-icon-hover">
@@ -422,12 +400,6 @@ const testimonial = null as { quote: string; cite: string } | null;
     color: var(--text-ota-muted);
     text-align: center;
     margin: 0 auto var(--space-global-xl);
-  }
-
-  .book-samples__stack {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-global-md);
   }
 
   .book-samples__more {
