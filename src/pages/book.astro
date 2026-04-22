@@ -154,7 +154,7 @@ const testimonial = null as { quote: string; cite: string } | null;
         <p class="book-samples__sub">
           Every question in the book is answered on this site too. Here are a few to try.
         </p>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-[var(--space-global-md)]">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-[var(--space-global-md)] items-start">
           {sampleQuestions.map((q) => (
             <QuestionCard question={q} />
           ))}
