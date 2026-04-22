@@ -95,6 +95,51 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       return json({ error: 'Invalid JSON' }, 400);
     }
 
+    // Honeypot: if `website` is filled, it's a bot. Return 200 so the
+    // bot can't distinguish success from our reject — they go away
+    // thinking the submission landed.
+    if (typeof body.website === 'string' && body.website.trim().length > 0) {
+      return json({ success: true }, 200);
+    }
+
+    // Cloudflare Turnstile verification. In dev, use the test secret
+    // that always passes so we don't need localhost hostname allowlisted.
+    const turnstileSecret = import.meta.env.DEV
+      ? '1x0000000000000000000000000000000AA'
+      : import.meta.env.TURNSTILE_SECRET_KEY;
+
+    if (!turnstileSecret) {
+      console.error('TURNSTILE_SECRET_KEY not configured');
+      return json({ error: 'Server configuration error' }, 500);
+    }
+
+    const tsToken = typeof body.cf_turnstile_response === 'string'
+      ? body.cf_turnstile_response
+      : '';
+    if (!tsToken) {
+      return json({ error: 'Human verification failed. Please refresh and try again.' }, 400);
+    }
+
+    const tsForm = new URLSearchParams();
+    tsForm.set('secret', turnstileSecret);
+    tsForm.set('response', tsToken);
+    tsForm.set('remoteip', clientAddress ?? '');
+
+    try {
+      const tsRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+        method: 'POST',
+        body: tsForm,
+      });
+      const tsData = (await tsRes.json()) as { success: boolean; 'error-codes'?: string[] };
+      if (!tsData.success) {
+        console.warn('Turnstile rejected:', tsData['error-codes']);
+        return json({ error: 'Human verification failed. Please try again.' }, 400);
+      }
+    } catch (err) {
+      console.error('Turnstile verify error:', err);
+      return json({ error: 'Verification unavailable. Please try again shortly.' }, 503);
+    }
+
     // Per-field validation.
     const name = validateField(body.name, { required: true, max: 120 });
     const email = validateField(body.email, { required: true, max: 254 });

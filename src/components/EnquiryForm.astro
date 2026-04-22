@@ -21,6 +21,12 @@ const serviceOptions = [
   { value: 'Other', label: 'Other' },
 ];
 
+// Turnstile site key. Use Cloudflare's "always passes" test key in dev so
+// we don't need to add localhost to the real widget's hostname allowlist.
+const TURNSTILE_SITE_KEY = import.meta.env.DEV
+  ? '1x00000000000000000000AA'
+  : '0x4AAAAAADBUjMhCb7vHX04P';
+
 const roleOptions = [
   { value: '',              label: 'Please select' },
   { value: 'teacher',       label: 'Teacher / Teaching assistant' },
@@ -37,6 +43,18 @@ const roleOptions = [
 ---
 
 <form class="enquiry-form" id="enquiry-form" novalidate>
+  <!-- Honeypot: hidden from humans, bots fill it and we reject. -->
+  <div class="enquiry-form__honeypot" aria-hidden="true">
+    <label for="enquiry-website">Website (leave blank)</label>
+    <input
+      type="text"
+      id="enquiry-website"
+      name="website"
+      tabindex="-1"
+      autocomplete="off"
+    />
+  </div>
+
   <div class="form-group" data-field="name">
     <label class="form-label" for="enquiry-name">Name <span class="form-label__req" aria-hidden="true">*</span></label>
     <input
@@ -197,10 +215,20 @@ const roleOptions = [
     ></textarea>
   </div>
 
+  <!-- Cloudflare Turnstile: injects hidden `cf-turnstile-response` into the form. -->
+  <div
+    class="cf-turnstile enquiry-form__turnstile"
+    id="enquiry-turnstile"
+    data-sitekey={TURNSTILE_SITE_KEY}
+    data-theme="light"
+  ></div>
+
   <button type="submit" class="btn btn--std btn--primary w-full" id="enquiry-submit">
     Send enquiry
   </button>
 </form>
+
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <!-- Success state -->
 <div class="enquiry-success" id="enquiry-success" hidden>
@@ -549,6 +577,8 @@ const roleOptions = [
             service: data.get('service'),
             keystage: showsKs ? (data.get('keystage') || null) : null,
             message: data.get('message'),
+            website: data.get('website'),                      // honeypot
+            cf_turnstile_response: data.get('cf-turnstile-response'),
           }),
         });
 
@@ -568,6 +598,9 @@ const roleOptions = [
         errorEl.hidden = false;
         submitBtn.disabled = false;
         submitBtn.textContent = 'Send enquiry';
+        // Turnstile tokens are single-use; reset so user can retry.
+        const ts = (window as unknown as { turnstile?: { reset: (id?: string) => void } }).turnstile;
+        ts?.reset('#enquiry-turnstile');
       }
     });
   }
@@ -581,6 +614,16 @@ const roleOptions = [
     display: flex;
     flex-direction: column;
     gap: var(--space-global-md);
+  }
+
+  /* Honeypot: visually hidden but submittable. Don't use display:none —
+     some bots skip those. Off-screen + zero-size + no tab-stop. */
+  .enquiry-form__honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
   }
 
   .form-group {
