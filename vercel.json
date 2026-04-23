@@ -127,6 +127,7 @@
     { "source": "/training", "destination": "/services/rse-training", "permanent": true },
     { "source": "/services/delivery", "destination": "/services", "permanent": true },
     { "source": "/services/rse-delivery", "destination": "/services", "permanent": true },
+    { "source": "/services/consultancy", "destination": "/services", "permanent": true },
     { "source": "/glossary", "destination": "/topics/", "permanent": true },
     { "source": "/blog/page/:num*", "destination": "/blog/", "permanent": true },
     { "source": "/feed", "destination": "/", "permanent": true },
