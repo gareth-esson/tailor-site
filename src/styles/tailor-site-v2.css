@@ -1180,21 +1180,7 @@ h6 { font-weight: var(--heading-weight-h6); }
     opacity: 0.7;
 }
 
-/* ── STYLE: SECONDARY (surface bg, visible border) ── */
-.btn--secondary {
-    background: var(--bg-surface-alt);
-    color: var(--text-body);
-    border: 1px solid var(--border-strong);
-}
-.btn--secondary:hover {
-    background: var(--bg-subtle);
-}
-
 /* ── STYLE: DANGER ── */
-.btn--danger {
-    padding: 5px 8px;
-    font-size: 12px;
-}
 .btn--danger-text {
     background: transparent;
     color: var(--state-error);
@@ -1205,15 +1191,6 @@ h6 { font-weight: var(--heading-weight-h6); }
     background: var(--state-error-soft);
 }
 
-/* ── STYLE: GHOST ON DARK ── */
-.btn--ghost-on-dark {
-    background: rgba(255,255,255,0.1);
-    color: var(--text-on-dark);
-    border-color: rgba(255,255,255,0.2);
-}
-.btn--ghost-on-dark:hover {
-    background: rgba(255,255,255,0.18);
-}
 /* ── DIVI OVERRIDE — REMOVED ──
    The Divi button reset and post content row fix have been
    removed for the Astro site build. If you need to use this
