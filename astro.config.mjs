@@ -7,6 +7,9 @@ export default defineConfig({
   output: 'static',
   adapter: vercel(),
   site: 'https://tailoreducation.org.uk',
+  server: {
+    port: process.env.PORT ? Number(process.env.PORT) : 4321,
+  },
   vite: {
     plugins: [tailwindcss()],
   },

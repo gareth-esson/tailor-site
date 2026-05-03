@@ -2451,6 +2451,109 @@ textarea.form-input {
 
 
 /* =========================================
+   SPLIT LAYOUT
+   -----------------------------------------
+   Two-column text + image utility for
+   mid-page sections. Text-led 60/40 by
+   default; image cropped to 4:3 inside a
+   rounded wrapper.
+
+   - Mobile (< lg): single column. Text
+     re-caps to --container-max-text-col so
+     stacked reading line stays readable.
+   - lg+: two-column grid. Text fills its
+     cell (no internal cap); the wider line
+     length is the deliberate trade for a
+     clean edge against the image.
+
+   Modifiers:
+   .split-layout--image-led   40/60 (image cell wider)
+   .split-layout--image-left  visually flips columns;
+                              DOM order stays text-first.
+
+   Per-instance overrides — set on the
+   section or on .split-layout itself:
+   --split-media-aspect   e.g. auto, 1/1, 5/4, 16/10
+   --split-gap            column gap (lg+)
+
+   Don't use for heroes — heroes have their
+   own structural patterns. See section
+   templates in src/pages/.
+   ========================================= */
+
+/* ── Split-layout tokens ── */
+:root {
+    --split-gap: var(--space-global-xl);
+    --split-gap-stacked: var(--space-global-lg);
+    --split-media-radius: var(--radius-lg);
+    --split-media-aspect: 4 / 3;
+}
+
+/* ── Base (mobile-first: single column) ── */
+.split-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--split-gap-stacked);
+    align-items: center;
+}
+
+/* Prevent grid blow-out from long content / wide media */
+.split-layout > * {
+    min-width: 0;
+}
+
+/* Text column re-caps when stacked for readable line length */
+.split-layout__text {
+    max-width: var(--container-max-text-col);
+}
+
+/* Image wrapper: forced aspect, rounded, cover-fit.
+   Works on <picture>, <figure>, or a div. */
+.split-layout__media {
+    display: block;
+    margin: 0;
+    border-radius: var(--split-media-radius);
+    overflow: hidden;
+    aspect-ratio: var(--split-media-aspect);
+}
+.split-layout__media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@media (min-width: 1024px) { /* --bp-lg */
+    .split-layout {
+        grid-template-columns: 3fr 2fr; /* 60/40 text-led */
+        gap: var(--split-gap);
+    }
+
+    .split-layout--image-led {
+        grid-template-columns: 2fr 3fr; /* 40/60 image-led */
+    }
+
+    /* Visually flip columns; DOM stays text-first.
+       Assumes exactly two children. Column widths also swap so
+       the proportional split (text-led or image-led) is preserved
+       — without the swap the image would land in the wider cell. */
+    .split-layout--image-left {
+        grid-template-columns: 2fr 3fr; /* image cell on left = 40% */
+    }
+    .split-layout--image-left.split-layout--image-led {
+        grid-template-columns: 3fr 2fr; /* image cell on left = 60% */
+    }
+    .split-layout--image-left > :first-child { order: 2; }
+    .split-layout--image-left > :last-child  { order: 1; }
+
+    /* Uncap text inside the lg+ grid cell — the cell is the cap */
+    .split-layout__text {
+        max-width: none;
+    }
+}
+
+
+/* =========================================
    SURFACES
    -----------------------------------------
    Standalone containers with their own

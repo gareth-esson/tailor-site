@@ -47,7 +47,7 @@ This is the catalogue of components in the master CSS. Before writing custom CSS
 | Functional UI icon (16px) | Lucide icon (or project's icon library) | ✓ | — |
 | Section label above heading | `.signpost` (default) or `.preheader` (heroes only) | ✓ | Custom uppercase label |
 | Lead paragraph | `.lede` | ✓ | Custom intro paragraph styles |
-| Two-column text + image grid | `.split-layout` (+ `--start`, `--reverse`) | — not yet in Tailor fork | Custom 2-col layouts |
+| Two-column text + image grid | `.split-layout` (+ `--image-led`, `--image-left`) | ✓ (Tailor fork — modifier names differ from master `--start`/`--reverse`; see v2 notes) | Custom 2-col layouts |
 | Sticky horizontal sub-nav | `.page-nav` | — not yet in Tailor fork | Custom sticky nav |
 | Tables | `.table` + modifiers (`--striped`, `--hover`, `--bordered`, `--compact`) | ✓ | Custom table styles |
 | Pagination | `.pagination` | — not yet in Tailor fork (site uses bespoke `.blog-pagination`) | Custom page number UI |

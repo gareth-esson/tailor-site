@@ -89,18 +89,8 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
 
   <!-- ═══ §2 IN-SCHOOL DELIVERY (was §3) ═══ -->
   <section class="home-delivery" aria-labelledby="delivery-heading">
-    <div class="home-delivery__inner">
-      {deliveryPhoto && (
-        <div class="hidden lg:block">
-          <img
-            src={deliveryPhoto}
-            alt="A Tailor educator leading a primary RSE discussion circle"
-            class="home-delivery__photo"
-            loading="lazy"
-          />
-        </div>
-      )}
-      <div class="home-delivery__text">
+    <div class="home-delivery__inner split-layout split-layout--image-left">
+      <div class="home-delivery__text split-layout__text">
         <span class="preheader home-delivery__preheader">In-school delivery</span>
         <h2 id="delivery-heading" class="home-delivery__title">RSE, taught directly in your school</h2>
         <p class="home-delivery__desc">
@@ -109,17 +99,26 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
         <p class="home-delivery__desc">
           Every lesson is written for your class. We'll ask your PSHE lead what we need to know going in — a recent safeguarding issue, a topic that needs more time, a pupil to plan around — and shape the session around what you tell us. After we've taught it, your staff get a written debrief and notes they can use the next week.
         </p>
-<a href="/services" class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto">
+        <a href="/services" class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto">
           Explore delivery options
         </a>
       </div>
+      {deliveryPhoto && (
+        <figure class="home-delivery__photo split-layout__media hidden lg:block">
+          <img
+            src={deliveryPhoto}
+            alt="A Tailor educator leading a primary RSE discussion circle"
+            loading="lazy"
+          />
+        </figure>
+      )}
     </div>
   </section>
 
   <!-- ═══ §3 TRAINING & SUPPORT (was §4) ═══ -->
   <section class="home-training surface--alt" aria-labelledby="training-heading">
-    <div class="home-training__inner">
-      <div class="home-training__text">
+    <div class="home-training__inner split-layout">
+      <div class="home-training__text split-layout__text">
         <span class="preheader home-training__preheader">Training and CPD</span>
         <h2 id="training-heading" class="home-training__title">Help your team teach this with confidence</h2>
         <p class="home-training__intro">
@@ -138,22 +137,21 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
         </div>
       </div>
       {trainingPhoto && (
-        <div class="hidden lg:block">
+        <figure class="home-training__photo split-layout__media hidden lg:block">
           <img
             src={trainingPhoto}
             alt="Teachers reviewing RSE resources together during CPD"
-            class="home-training__photo"
             loading="lazy"
           />
-        </div>
+        </figure>
       )}
     </div>
   </section>
 
   <!-- ═══ §4 TAILOR TEACH (was §2; coming-soon framing) ═══ -->
   <section class="home-platform" aria-labelledby="platform-heading">
-    <div class="home-platform__inner">
-      <div class="home-platform__text">
+    <div class="home-platform__inner split-layout split-layout--image-led">
+      <div class="home-platform__text split-layout__text">
         <span class="preheader home-platform__preheader">Tailor Teach · Coming soon</span>
         <h2 id="platform-heading" class="home-platform__title">A lesson library for teaching teams</h2>
         <p class="home-platform__intro">
@@ -170,14 +168,12 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
         </a>
       </div>
       {appScreenshot && (
-        <div class="hidden lg:block">
-          <img
-            src={appScreenshot}
-            alt="Screenshot of the Tailor Teach lesson interface"
-            class="home-platform__screenshot"
-            loading="lazy"
-          />
-        </div>
+        <img
+          src={appScreenshot}
+          alt="Screenshot of the Tailor Teach lesson interface"
+          class="home-platform__screenshot hidden lg:block"
+          loading="lazy"
+        />
       )}
     </div>
   </section>
@@ -466,9 +462,6 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     width: 100%;
   }
 
-  .home-platform__text {
-    max-width: var(--container-max-text-col);
-  }
 
   .home-platform__preheader {
     color: var(--text-heading-muted);
@@ -535,14 +528,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     width: 100%;
   }
 
-  .home-delivery__text {
-    max-width: var(--container-max-text-col);
-  }
-
   .home-delivery__photo {
-    width: 100%;
-    height: auto;
-    border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
   }
 
@@ -585,9 +571,6 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     width: 100%;
   }
 
-  .home-training__text {
-    max-width: var(--container-max-text-col);
-  }
 
   .home-training__preheader {
     color: var(--text-heading-muted);
@@ -624,9 +607,6 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   }
 
   .home-training__photo {
-    width: 100%;
-    height: auto;
-    border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
   }
 
@@ -1168,26 +1148,6 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
       align-items: stretch;
     }
 
-    .home-platform__inner {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-global-xl);
-      align-items: center;
-    }
-
-    .home-delivery__inner {
-      display: grid;
-      grid-template-columns: 0.9fr 1fr;
-      gap: var(--space-global-xl);
-      align-items: center;
-    }
-
-    .home-training__inner {
-      display: grid;
-      grid-template-columns: 1fr 0.9fr;
-      gap: var(--space-global-xl);
-      align-items: center;
-    }
 
     .home-ota__questions-grid {
       grid-template-columns: repeat(3, 1fr);

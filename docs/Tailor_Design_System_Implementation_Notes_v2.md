@@ -598,7 +598,7 @@ Surface violations as you find them, but don't auto-rewrite the whole codebase i
 | `.progress` | SYSTEM-RULES §26 | No progress bars on the current site. |
 | `.pagination` | SYSTEM-RULES §28 | Site uses bespoke `.blog-pagination` instead. |
 | `.form-toggle` / `.form-range` | SYSTEM-RULES §19 | Simple Mode uses `.mode-toggle` (different pattern). |
-| `.split-layout` | operating rules §1 | Site uses Tailwind utilities for 2-col layouts. |
+| ~~`.split-layout`~~ | ~~operating rules §1~~ | ✓ ported. Text-led 60/40 default; `--image-led` for 40/60; `--image-left` to render image left (DOM stays text-first). Image cropped to 4:3 via `.split-layout__media` (override with `--split-media-aspect`); text cell uncaps at lg+ and re-caps to `--container-max-text-col` when stacked. |
 | `.page-nav` | operating rules §1 | No sticky sub-nav on the current site. |
 | `.skip-to-content` | operating rules §1 | Accessibility gap — worth adding. |
 | `.legal-header` / `.legal-body` | SYSTEM-RULES §29 | `/privacy` and `/accessibility` are bespoke. |
