@@ -354,8 +354,14 @@
   --bg-ota-surface-alt: #F0EDE5;
   --bg-ota-paper-panel: #eae6e1;
 
-  /* ── BOOK PAGE (B11) ── */
-  --book-cover-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(0, 0, 0, 0.15);
+  /* ── BOOK PAGE (B11) ──
+     Two stacked drop-shadows. Split into separate tokens because
+     filter: drop-shadow() (which we use for the OtA book covers, so the
+     shadow follows the book's transparent perspective taper rather than
+     its rectangular bounding box) doesn't accept comma-separated values
+     — the call site chains two drop-shadow() functions. */
+  --book-cover-shadow-1: 0 8px 24px rgba(0, 0, 0, 0.25);
+  --book-cover-shadow-2: 0 2px 8px rgba(0, 0, 0, 0.15);
   --book-cover-max-width: 20rem;
 
   /* ── ON-DARK OVERLAYS ── */
