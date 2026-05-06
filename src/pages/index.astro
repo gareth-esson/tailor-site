@@ -1,34 +1,16 @@
 ---
 /**
  * Homepage [B1] — /
- * v2: Teacher-first. 8 sections, 1 layer switch.
- * Surface rhythm: dark → white → alt → white → alt → white → alt → dark
- * Layer rhythm:   T → T → T → T → T → OtA → T → T
+ * Service-first. Single Tailor layer; OtA module dropped in favour of a
+ * book signpost panel that promotes the book and links across to the OtA
+ * questions library.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
-import QuestionCard from '../components/QuestionCard.astro';
-import { getQuestions, getLandingPages, getTestimonials } from '../lib/content';
+import { getLandingPages, getTestimonials } from '../lib/content';
 import { getTopicIllustrationPath } from '../lib/topic-illustrations';
-import type { QuestionRef } from '../lib/types';
 
-const allQuestions = await getQuestions();
 const allTestimonials = await getTestimonials();
 const homeTestimonial = allTestimonials.find((t) => t.name === 'Sara Stafford') ?? allTestimonials[0] ?? null;
-
-// Featured questions: pick 3 answered questions with post-it scans
-const answered = allQuestions.filter((q) => q.body.length > 0 && q.hasPostItScan);
-// Fisher-Yates shuffle for unbiased randomisation
-for (let i = answered.length - 1; i > 0; i--) {
-  const j = Math.floor(Math.random() * (i + 1));
-  [answered[i], answered[j]] = [answered[j], answered[i]];
-}
-const featured: QuestionRef[] = answered.slice(0, 3).map((q) => ({
-  id: q.id,
-  question: q.question,
-  slug: q.slug,
-  okayToAskCategory: q.okayToAskCategory,
-  contentTags: q.contentTags,
-}));
 
 // §7 Topic carousel data
 const landingPages = await getLandingPages();
@@ -45,9 +27,6 @@ const categoryTokenMap: Record<string, string> = {
 // Hero photograph — conditionally rendered
 const heroPhoto = '/images/services/tailor-education-secondary-rse-group-activity.webp' as string | null;
 
-// §2 product screenshot — conditionally rendered
-const appScreenshot = '/images/homepage/tailor-teach-app-screenshot.webp' as string | null;
-
 // §3 delivery photograph — conditionally rendered
 const deliveryPhoto = '/images/services/tailor-education-primary-rse-discussion-circle.webp' as string | null;
 
@@ -62,28 +41,57 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   canonicalPath="/"
 >
   <!-- ═══ §1 TEACHER HERO ═══ -->
-  <section class="hero-teacher surface--dark" aria-labelledby="hero-heading">
+  <section class="hero-teacher" aria-labelledby="hero-heading">
     <div class="hero-teacher__inner">
       <div class="hero-teacher__text">
         <p class="preheader hero-teacher__eyebrow">Tailor Education</p>
-        <h1 id="hero-heading" class="hero-teacher__title">Expert RSE for UK schools</h1>
+        <h1 id="hero-heading" class="hero-teacher__title">RSE that helps young people enjoy healthier relationships.</h1>
         <p class="hero-teacher__subtitle">
-          In-school RSE teaching, plus CPD for the teams that take it on themselves.
+          KS1 to KS5 lessons, schemes of work, and CPD designed and taught by a practising specialist.
         </p>
         <div class="hero-teacher__actions">
-          <a href="/services" class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto">
-            Explore our services
+          <a href="/contact" class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto">
+            Talk to us about RSE
           </a>
-          <a href="/topics" class="btn btn--std btn--tint has-icon-hover w-full sm:w-auto">
-            Preview the lesson library
+          <a href="/services" class="btn btn--std btn--tint has-icon-hover w-full sm:w-auto">
+            See services
           </a>
         </div>
       </div>
       {heroPhoto && (
-        <div class="hero-photo-wrap hidden lg:block">
+        <div class="hero-photo-wrap hidden md:block">
           <img src={heroPhoto} alt="Secondary students in a Tailor RSE group session" class="hero-photo" loading="eager" />
         </div>
       )}
+    </div>
+  </section>
+
+  <!-- ═══ §1.5 ABOVE-FOLD TRUST LOGOS ═══ -->
+  <section class="home-trustlogos surface--alt" aria-labelledby="trustlogos-heading">
+    <div class="home-trustlogos__inner">
+      <h2 id="trustlogos-heading" class="home-trustlogos__heading">Working with</h2>
+      <ul class="home-trustlogos__logos" role="list">
+        <li class="home-trustlogos__logo-item">
+          {/* British Red Cross emblem — protected under the Geneva
+              Conventions Act 1957; renders in its authorised red. */}
+          <img src="/assets/logos/british-red-cross.svg" alt="The British Red Cross" class="home-trustlogos__logo home-trustlogos__logo--colour" loading="eager" />
+        </li>
+        <li class="home-trustlogos__logo-item">
+          <img src="/assets/logos/somerset-house.svg" alt="Somerset House" class="home-trustlogos__logo home-trustlogos__logo--square" loading="eager" />
+        </li>
+        <li class="home-trustlogos__logo-item">
+          <img src="/assets/logos/kings-college-london.svg" alt="King's College London" class="home-trustlogos__logo" loading="eager" />
+        </li>
+        <li class="home-trustlogos__logo-item">
+          <img src="/assets/logos/british-museum.svg" alt="The British Museum" class="home-trustlogos__logo" loading="eager" />
+        </li>
+        <li class="home-trustlogos__logo-item">
+          <img src="/assets/logos/rada.svg" alt="Royal Academy of Dramatic Art" class="home-trustlogos__logo" loading="eager" />
+        </li>
+        <li class="home-trustlogos__logo-item">
+          <img src="/assets/logos/tate-modern.svg" alt="Tate Modern" class="home-trustlogos__logo" loading="eager" />
+        </li>
+      </ul>
     </div>
   </section>
 
@@ -91,7 +99,6 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   <section class="home-delivery" aria-labelledby="delivery-heading">
     <div class="home-delivery__inner split-layout split-layout--image-left">
       <div class="home-delivery__text split-layout__text">
-        <span class="preheader home-delivery__preheader">In-school delivery</span>
         <h2 id="delivery-heading" class="home-delivery__title">RSE, taught directly in your school</h2>
         <p class="home-delivery__desc">
           Most of what Tailor does is direct teaching. A school that wants an external specialist on RSE books a Tailor educator, and one of us takes the lessons. We work across primary, secondary, SEND and alternative provision.
@@ -104,7 +111,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
         </a>
       </div>
       {deliveryPhoto && (
-        <figure class="home-delivery__photo split-layout__media hidden lg:block">
+        <figure class="home-delivery__photo split-layout__media hidden md:block">
           <img
             src={deliveryPhoto}
             alt="A Tailor educator leading a primary RSE discussion circle"
@@ -119,7 +126,6 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   <section class="home-training surface--alt" aria-labelledby="training-heading">
     <div class="home-training__inner split-layout">
       <div class="home-training__text split-layout__text">
-        <span class="preheader home-training__preheader">Training and CPD</span>
         <h2 id="training-heading" class="home-training__title">Help your team teach this with confidence</h2>
         <p class="home-training__intro">
           RSE is hard to teach well if you haven't been trained in it. Most teaching teams haven't. That gap shows up the moment a year 9 puts their hand up with something you didn't prep for, or when the parent email arrives the day after a contentious topic.
@@ -137,7 +143,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
         </div>
       </div>
       {trainingPhoto && (
-        <figure class="home-training__photo split-layout__media hidden lg:block">
+        <figure class="home-training__photo split-layout__media hidden md:block">
           <img
             src={trainingPhoto}
             alt="Teachers reviewing RSE resources together during CPD"
@@ -148,41 +154,10 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     </div>
   </section>
 
-  <!-- ═══ §4 TAILOR TEACH (was §2; coming-soon framing) ═══ -->
-  <section class="home-platform" aria-labelledby="platform-heading">
-    <div class="home-platform__inner split-layout split-layout--image-led">
-      <div class="home-platform__text split-layout__text">
-        <span class="preheader home-platform__preheader">Tailor Teach · Coming soon</span>
-        <h2 id="platform-heading" class="home-platform__title">A lesson library for teaching teams</h2>
-        <p class="home-platform__intro">
-          Tailor Teach is what we're building for the teams who want to take RSE on themselves. The lessons inside are written by Tailor specialists and mapped to the DfE statutory guidance and the PSHE Association Programme of Study. The browse layer is live today. The cloning and adaptation tools are on the way.
-        </p>
-        <ul class="home-platform__features">
-          <li>Lessons written by practising RSE specialists</li>
-          <li>Mapped to DfE and PSHE Association frameworks</li>
-          <li>Browse by topic or key stage</li>
-          <li>Simple Mode and accessibility built in</li>
-        </ul>
-        <a href="/topics" class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto">
-          Browse the topic library
-        </a>
-      </div>
-      {appScreenshot && (
-        <img
-          src={appScreenshot}
-          alt="Screenshot of the Tailor Teach lesson interface"
-          class="home-platform__screenshot hidden lg:block"
-          loading="lazy"
-        />
-      )}
-    </div>
-  </section>
-
   <!-- ═══ §5 TRUST SIGNALS ═══ -->
   <section class="home-trust surface--alt" aria-labelledby="trust-heading">
     <div class="home-trust__inner">
       <div class="home-trust__badges-wrap">
-        <span class="preheader home-trust__preheader">Frameworks and standards</span>
         <h2 id="trust-heading" class="home-trust__title">Aligned with the guidance schools are held to</h2>
         <div class="home-trust__badges">
           <div class="trust-badge">
@@ -223,7 +198,6 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   <!-- ═══ §5.5 SELECTED PROJECTS ═══ -->
   <section class="home-projects" aria-labelledby="projects-heading">
     <div class="home-projects__inner">
-      <span class="preheader home-projects__preheader">Selected projects</span>
       <h2 id="projects-heading" class="home-projects__title">We also work outside schools</h2>
       <p class="home-projects__body">
         We work with museums, universities, drama schools and the third sector on RSE projects for adults and young people in different settings. The sessions and workshops we've delivered for these partners feed directly back into what we teach in classrooms.
@@ -263,61 +237,33 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     </div>
   </section>
 
-  <!-- ═══ §6 OKAY TO ASK (single OtA layer switch) ═══ -->
-  <div class="layer-ota">
-    <section class="home-ota" aria-labelledby="ota-heading">
-      <div class="home-ota__inner">
-        <!-- Beat 1: OtA introduction -->
-        <div class="home-ota__intro">
-          <img
-            src="/assets/ota-wordmark-coral.svg"
-            alt="Okay to Ask"
-            class="home-ota__wordmark"
-            width="160"
-            height="28"
-          />
-          <h2 id="ota-heading" class="home-ota__title">Honest answers to the questions young people ask</h2>
-          <p class="home-ota__text">
-            Okay to Ask started as a stack of post-its. Anonymous questions, written by pupils at the end of lessons, who wanted a proper answer but didn't want to put their name on it. We grouped the repeats, and an RSE specialist wrote the answers. The site is free to read, and there's a book now, too.
-          </p>
-        </div>
-
-        <!-- Beat 2: Featured question cards -->
-        {featured.length > 0 && (
-          <div class="home-ota__questions">
-            <div class="home-ota__questions-grid">
-              {featured.map((q) => (
-                <QuestionCard question={q} />
-              ))}
-            </div>
-            <div class="home-ota__questions-more">
-              <a href="/questions/" class="btn btn--std btn--tint has-icon-hover w-full sm:w-auto">
-                See all questions
-              </a>
-            </div>
-          </div>
-        )}
-
-        <!-- Beat 3: Book promotion panel -->
-        <div class="home-ota__book-wrap">
-          <a href="/book" class="home-ota__book-panel">
-            <img
-              src="/images/ota-book-cover.webp"
-              alt="Okay to Ask book cover"
-              class="home-ota__book-cover"
-              loading="lazy"
-            />
-            <div class="home-ota__book-text">
-              <span class="home-ota__book-eyebrow">The Okay to Ask book</span>
-              <h3 class="home-ota__book-title">The book that answers the questions young people send in</h3>
-              <p class="home-ota__book-desc">The original post-it notes with the answers written out in full.</p>
-              <span class="link-action">Buy the book</span>
-            </div>
+  <!-- ═══ §6 OKAY TO ASK BOOK ═══ -->
+  <section class="home-book" aria-labelledby="book-heading">
+    <div class="home-book__inner split-layout split-layout--image-left">
+      <div class="home-book__text split-layout__text">
+        <h2 id="book-heading" class="home-book__title">The questions pupils want answered, in book form</h2>
+        <p class="home-book__desc">
+          Okay to Ask started as a stack of post-it questions handed in anonymously at the end of lessons. The book collects them with proper answers from a practising RSE specialist &mdash; written for pupils, useful for the adults who teach them.
+        </p>
+        <div class="home-book__actions">
+          <a href="/book" class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto">
+            Buy the book
+          </a>
+          <a href="/questions/" class="btn btn--std btn--tint has-icon-hover w-full sm:w-auto">
+            Read questions on Okay to Ask
           </a>
         </div>
       </div>
-    </section>
-  </div>
+      <div class="home-book__cover-wrap">
+        <img
+          src="/images/ota-book-front.webp"
+          alt="The Okay to Ask book — front cover with a handwritten post-it question and the Okay to Ask wordmark"
+          class="home-book__cover"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </section>
 
   <!-- ═══ §7 TOPICS CAROUSEL ═══ -->
   <section class="home-topics" aria-labelledby="topics-heading">
@@ -391,7 +337,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
      (image cropped via object-fit: cover). Below lg the image is
      hidden (existing .hidden.lg:block) and the text fills the width. */
   .hero-teacher {
-    background-color: var(--hero-tailor-bg);
+    background-color: var(--bg-page);
   }
 
   .hero-teacher__inner {
@@ -410,7 +356,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   }
 
   .hero-teacher__eyebrow {
-    color: var(--text-on-dark-strapline);
+    color: var(--text-heading-muted);
     margin: 0 0 var(--space-global-sm);
   }
 
@@ -419,7 +365,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     font-size: var(--text-display-size-h1);
     font-weight: var(--heading-weight-h1);
     line-height: var(--lh-display);
-    color: var(--text-heading-on-dark);
+    color: var(--text-heading);
     margin: 0 0 var(--space-global-md);
   }
 
@@ -428,7 +374,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     font-size: var(--text-util-hero-subhead-size);
     font-weight: var(--font-weight-regular);
     line-height: var(--lh-heading-sub);
-    color: var(--text-on-dark-strapline);
+    color: var(--text-body-muted);
     margin: 0 0 var(--space-global-lg);
   }
 
@@ -450,71 +396,80 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     display: block;
   }
 
-  /* --- §2 Platform --- */
-  .home-platform {
-    background: var(--bg-page);
-    padding: var(--space-struct-y-base) var(--space-global-gutter);
+  /* --- §1.5 Above-fold trust logos --- */
+  .home-trustlogos {
+    padding: var(--space-global-md) var(--space-global-gutter);
+    border-bottom: var(--border-width-xs) solid var(--border-subtle);
   }
 
-  .home-platform__inner {
+  .home-trustlogos__inner {
     max-width: var(--container-max-shell);
     margin: 0 auto;
     width: 100%;
-  }
-
-
-  .home-platform__preheader {
-    color: var(--text-heading-muted);
-    margin-bottom: var(--space-global-md);
-  }
-
-  .home-platform__title {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-display-size-h2);
-    font-weight: var(--heading-weight-h2);
-    line-height: var(--lh-heading);
-    color: var(--text-heading);
-    margin: 0 0 var(--space-global-md);
-  }
-
-  .home-platform__intro {
-    font-size: var(--text-prose-size-body);
-    color: var(--text-body-muted);
-    line-height: var(--lh-body);
-    margin: 0 0 var(--space-global-md);
-  }
-
-  .home-platform__features {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 var(--space-global-lg);
     display: flex;
     flex-direction: column;
-    gap: var(--space-global-xs);
+    align-items: center;
+    gap: var(--space-global-sm);
   }
 
-  .home-platform__features li {
-    padding-left: var(--space-global-md);
-    position: relative;
-    font-size: var(--text-prose-size-body);
-    color: var(--text-body);
-    line-height: var(--lh-body);
+  .home-trustlogos__heading {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--section-eyebrow-ls);
+    color: var(--text-body-muted);
+    margin: 0;
   }
 
-  .home-platform__features li::before {
-    content: '\2713';
-    position: absolute;
-    left: 0;
-    color: var(--brand-primary);
-    font-weight: var(--font-weight-bold);
+  .home-trustlogos__logos {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-global-lg);
   }
 
-  .home-platform__screenshot {
-    width: 100%;
-    height: auto;
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-lg);
-    border: var(--border-width-xs) solid var(--border-subtle);
+  .home-trustlogos__logo-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .home-trustlogos__logo {
+    display: block;
+    height: 2rem;
+    width: auto;
+    max-width: 8rem;
+    object-fit: contain;
+    filter: grayscale(1) opacity(0.65);
+  }
+
+  /* Full-colour override — Red Cross emblem under mark-protection rules. */
+  .home-trustlogos__logo--colour {
+    filter: none;
+  }
+
+  /* Square-logo bump — matches optical weight against wide marks. */
+  .home-trustlogos__logo--square {
+    height: 3.5rem;
+  }
+
+  @media (max-width: 767px) {
+    .home-trustlogos__logos {
+      gap: var(--space-global-md);
+    }
+
+    .home-trustlogos__logo {
+      height: 1.5rem;
+    }
+
+    .home-trustlogos__logo--square {
+      height: 2.75rem;
+    }
   }
 
   /* --- §3 Delivery --- */
@@ -526,6 +481,10 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     max-width: var(--container-max-shell);
     margin: 0 auto;
     width: 100%;
+  }
+
+  .home-delivery__text {
+    max-width: var(--container-max-prose);
   }
 
   .home-delivery__photo {
@@ -571,6 +530,9 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     width: 100%;
   }
 
+  .home-training__text {
+    max-width: var(--container-max-prose);
+  }
 
   .home-training__preheader {
     color: var(--text-heading-muted);
@@ -785,132 +747,57 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     }
   }
 
-  /* --- §6 Okay to Ask ---
-     White ground; the section is differentiated from neighbours by the
-     coral OtA wordmark, not by a surface tint. */
-  .home-ota {
+  /* --- §6 Book promo ---
+     Tailor-layer book signpost. Cover + text + tint primary CTA + text-link
+     secondary that signposts to the OtA questions library. */
+  .home-book {
     padding: var(--space-struct-y-base) var(--space-global-gutter);
-    position: relative;
-    overflow: hidden;
-    background: var(--bg-page);
   }
 
-  .home-ota__inner {
-    max-width: var(--container-max-reading-wide);
+  .home-book__inner {
+    max-width: var(--container-max-shell);
     margin: 0 auto;
     width: 100%;
-    position: relative;
-    z-index: 2;
   }
 
-  .home-ota__intro {
-    text-align: center;
-    max-width: var(--container-max-hero-text);
-    margin: 0 auto var(--space-global-2xl);
-  }
-
-  .home-ota__wordmark {
-    display: block;
-    width: 10rem;
-    height: auto;
-    margin: 0 auto var(--space-global-lg);
-  }
-
-  .home-ota__title {
-    font-family: var(--font-ota-heading-stack);
-    font-size: var(--text-display-size-h2);
-    font-weight: var(--heading-ota-weight-h2);
-    line-height: var(--lh-heading);
-    color: var(--text-ota-heading);
-    margin: 0 0 var(--space-global-md);
-  }
-
-  .home-ota__text {
-    font-family: var(--font-ota-body-stack);
-    font-size: var(--text-display-size-body);
-    font-weight: var(--font-weight-regular);
-    line-height: var(--lh-body);
-    color: var(--text-ota-muted);
-    margin: 0 auto;
-  }
-
-  /* Book panel */
-  .home-ota__book-wrap {
-    margin-bottom: 0;
-  }
-
-  .home-ota__book-panel {
+  .home-book__cover-wrap {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-global-xl);
-    padding: var(--space-global-xl);
-    background: var(--bg-ota-paper-panel);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-    text-decoration: none;
-    color: inherit;
-    transition: box-shadow var(--transition-duration) var(--transition-easing),
-                transform var(--transition-duration) var(--transition-easing);
+    justify-content: center;
   }
 
-  .home-ota__book-panel:hover {
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-2px);
-  }
-
-  .home-ota__book-cover {
-    flex-shrink: 0;
-    width: 10rem;
+  .home-book__cover {
+    display: block;
+    width: 12rem;
+    height: auto;
     border-radius: var(--radius-sm);
     box-shadow: var(--book-cover-shadow);
   }
 
-  .home-ota__book-text {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-global-sm);
-    text-align: center;
+  .home-book__text {
+    max-width: var(--container-max-prose);
   }
 
-  .home-ota__book-eyebrow {
-    font-size: var(--text-util-preheader-size);
-    font-weight: var(--font-weight-semibold);
-    letter-spacing: var(--text-util-preheader-ls);
-    text-transform: uppercase;
-    color: var(--text-ota-muted);
+  .home-book__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h2);
+    font-weight: var(--heading-weight-h2);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-md);
   }
 
-  .home-ota__book-title {
-    font-family: var(--font-ota-heading-stack);
-    font-size: var(--text-card-size-h2);
-    font-weight: var(--heading-ota-weight-h2);
-    line-height: var(--lh-heading-sub);
-    color: var(--text-ota-heading);
-    margin: 0;
-  }
-
-  .home-ota__book-desc {
-    font-family: var(--font-ota-body-stack);
+  .home-book__desc {
+    font-family: var(--font-tailor-body-stack);
     font-size: var(--text-prose-size-body);
     line-height: var(--lh-body);
-    color: var(--text-ota-muted);
-    margin: 0;
+    color: var(--text-body-muted);
+    margin: 0 0 var(--space-global-lg);
   }
 
-  /* Featured questions */
-  .home-ota__questions-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-global-md);
-    align-items: start;
-  }
-
-  .home-ota__questions-more {
+  .home-book__actions {
     display: flex;
-    justify-content: center;
-    margin-top: var(--space-global-xl);
-    margin-bottom: var(--space-global-2xl);
+    flex-wrap: wrap;
+    gap: var(--space-global-md);
   }
 
   /* --- §7 Topics carousel --- */
@@ -1119,42 +1006,19 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   }
 
   /* --- Responsive --- */
-  @media (min-width: 640px) {
-    .home-ota__questions-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-  }
-
   @media (min-width: 768px) {
-    .home-ota__book-panel {
-      flex-direction: row;
-    }
-
-    .home-ota__book-cover {
-      width: 10rem;
-    }
-
-    .home-ota__book-text {
-      text-align: left;
-    }
-
-  }
-
-  @media (min-width: 1024px) {
     .hero-teacher__inner {
       grid-template-columns: 1fr 1fr;
       gap: 0;
       align-items: stretch;
     }
 
-
-    .home-ota__questions-grid {
-      grid-template-columns: repeat(3, 1fr);
+    .home-book__cover-wrap {
+      justify-content: flex-end;
     }
 
-    .home-ota__book-cover {
-      width: 12rem;
+    .home-book__cover {
+      width: 14rem;
     }
   }
 
@@ -1169,10 +1033,6 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     .home-training__actions .btn,
     .home-cta__actions .btn {
       width: 100%;
-    }
-
-    .home-ota__book-panel {
-      padding: var(--space-global-lg);
     }
 
     .home-cta {
