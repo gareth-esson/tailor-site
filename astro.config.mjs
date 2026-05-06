@@ -17,9 +17,21 @@ export default defineConfig({
     // In output: 'static' mode the sitemap integration automatically
     // includes every prerendered page, so no customPages list is needed.
     sitemap({
-      filter: (page) =>
-        !page.includes('/test-') &&
-        !page.includes('/api/'),
+      filter: (page) => {
+        // Exclude routes that are noIndex'd in their BaseLayout call —
+        // listing them in sitemap.xml while serving meta robots=noindex
+        // is a contradiction Google flags as a quality issue.
+        const exclusions = [
+          '/test-',
+          '/api/',
+          '/search',
+          '/404',
+          '/book/order',         // covers /book/order and /book/order-confirmed
+          '/blog/category/',     // category archives — noIndex'd
+          '/questions/tag/',     // tag archives — noIndex'd
+        ];
+        return !exclusions.some((p) => page.includes(p));
+      },
     }),
   ],
   // All 301 redirects (WordPress migration + legacy slugs + renamed

@@ -1,35 +1,46 @@
 ---
 /**
  * About page [B2] — /about
- * Trust page: who Tailor is, the team, how we think, recent writing,
+ * Trust page: single-founder bio, how we think, recent writing,
  * and a soft contact door. Tailor layer.
+ *
+ * The team grid was removed in May 2026 in favour of an honest
+ * single-founder framing — Gareth is currently the sole writer and
+ * practitioner. When the team grows the §3 block can become a list,
+ * but for now an aspirational "Meet the team" panel was the worst
+ * possible read for a service-buyer.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getBlogPosts } from '../lib/content';
 import type { BlogPost } from '../lib/types';
+import { founderJsonLd, breadcrumbJsonLd } from '../lib/site';
 
-// --- Team data (hand-maintained — v1 ship, pre-Notion) ---
+// --- Founder data ---
+//
+// Drop a real portrait at `public/images/portrait-gareth.webp` and set
+// `portrait` below to that path. Until then the initials fallback runs.
 
-interface TeamMember {
+interface Founder {
   name: string;
   role: string;
-  bio: string;
+  credentials: string;
+  bio: string[];
   portrait: string | null;
   portraitAlt: string | null;
-  credentials?: string;
   linkedIn?: string;
 }
 
-const team: TeamMember[] = [
-  {
-    name: 'Gareth Esson',
-    role: 'Founder & RSE Specialist',
-    bio: 'Gareth is an experienced RSE educator who has worked directly with schools across the UK. He writes all Tailor Education content and delivers training and RSE sessions in schools.',
-    portrait: null, // [ASSET TBD — /team/gareth.jpg]
-    portraitAlt: null,
-    credentials: 'QTS · PSHE Association member',
-  },
-];
+const founder: Founder = {
+  name: 'Gareth Esson',
+  role: 'Founder & RSE Specialist',
+  credentials: 'QTS · PSHE Association member',
+  bio: [
+    "Gareth designs and teaches RSE across primary, secondary, SEND, and alternative-provision settings, and has trained teaching teams in schools across the UK.",
+    "Right now, everything Tailor publishes is written by Gareth. As the team grows, more practising specialists will join the writing — but every page still has to pass the same test: would I teach this in a real classroom tomorrow?",
+  ],
+  portrait: null,
+  portraitAlt: null,
+};
 
 // --- Featured blog posts ---
 
@@ -97,41 +108,42 @@ function deriveExcerpt(post: BlogPost, max = 140): string {
   return (lastSpace > 40 ? slice.slice(0, lastSpace) : slice) + '…';
 }
 
-// Dev-time loud failure: if a team member has a portrait but no alt, yell.
-if (import.meta.env.DEV) {
-  for (const m of team) {
-    if (m.portrait && !m.portraitAlt) {
-      console.warn(
-        `[about.astro] Team member "${m.name}" has a portrait but no portraitAlt. Alt text is required for informational portraits.`,
-      );
-    }
-  }
+// Dev-time loud failure: if the founder has a portrait but no alt, yell.
+if (import.meta.env.DEV && founder.portrait && !founder.portraitAlt) {
+  console.warn(
+    `[about.astro] Founder portrait set but no portraitAlt. Alt text is required for informational portraits.`,
+  );
 }
 
 // --- SEO ---
 
 const description =
-  'Meet the team behind Tailor Education — a community-interest company delivering expert RSE content, training, and support to UK schools.';
+  'About Tailor Education — a community-interest company delivering specialist RSE content, training, and support to UK schools, founded and led by Gareth Esson.';
 
-const orgJsonLd = {
+// Page schema graph: AboutPage + Person (founder lives here) + breadcrumb.
+// Sitewide Organization is emitted by BaseLayout, so we don't duplicate it.
+const aboutJsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'Tailor Education',
-  url: 'https://tailoreducation.org.uk/',
-  logo: 'https://tailoreducation.org.uk/logo.png',
-  description,
-  founder: {
-    '@type': 'Person',
-    name: 'Gareth Esson',
-  },
+  '@graph': [
+    {
+      '@type': 'AboutPage',
+      '@id': 'https://tailoreducation.org.uk/about#aboutpage',
+      name: 'About Tailor Education',
+      description,
+      mainEntity: { '@id': 'https://tailoreducation.org.uk/about#about-founder-title' },
+      isPartOf: { '@id': 'https://tailoreducation.org.uk/#website' },
+    },
+    founderJsonLd(),
+    breadcrumbJsonLd([{ name: 'About', path: '/about' }]),
+  ],
 };
 ---
 
 <BaseLayout
-  title="About — Tailor Education"
+  title="About Tailor Education — RSE specialists for UK schools"
   description={description}
   canonicalPath="/about"
-  jsonLd={orgJsonLd}
+  jsonLd={aboutJsonLd}
 >
   <!-- §1 Hero -->
   <header class="about-hero">
@@ -180,51 +192,42 @@ const orgJsonLd = {
       </div>
     </section>
 
-    <!-- §3 Meet the team -->
-    <section class="about-team" aria-labelledby="about-team-title">
-      <div class="about-team__inner">
-        <h2 id="about-team-title" class="about-team__title">Meet the team</h2>
-        <p class="about-team__intro">
-          The people behind Tailor's content, training, and delivery.
-        </p>
-        <ul class="about-team__grid" data-count={team.length} role="list">
-          {team.map((m, i) => (
-            <li class="about-team__item">
-              <div class="about-team-card">
-                <div class="about-team-card__portrait">
-                  {m.portrait ? (
-                    <img
-                      src={m.portrait}
-                      alt={m.portraitAlt || `Portrait of ${m.name}`}
-                      loading={i === 0 ? 'eager' : 'lazy'}
-                      decoding="async"
-                    />
-                  ) : (
-                    <div class="about-team-card__portrait-fallback" aria-hidden="true">
-                      {initials(m.name)}
-                    </div>
-                  )}
-                </div>
-                <div class="about-team-card__body">
-                  {m.linkedIn ? (
-                    <h3 class="about-team-card__name">
-                      <a href={m.linkedIn} rel="noopener noreferrer" target="_blank">
-                        {m.name}<span class="sr-only"> (opens in new tab)</span>
-                      </a>
-                    </h3>
-                  ) : (
-                    <h3 class="about-team-card__name">{m.name}</h3>
-                  )}
-                  <p class="about-team-card__role">{m.role}</p>
-                  {m.credentials && (
-                    <p class="about-team-card__credentials">{m.credentials}</p>
-                  )}
-                  <p class="about-team-card__bio">{m.bio}</p>
-                </div>
-              </div>
-            </li>
+    <!-- §3 Founder -->
+    <section class="about-founder" aria-labelledby="about-founder-title">
+      {/* DOM order is text-first per .split-layout convention; the
+          --image-left modifier visually positions the figure on the left. */}
+      <div class="about-founder__inner split-layout split-layout--image-left">
+        <div class="about-founder__body split-layout__text">
+          <span class="about-founder__eyebrow">Founder</span>
+          {founder.linkedIn ? (
+            <h2 id="about-founder-title" class="about-founder__name">
+              <a href={founder.linkedIn} rel="noopener noreferrer" target="_blank">
+                {founder.name}<span class="sr-only"> (opens in new tab)</span>
+              </a>
+            </h2>
+          ) : (
+            <h2 id="about-founder-title" class="about-founder__name">{founder.name}</h2>
+          )}
+          <p class="about-founder__role">{founder.role}</p>
+          <p class="about-founder__credentials">{founder.credentials}</p>
+          {founder.bio.map((para) => (
+            <p class="about-founder__para">{para}</p>
           ))}
-        </ul>
+        </div>
+        <figure class="about-founder__portrait split-layout__media">
+          {founder.portrait ? (
+            <img
+              src={founder.portrait}
+              alt={founder.portraitAlt || `Portrait of ${founder.name}`}
+              loading="eager"
+              decoding="async"
+            />
+          ) : (
+            <div class="about-founder__portrait-fallback" aria-hidden="true">
+              {initials(founder.name)}
+            </div>
+          )}
+        </figure>
       </div>
     </section>
 
@@ -427,95 +430,29 @@ const orgJsonLd = {
   }
 
   /* -------------------------------------------------------------------- */
-  /* §3 Meet the team                                                     */
+  /* §3 Founder                                                           */
   /* -------------------------------------------------------------------- */
-  .about-team {
+  .about-founder {
     width: 100%;
     background: var(--bg-page);
     padding: var(--space-struct-y-base) var(--space-global-gutter);
   }
 
-  .about-team__inner {
+  .about-founder__inner {
     margin-inline: auto;
     width: 100%;
     max-width: var(--container-max-shell);
   }
 
-  .about-team__title {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-prose-size-h2);
-    font-weight: var(--heading-weight-h2);
-    line-height: var(--lh-heading);
-    color: var(--text-heading);
-    margin: 0 0 var(--space-global-sm);
-  }
-
-  .about-team__intro {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-prose-size-body);
-    font-weight: var(--font-weight-regular);
-    line-height: var(--lh-prose);
-    color: var(--text-body);
-    margin: 0 0 var(--space-global-lg);
-    max-width: var(--container-max-prose);
-  }
-
-  .about-team__grid {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-global-lg);
-  }
-
-  .about-team__grid[data-count="1"] {
-    grid-template-columns: 1fr;
-    max-width: 24rem;
-    margin-inline: auto;
-  }
-
-  .about-team__grid[data-count="2"] { grid-template-columns: 1fr; }
-
-  @media (min-width: 640px) {
-    .about-team__grid { grid-template-columns: repeat(2, 1fr); }
-    .about-team__grid[data-count="2"] {
-      grid-template-columns: repeat(2, 1fr);
-      max-width: 48rem;
-      margin-inline: auto;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .about-team__grid { grid-template-columns: repeat(3, 1fr); }
-    .about-team__grid[data-count="1"] { grid-template-columns: 1fr; }
-    .about-team__grid[data-count="2"] { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  .about-team__item { display: flex; }
-
-  /* Team card */
-  .about-team-card {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    background: var(--bg-surface);
-    border: var(--border-width-xs) solid var(--border-subtle);
+  .about-founder__portrait {
+    aspect-ratio: 4 / 5;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: var(--shadow-xs);
-  }
-
-  .about-team-card__portrait {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    overflow: hidden;
     background: var(--bg-surface-alt);
+    margin: 0;
   }
 
-  .about-team-card__portrait img {
+  .about-founder__portrait img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -523,7 +460,7 @@ const orgJsonLd = {
     display: block;
   }
 
-  .about-team-card__portrait-fallback {
+  .about-founder__portrait-fallback {
     width: 100%;
     height: 100%;
     background: var(--bg-tinted);
@@ -531,50 +468,58 @@ const orgJsonLd = {
     align-items: center;
     justify-content: center;
     font-family: var(--font-tailor-heading-stack);
-    font-size: clamp(2.5rem, 5vw + 1rem, 4rem);
+    font-size: clamp(3rem, 6vw + 1rem, 5rem);
     font-weight: var(--font-weight-bold);
     color: var(--brand-accent-text);
     letter-spacing: -0.02em;
   }
 
-  .about-team-card__body {
-    flex: 1;
+  .about-founder__body {
     display: flex;
     flex-direction: column;
-    gap: var(--space-global-xs);
-    padding: var(--space-global-md);
+    gap: var(--space-global-sm);
   }
 
-  .about-team-card__name {
+  .about-founder__eyebrow {
+    display: block;
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--section-eyebrow-ls);
+    color: var(--brand-accent-text);
+  }
+
+  .about-founder__name {
     font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-card-size-h3);
-    font-weight: var(--heading-weight-h3);
-    line-height: var(--lh-heading-sub);
+    font-size: var(--text-prose-size-h2);
+    font-weight: var(--heading-weight-h2);
+    line-height: var(--lh-heading);
     color: var(--text-heading);
     margin: 0;
   }
 
-  .about-team-card__name a {
+  .about-founder__name a {
     color: inherit;
     text-decoration: none;
   }
 
-  .about-team-card__name a:hover,
-  .about-team-card__name a:focus-visible {
+  .about-founder__name a:hover,
+  .about-founder__name a:focus-visible {
     color: var(--brand-accent-text);
     text-decoration: underline;
   }
 
-  .about-team-card__role {
+  .about-founder__role {
     font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-card-size-body);
+    font-size: var(--text-prose-size-body);
     font-weight: var(--font-weight-medium);
     line-height: var(--lh-card);
     color: var(--brand-accent-text);
     margin: 0;
   }
 
-  .about-team-card__credentials {
+  .about-founder__credentials {
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-card-size-h6);
     font-weight: var(--font-weight-semibold);
@@ -585,13 +530,13 @@ const orgJsonLd = {
     margin: 0;
   }
 
-  .about-team-card__bio {
+  .about-founder__para {
     font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-card-size-body);
+    font-size: var(--text-prose-size-body);
     font-weight: var(--font-weight-regular);
-    line-height: var(--lh-card);
-    color: var(--text-body-muted);
-    margin: var(--space-global-xs) 0 0;
+    line-height: var(--lh-prose);
+    color: var(--text-body);
+    margin: var(--space-global-sm) 0 0;
   }
 
   /* -------------------------------------------------------------------- */

@@ -18,30 +18,30 @@ import EnquiryForm from '../components/EnquiryForm.astro';
 // --- SEO ---
 
 const description =
-  "Get in touch with Tailor Education to discuss RSE training, delivery, and support for your school.";
+  "Contact Tailor Education for RSE training, in-school delivery, drop days, and policy and curriculum consultancy. UK schools — typical reply within two working days.";
 
+// ContactPage schema. mainEntity is the sitewide Organization (referenced
+// by @id, defined in BaseLayout). The ContactPoint repeats email/phone here
+// so the contact page itself has the data without round-tripping the @id.
 const contactPageJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'ContactPage',
-  name: 'Contact — Tailor Education',
+  name: 'Contact Tailor Education',
   url: 'https://tailoreducation.org.uk/contact',
-  mainEntity: {
-    '@type': 'EducationalOrganization',
-    name: 'Tailor Education',
-    url: 'https://tailoreducation.org.uk/',
+  mainEntity: { '@id': 'https://tailoreducation.org.uk/#organization' },
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer service',
     email: 'hello@tailoreducation.org.uk',
-    contactPoint: {
-      '@type': 'ContactPoint',
-      contactType: 'customer service',
-      email: 'hello@tailoreducation.org.uk',
-      availableLanguage: 'English',
-    },
+    telephone: '+443302237740',
+    availableLanguage: 'English',
+    areaServed: 'GB',
   },
 };
 ---
 
 <BaseLayout
-  title="Contact — Tailor Education"
+  title="Contact Tailor Education — RSE training, delivery and consultancy"
   description={description}
   canonicalPath="/contact"
   jsonLd={contactPageJsonLd}
@@ -213,8 +213,12 @@ const contactPageJsonLd = {
     margin: 0;
   }
 
+  /* The <em> wrapping the inserted service name carries no decorative
+     italic per the layer rule (Tailor layer: italic = pull-quote only).
+     The service name stands out because it's a specific noun in generic
+     copy, not because of typographic flourish. */
   .contact-hero__lede em {
-    font-style: italic;
+    font-style: normal;
   }
 
   /* -------------------------------------------------------------------- */

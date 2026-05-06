@@ -27,6 +27,7 @@ import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
 import { getPostItImagePath } from '../../lib/post-it-images';
 import { selectRelatedQuestions } from '../../lib/related-questions';
 import type { Question, Topic, GlossaryIndex } from '../../lib/types';
+import { breadcrumbJsonLd } from '../../lib/site';
 
 import SimpleModeToggle from '../../components/SimpleModeToggle.astro';
 import GlossaryTooltips from '../../components/GlossaryTooltips.astro';
@@ -122,17 +123,33 @@ const metaDescription = question.metaDescription
   || `Find the answer to "${question.question}" — honest, age-appropriate RSE from Okay to Ask.`;
 const canonicalPath = `/anonymous_question/${question.slug}/`;
 
+// FAQPage answer text uses the rendered standard body (Google explicitly
+// allows a small HTML subset in Answer.text). Falls back to simpleAnswer
+// when the standard body is empty, then metaDescription as last resort.
+const faqAnswerText =
+  standardBodyHtml || question.simpleAnswer || metaDescription;
+
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: [{
-    '@type': 'Question',
-    name: question.question,
-    acceptedAnswer: {
-      '@type': 'Answer',
-      text: question.simpleAnswer || metaDescription,
+  '@graph': [
+    {
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: question.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: faqAnswerText,
+          },
+        },
+      ],
     },
-  }],
+    breadcrumbJsonLd([
+      { name: 'Okay to Ask', path: '/questions/' },
+      { name: question.question, path: canonicalPath },
+    ]),
+  ],
 };
 
 // §3 top padding. With no crisis/age-flag above, the post-it gets hero
@@ -204,7 +221,11 @@ const postItTopPadding = showAlertBand
               src={postItImage}
               alt={`Handwritten question: ${question.question}`}
               class="postit-image"
+              width="890"
+              height="898"
               loading="eager"
+              fetchpriority="high"
+              decoding="async"
             />
             <figcaption
               id="question-post-it-caption"

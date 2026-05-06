@@ -85,24 +85,20 @@ const FRAMEWORKS: Framework[] = [
 // --- SEO ---
 
 const description =
-  'How Tailor Education writes RSE content, the frameworks it aligns to, and how safeguarding is built into the work.';
+  'How Tailor Education writes RSE for UK schools — aligned to DfE statutory guidance, the PSHE Association, UNESCO and KCSiE, with safeguarding built in.';
 
 const aboutPageJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'AboutPage',
   name: 'Our approach — Tailor Education',
   url: 'https://tailoreducation.org.uk/our-approach',
-  mainEntity: {
-    '@type': 'EducationalOrganization',
-    name: 'Tailor Education',
-    url: 'https://tailoreducation.org.uk/',
-    sameAs: ['https://tailoreducation.org.uk/about'],
-  },
+  mainEntity: { '@id': 'https://tailoreducation.org.uk/#organization' },
+  isPartOf: { '@id': 'https://tailoreducation.org.uk/#website' },
 };
 ---
 
 <BaseLayout
-  title="Our approach — Tailor Education"
+  title="Our approach to RSE — frameworks and safeguarding | Tailor Education"
   description={description}
   canonicalPath="/our-approach"
   jsonLd={aboutPageJsonLd}
@@ -298,7 +294,6 @@ const aboutPageJsonLd = {
     <!-- §4.5 Content review process -->
     <section class="approach-section approach-section--review">
       <div class="approach-section__inner">
-        <span class="approach-section__eyebrow">Editorial process</span>
         <h2 class="approach-section__title">
           How content is written, reviewed and kept current
         </h2>
@@ -315,7 +310,7 @@ const aboutPageJsonLd = {
           delivers training and classroom sessions across the UK.
           Content is not crowdsourced, not AI-generated, and not bought
           from template libraries. See
-          <a href="/about#meet-the-team">Gareth's full background</a> on
+          <a href="/about#about-founder-title">Gareth's full background</a> on
           our About page.
         </p>
 
@@ -418,7 +413,6 @@ const aboutPageJsonLd = {
   .approach-hero__stance {
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-prose-size-body);
-    font-style: italic;
     color: var(--text-body-muted);
     line-height: var(--lh-prose);
     margin: 0;
@@ -627,7 +621,6 @@ const aboutPageJsonLd = {
   .approach-section p.approach-section__closer {
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-prose-size-body);
-    font-style: italic;
     color: var(--text-body-muted);
     line-height: var(--lh-prose);
     margin: var(--space-global-md) 0 0;

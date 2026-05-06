@@ -1,3 +1,14 @@
 User-agent: *
 Allow: /
-Sitemap: https://tailoreducation.org.uk/sitemap.xml
+
+# Belt-and-braces: these routes are also meta-noindex'd, but a Disallow
+# saves crawl budget on pagination/utility paths Google would otherwise
+# enqueue and discard.
+Disallow: /search
+Disallow: /api/
+Disallow: /book/order
+Disallow: /book/order-confirmed
+Disallow: /blog/category/
+Disallow: /questions/tag/
+
+Sitemap: https://tailoreducation.org.uk/sitemap-index.xml

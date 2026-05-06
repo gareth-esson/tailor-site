@@ -68,8 +68,8 @@ const jsonLd = posts.length > 0
 ---
 
 <BaseLayout
-  title="Blog — Tailor Education"
-  description="Practical guidance on RSE teaching, curriculum planning, and bringing relationships education to life in schools."
+  title="RSE blog — practical guidance for schools | Tailor Education"
+  description="Evidence-led RSE guidance for school leaders, PSHE leads, and teachers — curriculum planning, classroom practice, safeguarding, and DfE statutory alignment."
   canonicalPath="/blog/"
   jsonLd={jsonLd}
 >
@@ -77,7 +77,6 @@ const jsonLd = posts.length > 0
   <header class="blog-index-hero">
     <div class="blog-index-hero__inner">
       <div class="blog-index-hero__text">
-        <span class="blog-index-hero__eyebrow">Writing</span>
         <h1 class="blog-index-hero__title">Blog</h1>
         <p class="blog-index-hero__intro">
           Practical guidance for RSE teaching, curriculum planning, and bringing relationships education to life in schools.
@@ -130,12 +129,12 @@ const jsonLd = posts.length > 0
                 class="blog-grid__item"
                 data-category={post.category ?? ''}
               >
-                <a href={`/blog/${post.slug}/`} class="blog-index-card">
-                  <div class="blog-index-card__img">
-                    {post.featuredImage
-                      ? <img src={post.featuredImage} alt="" loading={i < 3 ? 'eager' : 'lazy'} />
-                      : <div class="blog-index-card__img-fallback" aria-hidden="true" />}
-                  </div>
+                <a href={`/blog/${post.slug}/`} class:list={['blog-index-card', { 'blog-index-card--no-image': !post.featuredImage }]}>
+                  {post.featuredImage && (
+                    <div class="blog-index-card__img">
+                      <img src={post.featuredImage} alt="" loading={i < 3 ? 'eager' : 'lazy'} />
+                    </div>
+                  )}
                   <div class="blog-index-card__body">
                     {post.category && <div class="blog-index-card__eyebrow">{post.category}</div>}
                     <h3 class="blog-index-card__title">{post.title}</h3>
@@ -433,12 +432,6 @@ const jsonLd = posts.length > 0
     height: 100%;
     object-fit: cover;
     display: block;
-  }
-
-  .blog-index-card__img-fallback {
-    width: 100%;
-    height: 100%;
-    background: var(--bg-tinted);
   }
 
   .blog-index-card__body {

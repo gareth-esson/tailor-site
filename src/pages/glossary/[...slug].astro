@@ -9,6 +9,7 @@ import { getGlossaryTerms, getGlossaryIndex, getLandingPages } from '../../lib/c
 import { renderBlocks } from '../../lib/render-blocks';
 import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
 import type { GlossaryTerm, GlossaryIndex } from '../../lib/types';
+import { breadcrumbJsonLd, site } from '../../lib/site';
 
 import SimpleModeToggle from '../../components/SimpleModeToggle.astro';
 import GlossaryTooltips from '../../components/GlossaryTooltips.astro';
@@ -54,12 +55,29 @@ const metaTitle = term.metaTitle || `What is ${term.term}? | Tailor Education`;
 const metaDescription = term.metaDescription || term.shortDefinition || `Learn the meaning of ${term.term} — clear, age-appropriate RSE glossary from Tailor Education.`;
 const canonicalPath = `/glossary/${term.slug}/`;
 
-// JSON-LD — DefinedTerm
+// JSON-LD — DefinedTerm + BreadcrumbList. Glossary entries are reached
+// via topic listings, so the breadcrumb threads through the parent topic
+// when known; otherwise it threads through /topics/.
+const trail: Array<{ name: string; path: string }> = [
+  { name: 'Topics', path: '/topics/' },
+];
+if (landingTopic) {
+  trail.push({ name: landingTopic.name, path: `/topics/${landingTopic.slug}/` });
+}
+trail.push({ name: term.term, path: canonicalPath });
+
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'DefinedTerm',
-  name: term.term,
-  description: term.shortDefinition,
+  '@graph': [
+    {
+      '@type': 'DefinedTerm',
+      '@id': `${site.url}${canonicalPath}#term`,
+      name: term.term,
+      description: term.shortDefinition,
+      inDefinedTermSet: `${site.url}/topics/`,
+    },
+    breadcrumbJsonLd(trail),
+  ],
 };
 
 // --- Data preparation ---

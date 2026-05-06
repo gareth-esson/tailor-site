@@ -14,6 +14,7 @@ import { renderBlocks } from '../../lib/render-blocks';
 import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
 import type { LandingPage, Question, GlossaryTerm, BlogPost, CurriculumStatement } from '../../lib/types';
 import topicAliases from '../../../docs/topic-aliases.json';
+import { breadcrumbJsonLd, site } from '../../lib/site';
 
 export const prerender = true;
 
@@ -135,22 +136,28 @@ const metaTitle = landingPage.metaTitle || `${landingPage.title} | Tailor Educat
 const metaDescription = landingPage.metaDescription || `Explore ${landingPage.title} — questions, key terms, and teaching resources for RSE from Tailor Education.`;
 const canonicalPath = `/topics/${landingPage.slug}/`;
 
-// JSON-LD — WebPage with educationalLevel
+// JSON-LD — WebPage + BreadcrumbList. Sitewide Organization is emitted
+// by BaseLayout, so we reference it by @id rather than duplicating.
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'WebPage',
-  name: landingPage.title,
-  description: metaDescription,
-  about: {
-    '@type': 'Thing',
-    name: landingPage.title,
-  },
-  educationalLevel: 'Secondary',
-  provider: {
-    '@type': 'Organization',
-    name: 'Tailor Education',
-    url: 'https://tailoreducation.org.uk',
-  },
+  '@graph': [
+    {
+      '@type': 'WebPage',
+      '@id': `${site.url}${canonicalPath}#webpage`,
+      url: `${site.url}${canonicalPath}`,
+      name: landingPage.title,
+      description: metaDescription,
+      about: { '@type': 'Thing', name: landingPage.title },
+      educationalLevel: 'Secondary',
+      inLanguage: site.schemaLocale,
+      isPartOf: { '@id': `${site.url}/#website` },
+      publisher: { '@id': `${site.url}/#organization` },
+    },
+    breadcrumbJsonLd([
+      { name: 'Topics', path: '/topics/' },
+      { name: landingPage.title, path: canonicalPath },
+    ]),
+  ],
 };
 
 // Questions: limit to 6 answered questions with a post-it scan (so the
@@ -492,7 +499,6 @@ const displayQuestions = questions
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-prose-size-body);
     color: var(--text-body);
-    font-style: italic;
   }
 
   .curriculum-statement__ref {

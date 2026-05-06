@@ -24,6 +24,14 @@ const year = new Date().getFullYear();
         />
         <p class="footer-brand__strapline">Expert RSE for every school.</p>
         <p class="footer-brand__ota-line">Okay to Ask is a Tailor Education project.</p>
+        <ul class="footer-brand__contact list-none p-0 m-0 mt-[var(--space-global-sm)] flex flex-col gap-[0.25rem]">
+          <li>
+            <a href="mailto:hello@tailoreducation.org.uk">hello@tailoreducation.org.uk</a>
+          </li>
+          <li>
+            <a href="tel:+443302237740">0330 223 7740</a>
+          </li>
+        </ul>
       </div>
 
       <nav
@@ -144,6 +152,19 @@ const year = new Date().getFullYear();
     font-size: var(--text-card-size-body);
     color: var(--text-muted-on-dark);
     margin: 0;
+  }
+
+  .footer-brand__contact a {
+    font-size: var(--text-footer-size);
+    color: var(--text-on-dark);
+    text-decoration: none;
+    opacity: 0.85;
+    transition: opacity var(--transition-duration) var(--transition-easing);
+  }
+
+  .footer-brand__contact a:hover {
+    opacity: 1;
+    text-decoration: underline;
   }
 
   .footer-nav__heading {

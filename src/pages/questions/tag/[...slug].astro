@@ -67,6 +67,7 @@ const { tagLabel, tagSlug, questions } = Astro.props;
   description={`Browse anonymous questions tagged "${tagLabel}" — honest, age-appropriate RSE from Okay to Ask.`}
   canonicalPath={`/questions/tag/${tagSlug}/`}
   layer="ota"
+  noIndex
 >
   <section class="w-full py-[var(--space-struct-y-base)] px-[var(--space-global-gutter)]">
     <div class="mx-auto w-full max-w-[var(--container-max-reading-wide)]">

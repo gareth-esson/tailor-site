@@ -60,7 +60,16 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
       </div>
       {heroPhoto && (
         <div class="hero-photo-wrap hidden md:block">
-          <img src={heroPhoto} alt="Secondary students in a Tailor RSE group session" class="hero-photo" loading="eager" />
+          <img
+            src={heroPhoto}
+            alt="Secondary students in a Tailor RSE group session"
+            class="hero-photo"
+            width="1600"
+            height="900"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
         </div>
       )}
     </div>

@@ -4,14 +4,24 @@ import '../styles/tailor-site-v2.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import Analytics from '../components/Analytics.astro';
+import {
+  site,
+  assets,
+  organisationJsonLd,
+  websiteJsonLd,
+} from '../lib/site';
 
 interface Props {
   title: string;
   description?: string;
   canonicalPath?: string;
   ogImage?: string;
+  ogImageWidth?: number;
+  ogImageHeight?: number;
   ogType?: string;
   layer?: 'tailor' | 'ota';
+  /** Page-specific JSON-LD. Sitewide Organization (and WebSite on the
+   *  homepage) is always emitted in addition. */
   jsonLd?: Record<string, unknown>;
   noIndex?: boolean;
   /**
@@ -25,9 +35,11 @@ interface Props {
 
 const {
   title,
-  description = 'Expert RSE resources, training and support for schools — from Tailor Education and Okay to Ask.',
+  description = site.defaultDescription,
   canonicalPath,
-  ogImage = '/assets/tailor-og-default.png',
+  ogImage = assets.ogDefault,
+  ogImageWidth,
+  ogImageHeight,
   ogType = 'website',
   layer = 'tailor',
   jsonLd,
@@ -37,13 +49,45 @@ const {
 
 // Single source of truth: `site:` in astro.config.mjs → Astro.site.
 // Fallback only if the config hasn't been set (shouldn't happen in prod).
-const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://tailoreducation.org.uk';
-const canonical = canonicalPath ? `${siteUrl}${canonicalPath}` : `${siteUrl}${Astro.url.pathname}`;
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? site.url;
+
+// Vercel is configured with `trailingSlash: true` — every page URL ends
+// with `/`. Canonicals must match the served URL exactly; otherwise
+// Google treats the canonical as pointing to a 308-redirect target,
+// which it then either follows (wasting equity) or ignores entirely.
+// Normalise here so individual pages don't have to remember.
+function normaliseCanonical(path: string): string {
+  if (/\.[a-zA-Z0-9]+$/.test(path)) return path; // file extension — leave alone
+  if (path.endsWith('/')) return path;
+  return `${path}/`;
+}
+
+const rawPath = canonicalPath ?? Astro.url.pathname;
+const canonical = `${siteUrl}${normaliseCanonical(rawPath)}`;
 const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`;
+
+// Default OG image dimensions when the page hasn't overridden them.
+const isDefaultOg = ogImage === assets.ogDefault;
+const finalOgWidth = ogImageWidth ?? (isDefaultOg ? assets.ogDefaultWidth : undefined);
+const finalOgHeight = ogImageHeight ?? (isDefaultOg ? assets.ogDefaultHeight : undefined);
+
 const ga4Id = import.meta.env.GA4_MEASUREMENT_ID || '';
+
+// Defend against `</script>` smuggling in Notion-authored content.
+const escapeJsonForScript = (value: unknown) =>
+  JSON.stringify(value).replace(/</g, '\\u003c');
+
+// Sitewide structured data: Organization always, WebSite on homepage.
+const isHomepage = Astro.url.pathname === '/' || Astro.url.pathname === '';
+const sitewideJsonLd: Record<string, unknown> = isHomepage
+  ? {
+      '@context': 'https://schema.org',
+      '@graph': [organisationJsonLd(), websiteJsonLd()],
+    }
+  : organisationJsonLd();
 ---
 
-<html lang="en">
+<html lang={site.locale}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -59,9 +103,12 @@ const ga4Id = import.meta.env.GA4_MEASUREMENT_ID || '';
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={fullOgImage} />
+    {finalOgWidth && <meta property="og:image:width" content={String(finalOgWidth)} />}
+    {finalOgHeight && <meta property="og:image:height" content={String(finalOgHeight)} />}
     <meta property="og:url" content={canonical} />
     <meta property="og:type" content={ogType} />
-    <meta property="og:site_name" content="Tailor Education" />
+    <meta property="og:site_name" content={site.brand} />
+    <meta property="og:locale" content={site.ogLocale} />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -69,11 +116,14 @@ const ga4Id = import.meta.env.GA4_MEASUREMENT_ID || '';
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={fullOgImage} />
 
-    <!-- JSON-LD structured data.
-         Escape `<` to `\u003c` to defend against `</script>` sneaking
-         through Notion-authored string content and breaking the tag. -->
+    <!-- Sitewide structured data — Organization on every page, WebSite on
+         the homepage. Page-specific jsonLd is emitted as a second tag below;
+         multiple ld+json scripts on one page is valid and Google merges. -->
+    <script type="application/ld+json" set:html={escapeJsonForScript(sitewideJsonLd)} />
+
+    <!-- Page-specific JSON-LD. -->
     {jsonLd && (
-      <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />
+      <script type="application/ld+json" set:html={escapeJsonForScript(jsonLd)} />
     )}
 
     <!-- Simple Mode: check preference before first paint to prevent flash of wrong content -->
@@ -83,20 +133,48 @@ const ga4Id = import.meta.env.GA4_MEASUREMENT_ID || '';
       }
     </script>
 
-    <!-- Font loading — all three families on every page to prevent FOUT on navigation.
-         Load as `media="print"` then promote to `all` onload so the stylesheet
-         fetch doesn't block first paint. `display=swap` keeps text visible with
-         a fallback while the webfont downloads. <noscript> fallback for users
-         who disable JS. -->
+    <!--
+         Font loading.
+
+         Lexend (Tailor body + headings) is loaded sitewide. Atkinson
+         Hyperlegible (OtA body) and Fraunces (OtA headings) are loaded
+         only when the page declares the OtA layer — Tailor pages don't
+         need them and shouldn't pay the bytes.
+
+         Each stylesheet is loaded as media=print then promoted to all
+         onload so the fetch doesn't block first paint. display=swap
+         keeps text visible with a fallback while the webfont downloads.
+         A noscript fallback handles users with JS disabled.
+
+         Lexend weights pruned to those actually referenced in CSS (400,
+         600, 700). Fraunces variable axes narrowed to the weight + opsz
+         ranges actually used (full WONK/SOFT axes triple file size for
+         no benefit on this site).
+
+         IMPORTANT: never write a literal less-than-sign + tag-name
+         inside this comment — Astro's HTML compiler parses the comment
+         body and treats it as an unclosed tag, which silently breaks
+         page structure (Pagefind indexed 0 pages on the first build
+         that did this).
+    -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" />
-    <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" />
-    <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,100..900,0..100,0..1;1,9..144,100..900,0..100,0..1&display=swap" />
+    <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap" />
+    {layer === 'ota' && (
+      <Fragment>
+        <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" />
+        <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,14..72,400..700;1,14..72,400..700&display=swap" />
+      </Fragment>
+    )}
+    <!-- noscript fallback — all three families unconditionally.
+         IMPORTANT: never use Astro conditional rendering inside <noscript>;
+         Astro's HTML compiler produces broken structure (silently inserts
+         </html> after </head>) which breaks the page for crawlers and
+         tools like Pagefind. Lesson learnt 2026-05-06. -->
     <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" />
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap" />
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" />
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,100..900,0..100,0..1;1,9..144,100..900,0..100,0..1&display=swap" />
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,14..72,400..700;1,14..72,400..700&display=swap" />
     </noscript>
 
 

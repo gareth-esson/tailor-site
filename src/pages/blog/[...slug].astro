@@ -12,6 +12,7 @@ import { renderBlocks } from '../../lib/render-blocks';
 import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
 import { getRelatedBlogPosts } from '../../lib/related-blog-posts';
 import type { BlogPost, LandingPageRef } from '../../lib/types';
+import { breadcrumbJsonLd, founderUrl, site } from '../../lib/site';
 
 export const prerender = true;
 
@@ -63,21 +64,52 @@ const formattedDate = post.publishedDate
   ? new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(post.publishedDate))
   : null;
 
-// JSON-LD — Article
-const jsonLd: Record<string, any> = {
-  '@context': 'https://schema.org',
+// JSON-LD — Article + BreadcrumbList in a graph.
+// Author references the founder Person node defined on /about so authority
+// signals consolidate on a single Person rather than fragmenting per post.
+// dateModified currently mirrors publishedDate; wire to a real "Last
+// reviewed" Notion field when the editorial workflow exposes one.
+const articleNode: Record<string, any> = {
   '@type': 'Article',
-  headline: post.title,
-  author: post.author ? { '@type': 'Person', name: post.author } : undefined,
-  publisher: {
-    '@type': 'Organization',
-    name: 'Tailor Education',
-    url: 'https://tailoreducation.org.uk',
-  },
+  '@id': `${site.url}${canonicalPath}#article`,
+  headline: post.title.length > 110 ? post.title.slice(0, 109) + '…' : post.title,
+  description: metaDescription,
+  inLanguage: site.schemaLocale,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': `${site.url}${canonicalPath}` },
+  publisher: { '@id': `${site.url}/#organization` },
+  isPartOf: { '@id': `${site.url}/#website` },
   articleSection: post.topics.map((t) => t.title).join(', ') || undefined,
 };
-if (post.featuredImage) jsonLd.image = post.featuredImage;
-if (post.publishedDate) jsonLd.datePublished = post.publishedDate;
+if (post.author) {
+  // Until there's more than one author, every post is by the founder Person.
+  articleNode.author = post.author === 'Gareth Esson'
+    ? { '@id': founderUrl }
+    : { '@type': 'Person', name: post.author };
+}
+if (post.featuredImage) {
+  articleNode.image = {
+    '@type': 'ImageObject',
+    url: post.featuredImage.startsWith('http')
+      ? post.featuredImage
+      : `${site.url}${post.featuredImage}`,
+    width: 1200,
+    height: 630,
+  };
+}
+if (post.publishedDate) {
+  articleNode.datePublished = post.publishedDate;
+  articleNode.dateModified = post.publishedDate;
+}
+
+const breadcrumbNode = breadcrumbJsonLd([
+  { name: 'Blog', path: '/blog/' },
+  { name: post.title, path: canonicalPath },
+]);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [articleNode, breadcrumbNode],
+};
 
 // All topics (primary + secondary)
 const allTopics = [...post.topics, ...post.secondaryTopics];
@@ -105,7 +137,11 @@ const bodyWithTooltips = injectGlossaryTooltips(bodyHtml, glossaryIndex, undefin
             <img
               src={post.featuredImage}
               alt={`Featured image for ${post.title}`}
+              width="1600"
+              height="900"
               loading="eager"
+              fetchpriority="high"
+              decoding="async"
             />
           </div>
         </div>
@@ -116,7 +152,13 @@ const bodyWithTooltips = injectGlossaryTooltips(bodyHtml, glossaryIndex, undefin
 
         <div class="blog-post__meta">
           <div class="blog-post__meta-left">
-            {post.author && <span class="blog-post__author">By {post.author}</span>}
+            {post.author && (
+              <span class="blog-post__author">
+                By {post.author === 'Gareth Esson'
+                  ? <a href="/about#about-founder-title" rel="author">{post.author}</a>
+                  : post.author}
+              </span>
+            )}
             {post.author && formattedDate && <span class="blog-post__sep" aria-hidden="true">·</span>}
             {formattedDate && (
               <time datetime={post.publishedDate!}>{formattedDate}</time>

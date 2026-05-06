@@ -12,6 +12,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
 import ServiceTopicsStrip from '../../components/ServiceTopicsStrip.astro';
 import { getBlogPosts, getTestimonialsByService } from '../../lib/content';
+import { serviceJsonLd, breadcrumbJsonLd } from '../../lib/site';
 
 // --- Data ----------------------------------------------------------
 const slug = 'rse-for-special-schools';
@@ -64,22 +65,34 @@ const featuredTopicSlugs = [
 const allPosts = await getBlogPosts();
 const relatedPosts = allPosts.filter((p) => p.serviceLink === 'delivery').slice(0, 3);
 
-const metaTitle = 'RSE for Special Schools — RSE for Schools | Tailor Education';
+const metaTitle = 'RSE for special schools — Tailor Education';
 const metaDescription = 'Specialist RSE for pupils with profound and complex learning needs, designed for special school settings and delivered by expert educators.';
+const canonicalPath = `/services/${slug}/`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    serviceJsonLd({
+      name: title,
+      description: metaDescription,
+      canonicalPath,
+      serviceType: 'RSE delivery (SEND)',
+      audienceRoles: ['School leader', 'SENCO', 'Teacher', 'Student'],
+    }),
+    breadcrumbJsonLd([
+      { name: 'Services', path: '/services/' },
+      { name: title, path: canonicalPath },
+    ]),
+  ],
+};
 ---
 
 <BaseLayout
   title={metaTitle}
   description={metaDescription}
-  canonicalPath={`/services/${slug}/`}
+  canonicalPath={canonicalPath}
   ogImage={heroImage ?? undefined}
-  jsonLd={{
-    '@context': 'https://schema.org',
-    '@type': 'Service',
-    name: title,
-    description: metaDescription,
-    provider: { '@type': 'Organization', name: 'Tailor Education', url: 'https://tailoreducation.org.uk' },
-  }}
+  jsonLd={jsonLd}
 >
   <article class="service-page" data-pagefind-body>
 
@@ -99,7 +112,7 @@ const metaDescription = 'Specialist RSE for pupils with profound and complex lea
           </div>
           <div class="service-hero__image">
             {heroImage ? (
-              <img src={heroImage} alt={heroImageAlt} loading="eager" />
+              <img src={heroImage} alt={heroImageAlt} width="1600" height="900" loading="eager" fetchpriority="high" decoding="async" />
             ) : (
               <div class="service-hero__image-placeholder">Hero photography required — source before launch</div>
             )}

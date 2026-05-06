@@ -12,6 +12,7 @@
  * (soft planning-call CTA).
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { breadcrumbJsonLd, site } from '../../lib/site';
 
 // --- Hero ------------------------------------------------------------
 const heroEyebrow = 'Services';
@@ -117,14 +118,19 @@ const closingText =
   ogImage={heroImage}
   jsonLd={{
     '@context': 'https://schema.org',
-    '@type': 'Service',
-    name: 'RSE Services for Schools',
-    description: 'Expert RSE delivery, training, drop days and curriculum planning for schools.',
-    provider: {
-      '@type': 'Organization',
-      name: 'Tailor Education',
-      url: 'https://tailoreducation.org.uk',
-    },
+    '@graph': [
+      {
+        '@type': 'CollectionPage',
+        '@id': `${site.url}/services/#collection`,
+        name: 'RSE Services for Schools',
+        description: 'Expert RSE delivery, training, drop days and curriculum planning for schools.',
+        url: `${site.url}/services/`,
+        inLanguage: site.schemaLocale,
+        isPartOf: { '@id': `${site.url}/#website` },
+        publisher: { '@id': `${site.url}/#organization` },
+      },
+      breadcrumbJsonLd([{ name: 'Services', path: '/services/' }]),
+    ],
   }}
 >
   {/* §1 — Hero (full-bleed split: shell-aligned text left, image
@@ -137,7 +143,7 @@ const closingText =
         <p class="services-hero__subtitle">{heroSubtitle}</p>
       </div>
       <div class="services-hero__image">
-        <img src={heroImage} alt={heroImageAlt} loading="eager" />
+        <img src={heroImage} alt={heroImageAlt} width="1600" height="900" loading="eager" fetchpriority="high" decoding="async" />
       </div>
     </div>
   </header>
