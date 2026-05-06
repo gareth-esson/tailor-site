@@ -21,6 +21,8 @@ const heroSubtitle =
 
 const heroImage: string | null = '/images/services/tailor-education-teachers-planning-rse-curriculum.webp';
 const heroImageAlt = 'Teachers and a Tailor consultant planning an RSE curriculum around a table';
+const heroImageWidth = 1600;
+const heroImageHeight = 893;
 
 // §3 description heading — edit per-page for a tailored intro.
 const descriptionHeading = 'About RSE Policy & Curriculum Planning';
@@ -89,6 +91,8 @@ const jsonLd = {
   description={metaDescription}
   canonicalPath={canonicalPath}
   ogImage={heroImage ?? undefined}
+  ogImageWidth={heroImageWidth}
+  ogImageHeight={heroImageHeight}
   jsonLd={jsonLd}
 >
   <article class="service-page" data-pagefind-body>
@@ -109,7 +113,7 @@ const jsonLd = {
           </div>
           <div class="service-hero__image">
             {heroImage ? (
-              <img src={heroImage} alt={heroImageAlt} width="1600" height="900" loading="eager" fetchpriority="high" decoding="async" />
+              <img src={heroImage} alt={heroImageAlt} width={heroImageWidth} height={heroImageHeight} loading="eager" fetchpriority="high" decoding="async" />
             ) : (
               <div class="service-hero__image-placeholder">Hero photography required — source before launch</div>
             )}

@@ -24,7 +24,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getQuestions, getGlossaryIndex, getTopics, getLandingPages } from '../../lib/content';
 import { renderBlocks } from '../../lib/render-blocks';
 import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
-import { getPostItImagePath } from '../../lib/post-it-images';
+import { getPostItImage, type PostItImage } from '../../lib/post-it-images';
 import { selectRelatedQuestions } from '../../lib/related-questions';
 import type { Question, Topic, GlossaryIndex } from '../../lib/types';
 import { breadcrumbJsonLd } from '../../lib/site';
@@ -55,6 +55,15 @@ export async function getStaticPaths() {
     }
   }
 
+  // Resolve post-it dimensions per question at build time. sharp reads
+  // each scan once during getStaticPaths; the result is passed via props
+  // so the template can declare width/height on the <img> (CLS fix) and
+  // og:image:width/height (better social previews).
+  const postItImages = await Promise.all(
+    questions.map(async (q) => [q.slug, await getPostItImage(q.slug)] as const),
+  );
+  const postItMap = new Map<string, PostItImage | null>(postItImages);
+
   return questions.map((q) => ({
     params: { slug: q.slug },
     props: {
@@ -63,6 +72,7 @@ export async function getStaticPaths() {
       glossaryIndex,
       fullTopic: q.topicIds[0] ? topicMap.get(q.topicIds[0]) || null : null,
       landingPageSlug: q.topicIds[0] ? (granularToLandingSlug.get(q.topicIds[0]) ?? '') : '',
+      postItImage: postItMap.get(q.slug) ?? null,
     },
   }));
 }
@@ -73,13 +83,10 @@ interface Props {
   glossaryIndex: GlossaryIndex;
   fullTopic: Topic | null;
   landingPageSlug: string;
+  postItImage: PostItImage | null;
 }
 
-const { question, allQuestions, glossaryIndex, fullTopic, landingPageSlug } = Astro.props;
-
-// --- Data preparation ---
-
-const postItImage = getPostItImagePath(question.slug);
+const { question, allQuestions, glossaryIndex, fullTopic, landingPageSlug, postItImage } = Astro.props;
 
 const isSafeguarding = question.topic?.category === 'Safety & Safeguarding';
 const showCrisis = isSafeguarding;
@@ -166,8 +173,10 @@ const postItTopPadding = showAlertBand
   ogType="article"
   layer="ota"
   jsonLd={jsonLd}
-  ogImage={postItImage ?? undefined}
-  preloadImage={postItImage ?? undefined}
+  ogImage={postItImage?.path}
+  ogImageWidth={postItImage?.width}
+  ogImageHeight={postItImage?.height}
+  preloadImage={postItImage?.path}
 >
   {/* ─────────────────────────────────────────────
       §1 + §2 — Crisis support (A9) and Age flag (D1)
@@ -218,11 +227,11 @@ const postItTopPadding = showAlertBand
             class="flex flex-col items-center mb-[var(--space-global-lg)]"
           >
             <img
-              src={postItImage}
+              src={postItImage.path}
               alt={`Handwritten question: ${question.question}`}
               class="postit-image"
-              width="890"
-              height="898"
+              width={postItImage.width}
+              height={postItImage.height}
               loading="eager"
               fetchpriority="high"
               decoding="async"

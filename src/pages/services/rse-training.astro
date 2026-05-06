@@ -22,6 +22,8 @@ const heroSubtitle =
 
 const heroImage: string | null = '/images/services/tailor-education-rse-cpd-workshop-facilitator.webp';
 const heroImageAlt = 'A Tailor facilitator leading a CPD workshop for school staff on RSE delivery';
+const heroImageWidth = 1600;
+const heroImageHeight = 872;
 
 // §3 description heading — edit per-page for a tailored intro.
 const descriptionHeading = 'About RSE Training';
@@ -91,6 +93,8 @@ const jsonLd = {
   description={metaDescription}
   canonicalPath={canonicalPath}
   ogImage={heroImage ?? undefined}
+  ogImageWidth={heroImageWidth}
+  ogImageHeight={heroImageHeight}
   jsonLd={jsonLd}
 >
   <article class="service-page" data-pagefind-body>
@@ -111,7 +115,7 @@ const jsonLd = {
           </div>
           <div class="service-hero__image">
             {heroImage ? (
-              <img src={heroImage} alt={heroImageAlt} width="1600" height="900" loading="eager" fetchpriority="high" decoding="async" />
+              <img src={heroImage} alt={heroImageAlt} width={heroImageWidth} height={heroImageHeight} loading="eager" fetchpriority="high" decoding="async" />
             ) : (
               <div class="service-hero__image-placeholder">Hero photography required — source before launch</div>
             )}

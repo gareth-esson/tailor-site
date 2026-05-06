@@ -21,6 +21,8 @@ const heroSubtitle =
   'Whether you need someone to deliver RSE directly, training for your staff, or support with policy and curriculum — we can help.';
 const heroImage = '/images/services/tailor-education-rse-consultant-school-corridor.webp';
 const heroImageAlt = 'A Tailor consultant arriving at a school to deliver RSE support';
+const heroImageWidth = 1600;
+const heroImageHeight = 873;
 
 // --- §2 Philosophy bridge (placeholder slots — voice TBD by Tailor) --
 // Content blocker per spec §10 item 16. Placeholder prose below is the
@@ -116,6 +118,8 @@ const closingText =
   description="Expert RSE delivery, training, drop days and curriculum planning for schools. Explore Tailor Education's full range of services."
   canonicalPath="/services/"
   ogImage={heroImage}
+  ogImageWidth={heroImageWidth}
+  ogImageHeight={heroImageHeight}
   jsonLd={{
     '@context': 'https://schema.org',
     '@graph': [
@@ -143,7 +147,7 @@ const closingText =
         <p class="services-hero__subtitle">{heroSubtitle}</p>
       </div>
       <div class="services-hero__image">
-        <img src={heroImage} alt={heroImageAlt} width="1600" height="900" loading="eager" fetchpriority="high" decoding="async" />
+        <img src={heroImage} alt={heroImageAlt} width={heroImageWidth} height={heroImageHeight} loading="eager" fetchpriority="high" decoding="async" />
       </div>
     </div>
   </header>
