@@ -10,7 +10,6 @@
  * from tailor-site-v2.css. Shell never inherits .layer-ota typography —
  * it sits outside <main> and inherits from <body>.
  */
-import TopicsMegaMenu from './TopicsMegaMenu.astro';
 import SearchBar from './SearchBar.astro';
 
 const rseDeliveryLinks = [
@@ -31,7 +30,6 @@ const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
 const startsWith = (prefix: string) => pathname === prefix || pathname.startsWith(prefix + '/');
 
 const isTopics = startsWith('/topics');
-const isQuestions = startsWith('/questions') || startsWith('/anonymous_question');
 const isRseDelivery = rseDeliveryLinks.some((l) => startsWith(l.href));
 const isRseTraining = rseTrainingLinks.some((l) => startsWith(l.href));
 const isBlog = startsWith('/blog');
@@ -55,24 +53,6 @@ const isContact = pathname === '/contact';
     <!-- Slot 2: Primary navigation (desktop only) -->
     <nav class="site-header__nav hidden lg:flex lg:ml-auto" aria-label="Main navigation">
       <ul class="site-header__nav-list flex items-center gap-[var(--space-global-xs)] m-0 p-0 list-none" role="list">
-        <li class="site-header__nav-item site-header__nav-item--has-mega relative">
-          <button
-            class="site-header__nav-link site-header__mega-trigger"
-            aria-expanded="false"
-            aria-controls="mega-menu"
-            aria-current={isTopics ? 'page' : undefined}
-            type="button"
-          >
-            Topics
-            <svg class="site-header__chevron" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
-              <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-          <TopicsMegaMenu />
-        </li>
-        <li class="site-header__nav-item">
-          <a href="/questions/" class="site-header__nav-link" aria-current={isQuestions ? 'page' : undefined}>Okay to Ask</a>
-        </li>
         <li class="site-header__nav-item site-header__nav-item--has-dropdown relative">
           <button
             class="site-header__nav-link site-header__dropdown-trigger"
@@ -126,6 +106,9 @@ const isContact = pathname === '/contact';
               ))}
             </ul>
           </div>
+        </li>
+        <li class="site-header__nav-item">
+          <a href="/topics/" class="site-header__nav-link" aria-current={isTopics ? 'page' : undefined}>Topics</a>
         </li>
         <li class="site-header__nav-item">
           <a href="/blog/" class="site-header__nav-link" aria-current={isBlog ? 'page' : undefined}>Blog</a>
@@ -185,28 +168,6 @@ const isContact = pathname === '/contact';
           <button
             class="mobile-nav__link mobile-nav__accordion-trigger"
             aria-expanded="false"
-            aria-controls="mobile-topics-panel"
-            aria-current={isTopics ? 'page' : undefined}
-            type="button"
-          >
-            <span>Topics</span>
-            <svg class="mobile-nav__chevron" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
-              <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-          <div id="mobile-topics-panel" class="mobile-nav__mega" aria-hidden="true">
-            <TopicsMegaMenu mobile />
-          </div>
-        </li>
-        <li class="mobile-nav__item">
-          <a href="/questions/" class="mobile-nav__link" aria-current={isQuestions ? 'page' : undefined}>
-            <span>Okay to Ask</span>
-          </a>
-        </li>
-        <li class="mobile-nav__item">
-          <button
-            class="mobile-nav__link mobile-nav__accordion-trigger"
-            aria-expanded="false"
             aria-controls="mobile-rse-panel"
             aria-current={isRseDelivery ? 'page' : undefined}
             type="button"
@@ -252,6 +213,11 @@ const isContact = pathname === '/contact';
               ))}
             </ul>
           </div>
+        </li>
+        <li class="mobile-nav__item">
+          <a href="/topics/" class="mobile-nav__link" aria-current={isTopics ? 'page' : undefined}>
+            <span>Topics</span>
+          </a>
         </li>
         <li class="mobile-nav__item">
           <a href="/blog/" class="mobile-nav__link" aria-current={isBlog ? 'page' : undefined}>
@@ -420,54 +386,20 @@ const isContact = pathname === '/contact';
       });
     });
 
-    // --- Topics mega-menu category triggers (nested inside the Topics panel).
-    // One-at-a-time: tapping a new category collapses the previously-open one.
-    const catTriggers = header.querySelectorAll<HTMLButtonElement>(
-      '#mobile-topics-panel .mobile-nav__cat-trigger'
-    );
-    catTriggers.forEach((trigger) => {
-      trigger.addEventListener('click', () => {
-        const expanded = trigger.getAttribute('aria-expanded') === 'true';
-        // Collapse siblings first.
-        catTriggers.forEach((other) => {
-          if (other === trigger) return;
-          other.setAttribute('aria-expanded', 'false');
-          const otherId = other.getAttribute('aria-controls');
-          const otherPanel = otherId ? document.getElementById(otherId) : null;
-          if (otherPanel) otherPanel.setAttribute('aria-hidden', 'true');
-        });
-        trigger.setAttribute('aria-expanded', String(!expanded));
-        const panelId = trigger.getAttribute('aria-controls');
-        const panel = panelId ? document.getElementById(panelId) : null;
-        if (panel) panel.setAttribute('aria-hidden', String(expanded));
-      });
-    });
-
-    // --- Auto-expand ancestors of the current page on mount, so a user who
-    // opens the drawer on /topics/consent sees Topics open AND Relationships
-    // (the category containing Consent) open.
+    // --- Auto-expand the parent accordion of the current sub-page on mount,
+    // so a user who opens the drawer on /services/rse-for-primary-schools
+    // sees RSE Delivery already open with the active item highlighted.
     const currentSubLink = mobileNav?.querySelector<HTMLAnchorElement>(
       '.mobile-nav__sub-link[aria-current="page"]'
     );
     if (currentSubLink) {
-      const innerPanel = currentSubLink.closest<HTMLElement>(
-        '.mobile-nav__cat-panel, .mobile-nav__accordion-panel'
-      );
-      if (innerPanel) {
-        innerPanel.setAttribute('aria-hidden', 'false');
-        const innerTrigger = document.querySelector<HTMLButtonElement>(
-          `[aria-controls="${innerPanel.id}"]`
+      const panel = currentSubLink.closest<HTMLElement>('.mobile-nav__accordion-panel');
+      if (panel) {
+        panel.setAttribute('aria-hidden', 'false');
+        const trigger = document.querySelector<HTMLButtonElement>(
+          `[aria-controls="${panel.id}"]`
         );
-        if (innerTrigger) innerTrigger.setAttribute('aria-expanded', 'true');
-      }
-      // If the inner panel is a topics category, also expand the Topics parent.
-      const outerMega = currentSubLink.closest<HTMLElement>('.mobile-nav__mega');
-      if (outerMega) {
-        outerMega.setAttribute('aria-hidden', 'false');
-        const outerTrigger = document.querySelector<HTMLButtonElement>(
-          `[aria-controls="${outerMega.id}"]`
-        );
-        if (outerTrigger) outerTrigger.setAttribute('aria-expanded', 'true');
+        if (trigger) trigger.setAttribute('aria-expanded', 'true');
       }
     }
   }
