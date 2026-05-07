@@ -74,8 +74,8 @@ export const founder = {
   jobTitle: 'Founder & RSE Specialist',
   /** Free-text credentials surfaced in the UI. Add real, verifiable
    *  credentials only — Google's QRG explicitly flags inflated claims
-   *  for YMYL content. Examples: 'QTS · Enhanced DBS · NSPCC trained'. */
-  credentials: 'QTS',
+   *  for YMYL content. */
+  credentials: 'QTS · Enhanced DBS',
   /** Topics the founder is recognised authorities on — used for
    *  Person.knowsAbout, a strong YMYL E-E-A-T signal. */
   knowsAbout: [
@@ -87,6 +87,12 @@ export const founder = {
     'Safeguarding',
   ],
   linkedIn: 'https://www.linkedin.com/in/gareth-esson-6886635a/',
+  /** Public URL of the founder portrait. Used for Person.image in
+   *  schema and the about page hero. Square 1000×1000 expected. */
+  portrait: '/images/portrait-gareth.webp',
+  portraitAlt: 'Gareth Esson, founder of Tailor Education',
+  portraitWidth: 1000,
+  portraitHeight: 1000,
 } as const;
 
 /** Canonical absolute URL for the founder bio anchor. */
@@ -145,6 +151,12 @@ export function founderJsonLd() {
     jobTitle: founder.jobTitle,
     knowsAbout: founder.knowsAbout,
     worksFor: { '@id': `${site.url}/#organization` },
+    image: {
+      '@type': 'ImageObject',
+      url: `${site.url}${founder.portrait}`,
+      width: founder.portraitWidth,
+      height: founder.portraitHeight,
+    },
   };
   if (sameAs.length) obj.sameAs = sameAs;
   return obj;
