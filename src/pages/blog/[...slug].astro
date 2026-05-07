@@ -125,6 +125,12 @@ const bodyWithTooltips = injectGlossaryTooltips(bodyHtml, glossaryIndex, undefin
   canonicalPath={canonicalPath}
   ogType="article"
   ogImage={post.featuredImage || undefined}
+  articleMeta={{
+    publishedTime: post.publishedDate ?? undefined,
+    modifiedTime: post.publishedDate ?? undefined,
+    author: post.author || undefined,
+    section: post.topics[0]?.title ?? post.category ?? undefined,
+  }}
   jsonLd={jsonLd}
 >
   <article class="blog-post" data-pagefind-body>

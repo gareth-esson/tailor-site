@@ -180,7 +180,16 @@ const displayQuestions = questions
       <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
         {illustrationSrc && (
           <div class="landing-hero__illustration">
-            <img src={illustrationSrc} alt="" class="landing-hero__illustration-img" />
+            <img
+              src={illustrationSrc}
+              alt=""
+              class="landing-hero__illustration-img"
+              width="160"
+              height="160"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+            />
           </div>
         )}
         <span class="landing-hero__category" style={`--cat-color: var(--cat-${catToken})`}>

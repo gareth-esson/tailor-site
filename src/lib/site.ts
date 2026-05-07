@@ -72,8 +72,10 @@ export const founder = {
   /** Anchor on /about used for self-references and byline links. */
   pageAnchor: '/about#about-founder-title',
   jobTitle: 'Founder & RSE Specialist',
-  /** Free-text credentials surfaced in the UI. */
-  credentials: 'QTS · PSHE Association member',
+  /** Free-text credentials surfaced in the UI. Add real, verifiable
+   *  credentials only — Google's QRG explicitly flags inflated claims
+   *  for YMYL content. Examples: 'QTS · Enhanced DBS · NSPCC trained'. */
+  credentials: 'QTS',
   /** Topics the founder is recognised authorities on — used for
    *  Person.knowsAbout, a strong YMYL E-E-A-T signal. */
   knowsAbout: [
