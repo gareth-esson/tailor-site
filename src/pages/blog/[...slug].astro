@@ -13,6 +13,7 @@ import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
 import { getRelatedBlogPosts } from '../../lib/related-blog-posts';
 import type { BlogPost, LandingPageRef } from '../../lib/types';
 import { breadcrumbJsonLd, founderUrl, site } from '../../lib/site';
+import Breadcrumb from '../../components/Breadcrumb.astro';
 
 export const prerender = true;
 
@@ -154,6 +155,13 @@ const bodyWithTooltips = injectGlossaryTooltips(bodyHtml, glossaryIndex, undefin
       )}
 
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] pt-[var(--space-global-lg)] pb-[var(--space-global-xl)]">
+        <Breadcrumb
+          trail={[
+            { name: 'Blog', path: '/blog/' },
+            { name: post.title, path: canonicalPath },
+          ]}
+          class="blog-post__breadcrumb"
+        />
         <h1 class="blog-post__title">{post.title}</h1>
 
         <div class="blog-post__meta">
@@ -444,6 +452,11 @@ document.addEventListener('DOMContentLoaded', initShare);
     height: 100%;
     object-fit: cover;
     display: block;
+  }
+
+  /* Breadcrumb above title */
+  .blog-post__breadcrumb {
+    margin-bottom: var(--space-global-sm);
   }
 
   /* Title */

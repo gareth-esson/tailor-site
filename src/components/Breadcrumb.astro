@@ -1,0 +1,111 @@
+---
+/**
+ * Breadcrumb [A18]
+ * Renders a small wayfinding nav above page heroes on hierarchical
+ * templates. Schema-side BreadcrumbList is emitted separately by each
+ * template via `breadcrumbJsonLd()`; this component is the visible UI
+ * counterpart.
+ *
+ * Props match the same shape as `breadcrumbJsonLd()` so a page can pass
+ * the same trail array to both. "Home" is prepended automatically;
+ * pass only the in-section steps.
+ *
+ * Last item renders as plain text (current page), prior items as links.
+ *
+ * Layout: pages should wrap this in their own container constraint
+ * (typically `--container-max-prose` or `--container-max-reading-wide`)
+ * — this component is unopinionated about width.
+ */
+interface Step {
+  name: string;
+  path: string;
+}
+
+interface Props {
+  trail: ReadonlyArray<Step>;
+  /** Optional class for the outer <nav>, e.g. to override surface colour. */
+  class?: string;
+}
+
+const { trail, class: className } = Astro.props;
+
+const items: Step[] = [{ name: 'Home', path: '/' }, ...trail];
+---
+
+<nav class:list={['breadcrumb', className]} aria-label="Breadcrumb">
+  <ol class="breadcrumb__list" role="list">
+    {items.map((step, i) => {
+      const isLast = i === items.length - 1;
+      return (
+        <li class="breadcrumb__item">
+          {isLast ? (
+            <span class="breadcrumb__current" aria-current="page">{step.name}</span>
+          ) : (
+            <a href={step.path} class="breadcrumb__link">{step.name}</a>
+          )}
+          {!isLast && <span class="breadcrumb__sep" aria-hidden="true">›</span>}
+        </li>
+      );
+    })}
+  </ol>
+</nav>
+
+<style>
+  .breadcrumb {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    line-height: var(--lh-body);
+    color: var(--text-body-muted);
+  }
+
+  .breadcrumb__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-global-xs);
+  }
+
+  .breadcrumb__item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-global-xs);
+    /* Truncate very long crumb labels (e.g. blog post titles) so the
+       trail still wraps cleanly on narrow viewports rather than
+       blowing out the row. */
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .breadcrumb__link {
+    color: var(--text-body-muted);
+    text-decoration: none;
+    transition: color var(--transition-duration) var(--transition-easing);
+  }
+
+  .breadcrumb__link:hover,
+  .breadcrumb__link:focus-visible {
+    color: var(--brand-accent-text);
+    text-decoration: underline;
+  }
+
+  .breadcrumb__current {
+    color: var(--text-body);
+    font-weight: var(--font-weight-medium);
+    /* On narrow viewports, the leaf can be a long blog title; clip to
+       the line and ellipsis rather than wrap to a third line. */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .breadcrumb__sep {
+    color: var(--text-body-muted);
+    /* Slightly smaller and tracked back so the separator doesn't shout
+       at the labels — it's a connective, not content. */
+    font-size: 0.85em;
+    opacity: 0.7;
+  }
+</style>

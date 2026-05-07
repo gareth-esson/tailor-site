@@ -15,6 +15,7 @@ import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
 import type { LandingPage, Question, GlossaryTerm, BlogPost, CurriculumStatement } from '../../lib/types';
 import topicAliases from '../../../docs/topic-aliases.json';
 import { breadcrumbJsonLd, site } from '../../lib/site';
+import Breadcrumb from '../../components/Breadcrumb.astro';
 
 export const prerender = true;
 
@@ -178,6 +179,13 @@ const displayQuestions = questions
     <!-- §1 Hero -->
     <section class="landing-hero">
       <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-global-xl)]">
+        <Breadcrumb
+          trail={[
+            { name: 'Topics', path: '/topics/' },
+            { name: landingPage.title, path: canonicalPath },
+          ]}
+          class="landing-hero__breadcrumb"
+        />
         {illustrationSrc && (
           <div class="landing-hero__illustration">
             <img
@@ -369,6 +377,10 @@ const displayQuestions = questions
   .landing-hero {
     background: var(--bg-surface);
     border-bottom: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  .landing-hero__breadcrumb {
+    margin-bottom: var(--space-global-md);
   }
 
   .landing-hero__illustration {
