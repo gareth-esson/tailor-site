@@ -88,13 +88,15 @@ if (post.author) {
     : { '@type': 'Person', name: post.author };
 }
 if (post.featuredImage) {
+  // Use real probed dimensions when we have them; fall back to 1200×630
+  // (a reasonable Unsplash default) when probing failed during build.
   articleNode.image = {
     '@type': 'ImageObject',
     url: post.featuredImage.startsWith('http')
       ? post.featuredImage
       : `${site.url}${post.featuredImage}`,
-    width: 1200,
-    height: 630,
+    width: post.featuredImageWidth ?? 1200,
+    height: post.featuredImageHeight ?? 630,
   };
 }
 if (post.publishedDate) {
@@ -126,6 +128,8 @@ const bodyWithTooltips = injectGlossaryTooltips(bodyHtml, glossaryIndex, undefin
   canonicalPath={canonicalPath}
   ogType="article"
   ogImage={post.featuredImage || undefined}
+  ogImageWidth={post.featuredImageWidth ?? undefined}
+  ogImageHeight={post.featuredImageHeight ?? undefined}
   articleMeta={{
     publishedTime: post.publishedDate ?? undefined,
     modifiedTime: post.publishedDate ?? undefined,
@@ -144,8 +148,8 @@ const bodyWithTooltips = injectGlossaryTooltips(bodyHtml, glossaryIndex, undefin
             <img
               src={post.featuredImage}
               alt={`Featured image for ${post.title}`}
-              width="1600"
-              height="900"
+              width={post.featuredImageWidth ?? 1600}
+              height={post.featuredImageHeight ?? 900}
               loading="eager"
               fetchpriority="high"
               decoding="async"

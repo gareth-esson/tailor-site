@@ -130,6 +130,13 @@ export interface BlogPost {
   serviceLink: string | null;
   author: string;
   featuredImage: string | null;
+  /** Intrinsic pixel dimensions of `featuredImage`, resolved at build
+   *  time via probe-image-size. Used for og:image:width/height so social
+   *  platforms can pre-size the share card without fetching the bytes.
+   *  null when the image URL can't be probed (network failure, expired
+   *  Notion file URL, etc.). */
+  featuredImageWidth: number | null;
+  featuredImageHeight: number | null;
   publishedDate: string | null;
   body: BlockObjectResponse[];
 }

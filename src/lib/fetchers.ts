@@ -21,6 +21,7 @@ import type {
   Setting,
   Voice,
 } from './types';
+import { probeDimensions } from './image-dimensions';
 
 // --- Notion property helpers ---
 
@@ -242,6 +243,11 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
     const blogPosts: BlogPost[] = await batchProcess(pages, async (page) => {
       const p = page.properties;
       const body = await fetchPageBlocks(page.id);
+      const featuredImage = getFilesUrl(p['Featured Image']);
+      // Probe at build time so og:image:width/height can be emitted on
+      // the post page. probe-image-size only reads enough bytes to parse
+      // the format header — it doesn't download the whole image.
+      const dims = featuredImage ? await probeDimensions(featuredImage) : null;
 
       return {
         id: page.id,
@@ -259,7 +265,9 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
         category: getSelectValue(p['Category']),
         serviceLink: getSelectValue(p['Service Link']),
         author: getRichTextValue(p['Author']),
-        featuredImage: getFilesUrl(p['Featured Image']),
+        featuredImage,
+        featuredImageWidth: dims?.width ?? null,
+        featuredImageHeight: dims?.height ?? null,
         publishedDate: getDateValue(p['Published Date']),
         body,
       };
