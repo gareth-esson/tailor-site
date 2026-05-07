@@ -26,16 +26,32 @@ const enquiryUrl = `/contact?service=${encodeURIComponent(serviceParam)}`;
           Get in touch to discuss how we can support your school.
         </p>
       </div>
-      <a
-        href={enquiryUrl}
-        class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto"
-        data-analytics-event="cta_click"
-        data-analytics-cta-type="enquire_service"
-        data-analytics-service-type={serviceParam}
-        data-analytics-target={enquiryUrl}
-      >
-        Get in touch
-      </a>
+      <div class="cta-enquiry__actions">
+        <a
+          href={enquiryUrl}
+          class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto"
+          data-analytics-event="cta_click"
+          data-analytics-cta-type="enquire_service"
+          data-analytics-service-type={serviceParam}
+          data-analytics-target={enquiryUrl}
+        >
+          Get in touch
+        </a>
+        {/* Secondary nudge for buyers who aren't ready to enquire —
+            keeps them on-site and links to the methodological page that
+            explains frameworks, safeguarding, and editorial review.
+            Adds internal-link equity to /our-approach from every
+            service page. */}
+        <a
+          href="/our-approach"
+          class="link-action link-action--muted cta-enquiry__secondary"
+          data-analytics-event="link_click"
+          data-analytics-link-type="service_to_approach"
+          data-analytics-service-type={serviceParam}
+        >
+          Or read about our approach to RSE
+        </a>
+      </div>
     </div>
   </div>
 </section>
@@ -70,6 +86,19 @@ const enquiryUrl = `/contact?service=${encodeURIComponent(serviceParam)}`;
     font-size: var(--text-prose-size-body);
     color: var(--text-body-muted);
     margin: 0;
+  }
+
+  /* Vertically stack primary CTA + secondary "approach" link with the
+     same gap rhythm the card already uses. */
+  .cta-enquiry__actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-sm);
+    align-items: center;
+  }
+
+  .cta-enquiry__secondary {
+    font-size: var(--text-card-size-body);
   }
 
   @media (min-width: 768px) {
