@@ -1,6 +1,20 @@
 ---
 import '../styles/tailwind.css';
 import '../styles/tailor-site-v2.css';
+// Self-hosted Lexend (used sitewide). Replaces the Google Fonts CSS
+// fetch — saves the round-trip to fonts.googleapis.com on first paint
+// and the woff2 round-trip to fonts.gstatic.com that the CSS triggers.
+// Each import is one weight × all three Latin subsets (vietnamese,
+// latin-ext, latin) — the browser fetches only the subset it needs
+// based on unicode-range. Atkinson Hyperlegible + Fraunces (OtA only)
+// stay on Google Fonts for now: smaller impact, and they're already
+// conditional on layer="ota".
+import '@fontsource/lexend/400.css';
+import '@fontsource/lexend/600.css';
+import '@fontsource/lexend/700.css';
+// Stable hashed URL for Lexend 600 latin — used in <link rel="preload">
+// below so the LCP heading font starts fetching at HTML parse time.
+import lexend600LatinUrl from '@fontsource/lexend/files/lexend-latin-600-normal.woff2?url';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import Analytics from '../components/Analytics.astro';
@@ -168,20 +182,24 @@ const sitewideJsonLd: Record<string, unknown> = isHomepage
     <!--
          Font loading.
 
-         Lexend (Tailor body + headings) is loaded sitewide. Atkinson
-         Hyperlegible (OtA body) and Fraunces (OtA headings) are loaded
-         only when the page declares the OtA layer — Tailor pages don't
-         need them and shouldn't pay the bytes.
+         Lexend (Tailor body + headings) is now self-hosted via
+         @fontsource/lexend, imported in the frontmatter. Vite bundles
+         the woff2 files into /_astro/ with hashed filenames and emits
+         the @font-face rules into the page's main CSS bundle — so the
+         font CSS is part of the same render-blocking stylesheet that
+         already loads for layout. No extra round-trip.
 
-         Each stylesheet is loaded as media=print then promoted to all
-         onload so the fetch doesn't block first paint. display=swap
-         keeps text visible with a fallback while the webfont downloads.
-         A noscript fallback handles users with JS disabled.
+         The 600 weight (LCP heading) is preloaded explicitly below so
+         the browser starts fetching the woff2 at HTML parse time
+         instead of waiting for the CSS to be parsed.
 
-         Lexend weights pruned to those actually referenced in CSS (400,
-         600, 700). Fraunces variable axes narrowed to the weight + opsz
-         ranges actually used (full WONK/SOFT axes triple file size for
-         no benefit on this site).
+         Atkinson Hyperlegible (OtA body) and Fraunces (OtA headings)
+         remain on Google Fonts — only loaded when the page declares
+         the OtA layer. Each stylesheet is loaded as media=print then
+         promoted to all onload so the fetch doesn't block first paint.
+         display=swap keeps text visible with a fallback while the
+         webfont downloads. A noscript fallback handles users with JS
+         disabled.
 
          IMPORTANT: never write a literal less-than-sign + tag-name
          inside this comment — Astro's HTML compiler parses the comment
@@ -189,22 +207,23 @@ const sitewideJsonLd: Record<string, unknown> = isHomepage
          page structure (Pagefind indexed 0 pages on the first build
          that did this).
     -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap" />
+    <link rel="preload" as="font" type="font/woff2" href={lexend600LatinUrl} crossorigin />
     {layer === 'ota' && (
       <Fragment>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" />
         <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,14..72,400..700;1,14..72,400..700&display=swap" />
       </Fragment>
     )}
-    <!-- noscript fallback — all three families unconditionally.
-         IMPORTANT: never use Astro conditional rendering inside <noscript>;
-         Astro's HTML compiler produces broken structure (silently inserts
-         </html> after </head>) which breaks the page for crawlers and
-         tools like Pagefind. Lesson learnt 2026-05-06. -->
+    <!-- noscript fallback for OtA Google Fonts only — Lexend is self-
+         hosted now and bundled into the main CSS, so JS-disabled users
+         already get it. Fonts loaded unconditionally regardless of
+         layer because conditional rendering inside <noscript> triggers
+         an Astro compiler bug (broken HTML structure → 0 pages indexed
+         by Pagefind). Cost is small: one extra OFL stylesheet on
+         Tailor pages for the rare no-JS visitor. -->
     <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap" />
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" />
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,14..72,400..700;1,14..72,400..700&display=swap" />
     </noscript>
