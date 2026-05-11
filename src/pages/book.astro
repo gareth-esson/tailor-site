@@ -10,7 +10,7 @@ import { getQuestions } from '../lib/content';
 
 // Purchase configuration
 const isOnSale = true;
-const bookPrice = '36.99';
+const bookPrice = '29.99';
 
 const allQuestions = await getQuestions();
 
@@ -61,9 +61,9 @@ const testimonial = null as { quote: string; cite: string } | null;
             <a
               href="/book/order"
               class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto"
-              aria-label={`Buy the Okay to Ask book — £${bookPrice}`}
+              aria-label={`Pre-order the Okay to Ask book — £${bookPrice}`}
             >
-              Buy the book — £{bookPrice}
+              Pre-order — £{bookPrice}
             </a>
           ) : (
             <a href="/contact?service=Other" class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto">
@@ -127,16 +127,16 @@ const testimonial = null as { quote: string; cite: string } | null;
   <!-- ═══ §4 PURCHASE CTA ═══ -->
   <section class="book-purchase" aria-labelledby="purchase-heading">
     <div class="book-purchase__outer">
-      <h2 id="purchase-heading" class="book-purchase__title">Get your copy</h2>
+      <h2 id="purchase-heading" class="book-purchase__title">Pre-order your copy</h2>
       {isOnSale ? (
         <Fragment>
           <p class="book-purchase__price">£{bookPrice}</p>
           <a
             href="/book/order"
             class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto"
-            aria-label="Buy the Okay to Ask book"
+            aria-label="Pre-order the Okay to Ask book"
           >
-            Buy the book
+            Pre-order the book
           </a>
         </Fragment>
       ) : (
