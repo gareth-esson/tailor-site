@@ -127,7 +127,7 @@ const categoryBadge = question.okayToAskCategory
 const metaTitle = question.metaTitle || `${question.question} | Okay to Ask`;
 const metaDescription = question.metaDescription
   || question.simpleAnswer?.slice(0, 155)
-  || `Find the answer to "${question.question}" — honest, age-appropriate RSE from Okay to Ask.`;
+  || `Find the answer to "${question.question}", honest, age-appropriate RSE from Okay to Ask.`;
 const canonicalPath = `/anonymous_question/${question.slug}/`;
 
 // FAQPage answer text uses the rendered standard body (Google explicitly
@@ -179,7 +179,7 @@ const postItTopPadding = showAlertBand
   preloadImage={postItImage?.path}
 >
   {/* ─────────────────────────────────────────────
-      §1 + §2 — Crisis support (A9) and Age flag (D1)
+      §1 + §2, Crisis support (A9) and Age flag (D1)
       A single wrapping section so the two alerts
       stack in the same 56rem reading column when
       both are present. Crisis is always first.
@@ -199,7 +199,7 @@ const postItTopPadding = showAlertBand
   )}
 
   {/* ─────────────────────────────────────────────
-      .c1-content-panel — §3, §4
+      .c1-content-panel, §3, §4
       Content "book page" panel: white surface, shadow, radius.
       Sits on --bg-page ground, not full-bleed.
       ───────────────────────────────────────────── */}
@@ -313,7 +313,7 @@ const postItTopPadding = showAlertBand
   )}
 
   {/* ─────────────────────────────────────────────
-      §6 — Related questions (A15)
+      §6, Related questions (A15)
       White band so cards sit on a lighter ground than
       the warm body surface, matching the panel above.
       ───────────────────────────────────────────── */}
@@ -334,8 +334,8 @@ const postItTopPadding = showAlertBand
   </div>
 
   {/* ─────────────────────────────────────────────
-      §7 — End-of-answer panel (A17)
-      Own .surface--ota-alt band — the visual surface
+      §7, End-of-answer panel (A17)
+      Own .surface--ota-alt band, the visual surface
       shift that breaks the continuous warm paper ground.
       ───────────────────────────────────────────── */}
   <section

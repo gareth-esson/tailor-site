@@ -83,7 +83,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
     const ip = clientAddress ?? 'unknown';
     if (!rateLimit(ip)) {
-      return json({ error: 'Too many requests — please try again shortly.' }, 429);
+      return json({ error: 'Too many requests, please try again shortly.' }, 429);
     }
 
     const raw = await request.text();

@@ -145,7 +145,7 @@ const roleOptions = [
       </div>
 
       <button type="button" class="school-combobox__skip-btn" id="school-skip-btn">
-        Skip — school not in England or not found
+        Skip, school not in England or not found
       </button>
     </div>
 
@@ -325,7 +325,7 @@ const roleOptions = [
       hiddenName.value = school.name;
       hiddenUrn.value = String(school.urn);
       selectedEl.textContent = school.local_authority
-        ? `${school.name} — ${school.local_authority}`
+        ? `${school.name}, ${school.local_authority}`
         : school.name;
       setState('selected');
       closeList();

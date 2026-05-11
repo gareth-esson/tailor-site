@@ -41,7 +41,7 @@ if (!service) return;
         {service.phone && (
           <>
             Call <strong>{service.name}</strong> free on <a href={`tel:${service.phone.replace(/\s/g, '')}`}>{service.phone}</a>
-            {' — '}
+            {', '}
           </>
         )}
         <a

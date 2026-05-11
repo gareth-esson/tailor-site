@@ -8,7 +8,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
-  title="Pre-order — Okay to Ask Book"
+  title="Pre-order | Okay to Ask Book"
   description="Pre-order the Okay to Ask book. Enter your details and we'll redirect you to our secure checkout."
   canonicalPath="/book/order"
   layer="ota"
@@ -146,7 +146,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       <!-- Success state (briefly shown before redirect) -->
       <div class="book-order-redirect" id="book-order-redirect" hidden>
         <div class="book-order-redirect__card">
-          <p class="book-order-redirect__text">Details saved — taking you to checkout…</p>
+          <p class="book-order-redirect__text">Details saved, taking you to checkout…</p>
         </div>
       </div>
 
@@ -337,7 +337,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       } catch (err) {
         errorEl.hidden = false;
         if (errorMsg && err instanceof Error && err.message !== 'Unknown error') {
-          errorMsg.innerHTML = `${err.message} — or <a href="/contact">contact us</a>.`;
+          errorMsg.innerHTML = `${err.message}, or <a href="/contact">contact us</a>.`;
         }
         submitBtn.disabled = false;
         submitBtn.textContent = 'Continue to payment';

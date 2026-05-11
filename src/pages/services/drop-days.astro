@@ -38,7 +38,7 @@ const whatSchoolsGet: string | null = null;
 
 const featureCards = [
   { title: 'Full-day expert delivery', description: 'A specialist educator on-site for the full school day, rotating through sessions with your cohorts.' },
-  { title: 'Multi-cohort coverage', description: 'Reach an entire year group — or multiple year groups — in a single day. Every student hears the same content.' },
+  { title: 'Multi-cohort coverage', description: 'Reach an entire year group, or multiple year groups, in a single day. Every student hears the same content.' },
   { title: 'Topic selection with your PSHE lead', description: 'We agree topics, session order, and cohort grouping in advance so the day fits your curriculum and context.' },
   { title: 'Post-day summary and follow-up', description: 'Written debrief for staff including talking points, disclosure watch-list, and recommended follow-up activities.' },
 ];
@@ -62,7 +62,7 @@ const featuredTopicSlugs = [
 const allPosts = await getBlogPosts();
 const relatedPosts = allPosts.filter((p) => p.serviceLink === 'drop-days').slice(0, 3);
 
-const metaTitle = `${title} — Tailor Education`;
+const metaTitle = `${title}, Tailor Education`;
 const metaDescription = 'A full day of expert-led RSE delivery for multiple year groups, planned with your PSHE lead and followed up with a written staff debrief. Maximum impact, minimum timetable disruption.';
 const canonicalPath = `/services/${slug}/`;
 
@@ -113,7 +113,7 @@ const jsonLd = {
             {heroImage ? (
               <img src={heroImage} alt={heroImageAlt} width={heroImageWidth} height={heroImageHeight} loading="eager" fetchpriority="high" decoding="async" />
             ) : (
-              <div class="service-hero__image-placeholder">Hero photography required — source before launch</div>
+              <div class="service-hero__image-placeholder">Hero photography required, source before launch</div>
             )}
           </div>
         </div>
@@ -155,7 +155,7 @@ const jsonLd = {
               <blockquote>
                 <p class="service-proof-band__quote">"{testimonialQuote}"</p>
               </blockquote>
-              <span class="service-proof-band__source">— {testimonialSource}</span>
+              <span class="service-proof-band__source">{testimonialSource}</span>
             </>
           )}
           <div class="service-proof-band__cta-wrap">

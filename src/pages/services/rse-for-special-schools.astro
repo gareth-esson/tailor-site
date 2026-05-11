@@ -21,7 +21,7 @@ const serviceParam = 'RSE for Special Schools';
 const serviceName = 'RSE for Special Schools';
 
 const heroSubtitle =
-  'Specialist RSE for pupils with profound and complex learning needs — designed around each student\'s communication style, sensory profile, and developmental stage, not adapted from a mainstream lesson plan.';
+  'Specialist RSE for pupils with profound and complex learning needs, designed around each student\'s communication style, sensory profile, and developmental stage, not adapted from a mainstream lesson plan.';
 
 const heroImage: string | null = '/images/services/tailor-education-special-school-friendships-boundaries-rse-lesson.webp';
 const heroImageAlt = 'Students in a special school RSE lesson exploring friendships and boundaries with a Tailor educator';
@@ -31,21 +31,21 @@ const heroImageHeight = 893;
 const descriptionHeading = 'About RSE for Special Schools';
 
 const descriptionLead =
-  'Special schools serve pupils whose learning needs require RSE designed from the ground up — not a simplified version of a mainstream lesson, but provision built around the communication styles, sensory needs, and lived experience of students with profound and complex needs.';
+  'Special schools serve pupils whose learning needs require RSE designed from the ground up, not a simplified version of a mainstream lesson, but provision built around the communication styles, sensory needs, and lived experience of students with profound and complex needs.';
 
 const descriptionBody = [
   'At Tailor Education, we have worked with special schools for years, developing an understanding of what RSE looks like when every pupil has an EHCP and most are working significantly below age-related expectations. Our sessions use multi-sensory teaching methods, draw on close collaboration with your SENCO and class teams, and are planned carefully in advance so content is pitched right for every individual.',
-  'We cover the topics that matter most for special school pupils: body awareness, personal safety, healthy relationships, and puberty — handled with specialist expertise and real care. Every session is built around your cohort, not slotted in from a generic pack.',
+  'We cover the topics that matter most for special school pupils: body awareness, personal safety, healthy relationships, and puberty, handled with specialist expertise and real care. Every session is built around your cohort, not slotted in from a generic pack.',
 ];
 
 const whatSchoolsGet =
-  'Pupils who understand their bodies, can recognise safe and unsafe situations, and have been given the language and opportunity to talk about relationships in a supported way. Staff who feel equipped to continue those conversations. A school that can say RSE is genuinely happening — not just on paper.';
+  'Pupils who understand their bodies, can recognise safe and unsafe situations, and have been given the language and opportunity to talk about relationships in a supported way. Staff who feel equipped to continue those conversations. A school that can say RSE is genuinely happening, not just on paper.';
 
 const featureCards = [
-  { title: 'Curriculum adapted for complex needs', description: 'Lesson plans built around the cognitive, emotional, and physical abilities of your pupils — accessible, relevant, and right for the room.' },
+  { title: 'Curriculum adapted for complex needs', description: 'Lesson plans built around the cognitive, emotional, and physical abilities of your pupils, accessible, relevant, and right for the room.' },
   { title: 'Multi-sensory teaching methods', description: 'Visual aids, tactile tools, and interactive activities that meet pupils on their own communication terms.' },
   { title: 'Close collaboration with school staff', description: 'We work with your SENCO, class teachers, and support staff before and after delivery, so RSE integrates with pupils\' broader educational plans.' },
-  { title: 'Sensitive topics handled with expertise', description: 'Puberty, personal safety, privacy, and hygiene approached with care — easing anxieties for staff while giving pupils the support they need.' },
+  { title: 'Sensitive topics handled with expertise', description: 'Puberty, personal safety, privacy, and hygiene approached with care, easing anxieties for staff while giving pupils the support they need.' },
 ];
 
 const [proofTestimonial] = await getTestimonialsByService('RSE delivery');
@@ -67,7 +67,7 @@ const featuredTopicSlugs = [
 const allPosts = await getBlogPosts();
 const relatedPosts = allPosts.filter((p) => p.serviceLink === 'delivery').slice(0, 3);
 
-const metaTitle = 'RSE for special schools — Tailor Education';
+const metaTitle = 'RSE for special schools, Tailor Education';
 const metaDescription = 'Specialist RSE for pupils with profound and complex learning needs, designed for special school settings and delivered by expert educators.';
 const canonicalPath = `/services/${slug}/`;
 
@@ -118,7 +118,7 @@ const jsonLd = {
             {heroImage ? (
               <img src={heroImage} alt={heroImageAlt} width={heroImageWidth} height={heroImageHeight} loading="eager" fetchpriority="high" decoding="async" />
             ) : (
-              <div class="service-hero__image-placeholder">Hero photography required — source before launch</div>
+              <div class="service-hero__image-placeholder">Hero photography required, source before launch</div>
             )}
           </div>
         </div>
@@ -160,7 +160,7 @@ const jsonLd = {
               <blockquote>
                 <p class="service-proof-band__quote">"{testimonialQuote}"</p>
               </blockquote>
-              <span class="service-proof-band__source">— {testimonialSource}</span>
+              <span class="service-proof-band__source">{testimonialSource}</span>
             </>
           )}
           <div class="service-proof-band__cta-wrap">

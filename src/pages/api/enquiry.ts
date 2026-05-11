@@ -76,7 +76,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     // Rate limit (best-effort).
     const ip = clientAddress ?? 'unknown';
     if (!rateLimit(ip)) {
-      return json({ error: 'Too many requests — please try again shortly.' }, 429);
+      return json({ error: 'Too many requests, please try again shortly.' }, 429);
     }
 
     // Bound the body read. Read as text first so we can size-check.
@@ -234,7 +234,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
         subject: (() => {
           const ctx = school || organisation;
           const prefix = role === 'press' ? 'Press enquiry' : 'New enquiry';
-          return ctx ? `${prefix}: ${service} — ${ctx}` : `${prefix}: ${service}`;
+          return ctx ? `${prefix}: ${service} (${ctx})` : `${prefix}: ${service}`;
         })(),
         text: emailBody,
         reply_to: email,

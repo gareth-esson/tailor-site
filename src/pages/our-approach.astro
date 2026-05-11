@@ -34,7 +34,7 @@ const FRAMEWORKS: Framework[] = [
     whatItIs:
       "The Department for Education's statutory guidance sets out what schools in England must teach as part of Relationships Education at primary, RSE at secondary, and Health Education across both phases. It defines both the required learning and the boundaries on what should be covered at each age.",
     howWeMap:
-      "Every Tailor lesson plan is cross-referenced to the relevant sections of the statutory guidance. Where the guidance specifies a learning outcome, one of our pages addresses it — with the mapping shown in the plan's metadata. Where the guidance draws a line on what is covered at primary versus secondary, we hold that line.",
+      "Every Tailor lesson plan is cross-referenced to the relevant sections of the statutory guidance. Where the guidance specifies a learning outcome, one of our pages addresses it, with the mapping shown in the plan's metadata. Where the guidance draws a line on what is covered at primary versus secondary, we hold that line.",
     examples: [
       'Each lesson plan lists the DfE guidance sections it addresses.',
       'Primary content never covers topics the guidance reserves for secondary.',
@@ -50,7 +50,7 @@ const FRAMEWORKS: Framework[] = [
     whatItIs:
       "The PSHE Association's Programme of Study is the sector-standard curriculum framework for PSHE Education in England, covering Key Stages 1 through 5. It maps learning outcomes across Relationships, Living in the Wider World, and Health & Wellbeing, with clear progression between key stages.",
     howWeMap:
-      'Our lesson plans are mapped to Programme of Study learning outcomes by key stage. When we build a new unit, we start from the Programme of Study objectives and work back to activities and resources — not the other way round.',
+      'Our lesson plans are mapped to Programme of Study learning outcomes by key stage. When we build a new unit, we start from the Programme of Study objectives and work back to activities and resources, not the other way round.',
     examples: [
       'Every lesson is tagged with the Programme of Study outcomes it covers.',
       'Progression across key stages follows the Programme of Study sequencing.',
@@ -65,14 +65,14 @@ const FRAMEWORKS: Framework[] = [
     whatItIs:
       "UNESCO's International Technical Guidance on Sexuality Education is the international evidence-based standard for comprehensive sexuality education. It synthesises decades of research into age-banded learning objectives, informed by the WHO, UNAIDS, UNFPA, and UN Women.",
     howWeMap:
-      'We use the Technical Guidance as an evidence reference for decisions beyond what UK guidance specifies — particularly around rights-based framings, consent, and the developmental appropriateness of specific concepts at specific ages. Where UK guidance is silent, the Technical Guidance informs what we do.',
+      'We use the Technical Guidance as an evidence reference for decisions beyond what UK guidance specifies, particularly around rights-based framings, consent, and the developmental appropriateness of specific concepts at specific ages. Where UK guidance is silent, the Technical Guidance informs what we do.',
     sourceUrl:
       'https://www.unesco.org/en/articles/international-technical-guidance-sexuality-education',
   },
   {
     name: 'WHO European Standards',
     fullTitle:
-      'WHO Regional Office for Europe — Standards for Sexuality Education in Europe',
+      'WHO Regional Office for Europe, Standards for Sexuality Education in Europe',
     whatItIs:
       "The WHO Regional Office for Europe's Standards for Sexuality Education in Europe, developed with the German Federal Centre for Health Education (BZgA), set out a framework for holistic sexuality education aligned with children's developmental stages from early years onwards.",
     howWeMap:
@@ -85,12 +85,12 @@ const FRAMEWORKS: Framework[] = [
 // --- SEO ---
 
 const description =
-  'How Tailor Education writes RSE for UK schools — aligned to DfE statutory guidance, the PSHE Association Programme of Study, UNESCO and KCSiE, with safeguarding built in.';
+  'How Tailor Education writes RSE for UK schools, aligned to DfE statutory guidance, the PSHE Association Programme of Study, UNESCO and KCSiE, with safeguarding built in.';
 
 const aboutPageJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'AboutPage',
-  name: 'Our approach — Tailor Education',
+  name: 'Our approach, Tailor Education',
   url: 'https://tailoreducation.org.uk/our-approach',
   mainEntity: { '@id': 'https://tailoreducation.org.uk/#organization' },
   isPartOf: { '@id': 'https://tailoreducation.org.uk/#website' },
@@ -98,7 +98,7 @@ const aboutPageJsonLd = {
 ---
 
 <BaseLayout
-  title="Our approach to RSE — frameworks and safeguarding | Tailor Education"
+  title="Our approach to RSE | frameworks and safeguarding | Tailor Education"
   description={description}
   canonicalPath="/our-approach"
   jsonLd={aboutPageJsonLd}
@@ -112,7 +112,7 @@ const aboutPageJsonLd = {
           <h1 class="approach-hero__title">Our approach</h1>
           <p class="approach-hero__lede">
             Tailor Education publishes RSE content for UK schools. This page
-            sets out the thinking, the evidence, and the discipline behind it —
+            sets out the thinking, the evidence, and the discipline behind it,
             how we write, what we align to, how we safeguard, and how we keep
             the work current.
           </p>
@@ -140,7 +140,7 @@ const aboutPageJsonLd = {
         <p>
           Our content is grounded in pedagogical research and UK-specific
           practice. We draw on peer-reviewed work on adolescent development,
-          disclosure behaviour, and effective pedagogy — and on direct
+          disclosure behaviour, and effective pedagogy, and on direct
           classroom experience of what lands and what doesn't.
         </p>
         <p>
@@ -195,7 +195,7 @@ const aboutPageJsonLd = {
         <h2 class="approach-section__title">The frameworks we align to</h2>
         <p class="approach-section__lede">
           Our content is mapped, in detail, to four reference frameworks.
-          Each of them shapes what we teach and how we sequence it — and
+          Each of them shapes what we teach and how we sequence it, and
           none is treated as a checklist to be ticked and filed.
         </p>
 
@@ -249,7 +249,7 @@ const aboutPageJsonLd = {
           Every activity we publish is designed in the knowledge that,
           somewhere in the room, a young person may be living through the
           topic on the page. Safeguarding is not a paragraph at the back of
-          a lesson plan — it shapes how we choose what to teach, how we
+          a lesson plan, it shapes how we choose what to teach, how we
           structure activities, and how we train teachers to respond.
         </p>
 
@@ -326,13 +326,13 @@ const aboutPageJsonLd = {
         <p>
           Every page carries a visible <code>Last reviewed</code> date.
           Substantive updates are logged. Corrections are versioned and
-          dated inline on the affected page — we don't silently edit
+          dated inline on the affected page, we don't silently edit
           history.
         </p>
 
         <p class="approach-section__closer">
           If you spot something out of date, misleading, or just plain
-          wrong, please tell us — there's a feedback link on every page.
+          wrong, please tell us, there's a feedback link on every page.
         </p>
       </div>
     </section>
@@ -533,7 +533,7 @@ const aboutPageJsonLd = {
   }
 
   /* Scoped descendant + tag+class (0-4-1 once Astro adds [data-astro-cid])
-     beats .approach-section p (0-3-1 scoped) cleanly — avoids !important. */
+     beats .approach-section p (0-3-1 scoped) cleanly, avoids !important. */
   .approach-section p.approach-framework-block__title {
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-card-size-body);
@@ -617,7 +617,7 @@ const aboutPageJsonLd = {
   }
 
   /* Scoped descendant + tag+class (0-4-1 once Astro adds [data-astro-cid])
-     beats .approach-section p (0-3-1 scoped) cleanly — avoids !important. */
+     beats .approach-section p (0-3-1 scoped) cleanly, avoids !important. */
   .approach-section p.approach-section__closer {
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-prose-size-body);

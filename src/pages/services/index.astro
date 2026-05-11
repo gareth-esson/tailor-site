@@ -18,7 +18,7 @@ import { breadcrumbJsonLd, site } from '../../lib/site';
 const heroEyebrow = 'Services';
 const heroTitle = 'RSE services for schools';
 const heroSubtitle =
-  'Whether you need someone to deliver RSE directly, training for your staff, or support with policy and curriculum — we can help.';
+  'Whether you need someone to deliver RSE directly, training for your staff, or support with policy and curriculum, we can help.';
 const heroImage = '/images/services/tailor-education-rse-consultant-school-corridor.webp';
 const heroImageAlt = 'A Tailor consultant arriving at a school to deliver RSE support';
 const heroImageWidth = 1600;
@@ -30,8 +30,8 @@ const heroImageHeight = 873;
 const philosophyLead =
   'Good RSE is not a compliance exercise. It is the part of a school week where students get to ask the questions they are actually carrying, and trust that the adult in front of them has a plan for what to say back.';
 const philosophyBody = [
-  'We work with schools because the gap between "RSE exists in the curriculum" and "RSE is being delivered well" is wider than most parents realise. Teachers are asked to cover topics they were never trained in, often with a few hours\' notice, and often without a clear framework for the hardest moments — disclosures, off-topic questions, the question a student asks specifically because they think it will make the adult flinch.',
-  'Every service on this page is built around closing that gap. Some schools bring us in to deliver directly. Some bring us in to train their staff to deliver themselves. Some need help with the policy and curriculum that sits behind it all. The shape of the work changes — the belief underneath it does not.',
+  'We work with schools because the gap between "RSE exists in the curriculum" and "RSE is being delivered well" is wider than most parents realise. Teachers are asked to cover topics they were never trained in, often with a few hours\' notice, and often without a clear framework for the hardest moments, disclosures, off-topic questions, the question a student asks specifically because they think it will make the adult flinch.',
+  'Every service on this page is built around closing that gap. Some schools bring us in to deliver directly. Some bring us in to train their staff to deliver themselves. Some need help with the policy and curriculum that sits behind it all. The shape of the work changes, the belief underneath it does not.',
 ];
 const philosophyMoreHref = '/our-approach';
 const philosophyMoreLabel = 'Read more about how we approach RSE delivery';
@@ -51,7 +51,7 @@ const flagshipServices = [
   {
     title: 'RSE for Secondary Schools',
     description:
-      'Expert-led RSE for KS3 and KS4 — covering the topics students are actually thinking about, delivered with confidence.',
+      'Expert-led RSE for KS3 and KS4, covering the topics students are actually thinking about, delivered with confidence.',
     href: '/services/rse-for-secondary-schools',
     image: '/images/services/tailor-education-secondary-students-collaborative-learning.webp',
     imageAlt: 'Secondary students working collaboratively in a Tailor RSE session',
@@ -81,7 +81,7 @@ const secondaryServices = [
   {
     title: 'Drop Days',
     description:
-      'A full day of RSE delivery across multiple year groups — maximum impact, minimum disruption.',
+      'A full day of RSE delivery across multiple year groups, maximum impact, minimum disruption.',
     href: '/services/drop-days',
     image: '/images/services/tailor-education-rse-year-group-session-school-hall.webp',
     imageAlt: 'A whole year group gathered in the school hall for a Tailor drop day',
@@ -110,11 +110,11 @@ const testimonialSource: string | null = null;
 const closingEyebrow = 'Not sure which service fits?';
 const closingTitle = "Let's talk about what your school needs";
 const closingText =
-  'A short call with one of our educators — no commitment, just a conversation about what RSE looks like in your school.';
+  'A short call with one of our educators, no commitment, just a conversation about what RSE looks like in your school.';
 ---
 
 <BaseLayout
-  title="RSE Services for Schools — Tailor Education"
+  title="RSE Services for Schools | Tailor Education"
   description="Expert RSE delivery, training, drop days and curriculum planning for schools. Explore Tailor Education's full range of services."
   canonicalPath="/services/"
   ogImage={heroImage}
@@ -228,7 +228,7 @@ const closingText =
     <section class="services-proof-band">
       <div class="services-proof-band__inner mx-auto w-full max-w-[var(--container-max-hero-text)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
         <p class="services-proof-band__quote">{testimonialQuote}</p>
-        <p class="services-proof-band__source">— {testimonialSource}</p>
+        <p class="services-proof-band__source">{testimonialSource}</p>
         <a href="/testimonials" class="link-action link-action--muted link-action--card services-proof-band__more">
           Read more from schools we've worked with
         </a>

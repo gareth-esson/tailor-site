@@ -36,7 +36,7 @@ const founder: Founder = {
   credentials: 'QTS · Enhanced DBS',
   bio: [
     "Gareth designs and teaches RSE across primary, secondary, SEND, and alternative-provision settings, and has trained teaching teams in schools across the UK.",
-    "Right now, everything Tailor publishes is written by Gareth. As the team grows, more practising specialists will join the writing — but every page still has to pass the same test: would I teach this in a real classroom tomorrow?",
+    "Right now, everything Tailor publishes is written by Gareth. As the team grows, more practising specialists will join the writing, but every page still has to pass the same test: would I teach this in a real classroom tomorrow?",
   ],
   portrait: '/images/portrait-gareth.webp',
   portraitAlt: 'Gareth Esson, founder of Tailor Education',
@@ -119,7 +119,7 @@ if (import.meta.env.DEV && founder.portrait && !founder.portraitAlt) {
 // --- SEO ---
 
 const description =
-  'About Tailor Education — a community-interest company delivering specialist RSE content, training, and support to UK schools, founded and led by Gareth Esson.';
+  'About Tailor Education, a community-interest company delivering specialist RSE content, training, and support to UK schools, founded and led by Gareth Esson.';
 
 // Page schema graph: AboutPage + Person (founder lives here) + breadcrumb.
 // Sitewide Organization is emitted by BaseLayout, so we don't duplicate it.
@@ -141,7 +141,7 @@ const aboutJsonLd = {
 ---
 
 <BaseLayout
-  title="About Tailor Education — RSE specialists for UK schools"
+  title="About Tailor Education | RSE specialists for UK schools"
   description={description}
   canonicalPath="/about"
   jsonLd={aboutJsonLd}
@@ -169,7 +169,7 @@ const aboutJsonLd = {
         <h2 class="about-intro__title">Tailor Education</h2>
         <p class="about-intro__para">
           Tailor Education exists to make high-quality relationships and sex
-          education feel deliverable in every classroom — not just the ones
+          education feel deliverable in every classroom, not just the ones
           with a specialist on staff. We build the resources, the training,
           and the planning support that let schools teach RSE with confidence,
           grounded in DfE statutory guidance and the PSHE Association
@@ -181,12 +181,12 @@ const aboutJsonLd = {
             rel="noopener noreferrer"
           >community-interest company</a>: any surplus we generate is committed,
           by statute, to the community purpose we were founded for. That's a
-          structure, not a slogan — it shapes who we answer to and how we
+          structure, not a slogan, it shapes who we answer to and how we
           choose what to work on next.
         </p>
         <p class="about-intro__para">
           We believe young people deserve honest, inclusive, age-appropriate
-          RSE — and teachers deserve the tools and the confidence to deliver
+          RSE, and teachers deserve the tools and the confidence to deliver
           it. Every page we publish and every training session we run is
           measured against that belief.
         </p>

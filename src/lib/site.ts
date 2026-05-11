@@ -16,7 +16,7 @@ export const site = {
   url: 'https://tailoreducation.org.uk',
   brand: 'Tailor Education',
   defaultDescription:
-    'Expert RSE resources, training and support for schools — from Tailor Education and Okay to Ask.',
+    'Expert RSE resources, training and support for schools, from Tailor Education and Okay to Ask.',
   /** Used in <html lang="…">. Kept as plain "en" because Pagefind 1.4.0
    *  silently ignores BCP47 regional variants ("en-GB" → 0 pages indexed).
    *  Locale precision lives in og:locale and the WebSite schema's

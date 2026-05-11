@@ -28,20 +28,20 @@ const heroImageHeight = 893;
 const descriptionHeading = 'About RSE Policy & Curriculum Planning';
 
 const descriptionLead =
-  'Writing a RSE policy from scratch, or rewriting one that no longer reflects the DfE 2026 guidance, is the kind of work PSHE leads rarely have time for alongside teaching. It also requires a degree of confidence about what good looks like — particularly in the sections that parents or inspectors will scrutinise.';
+  'Writing a RSE policy from scratch, or rewriting one that no longer reflects the DfE 2026 guidance, is the kind of work PSHE leads rarely have time for alongside teaching. It also requires a degree of confidence about what good looks like, particularly in the sections that parents or inspectors will scrutinise.';
 
 const descriptionBody = [
   'We work with your PSHE lead, SLT, and governors to build a policy and curriculum map that reflects your school\'s context, meets the DfE 2026 statutory requirements, and reads confidently for the audiences that matter: parents, inspectors, and your own staff.',
-  'The engagement runs over two to four weeks. We start with a scoping call, then work through a structured process — reviewing current provision, drafting policy language, mapping curriculum coverage to statutory requirements, and finalising parent-facing communication. You end with a written policy, a curriculum map, and a parent information document, all of which are yours to use and adapt.',
+  'The engagement runs over two to four weeks. We start with a scoping call, then work through a structured process, reviewing current provision, drafting policy language, mapping curriculum coverage to statutory requirements, and finalising parent-facing communication. You end with a written policy, a curriculum map, and a parent information document, all of which are yours to use and adapt.',
 ];
 
 const whatSchoolsGet =
-  'A written RSE policy aligned to DfE 2026 statutory guidance. A curriculum map showing which topics are covered in which year groups and how each maps to statutory requirements. A parent-facing information document explaining your approach. And a PSHE lead who has been through the process alongside a specialist — so they can defend and evolve the policy afterwards.';
+  'A written RSE policy aligned to DfE 2026 statutory guidance. A curriculum map showing which topics are covered in which year groups and how each maps to statutory requirements. A parent-facing information document explaining your approach. And a PSHE lead who has been through the process alongside a specialist, so they can defend and evolve the policy afterwards.';
 
 const featureCards = [
   { title: 'Policy drafting', description: 'A written RSE policy that meets DfE 2026 statutory requirements and reflects your school\'s specific context and ethos.' },
   { title: 'Curriculum mapping', description: 'Topic-by-topic map of what is covered in which year groups, aligned to statutory requirements and PSHE Association framework.' },
-  { title: 'Parent-facing information document', description: 'A clearly written document explaining your RSE approach to parents — proactive, reassuring, inspection-ready.' },
+  { title: 'Parent-facing information document', description: 'A clearly written document explaining your RSE approach to parents, proactive, reassuring, inspection-ready.' },
   { title: 'Inspection-ready documentation', description: 'All deliverables structured so they can be referenced directly in an Ofsted inspection without rewriting.' },
 ];
 
@@ -64,7 +64,7 @@ const featuredTopicSlugs = [
 const allPosts = await getBlogPosts();
 const relatedPosts = allPosts.filter((p) => p.serviceLink === 'rse-policy-curriculum-planning').slice(0, 3);
 
-const metaTitle = 'RSE policy & curriculum planning — Tailor Education';
+const metaTitle = 'RSE policy & curriculum planning, Tailor Education';
 const metaDescription = 'Bespoke consultancy to develop your RSE policy, plan your curriculum, and communicate your approach to parents. DfE 2026-aligned and inspection-ready.';
 const canonicalPath = `/services/${slug}/`;
 
@@ -115,7 +115,7 @@ const jsonLd = {
             {heroImage ? (
               <img src={heroImage} alt={heroImageAlt} width={heroImageWidth} height={heroImageHeight} loading="eager" fetchpriority="high" decoding="async" />
             ) : (
-              <div class="service-hero__image-placeholder">Hero photography required — source before launch</div>
+              <div class="service-hero__image-placeholder">Hero photography required, source before launch</div>
             )}
           </div>
         </div>
@@ -157,7 +157,7 @@ const jsonLd = {
               <blockquote>
                 <p class="service-proof-band__quote">"{testimonialQuote}"</p>
               </blockquote>
-              <span class="service-proof-band__source">— {testimonialSource}</span>
+              <span class="service-proof-band__source">{testimonialSource}</span>
             </>
           )}
           <div class="service-proof-band__cta-wrap">

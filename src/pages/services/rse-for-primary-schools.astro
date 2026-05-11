@@ -16,7 +16,7 @@ const serviceParam = 'RSE for primary schools';
 const serviceName = 'RSE for primary schools';
 
 const heroSubtitle =
-  'Expert-led RSE tailored for KS1 and KS2, delivered by a specialist educator who understands primary school settings — using language and activities that feel natural for the age group.';
+  'Expert-led RSE tailored for KS1 and KS2, delivered by a specialist educator who understands primary school settings, using language and activities that feel natural for the age group.';
 
 const heroImage: string | null = '/images/services/tailor-education-primary-rse-circle-time.webp';
 const heroImageAlt = 'Primary school pupils gathered for a circle-time RSE session led by a Tailor educator';
@@ -27,7 +27,7 @@ const heroImageHeight = 896;
 const descriptionHeading = 'About RSE for primary schools';
 
 const descriptionLead =
-  'A specialist RSE educator delivers age-appropriate lessons directly to your primary school students. Sessions are designed around the realities of teaching young children about relationships, bodies, boundaries, and staying safe — using language and activities that feel natural for the age group.';
+  'A specialist RSE educator delivers age-appropriate lessons directly to your primary school students. Sessions are designed around the realities of teaching young children about relationships, bodies, boundaries, and staying safe, using language and activities that feel natural for the age group.';
 
 const descriptionBody = [
   'We cover the topics primary staff often find hardest: puberty, consent in age-appropriate terms, healthy friendships, online safety for younger children. Every session fits your year group, your school ethos, and anything your cohort is working through.',
@@ -37,7 +37,7 @@ const whatSchoolsGet =
   'Students who can name body parts accurately, understand what makes a healthy friendship, recognise the difference between appropriate and inappropriate touch, and know how to ask for help. Staff who feel more confident continuing RSE conversations after the session. And parents who can see that the school takes this seriously and handles it well.';
 
 const featureCards = [
-  { title: 'KS1 and KS2 lesson design', description: 'Sessions pitched for primary year groups — honest, age-appropriate, never overwhelming.' },
+  { title: 'KS1 and KS2 lesson design', description: 'Sessions pitched for primary year groups, honest, age-appropriate, never overwhelming.' },
   { title: 'DfE statutory alignment', description: 'Topics mapped to the DfE statutory RSE and health education guidance.' },
   { title: 'Post-session staff summary', description: 'Written debrief with talking points for follow-up in the classroom.' },
   { title: 'Parent-facing information', description: 'On request: a clear document explaining what was covered and why.' },
@@ -62,7 +62,7 @@ const featuredTopicSlugs = [
 const allPosts = await getBlogPosts();
 const relatedPosts = allPosts.filter((p) => p.serviceLink === 'delivery').slice(0, 3);
 
-const metaTitle = `${title} — Tailor Education`;
+const metaTitle = `${title}, Tailor Education`;
 const metaDescription = 'Age-appropriate RSE for KS1 and KS2, delivered by a specialist educator who understands primary school settings.';
 const canonicalPath = `/services/${slug}/`;
 
@@ -114,7 +114,7 @@ const jsonLd = {
             {heroImage ? (
               <img src={heroImage} alt={heroImageAlt} width={heroImageWidth} height={heroImageHeight} loading="eager" fetchpriority="high" decoding="async" />
             ) : (
-              <div class="service-hero__image-placeholder">Hero photography required — source before launch</div>
+              <div class="service-hero__image-placeholder">Hero photography required, source before launch</div>
             )}
           </div>
         </div>
@@ -159,7 +159,7 @@ const jsonLd = {
               <blockquote>
                 <p class="service-proof-band__quote">"{testimonialQuote}"</p>
               </blockquote>
-              <span class="service-proof-band__source">— {testimonialSource}</span>
+              <span class="service-proof-band__source">{testimonialSource}</span>
             </>
           )}
           <div class="service-proof-band__cta-wrap">
