@@ -108,7 +108,7 @@ const year = new Date().getFullYear();
         <a href="/our-approach#safeguarding">Safeguarding</a>
         <a href="/accessibility">Accessibility</a>
         <a href="/privacy">Privacy policy</a>
-        <a href="/privacy#cookies">Cookies</a>
+        <button type="button" class="footer-legal__link-btn" id="cookie-prefs-trigger">Cookie preferences</button>
       </div>
 
       <div class="footer-credits flex flex-wrap items-center gap-1">
@@ -130,6 +130,16 @@ const year = new Date().getFullYear();
     </div>
   </div>
 </footer>
+
+<script is:inline>
+  (function () {
+    var trigger = document.getElementById('cookie-prefs-trigger');
+    if (!trigger) return;
+    trigger.addEventListener('click', function () {
+      window.dispatchEvent(new Event('tailor:cookie-prefs'));
+    });
+  })();
+</script>
 
 <style>
   .site-footer {
@@ -238,6 +248,31 @@ const year = new Date().getFullYear();
   }
 
   .footer-legal a:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-on-dark);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-xs);
+    opacity: 1;
+  }
+
+  .footer-legal__link-btn {
+    background: none;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    color: var(--text-on-dark);
+    font: inherit;
+    font-size: var(--text-footer-size-sm);
+    opacity: 0.7;
+    cursor: pointer;
+    transition: opacity var(--transition-duration) var(--transition-easing);
+  }
+
+  .footer-legal__link-btn:hover {
+    opacity: 1;
+    text-decoration: underline;
+  }
+
+  .footer-legal__link-btn:focus-visible {
     outline: var(--focus-ring-width) solid var(--focus-ring-on-dark);
     outline-offset: var(--focus-ring-offset);
     border-radius: var(--radius-xs);

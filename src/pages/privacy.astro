@@ -19,13 +19,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <section class="text-page__section">
         <h2>What data we collect</h2>
         <p>
-          This website uses Google Analytics 4 (GA4) to collect anonymised usage data — pages visited, time on site, and general browsing patterns. This helps us understand how the site is used and improve it over time.
+          This website uses Google Analytics 4 (GA4) to understand how the site is used &mdash; which pages people visit and how they move through the site. GA4 sets a cookie containing a pseudonymous identifier and processes your IP address (truncated by Google before storage). We don't use it for advertising or to identify individuals.
         </p>
         <p>
-          We use browser localStorage to store your Simple Mode preference. This is stored on your device only and is not sent to our servers.
+          GA4 only runs after you accept analytics cookies via our consent banner. If you reject, or haven't yet chosen, no analytics cookies are set. You can change your choice at any time by clicking <em>Cookie preferences</em> in the footer.
         </p>
         <p>
-          We do not require user accounts on this website. No personal data is collected beyond what you voluntarily submit through the enquiry form.
+          We also use browser localStorage to store two small preferences on your device: your Simple Mode toggle, and your cookie consent choice. Neither is sent to our servers.
+        </p>
+        <p>
+          We do not require user accounts on this website. No personal data is collected beyond what you voluntarily submit through the enquiry form or book order form.
         </p>
       </section>
 
@@ -39,23 +42,27 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </p>
       </section>
 
-      <section class="text-page__section">
+      <section id="cookies" class="text-page__section">
         <h2>Cookies and localStorage</h2>
         <p>
-          <strong>Google Analytics 4</strong> — uses cookies to distinguish unique users and sessions. These cookies are set by Google and are subject to <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google's privacy policy</a>.
+          <strong>Google Analytics 4</strong> &mdash; only fires after you accept via the consent banner. Once accepted, GA4 sets cookies (named <code>_ga</code> and <code>_ga_&lt;ID&gt;</code>) to distinguish unique browsers and sessions. These cookies are set by Google and are subject to <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google's privacy policy</a>. Before consent, the site runs in Google's Consent Mode v2 &mdash; GA4 may send cookieless pings to Google, but no cookies are set on your device.
         </p>
         <p>
-          <strong>Simple Mode preference</strong> — stored in your browser's localStorage under the key <code>simple_mode</code>. This is not a cookie and does not leave your device. You can clear it by clearing your browser data.
+          <strong>Cookie consent preference</strong> &mdash; stored in your browser's localStorage under the key <code>tailor_consent</code> as a JSON record of your choice (<code>accepted</code> or <code>rejected</code>), the timestamp, and a version number. This is not a cookie and does not leave your device.
+        </p>
+        <p>
+          <strong>Simple Mode preference</strong> &mdash; stored in your browser's localStorage under the key <code>simple_mode</code>. This is not a cookie and does not leave your device. You can clear either by clearing your browser data.
         </p>
       </section>
 
       <section class="text-page__section">
         <h2>Third-party services</h2>
         <ul>
-          <li><strong>Google Analytics 4</strong> — anonymised usage analytics</li>
-          <li><strong>Google Fonts</strong> — web font delivery</li>
-          <li><strong>Vercel</strong> — website hosting and serverless functions</li>
-          <li><strong>Resend</strong> — enquiry form email delivery</li>
+          <li><strong>Google Analytics 4</strong> &mdash; usage analytics (opt-in)</li>
+          <li><strong>Google Fonts</strong> &mdash; web font delivery</li>
+          <li><strong>Vercel</strong> &mdash; website hosting and serverless functions</li>
+          <li><strong>Resend</strong> &mdash; transactional email delivery (enquiries and book orders)</li>
+          <li><strong>Stripe</strong> &mdash; payment processing for book orders</li>
         </ul>
       </section>
 

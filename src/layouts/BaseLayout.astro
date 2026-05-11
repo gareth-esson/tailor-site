@@ -17,6 +17,7 @@ import '@fontsource/lexend/700.css';
 import lexend600LatinUrl from '@fontsource/lexend/files/lexend-latin-600-normal.woff2?url';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import CookieBanner from '../components/CookieBanner.astro';
 import Analytics from '../components/Analytics.astro';
 import {
   site,
@@ -229,16 +230,34 @@ const sitewideJsonLd: Record<string, unknown> = isHomepage
     </noscript>
 
 
-    <!-- GA4 -->
+    <!-- GA4 with Consent Mode v2.
+         The default-denied gtag('consent', 'default', …) call MUST run
+         before the gtag.js script tag — otherwise GA4 starts firing
+         with cookies before consent is recorded. Without prior consent
+         GA4 sends cookieless pings only; Google fills the gap with its
+         conversion-modelling. When the user accepts, the bootstrap
+         script in the body fires gtag('consent', 'update', …) and
+         storage is granted retroactively for that session. -->
     {ga4Id && (
       <Fragment>
-        <script async src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`}></script>
-        <script is:inline define:vars={{ ga4Id }}>
+        <script is:inline>
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
+          gtag('consent', 'default', {
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            analytics_storage: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+          });
+          window.gtag = gtag;
+        </script>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`}></script>
+        <script is:inline define:vars={{ ga4Id }}>
           gtag('js', new Date());
           gtag('config', ga4Id);
-          window.gtag = gtag;
         </script>
       </Fragment>
     )}
@@ -251,6 +270,7 @@ const sitewideJsonLd: Record<string, unknown> = isHomepage
     </main>
 
     <SiteFooter />
+    <CookieBanner />
     <Analytics />
 
     <!-- Analytics helper -->
@@ -260,6 +280,98 @@ const sitewideJsonLd: Record<string, unknown> = isHomepage
           window.gtag('event', eventName, params);
         }
       };
+    </script>
+
+    <!-- Cookie consent bootstrap.
+         Reads the stored choice and either fires gtag('consent', 'update')
+         to grant analytics_storage, or shows the banner. The footer
+         "Cookie preferences" button dispatches a `tailor:cookie-prefs`
+         event on window which re-opens the banner so users can change
+         their mind (PECR Article 6: withdrawal must be as easy as
+         giving consent). Bumping CONSENT_VERSION will force the banner
+         to re-appear for everyone — use it when adding new trackers. -->
+    <script is:inline>
+      (function () {
+        var STORAGE_KEY = 'tailor_consent';
+        var CONSENT_VERSION = 1;
+
+        function readChoice() {
+          try {
+            var raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return null;
+            var parsed = JSON.parse(raw);
+            if (parsed && parsed.v === CONSENT_VERSION && (parsed.choice === 'accepted' || parsed.choice === 'rejected')) {
+              return parsed.choice;
+            }
+            return null;
+          } catch (e) {
+            return null;
+          }
+        }
+
+        function writeChoice(choice) {
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({
+              choice: choice,
+              ts: new Date().toISOString(),
+              v: CONSENT_VERSION
+            }));
+          } catch (e) {}
+        }
+
+        function grantAnalytics() {
+          if (typeof window.gtag === 'function') {
+            window.gtag('consent', 'update', {
+              analytics_storage: 'granted'
+            });
+          }
+        }
+
+        function showBanner() {
+          var banner = document.getElementById('cookie-banner');
+          if (banner) banner.hidden = false;
+        }
+
+        function hideBanner() {
+          var banner = document.getElementById('cookie-banner');
+          if (banner) banner.hidden = true;
+        }
+
+        function bindButtons() {
+          var accept = document.getElementById('cookie-accept');
+          var reject = document.getElementById('cookie-reject');
+          if (accept) {
+            accept.addEventListener('click', function () {
+              writeChoice('accepted');
+              grantAnalytics();
+              hideBanner();
+            });
+          }
+          if (reject) {
+            reject.addEventListener('click', function () {
+              writeChoice('rejected');
+              hideBanner();
+            });
+          }
+        }
+
+        function init() {
+          bindButtons();
+          var choice = readChoice();
+          if (choice === 'accepted') {
+            grantAnalytics();
+          } else if (choice === null) {
+            showBanner();
+          }
+          window.addEventListener('tailor:cookie-prefs', showBanner);
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', init);
+        } else {
+          init();
+        }
+      })();
     </script>
   </body>
 </html>

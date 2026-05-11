@@ -1,0 +1,125 @@
+---
+/**
+ * Cookie consent banner [A3].
+ *
+ * UK ICO / PECR compliant: GA4 is gated behind opt-in consent via
+ * Consent Mode v2. Banner is hidden by default and revealed by the
+ * bootstrap script in BaseLayout when no prior choice exists in
+ * localStorage. Re-openable from the footer "Cookie preferences"
+ * button, so withdrawal is as easy as giving consent.
+ *
+ * Storage shape (localStorage key `tailor_consent`):
+ *   { "choice": "accepted" | "rejected", "ts": "<ISO>", "v": 1 }
+ *
+ * The version field exists so we can bump it later if we add new
+ * tracking categories, which forces the banner to re-appear for
+ * users who decided on the previous version.
+ */
+---
+
+<div
+  id="cookie-banner"
+  class="cookie-banner"
+  role="dialog"
+  aria-labelledby="cookie-banner-title"
+  aria-describedby="cookie-banner-desc"
+  hidden
+>
+  <div class="cookie-banner__inner">
+    <div class="cookie-banner__text">
+      <h2 id="cookie-banner-title" class="cookie-banner__title">Cookies on this site</h2>
+      <p id="cookie-banner-desc" class="cookie-banner__desc">
+        We'd like to use Google Analytics to understand how this site is used. It sets a cookie to count visitors and follow journeys &mdash; we don't use it for advertising or to identify individuals. Read our <a href="/privacy" class="cookie-banner__link">privacy policy</a>.
+      </p>
+    </div>
+    <div class="cookie-banner__actions">
+      <button
+        type="button"
+        class="btn btn--std btn--primary cookie-banner__btn"
+        id="cookie-accept"
+      >
+        Accept analytics
+      </button>
+      <button
+        type="button"
+        class="btn btn--std btn--tint cookie-banner__btn"
+        id="cookie-reject"
+      >
+        Reject
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cookie-banner {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: var(--z-toast);
+    padding: var(--space-global-md) var(--space-global-gutter);
+    background: var(--bg-surface);
+    border-top: var(--border-width-xs) solid var(--border-subtle);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .cookie-banner[hidden] {
+    display: none;
+  }
+
+  .cookie-banner__inner {
+    max-width: var(--container-max-shell);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-md);
+    align-items: flex-start;
+  }
+
+  .cookie-banner__text {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .cookie-banner__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-card-size-h3);
+    font-weight: var(--heading-weight-h3);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-xs);
+    line-height: var(--lh-heading);
+  }
+
+  .cookie-banner__desc {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    color: var(--text-body);
+    line-height: var(--lh-body);
+    margin: 0;
+    max-width: var(--container-max-prose);
+  }
+
+  .cookie-banner__link {
+    color: var(--brand-accent-text);
+    text-decoration: underline;
+  }
+
+  .cookie-banner__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-global-sm);
+    flex-shrink: 0;
+  }
+
+  .cookie-banner__btn {
+    min-width: 9rem;
+  }
+
+  /* 768px ≈ --breakpoint-md */
+  @media (min-width: 768px) {
+    .cookie-banner__inner {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--space-global-xl);
+    }
+  }
+</style>
