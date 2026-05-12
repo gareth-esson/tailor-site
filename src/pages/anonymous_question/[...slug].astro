@@ -176,7 +176,7 @@ const postItTopPadding = showAlertBand
   ogImage={postItImage?.path}
   ogImageWidth={postItImage?.width}
   ogImageHeight={postItImage?.height}
-  preloadImage={postItImage?.path}
+  preloadImage={postItImage?.avifPath ?? postItImage?.path}
 >
   {/* ─────────────────────────────────────────────
       §1 + §2, Crisis support (A9) and Age flag (D1)
@@ -226,16 +226,21 @@ const postItTopPadding = showAlertBand
             id="question-post-it"
             class="flex flex-col items-center mb-[var(--space-global-lg)]"
           >
-            <img
-              src={postItImage.path}
-              alt={`Handwritten question: ${question.question}`}
-              class="postit-image"
-              width={postItImage.width}
-              height={postItImage.height}
-              loading="eager"
-              fetchpriority="high"
-              decoding="async"
-            />
+            <picture>
+              {postItImage.avifPath && (
+                <source type="image/avif" srcset={postItImage.avifPath} />
+              )}
+              <img
+                src={postItImage.path}
+                alt={`Handwritten question: ${question.question}`}
+                class="postit-image"
+                width={postItImage.width}
+                height={postItImage.height}
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+              />
+            </picture>
             <figcaption
               id="question-post-it-caption"
               class="c1-postit-caption mt-[var(--space-global-sm)]"

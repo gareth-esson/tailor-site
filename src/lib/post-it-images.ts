@@ -11,6 +11,7 @@
  * omits the post-it figure entirely.
  */
 import slugMapRaw from '../../public/images/post-it-scans/slug-map.json';
+import fs from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
 
@@ -22,7 +23,14 @@ const PUBLIC_POSTITS_DIR = path.resolve(
 );
 
 export interface PostItImage {
+  /** WebP path — the <img> src fallback. */
   path: string;
+  /**
+   * AVIF sibling path if `optimize-post-it-images.mjs` has been run.
+   * Null when the .avif file isn't on disk (rare; degrades gracefully
+   * to webp-only `<picture>`).
+   */
+  avifPath: string | null;
   width: number;
   height: number;
 }
@@ -61,7 +69,11 @@ export async function getPostItImage(slug: string): Promise<PostItImage | null> 
     const fullPath = path.join(PUBLIC_POSTITS_DIR, `${slug}${ext}`);
     const meta = await sharp(fullPath).metadata();
     if (meta.width && meta.height) {
-      return { path: url, width: meta.width, height: meta.height };
+      const avifFsPath = fullPath.replace(/\.webp$/, '.avif');
+      const avifPath = ext === '.webp' && fs.existsSync(avifFsPath)
+        ? url.replace(/\.webp$/, '.avif')
+        : null;
+      return { path: url, avifPath, width: meta.width, height: meta.height };
     }
   } catch {
     // file missing or unreadable — fall through
