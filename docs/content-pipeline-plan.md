@@ -187,15 +187,21 @@ Claude picks the template type based on the source post.
 
 **Choice of Publer over Buffer**: Publer handles IG carousel uploads natively (no faffing with multi-image API), first-comment scheduling for hashtags, $9.60/month covers LinkedIn + IG. Buffer works but is slightly less carousel-savvy.
 
-### 3.7 Editorial policy: separate document, hard-coded rules
+### 3.7 Editorial policy: three companion docs, hard-coded rules
 
-**Decision**: Editorial policy lives at `docs/editorial-policy.md` in this repo. Referenced by every Content Studio prompt. Versioned in git. Both human edits AND the AI Red Team pass enforce it.
+**Decision**: Editorial guidance for Tailor lives in three docs in this repo, each with a different scope:
 
-**Why separate file**: Both critics independently flagged that burying editorial rules inside an AI prompt makes them invisible and hard to update. A separate document is:
-- Reviewable in isolation (you can read just the policy without the rest).
-- Versionable (`git blame` tells you when a rule changed and why).
-- Reusable (Red Team prompt, drafting prompt, manual review all reference the same file).
-- Editable (no code change needed to update a rule).
+- **`docs/Tailor_Blog_Writing_Rules.md`** — voice, tone, structure, and the things-to-avoid list for Gareth's first-person blog voice. Authoritative for blog drafting.
+- **`docs/Tailor_Site_Copy_Writing_Rules.md`** — the organisation's "we" voice, used for service pages, homepage, about, and landing pages. Includes the stance section (no punchdowns, no imagined bad providers, end on purpose not contrast).
+- **`docs/editorial-policy.md`** — safety, safeguarding, and legal-risk hard rules that the voice docs don't cover. Plus the Red Team prompt specification.
+
+All three are referenced by every Content Studio prompt and versioned in git.
+
+**Why three files instead of one merged policy**: The voice docs already existed and represent real codified feedback rounds from Gareth (the site-copy doc is at v1.2.2 after multiple revisions). They are the authoritative source for *how* to write. The new safety doc handles *what may not be published* — a different concern requiring different enforcement. Merging would dilute both and obscure the voice docs' clear "things to avoid" pattern.
+
+**Enforcement scope:**
+- Voice issues → `concern` severity in the Red Team review. Advisory; never blocks publish.
+- Safety issues per `docs/editorial-policy.md` → `block` severity. Requires operator override + fix to publish.
 
 ### 3.8 Prompts versioned in git (in GDH SEO repo)
 
@@ -391,15 +397,39 @@ notes: null
 
 ---
 
-## 5. Editorial policy
+## 5. Editorial guidance — three docs, three scopes
 
-**See `docs/editorial-policy.md`** for the full rules document.
+The Tailor editorial system is now three companion documents working together. Content Studio prompts and the Red Team review load all three as context, weighting them per the content type being produced.
 
-Summary of what that file contains:
+### 5.1 `docs/Tailor_Blog_Writing_Rules.md` — blog voice (first-person, Gareth)
 
-- **Forbidden patterns**: legal certainty without source, medical advice, fabricated lived-experience claims, implying schools are failing without evidence, culture-war framing, unsourced DfE / Ofsted / KCSIE / RSHE references, age-of-consent statements without legal nuance, "safe space" filler, etc.
-- **Required patterns**: citation of statutory guidance with URL + access date, plain English over jargon, UK-specific context, opinion stated as opinion not fact.
-- **The Red Team prompt** (see §7) loads this file and enforces it on every draft before Gareth sees it.
+**Scope**: every blog post drafted for the Tailor site.
+
+**Authoritative for**: golden rule ("read like a conversation, not an essay"), voice characterisation (warm, direct, human — colleague at a conference), structure (600–900 words, personal opening, prose not bullet lists, natural CTA, "Trusted resources" section), tone rules, things to avoid (em-dash lists, "It's not X; it's Y," bold labels, throat-clearing, filler intensifiers, summary paragraphs, rhetorical-question transitions, balanced triplets), practical requirements (British spelling, hyperlink sources in text, every post links to at least one topic page), the 90% test and the read-aloud test.
+
+**Benchmark post**: "Are We Leaving Boys Behind? Teaching Masculinity in Schools" (already in the existing 16).
+
+### 5.2 `docs/Tailor_Site_Copy_Writing_Rules.md` — site copy voice (organisation "we")
+
+**Scope**: service pages, homepage, about page, landing pages, navigation copy. Not blog posts (those use the blog rules); not Okay to Ask content (different voice again).
+
+**Authoritative for**: golden rule ("describe the work, not the offering"), stance (no punchdowns, no imagined bad providers to define against, speak from conviction and memory, ground specifics in real failure modes, end on purpose rather than contrast), structural rules ("describe the work not the offering," "paragraph openers earn their first sentence," "sentences are not nodes on a flow diagram," "don't stack `We [verb] [object]` sentences," "section headings are not hierarchy statements"), things to avoid (extensive phrasing/rhetorical/structural/content tics list — every one is a pattern Gareth corrected in a real draft), the read-aloud test plus the "feature list in prose clothing" test.
+
+This doc is at v1.2.2 (11 April 2026) and has been through multiple voice-feedback rounds. Treat it as load-bearing.
+
+### 5.3 `docs/editorial-policy.md` — safety, safeguarding, legal risk
+
+**Scope**: every piece of content Tailor publishes, regardless of channel or voice.
+
+**Authoritative for**: hard rules on statutory and legal claims (citation required as hyperlink with document name + year), medical and clinical advice (don't give it; direct to NHS/Brook/GP), fabrication (no invented classroom scenarios, no fabricated quotes, no unsourced statistics), libel/defamation risk, age-of-consent statements (always include the necessary nuance). Plus the Red Team prompt specification (§2 of that doc).
+
+**Enforcement**: violations are `block` severity in the Red Team review. Voice-rule violations from §5.1 and §5.2 are `concern` severity (advisory, never block publish).
+
+### 5.4 How a Red Team review loads these
+
+For a blog draft, the review prompt loads `Tailor_Blog_Writing_Rules.md` + `editorial-policy.md`.
+For a site-copy/page draft, the review prompt loads `Tailor_Site_Copy_Writing_Rules.md` + `editorial-policy.md`.
+For a newsletter, LinkedIn post, or carousel: §7 of this plan + `editorial-policy.md`. The voice docs apply by inheritance (newsletter and LinkedIn share blog voice DNA; carousels share site-copy DNA) but are not strict — the format docs in §5 below take precedence on shape.
 
 ---
 
@@ -424,8 +454,8 @@ From **the Tailor repo** (accessed via GitHub API read, or via snapshot if perfo
 - List of glossary term slugs + short definitions (for internal-link suggestions).
 - List of question slugs + question text (for internal-link suggestions).
 - List of topic landing-page slugs.
-- `docs/editorial-policy.md` (for prompt context and Red Team enforcement).
-- The 16 existing blog posts in markdown (for voice RAG corpus — initially all 16; over time, tag which ones go into the corpus).
+- `docs/Tailor_Blog_Writing_Rules.md`, `docs/Tailor_Site_Copy_Writing_Rules.md`, and `docs/editorial-policy.md` (loaded per content type into prompt context and Red Team enforcement; see §5.4 above for which combination per content type).
+- The 16 existing blog posts in markdown (for voice RAG corpus — initially all 16; over time, tag which ones go into the corpus). The benchmark for blog voice is "Are We Leaving Boys Behind? Teaching Masculinity in Schools."
 
 ### 6.2 Outputs Content Studio produces
 
@@ -502,7 +532,9 @@ Each is a plain markdown file with the system prompt and any inline templating v
 
 ## 7. The Red Team / Safeguarding Officer prompt
 
-This is the editorial safety layer. After Phase 1 generates a draft and **before** the draft is surfaced to Gareth, a second Claude call runs as the safeguarding reviewer.
+The Red Team review is the editorial safety layer. After Phase 1 generates a draft and **before** the draft is surfaced to Gareth, a separate Claude call runs as the safeguarding reviewer.
+
+The detailed spec — context load order, severity guidance, output schema, what happens to the output — lives in `docs/editorial-policy.md` §2. This section captures the integration shape only.
 
 ### 7.1 Why a separate call
 
@@ -510,38 +542,20 @@ This is the editorial safety layer. After Phase 1 generates a draft and **before
 - Pipeline order: `Draft → Safeguarding Review → Surface to operator (with flags) → Operator edits`. Easier to debug, easier to swap models per step.
 - Cost negligible: drafting ≈ 8–15K tokens, review ≈ 3–5K tokens. Maybe 8¢ per post.
 
-### 7.2 Prompt outline (full version in `prompts/safeguarding-review.md` in GDH SEO repo)
+### 7.2 Context load order (summary; full version in `prompts/safeguarding-review.md` in GDH SEO repo)
 
-```
-You are Tailor Education's safeguarding officer reviewing a draft blog post before it reaches the editor.
+1. The reviewer role: *"You are Tailor Education's safeguarding officer reviewing a draft before it reaches the editor."*
+2. The safety rules: full contents of `docs/editorial-policy.md`.
+3. The voice rules for the content type:
+   - Blog draft → `docs/Tailor_Blog_Writing_Rules.md`
+   - Site copy or page → `docs/Tailor_Site_Copy_Writing_Rules.md`
+   - Newsletter / LinkedIn / carousel → the format requirements from §5 of this plan
+4. The draft itself.
 
-Tailor's editorial policy is below. Scan the draft against it.
-
-[insert contents of docs/editorial-policy.md]
-
-For each potential issue, output JSON:
-{
-  "lineReference": "line 42",
-  "severity": "info" | "concern" | "block",
-  "rule": "<which policy rule>",
-  "issue": "<one sentence>",
-  "suggestedRewrite": "<optional>"
-}
-
-Severity guidance:
-- "block": legal/medical claim without source, fabricated lived-experience, libel risk, culture-war framing, statutory claim without citation
-- "concern": unhedged opinion presented as consensus, missing source for a stat, jargon without explanation
-- "info": phrasing that could be punchier, suggested internal link missing
-
-Also output:
-- "claimsToVerify": [list of specific factual claims the editor should fact-check before publishing]
-- "missingCitations": [list of statements that need a source URL]
-- "topicClusterFit": "<does this post strengthen its declared primaryTopic? if not, why not>"
-```
-
-### 7.3 What happens with the output
-
-Surfaced in Content Studio alongside the draft as a sidebar. Each flag has a "dismiss" button (operator judgement is final) and a "rewrite using suggestion" button. The draft itself is not modified automatically.
+Severity (recapped from `docs/editorial-policy.md` §2.3):
+- **`block`** = safety violation per `docs/editorial-policy.md` §1. Requires operator override + fix to publish.
+- **`concern`** = voice-rule violation per the relevant `Tailor_*_Writing_Rules.md` doc. Advisory; never blocks publish.
+- **`info`** = minor — phrasing, internal link suggestion, glossary linking opportunity.
 
 ---
 
@@ -804,8 +818,10 @@ If you're reading this as a fresh Claude Code session and have been asked to exe
 ### Things to keep open when working
 
 - This file.
+- `docs/Tailor_Blog_Writing_Rules.md`.
+- `docs/Tailor_Site_Copy_Writing_Rules.md`.
 - `docs/editorial-policy.md`.
-- For Phase 1+: GDH SEO repo open as primary workspace, Tailor repo as read reference (for schemas, paths, design tokens).
+- For Phase 1+: GDH SEO repo open as primary workspace, Tailor repo as read reference (for schemas, paths, design tokens, and the three editorial docs above).
 
 ---
 
@@ -824,4 +840,5 @@ These don't block Phase 0 but should be answered before Session B starts.
 
 ## 14. Changelog
 
-- **2026-05-12**: Initial plan committed. Authored by Gareth Esson + Claude (planning conversation including two-LLM critique from ChatGPT and Gemini).
+- **2026-05-12 v0.2**: Rewrote §3.7 and §5 after Gareth flagged that `docs/Tailor_Blog_Writing_Rules.md` and `docs/Tailor_Site_Copy_Writing_Rules.md` already exist and are authoritative for voice. The editorial system is now three companion docs: blog voice, site-copy voice, and a safety-focused `docs/editorial-policy.md`. Updated §6.1 (Content Studio inputs), §7 (Red Team prompt context load order), and §12 (files to keep open during execution) to reference all three.
+- **2026-05-12 v0.1**: Initial plan committed. Authored by Gareth Esson + Claude (planning conversation including two-LLM critique from ChatGPT and Gemini).

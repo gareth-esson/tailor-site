@@ -1,213 +1,138 @@
-# Tailor Education editorial policy
+# Tailor Education editorial safety policy
 
 **Status:** active rules.
 **Last updated:** 2026-05-12.
 **Owner:** Gareth Esson.
 
-This document is the rulebook for what Tailor publishes. It applies to:
+## Scope and what this doc isn't
 
-- Blog posts on tailoreducation.org.uk.
-- Newsletter issues.
-- LinkedIn posts published from Tailor's company page.
-- Instagram carousels.
-- Any other content published under the Tailor name.
+This document covers safety, safeguarding, and legal-risk rules for Tailor's content. It is the rulebook the AI Red Team safeguarding review enforces (see §2).
 
-It is referenced by:
+**Voice, tone, sentence shape, structural conventions, and stance live elsewhere:**
 
-- Every Claude prompt used in Content Studio (`prompts/*.md` in the GDH SEO repo).
-- The Red Team safeguarding review pass (see `docs/content-pipeline-plan.md` §7).
-- Gareth's own editorial review before publishing.
+- **Blog voice** (Gareth's first-person voice): [`docs/Tailor_Blog_Writing_Rules.md`](Tailor_Blog_Writing_Rules.md)
+- **Site copy voice** (organisation "we"): [`docs/Tailor_Site_Copy_Writing_Rules.md`](Tailor_Site_Copy_Writing_Rules.md)
+- **Per-channel format requirements** (newsletter, LinkedIn announcements + follow-ups, Instagram carousels): [`docs/content-pipeline-plan.md`](content-pipeline-plan.md) §5
 
-When updating a rule, update this file, commit it to the repo, and note the change in §6. Live updates without commit history make it impossible to reconstruct why a piece of content was approved or rejected.
+Those documents are authoritative for everything they cover. This doc complements them — it covers the safety / risk rules they don't, and it specifies the Red Team review pass that enforces all three.
+
+If a rule appears in both this doc and one of the voice docs, the voice docs win on phrasing and the safety doc wins on hard-block enforcement (e.g., the voice docs say "don't invent composite scenarios"; this doc treats fabrication as a block-level violation).
 
 ---
 
-## 1. The five governing principles
+## 1. Hard rules — block on publish
 
-These come first. Every specific rule downstream is an application of one of these.
+Severity in the Red Team review: `block`. A draft containing one of these patterns does not ship without an explicit operator override accompanied by a fix.
 
-1. **Accuracy is non-negotiable.** RSE sits inside safeguarding, statutory guidance, child protection law, mental health, and political controversy. Wrong statements cause real harm — to children, to schools, to Tailor's reputation. Every factual claim must be defensible with a current source.
+### 1.1 Statutory and legal claims
 
-2. **Lived authority comes from Gareth's actual experience, not invented examples.** Tailor's edge is that Gareth has taught RSE in hundreds of UK schools. Posts can draw on that. They cannot invent classroom scenarios, fabricate teacher quotes, or attribute pseudo-experiences to "schools we've worked with" unless the experience is real.
-
-3. **Opinion is welcome. Generic content isn't.** A post that takes a position — even one some readers disagree with — is more valuable than a hedged "on the one hand / on the other" piece. Tailor's brand is forthright expertise. The policy isn't "avoid opinions" — it's "have a real one, state it clearly, support it."
-
-4. **Plain English over PSHE jargon.** Tailor's audience includes harried headteachers, anxious parents, and overworked PSHE leads. Sentences should land in one pass. If a paragraph needs explaining, rewrite the paragraph.
-
-5. **UK context only.** Tailor serves UK schools. References to legislation, guidance, age of consent, statutory frameworks, education-system shape, and cultural references are UK-specific. American examples, OECD comparisons, and other-jurisdiction case studies are out of scope unless explicitly framed as comparative.
-
----
-
-## 2. Hard rules — never publish content that violates these
-
-The Red Team prompt severity for these is `block`. If a draft contains one of these patterns, it does not ship without explicit operator override and a corresponding edit.
-
-### 2.1 Statutory and legal claims
-
-- ❌ Never state a legal certainty about UK education law without citing the current source (link + access date).
-- ❌ Never cite the DfE, Ofsted, KCSIE, RSHE guidance, or any statutory framework without a URL to the specific document being referenced.
+- ❌ Never state a legal certainty about UK education law without citing the current source as a hyperlink in the prose, with the document name and year.
+- ❌ Never cite the DfE, Ofsted, KCSIE, RSHE statutory guidance, or any statutory framework without a URL to the specific document being referenced.
 - ❌ Never make claims about what schools are "required to" do without quoting the source language.
-- ❌ Never simplify statutory guidance to the point of inaccuracy. If a rule has exceptions, name them.
+- ❌ Never simplify statutory guidance to the point where a head teacher would act on the simplification and be wrong. If a rule has exceptions, name them or rephrase to avoid implying universality.
 
-**Example violation**: "All schools must teach about pornography in Year 8." This isn't what the guidance says, and stating it as fact would mislead headteachers.
+The Tailor voice rules say "be specific (name the document, give the year) but don't turn the post into a policy summary." This policy adds: **specificity is non-negotiable**. The voice doc covers the shape of the citation; this doc makes it a publish gate.
 
-### 2.2 Medical and clinical advice
+### 1.2 Medical and clinical advice
 
-- ❌ Never give medical advice, even hedged. Direct readers to NHS, Brook, or their GP for anything clinical.
-- ❌ Never recommend specific contraceptive methods, drugs, or treatments as "the right choice."
-- ❌ Never make claims about mental-health intervention efficacy.
+- ❌ Never give medical advice, even hedged. Direct readers to the NHS, Brook, the school nurse, or their GP for anything clinical.
+- ❌ Never recommend specific contraceptive methods, drugs, or treatments as "the right choice." Explain what exists; let the reader make the call with their own clinician.
+- ❌ Never make claims about mental-health intervention efficacy. Naming a service (e.g., Childline, Samaritans) is fine; ranking interventions is not.
 
-**Example violation**: "If a student tells you they're feeling depressed, recommend they try [intervention]." Tailor is not a mental health service.
-
-### 2.3 Fabrication
+### 1.3 Fabrication
 
 - ❌ Never invent a classroom scenario and present it as real.
-- ❌ Never put words in the mouth of a teacher, headteacher, parent, or student that they didn't say.
-- ❌ Never attribute experiences to "schools we work with" or "one teacher told us" without a real source. If the example is composite or anonymised, say so explicitly: "I've seen variations of this in several schools" is acceptable; "A teacher in Manchester told us last term…" with no actual teacher is not.
+- ❌ Never put words in the mouth of a teacher, head teacher, parent, or student that they didn't say.
+- ❌ Never attribute experiences to "schools we've worked with" or "one teacher told us" without a real source. If the example is composite or anonymised, say so explicitly. "I've seen variations of this in several schools" is fine. "A teacher in Manchester told us last term…" with no actual teacher is not.
 - ❌ Never cite a statistic without its source URL.
 
-### 2.4 Political third rails
+The site-copy voice rules treat this as a stance issue ("ground specifics in real failure modes that a teacher would recognise"). This policy treats the inverse — fabricated specifics — as a block-level publish violation. Both apply.
 
-UK RSE is politically charged in 2026. Several topics attract pile-ons from both directions. Avoid taking positions that frame Tailor as a culture-war combatant:
+### 1.4 Libel and defamation risk
 
-- ❌ Never frame trans-inclusive RSE as either "obviously correct" or "obviously harmful." If the topic is addressed, follow statutory guidance, cite KCSIE, and stay focused on what schools must legally do.
-- ❌ Never frame single-sex spaces in schools as a settled policy question.
-- ❌ Never imply state schools are failing without specific evidence (Ofsted report, named research).
-- ❌ Never engage with culture-war framing from either direction. If a media event puts these topics in the news, respond by linking to statutory guidance, not by taking a side.
-
-**Why this isn't cowardice**: Tailor's job is to support schools to meet their statutory obligations. Taking sides in the culture war damages that role. Plenty of opinionated content exists in other domains (pedagogy, sector criticism, practical advice, parent communication) — opinions live there.
-
-### 2.5 Libel and defamation risk
-
-- ❌ Never name a specific school, MAT, headteacher, or individual in a negative light without certainty about the facts and willingness to defend the statement legally.
-- ❌ Never imply specific organisations are doing something wrong without naming the evidence.
+- ❌ Never name a specific school, multi-academy trust, head teacher, or individual in a negative light without certainty about the facts and willingness to defend the statement legally.
+- ❌ Never imply specific organisations are doing something wrong without naming the evidence (named report, regulator finding, public statement quoted in context).
 - ❌ Never quote a source out of context to make them appear to support a position they don't.
 
-### 2.6 Age-of-consent statements
+### 1.5 Age-of-consent and criminal-law statements
 
-- ❌ Never state age of consent as a simple number without addressing the complications: close-in-age exceptions, abuse-of-position-of-trust rules, the difference between age of consent and legal age for buying contraception, the difference between criminality and safeguarding response.
+- ❌ Never state age of consent or related criminal-law thresholds as a simple number without addressing the immediate complications: close-in-age provisions where they apply, abuse-of-position-of-trust rules, the difference between age of consent and legal ages for related activities (buying contraception, viewing pornography, etc.), the distinction between criminality and a school's safeguarding response.
 
-**Example violation**: "The age of consent in England is 16." Technically true but misleading without context.
-
----
-
-## 3. Soft rules — require careful handling
-
-The Red Team prompt severity for these is `concern`. They don't block publish, but the editor must consciously decide they're OK.
-
-### 3.1 Unsupported opinions presented as consensus
-
-- ⚠ "Most teachers think X" without citation. State as opinion: "I think most teachers find X useful" or cite a survey.
-
-### 3.2 Statistics without sources
-
-- ⚠ Any percentage, fraction, or numerical claim needs a source.
-
-### 3.3 Unhedged generalisations about schools
-
-- ⚠ "Primary schools are uncomfortable with…" needs evidence or a clear "in my experience" framing.
-
-### 3.4 Jargon without explanation
-
-- ⚠ KCSIE, RSHE, KS3, PSHE, RSE, MAT, AP — all fine to use, but on first appearance in a post, gloss them ("Keeping Children Safe in Education", etc.).
-
-### 3.5 Bullet-point soup
-
-- ⚠ Long bullet lists with one-line entries feel like a slide deck. If a section is mostly bullets, consider whether prose would land better.
-
-### 3.6 "Safe space" and other content fillers
-
-- ⚠ Stock phrases that signal "I am writing about RSE" without saying anything: "creating a safe space", "open and honest conversations", "young people deserve". Use sparingly. Each instance should earn its place.
-
-### 3.7 Hedging that erases the point
-
-- ⚠ "It's important to acknowledge that, while some might argue…" Cut. State the position.
+Plain "the age of consent in England is 16" is technically true and practically misleading. Never publish it as a standalone fact in a Tailor post.
 
 ---
 
-## 4. Voice rules — write like this
+## 2. The Red Team safeguarding review
 
-These are about tone and shape, not subject matter.
+After Phase 1 generates a draft and **before** the draft is surfaced to Gareth, a separate Claude API call runs as the safeguarding reviewer. This is the AI enforcement of the rules above.
 
-### 4.1 Sentence length
+### 2.1 Why a separate Claude call
 
-Mix short and long. Short sentences land hard. Long sentences allow nuance. Avoid five medium sentences in a row.
+- Different system prompt = different headspace. A model in "be helpful and write well" mode is poor at adversarial review of its own output.
+- The pipeline order is `Draft → Safeguarding Review → Surface to operator (with flags) → Operator edits`. Easier to debug, easier to swap models per step.
+- Cost is negligible: drafting roughly 8–15k tokens; review roughly 3–5k. Maybe 8 pence per post.
 
-### 4.2 First person where it earns its place
+### 2.2 The review prompt — context it loads
 
-- "I've taught this in 200+ schools" — useful. Establishes authority.
-- "I believe that consent education is important" — unearned. Just state the claim.
+The prompt at `prompts/safeguarding-review.md` in the GDH SEO repo loads, in this order:
 
-### 4.3 Direct address
+1. **The role**: *"You are Tailor Education's safeguarding officer reviewing a draft blog post before it reaches the editor."*
+2. **The safety rules**: full contents of this file.
+3. **The voice rules** for the relevant content type (blog → `Tailor_Blog_Writing_Rules.md`; site copy → `Tailor_Site_Copy_Writing_Rules.md`).
+4. **The draft itself.**
 
-Use "you" for the reader where it makes sense. The reader is usually a PSHE lead, headteacher, or teacher — speak to them.
+The reviewer is asked to enforce safety rules at `block` severity, voice rules at `concern` severity. Voice issues never block publish — they're advisory. Safety violations do.
 
-### 4.4 Plainspoken authority
+### 2.3 The review prompt — what it returns
 
-Tailor's voice is "I've done this for ages and here's what works," not "Studies suggest that pedagogically grounded approaches may yield improved outcomes." When a sector buzzword sneaks in, rewrite the sentence.
+For each potential issue, the reviewer outputs JSON:
 
-### 4.5 Em-dashes
+```json
+{
+  "lineReference": "line 42",
+  "severity": "info" | "concern" | "block",
+  "rule": "<which policy rule or voice-doc heading>",
+  "issue": "<one sentence>",
+  "suggestedRewrite": "<optional>"
+}
+```
 
-Tailor's house style now avoids em-dashes (—) in body prose. They were an LLM tell. Use comma, colon, semicolon, parenthesis, or full stop instead. Title separators are pipes (`|`), not em-dashes.
+Severity guidance for the reviewer:
 
-This rule applies to AI drafts especially. The Red Team review should flag any em-dash in a draft.
+- **`block`**: legal / medical / safeguarding violation per §1 above. Libel risk. Fabricated lived-experience. Statutory claim without citation. Age-of-consent statement without nuance.
+- **`concern`**: voice-rule violation per the relevant `Tailor_*_Writing_Rules.md` doc. Stack of `We [verb] [object]` sentences. Em-dash overuse. Filler intensifiers. Balanced triplets. Bold labels inside paragraphs. Throat-clearing opener. Stealth punchdown. Anything from the "things to avoid" sections of the voice docs.
+- **`info`**: minor — phrasing that could be punchier, a suggested internal link missing, a glossary term that could be linked.
 
-### 4.6 Headings
+The reviewer also returns:
 
-H2 only for main sections. H3 sparingly within a section. Headings should be readable sentences, not nominalisations: "How to write your RSE policy" not "RSE policy writing." Sentence case, not title case.
+- **`claimsToVerify`**: list of factual claims the editor should fact-check before publishing, with the source URL where available.
+- **`missingCitations`**: list of statements that need a source URL and don't have one.
+- **`topicClusterFit`**: does this draft strengthen its declared `primaryTopic`? If not, why not?
+- **`voiceConsistency`**: short note on whether the draft sounds like one person wrote it start to finish (the read-aloud test from the voice docs).
 
-### 4.7 Sign-offs
+### 2.4 What happens to the output
 
-End posts with what to do next: a CTA, a link to a service, a related question for the reader. Not "I hope this was helpful" or "thanks for reading."
+Surfaced in Content Studio next to the draft as a sidebar. Each flag has a "dismiss" button (operator judgement is final) and a "rewrite using suggestion" button. The draft itself is not modified automatically. The operator can accept, edit, or ignore each suggestion.
 
----
-
-## 5. Required elements per content type
-
-### 5.1 Blog posts
-
-Every published blog post must have:
-
-- A featured image (licensed stock, AI graphic that isn't photographic, or own photography) with `heroImageAlt` describing it accurately.
-- A `primaryTopic` matching a topic landing-page slug.
-- At least one citation when claiming anything about DfE / KCSIE / Ofsted / RSHE.
-- At least one link to another Tailor blog post, glossary term, or topic page (internal-link discipline).
-- An explicit CTA: enquire about a service, read a related post, subscribe to the newsletter.
-- A `reviewBy` date 6 months from publish if the post is `guidanceSensitive: true`, otherwise 12 months.
-
-### 5.2 Newsletter issues
-
-Every newsletter issue must have:
-
-- A subject line of 5–7 words optimised for opens (not the post title).
-- A preheader line ≤90 characters.
-- A clear opinion in the first sentence.
-- A `Read the full piece →` CTA pointing at the linked blog post.
-- A working one-click unsubscribe link.
-- A plain-text version (auto-generated).
-
-### 5.3 LinkedIn announcement posts
-
-- A hook in the first line that doesn't require clicking "see more" to land.
-- A clear "why this matters" framing for the target audience (named in the post or implied).
-- A single CTA: read the post, comment, save.
-
-### 5.4 LinkedIn follow-up posts (Thursday)
-
-- A standalone idea — should not require having read the announcement.
-- A quote, hot take, stat, or angle drawn from the blog post.
-- Link to the post at the end OR optionally in the first comment if engagement is the goal.
-
-### 5.5 Instagram carousels
-
-- 6–10 slides total.
-- First slide is a hook with the title; no link in the image (Instagram doesn't make image-text links clickable).
-- Last slide is a CTA: "Read more on tailoreducation.org.uk/blog/{slug}" or "Link in bio."
-- Body slides each have a clear single idea — no walls of text.
-- Alt text for every slide (Claude generates these; editor verifies).
+`block`-severity flags that the operator dismisses without rewriting are recorded in the audit log for that post.
 
 ---
 
-## 6. Changelog
+## 3. Periodic review
 
-- **2026-05-12**: Initial policy committed. Sections 1–5 drafted.
+Posts that touch statutory guidance, KCSIE, Ofsted, RSHE, mental-health intervention, age-of-consent, online-safety law, or any topic where the underlying landscape can change are flagged in frontmatter with `guidanceSensitive: true` and given a `reviewBy` date six months from publish.
+
+GDH SEO's monthly Tailor report includes a "Posts due for review this month" section. When a post hits its review date:
+
+1. Re-run the Red Team review against the current published version.
+2. Re-check every URL cited in the post — `200` response, content still says what it said when published.
+3. Update the post's `lastReviewedDate` field on completion and set the next `reviewBy`.
+
+If a statutory document the post references has been superseded, either update the post in place (with `lastReviewedDate` bumped) or add a banner directing the reader to the new guidance, with a note explaining when and why.
+
+---
+
+## 4. Changelog
+
+- **2026-05-12 v0.2**: Rewrote to be a safety-focused complement to the existing `Tailor_Blog_Writing_Rules.md` and `Tailor_Site_Copy_Writing_Rules.md` docs, after Gareth flagged that the v0.1 draft duplicated and partly contradicted the voice rules that already existed. Removed the speculative voice rules section, removed the invented political-third-rails section, kept the safeguarding hard rules and the Red Team review spec.
+- **2026-05-12 v0.1**: Initial draft. Superseded.
