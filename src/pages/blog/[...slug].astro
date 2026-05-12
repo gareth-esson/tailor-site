@@ -7,6 +7,8 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GlossaryTooltips from '../../components/GlossaryTooltips.astro';
 import CtaBlogBottom from '../../components/CtaBlogBottom.astro';
+import HeroImage from '../../components/HeroImage.astro';
+import { heroPreload } from '../../lib/hero-image';
 import { getBlogPosts, getGlossaryIndex, getLandingPages } from '../../lib/content';
 import { renderBlocks } from '../../lib/render-blocks';
 import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
@@ -137,6 +139,9 @@ const bodyWithTooltips = injectGlossaryTooltips(bodyHtml, glossaryIndex, undefin
     section: post.topics[0]?.title ?? post.category ?? undefined,
   }}
   jsonLd={jsonLd}
+  {...(post.featuredImage?.endsWith('.webp') && post.featuredImage.startsWith('/')
+    ? heroPreload(post.featuredImage, { sizes: '(min-width: 1024px) 1024px, 100vw' })
+    : {})}
 >
   <article class="blog-post" data-pagefind-body>
 
@@ -145,15 +150,26 @@ const bodyWithTooltips = injectGlossaryTooltips(bodyHtml, glossaryIndex, undefin
       {post.featuredImage && (
         <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] pt-[var(--space-global-xl)]">
           <div class="blog-post__hero-img">
-            <img
-              src={post.featuredImage}
-              alt={`Featured image for ${post.title}`}
-              width={post.featuredImageWidth ?? 1600}
-              height={post.featuredImageHeight ?? 900}
-              loading="eager"
-              fetchpriority="high"
-              decoding="async"
-            />
+            {post.featuredImage.endsWith('.webp') && post.featuredImage.startsWith('/') ? (
+              <HeroImage
+                src={post.featuredImage}
+                alt={`Featured image for ${post.title}`}
+                width={post.featuredImageWidth ?? 1600}
+                height={post.featuredImageHeight ?? 900}
+                sizes="(min-width: 1024px) 1024px, 100vw"
+                priority
+              />
+            ) : (
+              <img
+                src={post.featuredImage}
+                alt={`Featured image for ${post.title}`}
+                width={post.featuredImageWidth ?? 1600}
+                height={post.featuredImageHeight ?? 900}
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+              />
+            )}
           </div>
         </div>
       )}

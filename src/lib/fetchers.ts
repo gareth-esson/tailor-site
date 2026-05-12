@@ -22,6 +22,7 @@ import type {
   Voice,
 } from './types';
 import { probeDimensions } from './image-dimensions';
+import { ensureBlogFeaturedImageCached } from './blog-image-cache';
 
 // --- Notion property helpers ---
 
@@ -243,7 +244,19 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
     const blogPosts: BlogPost[] = await batchProcess(pages, async (page) => {
       const p = page.properties;
       const body = await fetchPageBlocks(page.id);
-      const featuredImage = getFilesUrl(p['Featured Image']);
+      const slug = getRichTextValue(p['Slug']);
+      const remoteUrl = getFilesUrl(p['Featured Image']);
+
+      // Cache the featured image locally so we can serve AVIF/WebP from
+      // Vercel's edge instead of hot-linking Notion's signed S3 URLs
+      // (which expire and aren't optimisable). If caching fails for any
+      // reason, fall back to the Notion URL so the page still renders.
+      let featuredImage = remoteUrl;
+      if (remoteUrl && slug) {
+        const cached = await ensureBlogFeaturedImageCached(remoteUrl, slug);
+        if (cached) featuredImage = cached;
+      }
+
       // Probe at build time so og:image:width/height can be emitted on
       // the post page. probe-image-size only reads enough bytes to parse
       // the format header — it doesn't download the whole image.
@@ -252,7 +265,7 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
       return {
         id: page.id,
         title: getTitleValue(p['Title']),
-        slug: getRichTextValue(p['Slug']),
+        slug,
         status: getSelectValue(p['Status']),
         topicIds: getRelationIds(p['Topic']),
         topics: [], // resolved later
