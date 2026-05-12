@@ -5,3 +5,7 @@ dist/
 .vercel/
 .env
 .DS_Store
+
+# Source images (originals before public/images optimisation).
+# Keep locally; back up to cloud storage. Not in git.
+/images/
