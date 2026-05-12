@@ -39,6 +39,10 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   title="Tailor Education | RSE workshops, training and delivery for UK schools"
   description="Expert RSE for UK primary and secondary schools. In-school teaching, CPD, and the Okay to Ask book."
   canonicalPath="/"
+  preloadImage="/images/services/tailor-education-secondary-rse-group-activity-800.avif"
+  preloadImageSrcset="/images/services/tailor-education-secondary-rse-group-activity-800.avif 800w, /images/services/tailor-education-secondary-rse-group-activity-1600.avif 1600w"
+  preloadImageSizes="(min-width: 1024px) 50vw, 100vw"
+  preloadImageMedia="(min-width: 768px)"
 >
   <!-- ═══ §1 TEACHER HERO ═══ -->
   <section class="hero-teacher" aria-labelledby="hero-heading">
@@ -60,16 +64,28 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
       </div>
       {heroPhoto && (
         <div class="hero-photo-wrap hidden md:block">
-          <img
-            src={heroPhoto}
-            alt="Secondary students in a Tailor RSE group session"
-            class="hero-photo"
-            width="1600"
-            height="900"
-            loading="eager"
-            fetchpriority="high"
-            decoding="async"
-          />
+          <picture>
+            <source
+              type="image/avif"
+              srcset="/images/services/tailor-education-secondary-rse-group-activity-800.avif 800w, /images/services/tailor-education-secondary-rse-group-activity-1600.avif 1600w"
+              sizes="(min-width: 1024px) 50vw, 100vw"
+            />
+            <source
+              type="image/webp"
+              srcset="/images/services/tailor-education-secondary-rse-group-activity-800.webp 800w, /images/services/tailor-education-secondary-rse-group-activity.webp 1600w"
+              sizes="(min-width: 1024px) 50vw, 100vw"
+            />
+            <img
+              src={heroPhoto}
+              alt="Secondary students in a Tailor RSE group session"
+              class="hero-photo"
+              width="1600"
+              height="900"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+            />
+          </picture>
         </div>
       )}
     </div>
@@ -83,22 +99,22 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
         <li class="home-trustlogos__logo-item">
           {/* British Red Cross emblem — protected under the Geneva
               Conventions Act 1957; renders in its authorised red. */}
-          <img src="/assets/logos/british-red-cross.svg" alt="The British Red Cross" class="home-trustlogos__logo home-trustlogos__logo--colour" loading="eager" />
+          <img src="/assets/logos/british-red-cross.svg" alt="The British Red Cross" class="home-trustlogos__logo home-trustlogos__logo--colour" loading="lazy" decoding="async" />
         </li>
         <li class="home-trustlogos__logo-item">
-          <img src="/assets/logos/somerset-house.svg" alt="Somerset House" class="home-trustlogos__logo home-trustlogos__logo--square" loading="eager" />
+          <img src="/assets/logos/somerset-house.svg" alt="Somerset House" class="home-trustlogos__logo home-trustlogos__logo--square" loading="lazy" decoding="async" />
         </li>
         <li class="home-trustlogos__logo-item">
-          <img src="/assets/logos/kings-college-london.svg" alt="King's College London" class="home-trustlogos__logo" loading="eager" />
+          <img src="/assets/logos/kings-college-london.svg" alt="King's College London" class="home-trustlogos__logo" loading="lazy" decoding="async" />
         </li>
         <li class="home-trustlogos__logo-item">
-          <img src="/assets/logos/british-museum.svg" alt="The British Museum" class="home-trustlogos__logo" loading="eager" />
+          <img src="/assets/logos/british-museum.svg" alt="The British Museum" class="home-trustlogos__logo" loading="lazy" decoding="async" />
         </li>
         <li class="home-trustlogos__logo-item">
-          <img src="/assets/logos/rada.svg" alt="Royal Academy of Dramatic Art" class="home-trustlogos__logo" loading="eager" />
+          <img src="/assets/logos/rada.svg" alt="Royal Academy of Dramatic Art" class="home-trustlogos__logo" loading="lazy" decoding="async" />
         </li>
         <li class="home-trustlogos__logo-item">
-          <img src="/assets/logos/tate-modern.svg" alt="Tate Modern" class="home-trustlogos__logo" loading="eager" />
+          <img src="/assets/logos/tate-modern.svg" alt="Tate Modern" class="home-trustlogos__logo" loading="lazy" decoding="async" />
         </li>
       </ul>
     </div>

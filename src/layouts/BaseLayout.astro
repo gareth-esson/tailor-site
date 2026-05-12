@@ -61,6 +61,21 @@ interface Props {
    * hero images only.
    */
   preloadImage?: string;
+  /**
+   * Optional media query to gate the preload (e.g.
+   * "(min-width: 768px)" when the hero image is `hidden md:block`).
+   * Prevents mobile users — who never render the image — from
+   * burning bandwidth on it during their LCP window.
+   */
+  preloadImageMedia?: string;
+  /**
+   * Responsive preload srcset, e.g. "hero-800.avif 800w, hero-1600.avif 1600w".
+   * When set, takes precedence over preloadImage's single href: the browser
+   * picks the best variant for the viewport (paired with preloadImageSizes).
+   */
+  preloadImageSrcset?: string;
+  /** Sizes attribute paired with preloadImageSrcset. */
+  preloadImageSizes?: string;
 }
 
 const {
@@ -76,6 +91,9 @@ const {
   jsonLd,
   noIndex = false,
   preloadImage,
+  preloadImageMedia,
+  preloadImageSrcset,
+  preloadImageSizes,
 } = Astro.props;
 
 // Resolve modifiedTime to publishedTime so the meta is always present
@@ -130,7 +148,17 @@ const sitewideJsonLd: Record<string, unknown> = isHomepage
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#1a9e8a" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    {preloadImage && <link rel="preload" as="image" href={preloadImage} />}
+    {preloadImage && (
+      <link
+        rel="preload"
+        as="image"
+        href={preloadImage}
+        fetchpriority="high"
+        {...(preloadImageSrcset ? { imagesrcset: preloadImageSrcset } : {})}
+        {...(preloadImageSizes ? { imagesizes: preloadImageSizes } : {})}
+        {...(preloadImageMedia ? { media: preloadImageMedia } : {})}
+      />
+    )}
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
