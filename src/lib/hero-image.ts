@@ -5,7 +5,7 @@
  * (i.e. above-the-fold + LCP-relevant), the optimize-hero-images.mjs
  * script generates sibling variants alongside the original:
  *
- *   foo.webp           ← original (typically 1600w, used as 1600w WebP slot)
+ *   foo.webp           ← original (typically 1600w; used as 1600w WebP slot)
  *   foo-800.webp       ← 800w WebP (smaller variant for tablets)
  *   foo-800.avif       ← 800w AVIF
  *   foo-1600.avif      ← 1600w AVIF (skipped for source images <1600w)
@@ -14,10 +14,24 @@
  *   - srcset strings (AVIF + WebP) for <picture><source>
  *   - preload props for BaseLayout
  *
- * If you add a new hero image: drop the WebP into public/images, add
- * its path to HERO_IMAGES in scripts/optimize-hero-images.mjs, run the
- * script, and use this helper at the call site.
+ * Variant existence is detected at build time via fs.existsSync, so
+ * pages don't need to know whether a -1600 sibling was generated.
+ *
+ * Adding a new hero image: drop the WebP in public/images, add its path
+ * to HERO_IMAGES in scripts/optimize-hero-images.mjs, run the script,
+ * and use the helper + <HeroImage> at the call site.
  */
+
+import fs from 'node:fs';
+import path from 'node:path';
+
+const PUBLIC_DIR = path.resolve(process.cwd(), 'public');
+
+function publicFileExists(urlPath: string): boolean {
+  // urlPath like "/images/services/foo-1600.avif" → public/images/services/foo-1600.avif
+  const rel = urlPath.replace(/^\//, '');
+  return fs.existsSync(path.join(PUBLIC_DIR, rel));
+}
 
 export interface HeroVariants {
   /** Original WebP path — the <img> src fallback. */
@@ -29,13 +43,13 @@ export interface HeroVariants {
 }
 
 /**
- * Derive variant paths from an original WebP source.
+ * Derive variant paths from an original WebP source. Variants that
+ * don't exist on disk (typically -1600.avif for sources <1600w) are
+ * automatically omitted from the srcset.
  *
  * @param src - Original WebP path, e.g. "/images/services/foo.webp"
- * @param has1600Avif - Whether a -1600.avif variant exists. Defaults
- *   true; pass false if the source is narrower than 1600px.
  */
-export function heroVariants(src: string, has1600Avif = true): HeroVariants {
+export function heroVariants(src: string): HeroVariants {
   if (!src.endsWith('.webp')) {
     throw new Error(`heroVariants expects a .webp source, got: ${src}`);
   }
@@ -44,7 +58,8 @@ export function heroVariants(src: string, has1600Avif = true): HeroVariants {
   const avif1600 = `${base}-1600.avif`;
   const webp800 = `${base}-800.webp`;
 
-  const srcsetAvif = has1600Avif
+  const has1600 = publicFileExists(avif1600);
+  const srcsetAvif = has1600
     ? `${avif800} 800w, ${avif1600} 1600w`
     : `${avif800} 800w`;
   const srcsetWebp = `${webp800} 800w, ${src} 1600w`;
@@ -66,22 +81,19 @@ export interface HeroPreloadProps {
  * @param opts.sizes - CSS sizes attr (defaults to the typical hero pattern)
  * @param opts.media - Optional media gate (e.g. "(min-width: 768px)" when
  *   the hero is hidden on mobile via `hidden md:block`)
- * @param opts.has1600Avif - See heroVariants
  */
 export function heroPreload(
   src: string,
   opts: {
     sizes?: string;
     media?: string;
-    has1600Avif?: boolean;
   } = {},
 ): HeroPreloadProps {
   const {
     sizes = '(min-width: 1024px) 50vw, 100vw',
     media,
-    has1600Avif = true,
   } = opts;
-  const variants = heroVariants(src, has1600Avif);
+  const variants = heroVariants(src);
 
   const props: HeroPreloadProps = {
     // Fallback href (browsers without imagesrcset support pick this).

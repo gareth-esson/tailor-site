@@ -40,7 +40,7 @@ const testimonial = null as { quote: string; cite: string } | null;
   ogImage="/images/ota-book-spread-og.jpg"
   ogImageWidth={1200}
   ogImageHeight={630}
-  {...heroPreload(bookCoverSrc, { sizes: '(min-width: 768px) 22rem, 16rem', has1600Avif: false })}
+  {...heroPreload(bookCoverSrc, { sizes: '(min-width: 768px) 22rem, 16rem' })}
 >
   <!-- ═══ §1 HERO ═══ -->
   <section class="book-hero surface--ota" aria-labelledby="book-heading">
@@ -54,7 +54,6 @@ const testimonial = null as { quote: string; cite: string } | null;
             width={1400}
             height={1955}
             sizes="(min-width: 768px) 22rem, 16rem"
-            has1600Avif={false}
             priority
           />
         </div>

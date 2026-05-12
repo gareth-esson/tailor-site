@@ -94,7 +94,7 @@ const jsonLd = {
   ogImageWidth={heroImageWidth}
   ogImageHeight={heroImageHeight}
   jsonLd={jsonLd}
-  {...(heroImage ? heroPreload(heroImage, { has1600Avif: false }) : {})}
+  {...(heroImage ? heroPreload(heroImage) : {})}
 >
   <article class="service-page" data-pagefind-body>
 
@@ -114,7 +114,7 @@ const jsonLd = {
           </div>
           <div class="service-hero__image">
             {heroImage ? (
-              <HeroImage src={heroImage} alt={heroImageAlt} width={heroImageWidth} height={heroImageHeight} has1600Avif={false} priority />
+              <HeroImage src={heroImage} alt={heroImageAlt} width={heroImageWidth} height={heroImageHeight} priority />
             ) : (
               <div class="service-hero__image-placeholder">Hero photography required, source before launch</div>
             )}

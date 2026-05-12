@@ -38,8 +38,6 @@ interface Props {
   priority?: boolean;
   /** Pass through extra classes on the <img>. */
   class?: string;
-  /** Some sources are <1600w (no -1600.avif generated). */
-  has1600Avif?: boolean;
 }
 
 const {
@@ -50,10 +48,9 @@ const {
   sizes = '(min-width: 1024px) 50vw, 100vw',
   priority = false,
   class: className,
-  has1600Avif = true,
 } = Astro.props;
 
-const v = heroVariants(src, has1600Avif);
+const v = heroVariants(src);
 ---
 
 <picture>
