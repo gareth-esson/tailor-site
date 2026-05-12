@@ -399,7 +399,16 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     min-height: 100%;
   }
 
-  .hero-photo {
+  /* <picture> and <img> are rendered by the HeroImage child component,
+     so they fall outside this page's scoped CSS. :global() lets these
+     rules reach them. */
+  .hero-photo-wrap :global(picture) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero-photo-wrap :global(.hero-photo) {
     width: 100%;
     height: 100%;
     object-fit: cover;
