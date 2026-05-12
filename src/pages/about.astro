@@ -13,6 +13,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getBlogPosts } from '../lib/content';
 import type { BlogPost } from '../lib/types';
+import HeroImage from '../components/HeroImage.astro';
 import { founderJsonLd, breadcrumbJsonLd } from '../lib/site';
 
 // --- Founder data ---
@@ -217,14 +218,13 @@ const aboutJsonLd = {
         </div>
         <figure class="about-founder__portrait split-layout__media">
           {founder.portrait ? (
-            <img
+            <HeroImage
               src={founder.portrait}
               alt={founder.portraitAlt || `Portrait of ${founder.name}`}
-              width="1000"
-              height="1000"
-              loading="eager"
-              fetchpriority="high"
-              decoding="async"
+              width={1000}
+              height={1000}
+              sizes="(min-width: 1024px) 24rem, (min-width: 768px) 18rem, 14rem"
+              has1600Avif={false}
             />
           ) : (
             <div class="about-founder__portrait-fallback" aria-hidden="true">

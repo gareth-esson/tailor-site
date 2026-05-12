@@ -6,6 +6,8 @@
  * doodle and game space in workbooks that students keep.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import HeroImage from '../../components/HeroImage.astro';
+import { heroPreload } from '../../lib/hero-image';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
 import ServiceTopicsStrip from '../../components/ServiceTopicsStrip.astro';
 import { getBlogPosts, getTestimonialsByService } from '../../lib/content';
@@ -95,6 +97,7 @@ const jsonLd = {
   ogImageWidth={heroImageWidth}
   ogImageHeight={heroImageHeight}
   jsonLd={jsonLd}
+  {...(heroImage ? heroPreload(heroImage) : {})}
 >
   <article class="service-page" data-pagefind-body>
 
@@ -114,7 +117,7 @@ const jsonLd = {
           </div>
           <div class="service-hero__image">
             {heroImage ? (
-              <img src={heroImage} alt={heroImageAlt} width={heroImageWidth} height={heroImageHeight} loading="eager" fetchpriority="high" decoding="async" />
+              <HeroImage src={heroImage} alt={heroImageAlt} width={heroImageWidth} height={heroImageHeight} priority />
             ) : (
               <div class="service-hero__image-placeholder">Hero photography required, source before launch</div>
             )}

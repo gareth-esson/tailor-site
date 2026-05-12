@@ -5,8 +5,12 @@
  * Surface rhythm: warm → ground → warm → book-panel → ground → deeper-warm
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroImage from '../components/HeroImage.astro';
 import QuestionCard from '../components/QuestionCard.astro';
+import { heroPreload } from '../lib/hero-image';
 import { getQuestions } from '../lib/content';
+
+const bookCoverSrc = '/images/ota-book-product-front.webp';
 
 // Purchase configuration
 const isOnSale = true;
@@ -36,21 +40,22 @@ const testimonial = null as { quote: string; cite: string } | null;
   ogImage="/images/ota-book-spread-og.jpg"
   ogImageWidth={1200}
   ogImageHeight={630}
+  {...heroPreload(bookCoverSrc, { sizes: '(min-width: 768px) 22rem, 16rem', has1600Avif: false })}
 >
   <!-- ═══ §1 HERO ═══ -->
   <section class="book-hero surface--ota" aria-labelledby="book-heading">
     <div class="book-hero__outer">
       <div class="book-hero__inner">
         <div class="book-hero__cover">
-          <img
-            src="/images/ota-book-product-front.webp"
+          <HeroImage
+            src={bookCoverSrc}
             alt="Okay to Ask book cover, an orange book with a handwritten post-it note and the Okay to Ask wordmark"
             class="book-hero__cover-img"
-            width="1400"
-            height="1955"
-            loading="eager"
-            fetchpriority="high"
-            decoding="async"
+            width={1400}
+            height={1955}
+            sizes="(min-width: 768px) 22rem, 16rem"
+            has1600Avif={false}
+            priority
           />
         </div>
         <div class="book-hero__content">

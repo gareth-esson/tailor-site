@@ -12,6 +12,8 @@
  * (soft planning-call CTA).
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import HeroImage from '../../components/HeroImage.astro';
+import { heroPreload } from '../../lib/hero-image';
 import { breadcrumbJsonLd, site } from '../../lib/site';
 
 // --- Hero ------------------------------------------------------------
@@ -120,6 +122,7 @@ const closingText =
   ogImage={heroImage}
   ogImageWidth={heroImageWidth}
   ogImageHeight={heroImageHeight}
+  {...heroPreload(heroImage)}
   jsonLd={{
     '@context': 'https://schema.org',
     '@graph': [
@@ -147,7 +150,7 @@ const closingText =
         <p class="services-hero__subtitle">{heroSubtitle}</p>
       </div>
       <div class="services-hero__image">
-        <img src={heroImage} alt={heroImageAlt} width={heroImageWidth} height={heroImageHeight} loading="eager" fetchpriority="high" decoding="async" />
+        <HeroImage src={heroImage} alt={heroImageAlt} width={heroImageWidth} height={heroImageHeight} priority />
       </div>
     </div>
   </header>

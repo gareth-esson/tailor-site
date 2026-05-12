@@ -1,0 +1,72 @@
+---
+/**
+ * HeroImage — wraps a hero/LCP photograph in a responsive <picture>
+ * element with AVIF and WebP sources.
+ *
+ * Pair with `heroPreload()` from src/lib/hero-image.ts so the page's
+ * <BaseLayout> can preload the AVIF variant at HTML parse time:
+ *
+ *   ---
+ *   import HeroImage from '../components/HeroImage.astro';
+ *   import { heroPreload } from '../lib/hero-image';
+ *
+ *   const src = '/images/services/foo.webp';
+ *   ---
+ *   <BaseLayout {...heroPreload(src, { media: '(min-width: 768px)' })}>
+ *     <HeroImage
+ *       src={src}
+ *       alt="…"
+ *       width={1600}
+ *       height={872}
+ *       priority
+ *     />
+ *   </BaseLayout>
+ *
+ * Variant files (-800.avif, -1600.avif, -800.webp) are produced by
+ * scripts/optimize-hero-images.mjs and must exist alongside the source.
+ */
+import { heroVariants } from '../lib/hero-image';
+
+interface Props {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  /** CSS sizes attribute. Default matches the typical split-layout hero. */
+  sizes?: string;
+  /** Set on the LCP image of the page: adds eager loading + fetchpriority high. */
+  priority?: boolean;
+  /** Pass through extra classes on the <img>. */
+  class?: string;
+  /** Some sources are <1600w (no -1600.avif generated). */
+  has1600Avif?: boolean;
+}
+
+const {
+  src,
+  alt,
+  width,
+  height,
+  sizes = '(min-width: 1024px) 50vw, 100vw',
+  priority = false,
+  class: className,
+  has1600Avif = true,
+} = Astro.props;
+
+const v = heroVariants(src, has1600Avif);
+---
+
+<picture>
+  <source type="image/avif" srcset={v.srcsetAvif} sizes={sizes} />
+  <source type="image/webp" srcset={v.srcsetWebp} sizes={sizes} />
+  <img
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    class={className}
+    loading={priority ? 'eager' : 'lazy'}
+    fetchpriority={priority ? 'high' : undefined}
+    decoding="async"
+  />
+</picture>
