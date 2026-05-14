@@ -227,16 +227,27 @@ const testimonial = null as { quote: string; cite: string } | null;
 
   .book-hero__cover {
     flex-shrink: 0;
+    width: 100%;
+    max-width: 16rem;
   }
 
   .book-hero__content {
     max-width: var(--container-max-hero-text);
   }
 
-  .book-hero__cover-img {
+  /* :global() because <picture> and <img> are rendered by the HeroImage
+     child component and fall outside this page's CSS scope (Astro adds
+     the data-astro-cid attribute only to elements rendered in this
+     file). Picture defaults to display:inline; without block + 100%
+     here, the img's width:100% can't resolve against the flex parent. */
+  .book-hero__cover :global(picture),
+  .book-hero__cover :global(.book-hero__cover-img) {
+    display: block;
     width: 100%;
-    max-width: 16rem;
     height: auto;
+  }
+
+  .book-hero__cover :global(.book-hero__cover-img) {
     filter: drop-shadow(var(--book-cover-shadow-1)) drop-shadow(var(--book-cover-shadow-2));
   }
 
@@ -470,7 +481,7 @@ const testimonial = null as { quote: string; cite: string } | null;
       align-items: center;
     }
 
-    .book-hero__cover-img {
+    .book-hero__cover {
       max-width: 22rem;
     }
 
