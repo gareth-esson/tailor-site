@@ -89,21 +89,8 @@ function formatDate(iso: string | null): string | null {
   }).format(d);
 }
 
-function plainTextFromBlocks(blocks: any[]): string {
-  const parts: string[] = [];
-  for (const b of blocks ?? []) {
-    if (b?.type === 'paragraph') {
-      const rt = b.paragraph?.rich_text ?? [];
-      const text = rt.map((t: any) => t.plain_text || '').join('').trim();
-      if (text) parts.push(text);
-    }
-    if (parts.join(' ').length >= 300) break;
-  }
-  return parts.join(' ');
-}
-
 function deriveExcerpt(post: BlogPost, max = 140): string {
-  const source = (post.metaDescription || plainTextFromBlocks(post.body) || '').trim();
+  const source = (post.metaDescription || post.excerpt || '').trim();
   if (source.length <= max) return source;
   const slice = source.slice(0, max - 1);
   const lastSpace = slice.lastIndexOf(' ');

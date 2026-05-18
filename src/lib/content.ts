@@ -1,9 +1,9 @@
+import { getCollection } from 'astro:content';
 import {
   fetchQuestions,
   fetchGlossaryTerms,
   fetchTopics,
   fetchLandingPages,
-  fetchBlogPosts,
   fetchCurriculumStatements,
   fetchTestimonials,
 } from './fetchers';
@@ -23,6 +23,50 @@ import type {
   LandingPageRef,
   GlossaryIndex,
 } from './types';
+
+/**
+ * Derive a plain-text excerpt from MDX body markdown — first non-empty
+ * paragraph, stripped of inline markup, truncated at a word boundary
+ * with an ellipsis. Used by getBlogPosts() to pre-populate
+ * BlogPost.excerpt for card rendering on the index/category pages.
+ * Returns null when the body has no usable paragraph.
+ */
+function markdownExcerpt(md: string | undefined | null, maxChars: number): string | null {
+  if (!md) return null;
+  const paragraphs = md.split(/\n\n+/);
+  for (const para of paragraphs) {
+    const trimmed = para.trim();
+    if (!trimmed) continue;
+    // Skip non-paragraph blocks.
+    if (
+      trimmed.startsWith('#') ||
+      trimmed.startsWith('>') ||
+      trimmed.startsWith('- ') ||
+      trimmed.startsWith('* ') ||
+      trimmed.startsWith('![') ||
+      trimmed.startsWith('```') ||
+      /^\d+\.\s/.test(trimmed)
+    ) continue;
+
+    const plain = trimmed
+      .replace(/!\[[^\]]*\]\([^)]*\)/g, '')   // inline images
+      .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1') // links → label
+      .replace(/\*\*([^*]+)\*\*/g, '$1')        // bold
+      .replace(/\*([^*]+)\*/g, '$1')             // italic
+      .replace(/`([^`]+)`/g, '$1')                // inline code
+      .replace(/_+/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+    if (!plain) continue;
+
+    if (plain.length <= maxChars) return plain;
+    const slice = plain.slice(0, maxChars);
+    const lastSpace = slice.lastIndexOf(' ');
+    const cut = lastSpace > maxChars * 0.6 ? slice.slice(0, lastSpace) : slice;
+    return `${cut.trimEnd()}…`;
+  }
+  return null;
+}
 
 // --- Cached data (populated once per build) ---
 
@@ -74,9 +118,42 @@ async function _loadAllContentImpl(): Promise<void> {
   const glossaryTerms = await cached('glossary-terms', fetchGlossaryTerms);
   const questions = await cached('questions', fetchQuestions);
   const landingPages = await cached('landing-pages', fetchLandingPages);
-  const blogPosts = await cached('blog-posts', fetchBlogPosts);
   const curriculumStatements = await cached('curriculum-statements', fetchCurriculumStatements);
   const testimonials = await cached('testimonials', fetchTestimonials);
+
+  // Blog posts now live in src/content/blog as MDX. Pull entries via
+  // Astro's content collection API and map into the BlogPost shape so
+  // downstream consumers (blog index/category, related-posts logic,
+  // service-page sidebars, about) keep working unchanged.
+  const blogEntries = await getCollection('blog', ({ data }) => data.status === 'Published');
+  const blogPosts: BlogPost[] = blogEntries.map((entry) => {
+    const fm = entry.data;
+    const featured = fm.featuredImage;
+    return {
+      id: entry.id,
+      title: fm.title,
+      slug: entry.id,
+      status: fm.status,
+      topicIds: fm.topicIds,
+      topics: [], // resolved below
+      secondaryTopicIds: fm.secondaryTopicIds,
+      secondaryTopics: [], // resolved below
+      contentTags: fm.contentTags,
+      metaTitle: fm.metaTitle,
+      metaDescription: fm.metaDescription,
+      targetAudience: fm.targetAudience,
+      category: fm.category,
+      serviceLink: fm.serviceLink,
+      author: fm.author,
+      featuredImage: featured?.src ?? null,
+      featuredImageWidth: featured?.width ?? null,
+      featuredImageHeight: featured?.height ?? null,
+      imageCredit: fm.imageCredit,
+      imageCreditUrl: fm.imageCreditUrl,
+      publishedDate: fm.publishedDate,
+      excerpt: markdownExcerpt(entry.body, 140),
+    };
+  });
 
   // Build lookup maps
   const topicMap = new Map<string, Topic>(topics.map((t) => [t.id, t]));

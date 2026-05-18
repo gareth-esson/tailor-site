@@ -13,7 +13,6 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getBlogPosts } from '../../lib/content';
 import {
   formatDate,
-  deriveExcerpt,
   sortPostsForIndex,
 } from '../../lib/blog-helpers';
 
@@ -21,10 +20,10 @@ import {
 const allPosts = await getBlogPosts();
 const posts = sortPostsForIndex(allPosts);
 
-// Pre-compute excerpts + formatted dates at build time.
+// Excerpts are pre-computed in getBlogPosts() from the MDX body; cards
+// just consume `post.excerpt` directly.
 const cards = posts.map((p) => ({
   ...p,
-  excerpt: deriveExcerpt(p.body, 140),
   dateLabel: formatDate(p.publishedDate),
 }));
 

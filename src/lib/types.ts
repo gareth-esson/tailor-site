@@ -130,15 +130,19 @@ export interface BlogPost {
   serviceLink: string | null;
   author: string;
   featuredImage: string | null;
-  /** Intrinsic pixel dimensions of `featuredImage`, resolved at build
-   *  time via probe-image-size. Used for og:image:width/height so social
-   *  platforms can pre-size the share card without fetching the bytes.
-   *  null when the image URL can't be probed (network failure, expired
-   *  Notion file URL, etc.). */
+  /** Intrinsic pixel dimensions of `featuredImage`, resolved by Astro's
+   *  image pipeline at build time. Used for og:image:width/height so
+   *  social platforms can pre-size the share card without fetching the
+   *  bytes. */
   featuredImageWidth: number | null;
   featuredImageHeight: number | null;
+  imageCredit: string | null;
+  imageCreditUrl: string | null;
   publishedDate: string | null;
-  body: BlockObjectResponse[];
+  /** Plain-text excerpt derived from the post body at content-load time.
+   *  Used for cards on the index and category pages. Body markdown lives
+   *  in the MDX entry and is rendered via <Content /> on the slug page. */
+  excerpt: string | null;
 }
 
 export interface CurriculumStatement {

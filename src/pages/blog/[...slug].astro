@@ -2,16 +2,15 @@
 /**
  * Blog post template [C4] — /blog/{slug}
  * Teacher-facing editorial content. Tailor layer.
- * Body from Notion with inline glossary tooltips.
+ * Body is MDX from the `blog` content collection. Metadata is mapped
+ * into the BlogPost shape by getBlogPosts() in src/lib/content.ts.
  */
+import { getEntry, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import GlossaryTooltips from '../../components/GlossaryTooltips.astro';
 import CtaBlogBottom from '../../components/CtaBlogBottom.astro';
 import HeroImage from '../../components/HeroImage.astro';
 import { heroPreload } from '../../lib/hero-image';
-import { getBlogPosts, getGlossaryIndex, getLandingPages } from '../../lib/content';
-import { renderBlocks } from '../../lib/render-blocks';
-import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
+import { getBlogPosts, getLandingPages } from '../../lib/content';
 import { getRelatedBlogPosts } from '../../lib/related-blog-posts';
 import type { BlogPost, LandingPageRef } from '../../lib/types';
 import { breadcrumbJsonLd, founderUrl, site } from '../../lib/site';
@@ -22,7 +21,6 @@ export const prerender = true;
 export async function getStaticPaths() {
   const posts = await getBlogPosts();
   const allLandingPages = await getLandingPages();
-  const glossaryIndex = await getGlossaryIndex();
 
   return posts.map((post) => {
     const related = getRelatedBlogPosts(post, posts, 3);
@@ -38,12 +36,7 @@ export async function getStaticPaths() {
 
     return {
       params: { slug: post.slug },
-      props: {
-        post,
-        relatedPosts: related,
-        primaryTopic,
-        glossaryIndex,
-      },
+      props: { post, relatedPosts: related, primaryTopic },
     };
   });
 }
@@ -52,10 +45,17 @@ interface Props {
   post: BlogPost;
   relatedPosts: BlogPost[];
   primaryTopic: LandingPageRef | null;
-  glossaryIndex: Record<string, any>;
 }
 
-const { post, relatedPosts, primaryTopic, glossaryIndex } = Astro.props;
+const { post, relatedPosts, primaryTopic } = Astro.props;
+
+// Pull the MDX entry and render its body. The collection id matches the
+// post slug (one folder per post under src/content/blog/<slug>/).
+const entry = await getEntry('blog', post.slug);
+if (!entry) {
+  throw new Error(`Blog entry not found for slug "${post.slug}".`);
+}
+const { Content } = await render(entry);
 
 // SEO metadata
 const metaTitle = post.metaTitle || `${post.title} | Tailor Education`;
@@ -118,10 +118,6 @@ const jsonLd = {
 
 // All topics (primary + secondary)
 const allTopics = [...post.topics, ...post.secondaryTopics];
-
-// Render body content with glossary tooltips
-const bodyHtml = renderBlocks(post.body);
-const bodyWithTooltips = injectGlossaryTooltips(bodyHtml, glossaryIndex, undefined);
 ---
 
 <BaseLayout
@@ -149,28 +145,42 @@ const bodyWithTooltips = injectGlossaryTooltips(bodyHtml, glossaryIndex, undefin
     <header class="blog-post__header">
       {post.featuredImage && (
         <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] pt-[var(--space-global-xl)]">
-          <div class="blog-post__hero-img">
-            {post.featuredImage.endsWith('.webp') && post.featuredImage.startsWith('/') ? (
-              <HeroImage
-                src={post.featuredImage}
-                alt={`Featured image for ${post.title}`}
-                width={post.featuredImageWidth ?? 1600}
-                height={post.featuredImageHeight ?? 900}
-                sizes="(min-width: 1024px) 1024px, 100vw"
-                priority
-              />
-            ) : (
-              <img
-                src={post.featuredImage}
-                alt={`Featured image for ${post.title}`}
-                width={post.featuredImageWidth ?? 1600}
-                height={post.featuredImageHeight ?? 900}
-                loading="eager"
-                fetchpriority="high"
-                decoding="async"
-              />
+          <figure class="blog-post__hero-figure">
+            <div class="blog-post__hero-img">
+              {post.featuredImage.endsWith('.webp') && post.featuredImage.startsWith('/') ? (
+                <HeroImage
+                  src={post.featuredImage}
+                  alt={`Featured image for ${post.title}`}
+                  width={post.featuredImageWidth ?? 1600}
+                  height={post.featuredImageHeight ?? 900}
+                  sizes="(min-width: 1024px) 1024px, 100vw"
+                  priority
+                />
+              ) : (
+                <img
+                  src={post.featuredImage}
+                  alt={`Featured image for ${post.title}`}
+                  width={post.featuredImageWidth ?? 1600}
+                  height={post.featuredImageHeight ?? 900}
+                  loading="eager"
+                  fetchpriority="high"
+                  decoding="async"
+                />
+              )}
+            </div>
+            {post.imageCredit && (
+              <figcaption class="blog-post__hero-credit">
+                Photo by{' '}
+                {post.imageCreditUrl ? (
+                  <a href={post.imageCreditUrl} target="_blank" rel="noopener noreferrer">{post.imageCredit}</a>
+                ) : (
+                  post.imageCredit
+                )}
+                {' '}on{' '}
+                <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer">Unsplash</a>
+              </figcaption>
             )}
-          </div>
+          </figure>
         </div>
       )}
 
@@ -253,13 +263,13 @@ const bodyWithTooltips = injectGlossaryTooltips(bodyHtml, glossaryIndex, undefin
     </header>
 
     <!-- §3 Body content -->
-    {bodyWithTooltips && (
-      <section class="blog-post__body">
-        <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-          <div class="prose" set:html={bodyWithTooltips} />
+    <section class="blog-post__body">
+      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <div class="prose">
+          <Content />
         </div>
-      </section>
-    )}
+      </div>
+    </section>
 
     <!-- §4 Topic tags [A16] -->
     {allTopics.length > 0 && (
@@ -333,7 +343,6 @@ const bodyWithTooltips = injectGlossaryTooltips(bodyHtml, glossaryIndex, undefin
     <!-- §6 CTA [A13] -->
     <CtaBlogBottom serviceLink={post.serviceLink} primaryTopic={primaryTopic} />
   </article>
-  <GlossaryTooltips />
 </BaseLayout>
 
 <script>
@@ -459,9 +468,12 @@ document.addEventListener('DOMContentLoaded', initShare);
   }
 
   /* Featured image */
-  .blog-post__hero-img {
+  .blog-post__hero-figure {
     max-width: var(--container-max-reading-wide);
     margin: 0 auto;
+  }
+
+  .blog-post__hero-img {
     border-radius: var(--radius-lg);
     overflow: hidden;
     aspect-ratio: 16 / 9;
@@ -472,6 +484,24 @@ document.addEventListener('DOMContentLoaded', initShare);
     height: 100%;
     object-fit: cover;
     display: block;
+  }
+
+  .blog-post__hero-credit {
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+    margin-top: var(--space-global-xs);
+    text-align: right;
+  }
+
+  .blog-post__hero-credit a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: var(--border-width-xs);
+    text-underline-offset: 0.15em;
+  }
+
+  .blog-post__hero-credit a:hover {
+    color: var(--text-body);
   }
 
   /* Breadcrumb above title */

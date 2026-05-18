@@ -1,8 +1,11 @@
 /**
  * Blog helpers — shared utilities for B9 (blog index) and C4 (blog post detail).
  * See Tailor_Layout_Spec_B9.md §3 for usage.
+ *
+ * Excerpt derivation moved into getBlogPosts() in src/lib/content.ts as
+ * part of the Notion → MDX migration. Consumers read post.excerpt
+ * directly now.
  */
-import type { BlockObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import type { BlogPost } from './types';
 
 /**
@@ -19,44 +22,6 @@ export function formatDate(iso: string | null): string | null {
     month: 'short',
     year: 'numeric',
   });
-}
-
-/**
- * Walk a Notion body block array, find the first paragraph block with
- * meaningful text, and return its plain text content truncated to maxChars
- * at a word boundary (suffixed with an ellipsis if truncated).
- *
- * Returns null if no paragraph block is found or the first paragraph is
- * empty. Callers should `&&`-guard the output so the excerpt slot omits
- * gracefully.
- */
-export function deriveExcerpt(
-  body: BlockObjectResponse[] | null | undefined,
-  maxChars: number,
-): string | null {
-  if (!body || body.length === 0) return null;
-
-  // Find the first paragraph block with non-empty text. Skip empty paragraphs
-  // (common in Notion exports) and non-paragraph blocks at the top of the
-  // post (headings, images, callouts).
-  for (const block of body) {
-    if (block.type !== 'paragraph') continue;
-    const richText = (block as Extract<BlockObjectResponse, { type: 'paragraph' }>).paragraph.rich_text;
-    if (!richText || richText.length === 0) continue;
-
-    const plain = richText.map((rt) => rt.plain_text ?? '').join('').trim();
-    if (plain.length === 0) continue;
-
-    if (plain.length <= maxChars) return plain;
-
-    // Truncate at a word boundary at or before maxChars.
-    const slice = plain.slice(0, maxChars);
-    const lastSpace = slice.lastIndexOf(' ');
-    const cut = lastSpace > maxChars * 0.6 ? slice.slice(0, lastSpace) : slice;
-    return `${cut.trimEnd()}…`;
-  }
-
-  return null;
 }
 
 /**

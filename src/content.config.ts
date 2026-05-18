@@ -42,8 +42,10 @@ const blog = defineCollection({
         .default(null),
       metaTitle: z.string().default(''),
       metaDescription: z.string().default(''),
-      /** Co-located, e.g. `./featured.webp`. Optimised by Astro. */
-      featuredImage: image().optional(),
+      /** Co-located, e.g. `./featured.webp`. Optimised by Astro.
+       *  Allow `null` from YAML so posts without a hero serialise
+       *  cleanly. The data layer maps null → undefined downstream. */
+      featuredImage: image().nullish(),
       imageCredit: z.string().nullable().default(null),
       imageCreditUrl: z.string().url().nullable().default(null),
     }),

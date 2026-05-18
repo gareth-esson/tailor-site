@@ -7,7 +7,7 @@
  */
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { getBlogPosts } from '../../../lib/content';
-import { formatDate, deriveExcerpt, sortPostsForIndex } from '../../../lib/blog-helpers';
+import { formatDate, sortPostsForIndex } from '../../../lib/blog-helpers';
 
 export async function getStaticPaths() {
   // Canonical categories — kept in sync with the chip list in
@@ -47,9 +47,9 @@ const allPosts = await getBlogPosts();
 const filtered = allPosts.filter((p) => p.category === category.title);
 const posts = sortPostsForIndex(filtered);
 
+// Excerpts come pre-computed from getBlogPosts() (MDX body → plain text).
 const cards = posts.map((p) => ({
   ...p,
-  excerpt: deriveExcerpt(p.body, 140),
   dateLabel: formatDate(p.publishedDate),
 }));
 
