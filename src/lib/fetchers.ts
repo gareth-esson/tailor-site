@@ -14,24 +14,14 @@ import type {
   GlossaryTerm,
   Topic,
   LandingPage,
-  BlogPost,
   CurriculumStatement,
   Testimonial,
   ServiceTag,
   Setting,
   Voice,
 } from './types';
-import { probeDimensions } from './image-dimensions';
-import { ensureBlogFeaturedImageCached } from './blog-image-cache';
 
 // --- Notion property helpers ---
-
-function getFilesUrl(prop: any): string | null {
-  if (prop?.type === 'url') return prop.url ?? null;
-  if (prop?.type !== 'files' || !prop.files?.length) return null;
-  const f = prop.files[0];
-  return f.type === 'external' ? f.external?.url ?? null : f.file?.url ?? null;
-}
 
 function getDateValue(prop: any): string | null {
   if (prop?.type !== 'date' || !prop.date?.start) return null;
@@ -56,10 +46,6 @@ const TESTIMONIALS_DB =
 
 function getLandingPagesDb(): string | null {
   return import.meta.env.NOTION_LANDING_PAGES_DB || null;
-}
-
-function getBlogDb(): string | null {
-  return import.meta.env.NOTION_BLOG_DB || null;
 }
 
 // --- Concurrency-limited batch processing ---
@@ -223,73 +209,6 @@ export async function fetchLandingPages(): Promise<LandingPage[]> {
     return landingPages;
   } catch (error) {
     console.warn(`  ⚠ Could not fetch landing pages (database may not be shared with integration yet):`, (error as Error).message);
-    return [];
-  }
-}
-
-export async function fetchBlogPosts(): Promise<BlogPost[]> {
-  const dbId = getBlogDb();
-  if (!dbId) {
-    console.warn('  ⚠ NOTION_BLOG_DB not set, skipping blog posts');
-    return [];
-  }
-
-  console.log('Fetching blog posts...');
-  try {
-    const pages = await queryDatabase(dbId, {
-      property: 'Status',
-      select: { equals: 'Published' },
-    });
-
-    const blogPosts: BlogPost[] = await batchProcess(pages, async (page) => {
-      const p = page.properties;
-      const body = await fetchPageBlocks(page.id);
-      const slug = getRichTextValue(p['Slug']);
-      const remoteUrl = getFilesUrl(p['Featured Image']);
-
-      // Cache the featured image locally so we can serve AVIF/WebP from
-      // Vercel's edge instead of hot-linking Notion's signed S3 URLs
-      // (which expire and aren't optimisable). If caching fails for any
-      // reason, fall back to the Notion URL so the page still renders.
-      let featuredImage = remoteUrl;
-      if (remoteUrl && slug) {
-        const cached = await ensureBlogFeaturedImageCached(remoteUrl, slug);
-        if (cached) featuredImage = cached;
-      }
-
-      // Probe at build time so og:image:width/height can be emitted on
-      // the post page. probe-image-size only reads enough bytes to parse
-      // the format header — it doesn't download the whole image.
-      const dims = featuredImage ? await probeDimensions(featuredImage) : null;
-
-      return {
-        id: page.id,
-        title: getTitleValue(p['Title']),
-        slug,
-        status: getSelectValue(p['Status']),
-        topicIds: getRelationIds(p['Topic']),
-        topics: [], // resolved later
-        secondaryTopicIds: getRelationIds(p['Secondary Topics']),
-        secondaryTopics: [], // resolved later
-        contentTags: getMultiSelectValues(p['Content Tags']),
-        metaTitle: getRichTextValue(p['Meta Title']),
-        metaDescription: getRichTextValue(p['Meta Description']),
-        targetAudience: getSelectValue(p['Target Audience']),
-        category: getSelectValue(p['Category']),
-        serviceLink: getSelectValue(p['Service Link']),
-        author: getRichTextValue(p['Author']),
-        featuredImage,
-        featuredImageWidth: dims?.width ?? null,
-        featuredImageHeight: dims?.height ?? null,
-        publishedDate: getDateValue(p['Published Date']),
-        body,
-      };
-    });
-
-    console.log(`  ✓ ${blogPosts.length} blog posts fetched`);
-    return blogPosts;
-  } catch (error) {
-    console.warn(`  ⚠ Could not fetch blog posts (database may not be shared with integration yet):`, (error as Error).message);
     return [];
   }
 }
