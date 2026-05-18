@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import vercel from '@astrojs/vercel';
+import mdx from '@astrojs/mdx';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
@@ -14,6 +15,7 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   integrations: [
+    mdx(),
     // In output: 'static' mode the sitemap integration automatically
     // includes every prerendered page, so no customPages list is needed.
     sitemap({
