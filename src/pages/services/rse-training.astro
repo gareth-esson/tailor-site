@@ -9,10 +9,11 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import HeroImage from '../../components/HeroImage.astro';
 import { heroPreload } from '../../lib/hero-image';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
+import ServiceFaq from '../../components/ServiceFaq.astro';
 import ServiceMetaStrip from '../../components/ServiceMetaStrip.astro';
 import ServiceTopicsStrip from '../../components/ServiceTopicsStrip.astro';
 import { getBlogPosts, getTestimonialsByService } from '../../lib/content';
-import { serviceJsonLd, breadcrumbJsonLd } from '../../lib/site';
+import { serviceJsonLd, breadcrumbJsonLd, faqJsonLd } from '../../lib/site';
 
 // --- Data ----------------------------------------------------------
 const slug = 'rse-training';
@@ -49,6 +50,53 @@ const metaStripItems = [
   { label: 'Group size', value: 'Up to 20 per facilitator' },
   { label: 'Pricing', value: 'Twilight from £375; full programmes priced on enquiry' },
   { label: 'Alignment', value: 'DfE statutory guidance, KCSIE, PSHE Association framework' },
+];
+
+// Pre-enquiry FAQ — the questions PSHE leads actually ask before they
+// fill in the contact form. Each item is mirrored into FAQPage JSON-LD
+// below so Google can match it to PAA / featured-snippet queries.
+// Drafted in Tailor voice; revise freely.
+const faqItems = [
+  {
+    question: 'How long is RSE staff training?',
+    answer:
+      'It depends on what you need. A twilight session is three hours and works well for an introduction or a single high-pressure topic. A half-day is the most common booking — enough time to cover the framework, work through scenarios, and answer the questions staff actually have. Full-day or multi-session programmes are for departments going deeper, or schools rolling out a curriculum revision.',
+  },
+  {
+    question: 'Who is the training for?',
+    answer:
+      'PSHE leads, form tutors, and the wider team being asked to deliver RSE. We work with whole secondary departments, mixed-role groups, and senior leadership separately when the conversation is about strategy rather than delivery. The work is most useful when the people in the room are the ones who\'ll be teaching it.',
+  },
+  {
+    question: 'Do you cover the hard topics — FGM, pornography, consent, masculinity?',
+    answer:
+      'Yes. These are usually the reason schools call us. We cover them with the same framework we use for the easier topics: what to say when you\'re asked the question, how to pitch it for the year group in front of you, and what to do when the conversation moves somewhere unexpected. Avoiding the hard topics in training doesn\'t make them easier in the classroom.',
+  },
+  {
+    question: 'Is the training appropriate for staff who\'ve never taught RSE before?',
+    answer:
+      'Yes. A lot of the staff we work with have inherited RSE rather than chosen it. The training is paced for that. We don\'t assume prior subject knowledge and we don\'t make it a problem if someone is starting from scratch.',
+  },
+  {
+    question: 'How is your training different from a generic RSE walkthrough?',
+    answer:
+      'It\'s led by someone who teaches the same content directly to students, in dozens of schools every term. That means the examples are real, the scripts have been tested in front of Year 9, and the difficult moments come from the classroom rather than the textbook. We focus on what to do when something goes off-plan, because that\'s the part teachers find hardest.',
+  },
+  {
+    question: 'Can the training be tailored to our school, year group, or curriculum?',
+    answer:
+      'Always. Every engagement starts with a conversation about what your staff are actually being asked to teach, the year groups in scope, and the parts of the curriculum you most want covered. We don\'t run a fixed catalogue. The shared core is the same; how we shape it for your school changes every time.',
+  },
+  {
+    question: 'What do staff leave with?',
+    answer:
+      'Confidence to teach the topics they were dreading. A shared framework the whole team can use. Concrete scripts for the hardest moments — disclosures, off-topic questions, parent conversations. And a written resource pack staff can return to after the training.',
+  },
+  {
+    question: 'How far in advance do schools usually book?',
+    answer:
+      'Anything from two weeks to a term ahead. We hold a small number of urgent slots each half-term for schools who need training before a planned delivery; if you\'re trying to get something into the calendar before September, get in touch sooner rather than later.',
+  },
 ];
 
 const whatSchoolsGet =
@@ -91,9 +139,11 @@ const jsonLd = {
       name: 'RSE training for school staff',
       description: metaDescription,
       canonicalPath,
-      serviceType: 'CPD training',
+      serviceType: 'Teacher training',
       audienceRoles: ['School leader', 'PSHE lead', 'Teacher'],
+      offer: { priceText: 'Twilight from £375; full programmes priced on enquiry' },
     }),
+    faqJsonLd(faqItems),
     breadcrumbJsonLd([
       { name: 'Services', path: '/services/' },
       { name: 'RSE training', path: canonicalPath },
@@ -192,6 +242,8 @@ const jsonLd = {
         </div>
       </div>
     </section>
+
+    <ServiceFaq items={faqItems} heading="Questions schools ask before booking" />
 
     {relatedPosts.length > 0 && (
       <section class="service-blog">

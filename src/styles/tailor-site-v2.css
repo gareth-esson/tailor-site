@@ -1469,6 +1469,43 @@ h6 { font-weight: var(--heading-weight-h6); }
     }
 }
 
+/* ── Service FAQ — accordion in primary-content context.
+   Used by ServiceFaq.astro on service pages. Overrides accordion
+   tokens locally so questions read as h-level headings and answers
+   as primary prose body (not muted detail). Section uses prose
+   container width so reading length matches the description above. */
+.service-faq {
+    background: var(--bg-page);
+}
+.service-faq__inner {
+    width: 100%;
+    max-width: var(--container-max-prose);
+    margin-inline: auto;
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+}
+.service-faq__intro {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body);
+    line-height: var(--lh-prose);
+    margin: 0 0 var(--space-global-md);
+}
+.service-faq__list {
+    --accordion-title-size: var(--text-prose-size-h4);
+    --accordion-title-weight: var(--heading-weight-h4);
+    --accordion-content-size: var(--text-prose-size-body);
+    --accordion-content-color: var(--text-body);
+    --accordion-padding-y: var(--space-global-md);
+    border-top: var(--border-width-xs) solid var(--border-subtle);
+}
+.service-faq__list .accordion__trigger {
+    line-height: var(--lh-heading-sub);
+    gap: var(--space-global-md);
+}
+.service-faq__list .accordion__content-inner p {
+    line-height: var(--lh-prose);
+}
+
 
 /* =========================================
    FORMS

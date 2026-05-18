@@ -272,3 +272,26 @@ export function breadcrumbJsonLd(
     itemListElement: items,
   };
 }
+
+/**
+ * FAQPage helper. Maps a list of Q/A pairs into the schema.org FAQPage
+ * shape that Google uses for PAA / featured-snippet eligibility. The
+ * question field should match the on-page heading verbatim; the answer
+ * field should match the visible answer text (Google explicitly checks
+ * for parity).
+ */
+export function faqJsonLd(
+  items: ReadonlyArray<{ question: string; answer: string }>,
+) {
+  return {
+    '@type': 'FAQPage',
+    mainEntity: items.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  };
+}

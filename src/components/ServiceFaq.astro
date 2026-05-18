@@ -1,0 +1,54 @@
+---
+/**
+ * ServiceFaq — accordion FAQ block for service pages. Built on the
+ * design system's native <details>/<summary> accordion (see ACCORDIONS
+ * in tailor-site-v2.css) with locally overridden tokens for primary-
+ * content sizing (FAQ answers are not "secondary detail" — they read
+ * as full prose). Pair the on-page items with faqJsonLd() so the
+ * SERP gets a matching FAQPage schema.
+ *
+ * The first item is open by default so the section reads as content
+ * rather than as a hidden accordion stack.
+ */
+interface Item {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  items: Item[];
+  /** Section heading. Defaults to a generic "Questions schools ask". */
+  heading?: string;
+  /** Optional intro paragraph between the heading and the accordion. */
+  intro?: string;
+}
+
+const { items, heading = 'Questions schools ask', intro } = Astro.props;
+---
+
+<section class="service-faq" aria-labelledby="faq-heading">
+  <div class="service-faq__inner">
+    <h2 id="faq-heading" class="service-section-title">{heading}</h2>
+    {intro && <p class="service-faq__intro">{intro}</p>}
+    <div class="accordion service-faq__list">
+      {items.map((item, i) => (
+        <details class="accordion__item" open={i === 0}>
+          <summary class="accordion__trigger">
+            <span>{item.question}</span>
+            <span class="accordion__icon" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="6" width="14" height="2" rx="1" fill="currentColor" />
+                <rect class="v-bar" x="6" y="0" width="2" height="14" rx="1" fill="currentColor" />
+              </svg>
+            </span>
+          </summary>
+          <div class="accordion__content">
+            <div class="accordion__content-inner">
+              <p>{item.answer}</p>
+            </div>
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
