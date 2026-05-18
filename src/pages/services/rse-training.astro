@@ -9,6 +9,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import HeroImage from '../../components/HeroImage.astro';
 import { heroPreload } from '../../lib/hero-image';
 import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
+import ServiceMetaStrip from '../../components/ServiceMetaStrip.astro';
 import ServiceTopicsStrip from '../../components/ServiceTopicsStrip.astro';
 import { getBlogPosts, getTestimonialsByService } from '../../lib/content';
 import { serviceJsonLd, breadcrumbJsonLd } from '../../lib/site';
@@ -36,7 +37,18 @@ const descriptionLead =
 const descriptionBody = [
   'Our training is built around that reality. Rather than walking staff through a generic RSE overview, we focus on the specific moments teachers find hardest: managing disclosures, handling unexpected questions, pitching content age-appropriately, navigating parent concerns, and building the personal confidence to hold the room.',
   'Every session is led by a specialist who has delivered RSE directly to students in hundreds of schools. That matters. The training isn\'t theoretical, it\'s shaped by what actually happens in the classroom, and what actually works.',
+  'We don\'t run a catalogue of separate sessions. Every engagement starts from a shared core and is shaped to what your staff are actually being asked to teach, in your school, this year.',
   'We offer half-day, full-day, and multi-session programmes, delivered in person at your school. Programmes are aligned to DfE statutory guidance, KCSIE, and the PSHE Association framework.',
+];
+
+// Operational specifics for the meta strip — shown between hero and
+// description. Edit values here, not in the markup.
+const metaStripItems = [
+  { label: 'Formats', value: 'Twilight (3 hours), half-day, full-day, multi-session' },
+  { label: 'Delivery', value: 'In person, UK-wide' },
+  { label: 'Group size', value: 'Up to 20 per facilitator' },
+  { label: 'Pricing', value: 'Twilight from £375; full programmes priced on enquiry' },
+  { label: 'Alignment', value: 'DfE statutory guidance, KCSIE, PSHE Association framework' },
 ];
 
 const whatSchoolsGet =
@@ -125,6 +137,8 @@ const jsonLd = {
           </div>
         </div>
     </header>
+
+    <ServiceMetaStrip items={metaStripItems} ariaLabel="RSE training at a glance" />
 
     <section class="service-description">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">

@@ -42,12 +42,13 @@
   /* ====================================
      BRAND SECONDARY – BASE (CHANGE PER CLIENT)
      ==================================== */
-  /* Secondary brand tone, dark anchor — Okay to Ask wordmark blue-grey */
-  --brand-secondary: #1E2A3A;
+  /* Secondary brand tone, dark anchor — cool near-black slate
+     (Tailor v2 cool palette; replaces the earlier navy #1E2A3A). */
+  --brand-secondary: #1f2329;
   /* Same secondary expressed as HSL components */
-  --brand-secondary-h: 213;
-  --brand-secondary-s: 33%;
-  --brand-secondary-l: 17%;
+  --brand-secondary-h: 218;
+  --brand-secondary-s: 14%;
+  --brand-secondary-l: 14%;
   /* Relational variants derived from brand secondary */
   /* Notion rule: H same, S −4, L +40 */
   --brand-secondary-soft: hsl(
@@ -98,20 +99,20 @@
   /* ====================================
      TEXT – BASE + RELATIONAL
      ==================================== */
-  /* Body text base colour — dark blue-grey from Okay to Ask wordmark */
-  --text-body: #1E2A3A;
+  /* Body text base colour — cool near-black slate (Tailor v2 cool palette) */
+  --text-body: #1f2329;
   /* Same body text expressed as HSL components, exposed for downstream
      hsla() derivations (matches the GDH master's exposure pattern). */
-  --text-body-h: 213;
-  --text-body-s: 33%;
-  --text-body-l: 17%;
+  --text-body-h: 218;
+  --text-body-s: 14%;
+  --text-body-l: 14%;
   /* Muted/meta text relative to body. Kept as an explicit HSL value to
-     preserve WCAG AA contrast (4.75:1 on --bg-page); do not regenerate
-     from text-body-h/s/l. */
-  --text-body-muted: hsl(213, 10%, 43%);
+     preserve WCAG AA contrast (≥4.5:1 on --bg-page and --bg-surface-alt);
+     do not regenerate from text-body-h/s/l. */
+  --text-body-muted: hsl(218, 8%, 42%);
   /* Headings on light backgrounds */
-  --text-heading: #1E2A3A;
-  --text-heading-muted: hsl(213, 15%, 40%);
+  --text-heading: #1f2329;
+  --text-heading-muted: hsl(218, 12%, 38%);
   /* Text on dark backgrounds */
   --text-on-dark: #f3f4f5;
   --text-heading-on-dark: #ffffff;
@@ -235,23 +236,26 @@
   /* ====================================
      NEUTRALS & BACKGROUNDS (SHARED ACROSS SITES)
      ==================================== */
-  --neutral-100: #f4f3ef;
-  --neutral-200: #e5e4de;
-  --neutral-300: #d6d4ce;
+  /* Cool neutrals (Tailor v2). The OtA layer keeps its warm paper
+     tones via --bg-ota-* / --surface-ota-* — those are NOT this scale.
+     Saturation kept low (~10%) so cool hue reads as a whisper, not pigment. */
+  --neutral-100: #f1f2f4;
+  --neutral-200: #e3e6e8;
+  --neutral-300: #d3d6da;
   --neutral-400: #a5a29a;
   --neutral-500: #7a7771;
   --neutral-700: #46443e;
   --neutral-900: #1b1a17;
-  --bg-page: #ffffff;
-  --bg-surface: #f8f7f4;
-  --bg-surface-alt: #f0efeb;
-  --bg-subtle: var(--neutral-200);     /* warm neutral */
-  --bg-tinted: var(--neutral-100);  /* warm off-white band surface; was a 4% teal wash which read cool against warm neutrals */
+  --bg-page: #fbfbfc;
+  --bg-surface: #f4f5f6;
+  --bg-surface-alt: #eef0f2;
+  --bg-subtle: var(--neutral-200);     /* cool neutral */
+  --bg-tinted: var(--neutral-100);     /* cool off-white band surface */
   --bg-emphasis: var(--brand-secondary);
-  --border-subtle: var(--neutral-200); /* warm neutral */
-  --border-strong: var(--neutral-400); /* warm neutral */
-  --border-subtle-on-dark: #4a4844;    /* warm dark */
-  --border-strong-on-dark: var(--neutral-200); /* warm neutral */
+  --border-subtle: var(--neutral-200); /* cool neutral */
+  --border-strong: var(--neutral-400); /* warm neutral — leave for now */
+  --border-subtle-on-dark: #383b42;    /* cool dark */
+  --border-strong-on-dark: var(--neutral-200); /* cool neutral */
   /* ====================================
      STATES / FEEDBACK (STATIC SYSTEM)
      ==================================== */
@@ -367,8 +371,8 @@
   /* ── ON-DARK OVERLAYS ── */
   --overlay-on-dark: rgba(255, 255, 255, 0.15);
   /* Dims light-ground content behind modal/drawer/overlay surfaces.
-     Value is --bg-emphasis (#1E2A3A) at 40%. Used by D3 mobile nav scrim. */
-  --overlay-scrim: rgba(30, 42, 58, 0.4);
+     Value is --bg-emphasis (#1f2329) at 40%. Used by D3 mobile nav scrim. */
+  --overlay-scrim: rgba(31, 35, 41, 0.4);
 
   /* ── OKAY TO ASK POST-IT MOTIF ── */
   --surface-ota-postit-soft: #FBF4C7;
@@ -723,7 +727,7 @@
   --section-eyebrow-ls: 0.05em;
 
   /* ── HOMEPAGE HERO (B1) ── */
-  --hero-tailor-bg: var(--bg-emphasis);   /* #1E2A3A — dark authority */
+  --hero-tailor-bg: var(--bg-emphasis);   /* cool slate dark authority */
   --trust-icon-size: 3rem;               /* 48px — framework badge marks */
 
   /* ── SPOT ILLUSTRATION (editorial, larger than spot-icon) ── */
@@ -2529,7 +2533,7 @@ textarea.form-input {
     object-fit: cover;
 }
 
-@media (min-width: 1024px) { /* --bp-lg */
+@media (min-width: 768px) { /* --bp-md — was bp-lg; flipped May 2026 so iPad/small-laptop renders side-by-side instead of as oversized mobile */
     .split-layout {
         grid-template-columns: 3fr 2fr; /* 60/40 text-led */
         gap: var(--split-gap);
@@ -2552,7 +2556,7 @@ textarea.form-input {
     .split-layout--image-left > :first-child { order: 2; }
     .split-layout--image-left > :last-child  { order: 1; }
 
-    /* Uncap text inside the lg+ grid cell — the cell is the cap */
+    /* Uncap text inside the md+ grid cell — the cell is the cap */
     .split-layout__text {
         max-width: none;
     }
@@ -3905,6 +3909,64 @@ textarea.form-input {
     object-fit: cover;
     display: block;
     aspect-ratio: 4 / 3; /* mobile/tablet natural aspect */
+}
+
+/* §2.5 — Service meta strip
+   Horizontal band of operational specifics between hero and description.
+   Five items wide on desktop, two on small tablets, single column on
+   mobile. Understated: no chrome, just label/value pairs separated by
+   subtle borders top and bottom. */
+.service-meta-strip {
+    background: var(--bg-page);
+    border-bottom: var(--border-width-xs) solid var(--border-subtle);
+}
+.service-meta-strip__inner {
+    width: 100%;
+    max-width: var(--container-max-shell);
+    margin-inline: auto;
+    padding: var(--space-global-lg) var(--space-global-gutter);
+}
+.service-meta-strip__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-global-md);
+    margin: 0;
+}
+.service-meta-strip__item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-xs);
+    margin: 0;
+}
+.service-meta-strip__label {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-h6);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-body-muted);
+    text-transform: uppercase;
+    letter-spacing: var(--section-eyebrow-ls);
+    margin: 0;
+}
+.service-meta-strip__value {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    color: var(--text-body);
+    line-height: var(--lh-body);
+    margin: 0;
+}
+@media (min-width: 640px) {
+    /* tablet — two columns. */
+    .service-meta-strip__grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-global-lg) var(--space-global-xl);
+    }
+}
+@media (min-width: 1024px) {
+    /* desktop — five columns. */
+    .service-meta-strip__grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: var(--space-global-lg);
+    }
 }
 
 /* §3 — Service description */

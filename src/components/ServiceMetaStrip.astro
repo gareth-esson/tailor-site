@@ -1,0 +1,37 @@
+---
+/**
+ * ServiceMetaStrip — horizontal band of label/value pairs for the
+ * operational specifics of a service (formats, delivery, group size,
+ * pricing anchor, framework alignment). Sits between the service hero
+ * and the description, breaking the single-column rhythm and giving
+ * scanning buyers the practical facts before they read the editorial.
+ *
+ * Visually understated by design: no chrome, no icons. Tokenised
+ * spacing/typography only.
+ */
+interface Item {
+  label: string;
+  value: string;
+}
+
+interface Props {
+  items: Item[];
+  /** Accessible label for the landmark. Defaults to a generic value. */
+  ariaLabel?: string;
+}
+
+const { items, ariaLabel = 'Service overview' } = Astro.props;
+---
+
+<section class="service-meta-strip" aria-label={ariaLabel}>
+  <div class="service-meta-strip__inner">
+    <dl class="service-meta-strip__grid">
+      {items.map((item) => (
+        <div class="service-meta-strip__item">
+          <dt class="service-meta-strip__label">{item.label}</dt>
+          <dd class="service-meta-strip__value">{item.value}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>
