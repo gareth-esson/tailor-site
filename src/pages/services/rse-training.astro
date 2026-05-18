@@ -20,7 +20,7 @@ const serviceParam = 'RSE training';
 const serviceName = 'RSE training';
 
 const heroSubtitle =
-  'CPD-accredited training that gives your staff the confidence, knowledge, and practical toolkit to deliver RSE well. Half-day, full-day, or bespoke programmes, in person or remote, led by a specialist who has delivered it in hundreds of schools.';
+  'Training that gives your staff the confidence, knowledge, and practical toolkit to deliver RSE well. Half-day, full-day, or bespoke programmes, delivered in person, led by a specialist who has delivered it in hundreds of schools.';
 
 const heroImage: string | null = '/images/services/tailor-education-rse-cpd-workshop-facilitator.webp';
 const heroImageAlt = 'A Tailor facilitator leading a CPD workshop for school staff on RSE delivery';
@@ -36,7 +36,7 @@ const descriptionLead =
 const descriptionBody = [
   'Our training is built around that reality. Rather than walking staff through a generic RSE overview, we focus on the specific moments teachers find hardest: managing disclosures, handling unexpected questions, pitching content age-appropriately, navigating parent concerns, and building the personal confidence to hold the room.',
   'Every session is led by a specialist who has delivered RSE directly to students in hundreds of schools. That matters. The training isn\'t theoretical, it\'s shaped by what actually happens in the classroom, and what actually works.',
-  'We offer half-day, full-day, and multi-session programmes, delivered in person at your school or remotely. All programmes are CPD-accredited and aligned to DfE statutory guidance, KCSIE, and the PSHE Association framework.',
+  'We offer half-day, full-day, and multi-session programmes, delivered in person at your school. Programmes are aligned to DfE statutory guidance, KCSIE, and the PSHE Association framework.',
 ];
 
 const whatSchoolsGet =
@@ -46,7 +46,7 @@ const featureCards = [
   { title: 'Managing disclosures', description: 'How to respond when a student discloses. What to say in the moment. What to do afterwards. Fully KCSIE-aligned.' },
   { title: 'Handling difficult questions', description: 'The questions students ask that staff most fear. Practical scripts and a framework for any question you haven\'t heard yet.' },
   { title: 'Age-appropriate pitching', description: 'Matching content to year groups, what to include, what to hold back, how to read a room that isn\'t ready.' },
-  { title: 'CPD certification and resource pack', description: 'All attendees receive CPD accreditation and a written resource pack to reference after the training.' },
+  { title: 'Resource pack', description: 'All attendees receive a written resource pack to reference after the training.' },
 ];
 
 const [proofTestimonial] = await getTestimonialsByService('RSE training');
@@ -69,7 +69,7 @@ const allPosts = await getBlogPosts();
 const relatedPosts = allPosts.filter((p) => p.serviceLink === 'training').slice(0, 3);
 
 const metaTitle = `RSE training for school staff, Tailor Education`;
-const metaDescription = 'CPD-accredited RSE training for school staff, led by specialist educators. Half-day, full-day, or bespoke programmes, in person or remote.';
+const metaDescription = 'RSE training for school staff, led by a specialist who has delivered it in hundreds of schools. Half-day, full-day, or bespoke programmes, in person.';
 const canonicalPath = `/services/${slug}/`;
 
 const jsonLd = {
