@@ -6,10 +6,7 @@
  *
  * Fields marked TODO are gaps where the public data isn't currently
  * known. Filling them in lifts E-E-A-T signals (especially for the
- * YMYL category Tailor publishes in). Order of priority:
- *   1. founder.linkedIn — Person.sameAs is the highest-leverage gap.
- *   2. organisation.companyNumber — required for the footer CIC line.
- *   3. organisation.telephone — adds NAP completeness.
+ * YMYL category Tailor publishes in).
  */
 
 export const site = {
@@ -44,15 +41,17 @@ export const assets = {
 
 export const organisation = {
   name: 'Tailor Education',
-  legalName: 'Tailor Education CIC',
+  /** Companies House registered name. The customer-facing brand is
+   *  "Tailor Education"; "Tailor Learning CIC" is the legal entity. */
+  legalName: 'Tailor Learning CIC',
   url: site.url,
   logo: `${site.url}${assets.logo}`,
   email: 'hello@tailoreducation.org.uk',
   telephone: '+443302237740',
   /** Same number formatted for display in the footer. */
   telephoneDisplay: '0330 223 7740',
-  /** TODO — Companies House CIC company number (e.g. "12345678"). */
-  companyNumber: null as string | null,
+  /** Companies House CIC company number. */
+  companyNumber: '17239965' as string | null,
   /** Loose UK signal; tighten with a registered address line if helpful. */
   areaServed: 'GB',
   /** TODO — incorporation date if known (YYYY or YYYY-MM-DD). */
