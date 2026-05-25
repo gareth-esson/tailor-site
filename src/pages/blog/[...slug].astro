@@ -67,11 +67,17 @@ const formattedDate = post.publishedDate
   ? new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(post.publishedDate))
   : null;
 
+// Visible "Last reviewed" line. Suppressed when dateModified equals
+// publishedDate (or isn't set) — the published date already conveys that.
+const showReviewedDate =
+  post.dateModified !== null && post.dateModified !== post.publishedDate;
+const formattedReviewedDate = showReviewedDate
+  ? new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(post.dateModified!))
+  : null;
+
 // JSON-LD — Article + BreadcrumbList in a graph.
 // Author references the founder Person node defined on /about so authority
 // signals consolidate on a single Person rather than fragmenting per post.
-// dateModified currently mirrors publishedDate; wire to a real "Last
-// reviewed" Notion field when the editorial workflow exposes one.
 const articleNode: Record<string, any> = {
   '@type': 'Article',
   '@id': `${site.url}${canonicalPath}#article`,
@@ -103,7 +109,7 @@ if (post.featuredImage) {
 }
 if (post.publishedDate) {
   articleNode.datePublished = post.publishedDate;
-  articleNode.dateModified = post.publishedDate;
+  articleNode.dateModified = post.dateModified ?? post.publishedDate;
 }
 
 const breadcrumbNode = breadcrumbJsonLd([
@@ -130,7 +136,7 @@ const allTopics = [...post.topics, ...post.secondaryTopics];
   ogImageHeight={post.featuredImageHeight ?? undefined}
   articleMeta={{
     publishedTime: post.publishedDate ?? undefined,
-    modifiedTime: post.publishedDate ?? undefined,
+    modifiedTime: post.dateModified ?? post.publishedDate ?? undefined,
     author: post.author || undefined,
     section: post.topics[0]?.title ?? post.category ?? undefined,
   }}
@@ -206,6 +212,11 @@ const allTopics = [...post.topics, ...post.secondaryTopics];
             {post.author && formattedDate && <span class="blog-post__sep" aria-hidden="true">·</span>}
             {formattedDate && (
               <time datetime={post.publishedDate!}>{formattedDate}</time>
+            )}
+            {formattedReviewedDate && (
+              <span class="blog-post__reviewed">
+                Last reviewed <time datetime={post.dateModified!}>{formattedReviewedDate}</time>
+              </span>
             )}
             {post.targetAudience && (
               <span class="blog-post__audience">{post.targetAudience}</span>
@@ -545,6 +556,16 @@ document.addEventListener('DOMContentLoaded', initShare);
     background: var(--bg-surface-alt);
     border-radius: var(--radius-pill);
     font-weight: var(--font-weight-medium);
+  }
+
+  .blog-post__reviewed {
+    color: var(--text-body-muted);
+  }
+
+  .blog-post__reviewed::before {
+    content: '·';
+    margin-right: var(--space-global-sm);
+    color: var(--text-body-muted);
   }
 
   /* Share button + dropdown */

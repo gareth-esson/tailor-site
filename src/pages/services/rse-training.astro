@@ -17,7 +17,11 @@ import { serviceJsonLd, breadcrumbJsonLd, faqJsonLd } from '../../lib/site';
 
 // --- Data ----------------------------------------------------------
 const slug = 'rse-training';
+// `title` is the short label used in the breadcrumb and meta strings.
+// `pageHeading` is the keyword-rich H1; competing against PSHE Association
+// and Brook on "RSE staff training" needs more than a two-word heading.
 const title = 'RSE training';
+const pageHeading = 'RSE training for school staff';
 const serviceParam = 'RSE training';
 const serviceName = 'RSE training';
 
@@ -168,7 +172,7 @@ const jsonLd = {
       <div class="service-hero__inner">
         <div class="service-hero__text">
             <span class="service-hero__eyebrow">Services</span>
-            <h1 class="service-hero__title">{title}</h1>
+            <h1 class="service-hero__title">{pageHeading}</h1>
             <p class="service-hero__subtitle">{heroSubtitle}</p>
             <a
               href={`/contact?service=${encodeURIComponent(serviceParam)}`}
@@ -189,6 +193,19 @@ const jsonLd = {
     </header>
 
     <ServiceMetaStrip items={metaStripItems} ariaLabel="RSE training at a glance" />
+
+    <aside class="service-callout" aria-label="September 2026 statutory revision">
+      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+        <p class="service-callout__eyebrow">September 2026</p>
+        <p class="service-callout__body">
+          The DfE's revised RSE statutory guidance becomes mandatory from
+          September 2026. Most schools booking training this year are doing
+          it to land a curriculum revision before the deadline, especially
+          the new content on online safety, AI literacy, and misogyny.
+          {' '}<a href="/blog/2026-rse-guidance-plain-english-summary/">Plain-English summary of what's changed →</a>
+        </p>
+      </div>
+    </aside>
 
     <section class="service-description">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">

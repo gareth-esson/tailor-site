@@ -151,6 +151,7 @@ async function _loadAllContentImpl(): Promise<void> {
       imageCredit: fm.imageCredit,
       imageCreditUrl: fm.imageCreditUrl,
       publishedDate: fm.publishedDate,
+      dateModified: fm.dateModified,
       excerpt: markdownExcerpt(entry.body, 140),
     };
   });

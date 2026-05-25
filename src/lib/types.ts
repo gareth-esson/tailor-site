@@ -139,6 +139,10 @@ export interface BlogPost {
   imageCredit: string | null;
   imageCreditUrl: string | null;
   publishedDate: string | null;
+  /** ISO date the post was last materially refreshed. `null` until the
+   *  first refresh; the renderer falls back to publishedDate for both
+   *  schema.org dateModified and the visible "Last reviewed" line. */
+  dateModified: string | null;
   /** Plain-text excerpt derived from the post body at content-load time.
    *  Used for cards on the index and category pages. Body markdown lives
    *  in the MDX entry and is rendered via <Content /> on the slug page. */

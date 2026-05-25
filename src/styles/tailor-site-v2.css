@@ -4006,6 +4006,38 @@ textarea.form-input {
     }
 }
 
+/* §2.6 — Service callout
+   Optional, time-sensitive context band that sits between the meta strip
+   and the description. Used for statutory deadlines and similar copy
+   where the page should flag a "why now" beat without competing with the
+   hero. Inherits the prose container width so it reads alongside the
+   description, not edge-to-edge. */
+.service-callout {
+    background: var(--bg-tinted);
+    border-bottom: var(--border-width-xs) solid var(--border-subtle);
+}
+.service-callout__eyebrow {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-h6);
+    font-weight: var(--font-weight-semibold);
+    color: var(--brand-accent-text);
+    text-transform: uppercase;
+    letter-spacing: var(--section-eyebrow-ls);
+    margin: 0 0 var(--space-global-xs);
+}
+.service-callout__body {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body);
+    line-height: var(--lh-body);
+    margin: 0;
+}
+.service-callout__body a {
+    color: var(--brand-accent-text);
+    text-decoration: underline;
+    font-weight: var(--font-weight-medium);
+}
+
 /* §3 — Service description */
 .service-description {
     font-family: var(--font-tailor-body-stack);

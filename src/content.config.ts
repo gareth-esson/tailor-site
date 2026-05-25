@@ -22,6 +22,10 @@ const blog = defineCollection({
       title: z.string(),
       status: z.enum(['Draft', 'In Review', 'Published']).default('Draft'),
       publishedDate: z.string().nullable().default(null),
+      /** ISO date string. Set when the post is materially refreshed
+       *  (new sources, internal links rewired, factual correction).
+       *  Drives schema.org Article.dateModified and og:modified_time. */
+      dateModified: z.string().nullable().default(null),
       author: z.string().default('Gareth Esson'),
       category: z
         .enum(['RSE in Practice', 'Guidance and Policy', 'Our Work'])
