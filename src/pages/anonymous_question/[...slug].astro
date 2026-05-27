@@ -27,7 +27,7 @@ import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
 import { getPostItImage, type PostItImage } from '../../lib/post-it-images';
 import { selectRelatedQuestions } from '../../lib/related-questions';
 import type { Question, Topic, GlossaryIndex } from '../../lib/types';
-import { breadcrumbJsonLd, founderUrl, isMedicalCategory, site } from '../../lib/site';
+import { breadcrumbJsonLd, founderPersonNode, founderUrl, isMedicalCategory, site } from '../../lib/site';
 
 import SimpleModeToggle from '../../components/SimpleModeToggle.astro';
 import GlossaryTooltips from '../../components/GlossaryTooltips.astro';
@@ -158,13 +158,24 @@ const answerText =
 // Phrasings" Rich Text field, one phrasing per line. Lets us declare
 // variants like "Can boys hit girls?" alongside the canonical
 // "Is it ok to hit a girl?" without changing the visible H1.
+// Question.text duplicates name per Google's QAPage guidance — `name`
+// is the question title; `text` is the full question body (which for
+// OtA is the same string). datePublished + dateModified plumbed from
+// Notion give Google a freshness signal that AI Overview weights when
+// picking sources for health queries.
 const questionEntity: Record<string, unknown> = {
   '@type': 'Question',
   name: question.question,
+  text: question.question,
   answerCount: 1,
+  datePublished: question.createdTime,
+  dateModified: question.lastEditedTime,
   acceptedAnswer: {
     '@type': 'Answer',
     text: answerText,
+    url: `${site.url}${canonicalPath}`,
+    datePublished: question.createdTime,
+    dateModified: question.lastEditedTime,
     author: { '@id': founderUrl },
   },
 };
@@ -179,14 +190,22 @@ const isMedical =
   isMedicalCategory(question.okayToAskCategory) ||
   isMedicalCategory(question.topic?.category);
 
+// Person node is emitted inline in this page's @graph so the author
+// references on the page envelope and acceptedAnswer resolve. Google's
+// parser doesn't follow @id across documents; the canonical full
+// Person with knowsAbout / image / worksFor stays on /about and
+// consolidates with this minimal node by shared @id.
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
+    founderPersonNode(),
     {
       '@type': isMedical ? ['QAPage', 'MedicalWebPage'] : 'QAPage',
       '@id': `${site.url}${canonicalPath}#webpage`,
       url: `${site.url}${canonicalPath}`,
       name: question.question,
+      datePublished: question.createdTime,
+      dateModified: question.lastEditedTime,
       author: { '@id': founderUrl },
       publisher: { '@id': `${site.url}/#organization` },
       mainEntity: questionEntity,

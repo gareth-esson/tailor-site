@@ -9,7 +9,7 @@ import { getGlossaryTerms, getGlossaryIndex, getLandingPages } from '../../lib/c
 import { renderBlocks } from '../../lib/render-blocks';
 import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
 import type { GlossaryTerm, GlossaryIndex } from '../../lib/types';
-import { breadcrumbJsonLd, founderUrl, isMedicalCategory, site } from '../../lib/site';
+import { breadcrumbJsonLd, founderPersonNode, founderUrl, isMedicalCategory, site } from '../../lib/site';
 
 import SimpleModeToggle from '../../components/SimpleModeToggle.astro';
 import GlossaryTooltips from '../../components/GlossaryTooltips.astro';
@@ -83,14 +83,22 @@ const definedTermNode = {
   inDefinedTermSet: `${site.url}/topics/`,
 };
 
+// When medical, the MedicalWebPage envelope references the founder
+// as author by @id — emit a minimal Person node alongside so Google's
+// parser can resolve the reference within this page's @graph (it
+// doesn't cross-document resolve @ids). datePublished / dateModified
+// from Notion timestamps provide an AI-Overview freshness signal.
 const graph: Record<string, unknown>[] = isMedical
   ? [
+      founderPersonNode(),
       {
         '@type': 'MedicalWebPage',
         '@id': `${site.url}${canonicalPath}#webpage`,
         url: `${site.url}${canonicalPath}`,
         name: term.term,
         description: term.shortDefinition,
+        datePublished: term.createdTime,
+        dateModified: term.lastEditedTime,
         author: { '@id': founderUrl },
         publisher: { '@id': `${site.url}/#organization` },
         mainEntity: { '@id': `${site.url}${canonicalPath}#term` },

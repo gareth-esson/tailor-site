@@ -125,8 +125,13 @@ export function organisationJsonLd() {
     legalName: organisation.legalName,
     url: organisation.url,
     logo: organisation.logo,
+    image: organisation.logo,
     email: organisation.email,
     description: organisation.description,
+    address: {
+      '@type': 'PostalAddress',
+      addressCountry: organisation.areaServed,
+    },
     areaServed: { '@type': 'Country', name: organisation.areaServed },
     sameAs,
     founder: { '@id': founderUrl },
@@ -170,6 +175,32 @@ export function founderJsonLd() {
   };
   if (sameAs.length) obj.sameAs = sameAs;
   return obj;
+}
+
+/**
+ * Minimal Person node for the founder, suitable for inline use in any
+ * page's @graph that references the founder by @id (question pages,
+ * glossary pages).
+ *
+ * Google's Rich Results Test doesn't follow @id references across
+ * pages — it only resolves within the current document's @graph. So
+ * pages that reference Gareth as `author` need a Person definition
+ * present locally. This helper provides a slimmed-down version (no
+ * image, no knowsAbout, no worksFor) so question/glossary pages stay
+ * lean; the canonical fully-populated Person with E-E-A-T fields lives
+ * on /about via founderJsonLd().
+ *
+ * The shared @id means Google still consolidates the entity across
+ * pages in its Knowledge Graph.
+ */
+export function founderPersonNode() {
+  return {
+    '@type': 'Person',
+    '@id': founderUrl,
+    name: founder.name,
+    url: founderUrl,
+    jobTitle: founder.jobTitle,
+  };
 }
 
 /**

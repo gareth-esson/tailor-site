@@ -91,6 +91,8 @@ export async function fetchQuestions(): Promise<Question[]> {
       id: page.id,
       question: getTitleValue(p['Question']),
       slug: getRichTextValue(p['Slug']),
+      createdTime: page.created_time,
+      lastEditedTime: page.last_edited_time,
       status: getSelectValue(p['Status']),
       topicIds: getRelationIds(p['Topic']),
       topic: null, // resolved later
@@ -136,6 +138,8 @@ export async function fetchGlossaryTerms(): Promise<GlossaryTerm[]> {
       id: page.id,
       term: getTitleValue(p['Term']),
       slug: getRichTextValue(p['Slug']),
+      createdTime: page.created_time,
+      lastEditedTime: page.last_edited_time,
       status: getSelectValue(p['Status']),
       shortDefinition: getRichTextValue(p['Short Definition']),
       simpleDefinition: getRichTextValue(p['Simple Definition']),

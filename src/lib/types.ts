@@ -59,6 +59,13 @@ export interface Question {
   id: string;
   question: string;
   slug: string;
+  /** ISO 8601 — Notion page.created_time. Emitted as datePublished
+   *  in the page's QAPage JSON-LD (Question + Answer). */
+  createdTime: string;
+  /** ISO 8601 — Notion page.last_edited_time. Emitted as dateModified
+   *  in the JSON-LD; useful as a freshness signal for AI Overview
+   *  source-selection on health queries. */
+  lastEditedTime: string;
   status: string | null;
   topicIds: string[];
   topic: TopicRef | null;
@@ -91,6 +98,11 @@ export interface GlossaryTerm {
   id: string;
   term: string;
   slug: string;
+  /** ISO 8601 — Notion page.created_time. Emitted as datePublished
+   *  in the page's MedicalWebPage JSON-LD when medical. */
+  createdTime: string;
+  /** ISO 8601 — Notion page.last_edited_time. Emitted as dateModified. */
+  lastEditedTime: string;
   status: string | null;
   shortDefinition: string;
   simpleDefinition: string;
