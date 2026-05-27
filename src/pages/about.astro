@@ -1,27 +1,33 @@
 ---
 /**
  * About page [B2] — /about
- * Trust page: single-founder bio, how we think, recent writing,
- * and a soft contact door. Tailor layer.
+ * Trust page: leadership bios, the wider delivery panel, how we
+ * think, recent writing, and a soft contact door. Tailor layer.
  *
- * The team grid was removed in May 2026 in favour of an honest
- * single-founder framing — Gareth is currently the sole writer and
- * practitioner. When the team grows the §3 block can become a list,
- * but for now an aspirational "Meet the team" panel was the worst
- * possible read for a service-buyer.
+ * The §3 block is a stacked pair of split-layouts (one per leader)
+ * followed by a short note about the freelance specialist network
+ * we draw on for drop days, twilight INSETs, and bespoke programmes.
+ * Portraits gate on file existence at build time — drop the .webp
+ * (and the -800 variants from optimize-hero-images.mjs) into
+ * public/images and the headshot replaces the initials fallback.
  */
+import fs from 'node:fs';
+import path from 'node:path';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getBlogPosts } from '../lib/content';
 import type { BlogPost } from '../lib/types';
 import HeroImage from '../components/HeroImage.astro';
-import { founderJsonLd, breadcrumbJsonLd } from '../lib/site';
+import { site, founderJsonLd, breadcrumbJsonLd } from '../lib/site';
 
-// --- Founder data ---
+// --- Leadership data ---
 //
-// Drop a real portrait at `public/images/portrait-gareth.webp` and set
-// `portrait` below to that path. Until then the initials fallback runs.
+// `portrait` is the original .webp path. It only renders if both the
+// original and the -800.webp variant exist on disk — otherwise the
+// initials fallback shows. Run scripts/optimize-hero-images.mjs after
+// dropping in a new portrait to generate the responsive variants.
 
-interface Founder {
+interface TeamMember {
+  id: string;
   name: string;
   role: string;
   credentials: string;
@@ -29,20 +35,47 @@ interface Founder {
   portrait: string | null;
   portraitAlt: string | null;
   linkedIn?: string;
+  eyebrow: string;
 }
 
-const founder: Founder = {
-  name: 'Gareth Esson',
-  role: 'Founder & RSE Specialist',
-  credentials: 'QTS · Enhanced DBS',
-  bio: [
-    "Gareth designs and teaches RSE across primary, secondary, SEND, and alternative-provision settings, and has trained teaching teams in schools across the UK.",
-    "Right now, everything Tailor publishes is written by Gareth. As the team grows, more practising specialists will join the writing, but every page still has to pass the same test: would I teach this in a real classroom tomorrow?",
-  ],
-  portrait: '/images/portrait-gareth.webp',
-  portraitAlt: 'Gareth Esson, founder of Tailor Education',
-  linkedIn: 'https://www.linkedin.com/in/gareth-esson-6886635a/',
-};
+function portraitIfReady(src: string): string | null {
+  const publicDir = path.resolve(process.cwd(), 'public');
+  const exists = (p: string) => fs.existsSync(path.join(publicDir, p.replace(/^\//, '')));
+  const variant = src.replace(/\.webp$/, '-800.webp');
+  return exists(src) && exists(variant) ? src : null;
+}
+
+const team: TeamMember[] = [
+  {
+    id: 'about-founder-title',
+    eyebrow: 'Founder',
+    name: 'Gareth Esson',
+    role: 'Founder & RSE Specialist',
+    credentials: 'QTS · Enhanced DBS',
+    bio: [
+      "Gareth founded Tailor Education in 2016 after seven years at Brook as an Advanced Education and Training Practitioner — designing tailored RSE programmes for high-risk and marginalised young people, and delivering Brook-accredited Train-the-Trainer to professionals across the youth, education, and health workforce.",
+      "He leads Tailor's curriculum and editorial work alongside Sheila and the wider panel of specialists, taking every scheme of work and every page on this site through the same test any teacher would ask: would I teach this tomorrow, with a real class, and stand behind every word?",
+      "Alongside Tailor he runs multi-agency youth-engagement programmes with Rathbone Society and The Norwood Consortium, working with local authorities, charities, and community groups. It keeps the strategic side of the work honest about what actually happens at delivery.",
+    ],
+    portrait: portraitIfReady('/images/portrait-gareth.webp'),
+    portraitAlt: 'Gareth Esson, founder of Tailor Education',
+    linkedIn: 'https://www.linkedin.com/in/gareth-esson-6886635a/',
+  },
+  {
+    id: 'about-cofounder-title',
+    eyebrow: 'Co-Director',
+    name: 'Sheila Daley-Danvers',
+    role: 'Co-Director & Safeguarding Lead',
+    credentials: 'ICQ L3 Management · MHFA',
+    bio: [
+      "Sheila joined Brook London in 2003 as an Education Outreach Worker, where she spent eight years designing and delivering RSE in Camden and Lambeth schools, and training adults and professionals across the youth workforce. She moved to Guys & St Thomas' as a Specialist Sexual Health Outreach Worker, running a caseload of school-aged clients and embedding sexual-health support into school-based provision.",
+      "For the next decade at St Michaels Fellowship she carried a young-parent caseload through child-protection and child-in-need plans, wrote case-conference and court reports, and supervised contact between estranged parents and children. She finished her time there as Outreach Service Manager, leading a team of practitioners, partnering with statutory and voluntary services, and keeping the work culturally responsive to the families it served.",
+      "She brings that combination to Tailor: classroom-tested RSE practice, deep safeguarding instincts, and the perspective of someone who has sat in the case conferences our resources are designed to help prevent. She's a Caring Dads trainer, a Lego Serious Play facilitator, a qualified doula, and Mental Health First Aid certified.",
+    ],
+    portrait: portraitIfReady('/images/portrait-sheila.webp'),
+    portraitAlt: 'Sheila Daley-Danvers, Co-Director of Tailor Education',
+  },
+];
 
 // --- Featured blog posts ---
 
@@ -97,20 +130,44 @@ function deriveExcerpt(post: BlogPost, max = 140): string {
   return (lastSpace > 40 ? slice.slice(0, lastSpace) : slice) + '…';
 }
 
-// Dev-time loud failure: if the founder has a portrait but no alt, yell.
-if (import.meta.env.DEV && founder.portrait && !founder.portraitAlt) {
-  console.warn(
-    `[about.astro] Founder portrait set but no portraitAlt. Alt text is required for informational portraits.`,
-  );
+// Dev-time loud failure: portrait set but no alt is an accessibility bug.
+if (import.meta.env.DEV) {
+  for (const m of team) {
+    if (m.portrait && !m.portraitAlt) {
+      console.warn(
+        `[about.astro] ${m.name} portrait set but no portraitAlt. Alt text is required for informational portraits.`,
+      );
+    }
+  }
 }
 
 // --- SEO ---
 
 const description =
-  'About Tailor Education, a community-interest company delivering specialist RSE content, training, and support to UK schools, founded and led by Gareth Esson.';
+  'About Tailor Education — a community-interest company founded by Gareth Esson and co-led with Sheila Daley-Danvers, delivering specialist RSE content, training, and support to UK schools.';
 
-// Page schema graph: AboutPage + Person (founder lives here) + breadcrumb.
+// Page schema graph: AboutPage + Person (founder + co-director) + breadcrumb.
 // Sitewide Organization is emitted by BaseLayout, so we don't duplicate it.
+// The founder Person is the canonical one (referenced from site.ts and the
+// Organization graph); Sheila is added inline so /about declares both
+// leaders without forcing wider edits to the sitewide schema constants.
+const cofounderJsonLd = {
+  '@type': 'Person',
+  '@id': `${site.url}/about#about-cofounder-title`,
+  name: 'Sheila Daley-Danvers',
+  url: `${site.url}/about#about-cofounder-title`,
+  jobTitle: 'Co-Director & Safeguarding Lead',
+  knowsAbout: [
+    'Relationships and Sex Education',
+    'Sexual Health',
+    'Safeguarding',
+    'Child Protection',
+    'Parent Engagement',
+    'Mental Health First Aid',
+  ],
+  worksFor: { '@id': `${site.url}/#organization` },
+};
+
 const aboutJsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -123,6 +180,7 @@ const aboutJsonLd = {
       isPartOf: { '@id': 'https://tailoreducation.org.uk/#website' },
     },
     founderJsonLd(),
+    cofounderJsonLd,
     breadcrumbJsonLd([{ name: 'About', path: '/about' }]),
   ],
 };
@@ -181,43 +239,73 @@ const aboutJsonLd = {
       </div>
     </section>
 
-    <!-- §3 Founder -->
-    <section class="about-founder" aria-labelledby="about-founder-title">
-      {/* DOM order is text-first per .split-layout convention; the
-          --image-left modifier visually positions the figure on the left. */}
-      <div class="about-founder__inner split-layout split-layout--image-left">
-        <div class="about-founder__body split-layout__text">
-          <span class="about-founder__eyebrow">Founder</span>
-          {founder.linkedIn ? (
-            <h2 id="about-founder-title" class="about-founder__name">
-              <a href={founder.linkedIn} rel="noopener noreferrer" target="_blank">
-                {founder.name}<span class="sr-only"> (opens in new tab)</span>
-              </a>
-            </h2>
-          ) : (
-            <h2 id="about-founder-title" class="about-founder__name">{founder.name}</h2>
-          )}
-          <p class="about-founder__role">{founder.role}</p>
-          <p class="about-founder__credentials">{founder.credentials}</p>
-          {founder.bio.map((para) => (
-            <p class="about-founder__para">{para}</p>
-          ))}
-        </div>
-        <figure class="about-founder__portrait split-layout__media">
-          {founder.portrait ? (
-            <HeroImage
-              src={founder.portrait}
-              alt={founder.portraitAlt || `Portrait of ${founder.name}`}
-              width={1000}
-              height={1000}
-              sizes="(min-width: 1024px) 24rem, (min-width: 768px) 18rem, 14rem"
-            />
-          ) : (
-            <div class="about-founder__portrait-fallback" aria-hidden="true">
-              {initials(founder.name)}
+    <!-- §3 Our team -->
+    <section class="about-team" aria-labelledby="about-team-title">
+      <div class="about-team__inner">
+        <header class="about-team__heading">
+          <h2 id="about-team-title" class="about-team__title">Our team</h2>
+          <p class="about-team__intro">
+            Tailor is led by Gareth and Sheila, and backed by a panel of
+            practising specialists we draw on to deliver training, drop
+            days, and bespoke programmes at scale.
+          </p>
+        </header>
+
+        {team.map((person, index) => (
+          <article
+            class:list={[
+              'about-team__member',
+              'split-layout',
+              index % 2 === 0 && 'split-layout--image-left',
+            ]}
+            aria-labelledby={person.id}
+          >
+            {/* DOM order is text-first per .split-layout convention; the
+                --image-left modifier on even-indexed members visually flips
+                the figure to the left so the layout alternates. */}
+            <div class="about-team__body split-layout__text">
+              <span class="about-team__eyebrow">{person.eyebrow}</span>
+              {person.linkedIn ? (
+                <h3 id={person.id} class="about-team__name">
+                  <a href={person.linkedIn} rel="noopener noreferrer" target="_blank">
+                    {person.name}<span class="sr-only"> (opens in new tab)</span>
+                  </a>
+                </h3>
+              ) : (
+                <h3 id={person.id} class="about-team__name">{person.name}</h3>
+              )}
+              <p class="about-team__role">{person.role}</p>
+              <p class="about-team__credentials">{person.credentials}</p>
+              {person.bio.map((para) => (
+                <p class="about-team__para">{para}</p>
+              ))}
             </div>
-          )}
-        </figure>
+            <figure class="about-team__portrait split-layout__media">
+              {person.portrait ? (
+                <HeroImage
+                  src={person.portrait}
+                  alt={person.portraitAlt || `Portrait of ${person.name}`}
+                  width={1000}
+                  height={1000}
+                  sizes="(min-width: 1024px) 24rem, (min-width: 768px) 18rem, 14rem"
+                />
+              ) : (
+                <div class="about-team__portrait-fallback" aria-hidden="true">
+                  {initials(person.name)}
+                </div>
+              )}
+            </figure>
+          </article>
+        ))}
+
+        <p class="about-team__network">
+          Around that core sit around eight freelance specialists — RSE
+          teachers, sexual health practitioners, SEND leads, parent-engagement
+          workers — who we bring in for delivery at scale. Need six facilitators
+          for a Year 9 drop day, three trainers for a twilight INSET, or a
+          SEND-adapted scheme written by someone who teaches it weekly?
+          That's the team you're hiring, not just the two bios above.
+        </p>
       </div>
     </section>
 
@@ -420,37 +508,62 @@ const aboutJsonLd = {
   }
 
   /* -------------------------------------------------------------------- */
-  /* §3 Founder                                                           */
+  /* §3 Our team                                                          */
   /* -------------------------------------------------------------------- */
-  .about-founder {
+  .about-team {
     width: 100%;
     background: var(--bg-page);
     padding: var(--space-struct-y-base) var(--space-global-gutter);
   }
 
-  .about-founder__inner {
+  .about-team__inner {
     margin-inline: auto;
     width: 100%;
     max-width: var(--container-max-shell);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-2xl);
   }
 
-  .about-founder__portrait {
-    aspect-ratio: 4 / 5;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    background: var(--bg-surface-alt);
+  .about-team__heading {
+    max-width: var(--container-max-prose);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-sm);
+  }
+
+  .about-team__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h2);
+    font-weight: var(--heading-weight-h2);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
     margin: 0;
   }
 
-  .about-founder__portrait img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center top;
-    display: block;
+  .about-team__intro {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-prose);
+    color: var(--text-body);
+    margin: 0;
   }
 
-  .about-founder__portrait-fallback {
+  /* Per-member portrait aspect (taller than the split-layout default 4/3) */
+  .about-team__member {
+    --split-media-aspect: 4 / 5;
+  }
+
+  .about-team__portrait {
+    background: var(--bg-surface-alt);
+  }
+
+  .about-team__portrait img {
+    object-position: center top;
+  }
+
+  .about-team__portrait-fallback {
     width: 100%;
     height: 100%;
     background: var(--bg-tinted);
@@ -464,13 +577,13 @@ const aboutJsonLd = {
     letter-spacing: -0.02em;
   }
 
-  .about-founder__body {
+  .about-team__body {
     display: flex;
     flex-direction: column;
     gap: var(--space-global-sm);
   }
 
-  .about-founder__eyebrow {
+  .about-team__eyebrow {
     display: block;
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-card-size-body);
@@ -480,27 +593,27 @@ const aboutJsonLd = {
     color: var(--brand-accent-text);
   }
 
-  .about-founder__name {
+  .about-team__name {
     font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-prose-size-h2);
-    font-weight: var(--heading-weight-h2);
+    font-size: var(--text-prose-size-h3);
+    font-weight: var(--heading-weight-h3);
     line-height: var(--lh-heading);
     color: var(--text-heading);
     margin: 0;
   }
 
-  .about-founder__name a {
+  .about-team__name a {
     color: inherit;
     text-decoration: none;
   }
 
-  .about-founder__name a:hover,
-  .about-founder__name a:focus-visible {
+  .about-team__name a:hover,
+  .about-team__name a:focus-visible {
     color: var(--brand-accent-text);
     text-decoration: underline;
   }
 
-  .about-founder__role {
+  .about-team__role {
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-prose-size-body);
     font-weight: var(--font-weight-medium);
@@ -509,7 +622,7 @@ const aboutJsonLd = {
     margin: 0;
   }
 
-  .about-founder__credentials {
+  .about-team__credentials {
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-card-size-h6);
     font-weight: var(--font-weight-semibold);
@@ -520,13 +633,23 @@ const aboutJsonLd = {
     margin: 0;
   }
 
-  .about-founder__para {
+  .about-team__para {
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-prose-size-body);
     font-weight: var(--font-weight-regular);
     line-height: var(--lh-prose);
     color: var(--text-body);
     margin: var(--space-global-sm) 0 0;
+  }
+
+  .about-team__network {
+    max-width: var(--container-max-prose);
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-prose);
+    color: var(--text-body);
+    margin: 0;
   }
 
   /* -------------------------------------------------------------------- */
