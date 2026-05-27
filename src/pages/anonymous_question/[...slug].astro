@@ -130,27 +130,32 @@ const metaDescription = question.metaDescription
   || `Find the answer to "${question.question}", honest, age-appropriate RSE from Okay to Ask.`;
 const canonicalPath = `/anonymous_question/${question.slug}/`;
 
-// FAQPage answer text uses the rendered standard body (Google explicitly
-// allows a small HTML subset in Answer.text). Falls back to simpleAnswer
-// when the standard body is empty, then metaDescription as last resort.
-const faqAnswerText =
+// Answer text uses the rendered standard body (Google explicitly allows
+// a small HTML subset in Answer.text). Falls back to simpleAnswer when
+// the standard body is empty, then metaDescription as last resort.
+const answerText =
   standardBodyHtml || question.simpleAnswer || metaDescription;
 
+// QAPage rather than FAQPage: these pages are a single user-submitted
+// question with one authoritative answer, which is exactly the QAPage
+// shape. FAQPage is for collections of canonical-source FAQs. Rich-
+// result eligibility for both types was scoped to government/health
+// sites in Aug 2023, so the practical SERP impact is the same — but
+// the semantic correctness still feeds Knowledge Graph signals.
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
     {
-      '@type': 'FAQPage',
-      mainEntity: [
-        {
-          '@type': 'Question',
-          name: question.question,
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: faqAnswerText,
-          },
+      '@type': 'QAPage',
+      mainEntity: {
+        '@type': 'Question',
+        name: question.question,
+        answerCount: 1,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: answerText,
         },
-      ],
+      },
     },
     breadcrumbJsonLd([
       { name: 'Okay to Ask', path: '/questions/' },

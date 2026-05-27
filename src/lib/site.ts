@@ -44,6 +44,16 @@ export const organisation = {
   /** Companies House registered name. The customer-facing brand is
    *  "Tailor Education"; "Tailor Learning CIC" is the legal entity. */
   legalName: 'Tailor Learning CIC',
+  /** Brand-name variants users actually type into Google — picked up
+   *  from GSC query data. Lets Google associate misspellings and
+   *  shortened forms with the same Organization entity for branded
+   *  search and Knowledge Graph purposes. Not a substitute for the
+   *  canonical name (which stays "Tailor Education"). */
+  alternateName: [
+    'Tailored Education',
+    'Tailor Ed',
+    'Tailor Education UK',
+  ] as ReadonlyArray<string>,
   url: site.url,
   logo: `${site.url}${assets.logo}`,
   email: 'hello@tailoreducation.org.uk',
@@ -111,6 +121,7 @@ export function organisationJsonLd() {
     '@type': ['Organization', 'EducationalOrganization'],
     '@id': `${site.url}/#organization`,
     name: organisation.name,
+    alternateName: [...organisation.alternateName],
     legalName: organisation.legalName,
     url: organisation.url,
     logo: organisation.logo,
