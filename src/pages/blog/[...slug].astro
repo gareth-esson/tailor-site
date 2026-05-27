@@ -89,6 +89,23 @@ const articleNode: Record<string, any> = {
   isPartOf: { '@id': `${site.url}/#website` },
   articleSection: post.topics.map((t) => t.title).join(', ') || undefined,
 };
+// Word count derived from the MDX source. Strips fences, images, link
+// brackets, and inline markdown syntax before counting whitespace-
+// delimited tokens. Long-form posts gain a small ranking signal from
+// wordCount being explicit (Google leans on it when deciding featured-
+// snippet eligibility for editorial pages).
+const plainBody = (entry.body ?? '')
+  .replace(/```[\s\S]*?```/g, ' ')
+  .replace(/`[^`]*`/g, ' ')
+  .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+  .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+  .replace(/<[^>]+>/g, ' ')
+  .replace(/[#>*_~]/g, ' ')
+  .replace(/\s+/g, ' ')
+  .trim();
+const wordCount = plainBody ? plainBody.split(/\s+/).filter(Boolean).length : 0;
+if (wordCount > 0) articleNode.wordCount = wordCount;
+
 if (post.author) {
   // Until there's more than one author, every post is by the founder Person.
   articleNode.author = post.author === 'Gareth Esson'

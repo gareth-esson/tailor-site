@@ -10,6 +10,7 @@ import GlossaryTooltips from '../../components/GlossaryTooltips.astro';
 import QuestionCard from '../../components/QuestionCard.astro';
 import { getQuestions } from '../../lib/content';
 import type { QuestionRef } from '../../lib/types';
+import { breadcrumbJsonLd, site } from '../../lib/site';
 
 const allQuestions = await getQuestions();
 
@@ -35,13 +36,57 @@ const otaCategories = [
   { name: 'Sex & the Law', token: 'law' },
   { name: 'Contraception & Pregnancy', token: 'contraception' },
 ];
+
+// JSON-LD — CollectionPage wrapping an ItemList of every published
+// question. Tells Google this page is a structured catalogue, not just
+// editorial copy, which improves how the Q&A library is treated for
+// sitelinks and topic-cluster discovery. Each item links to the canonical
+// question page; positions are stable (sorted alphabetically, same as
+// the rendered grid).
+const canonicalPath = '/questions/';
+const metaDescription =
+  'Honest, age-appropriate answers to real questions about relationships, sex, puberty, the body, and the law, written for young people by RSE specialists at Tailor Education.';
+
+const itemListNode = {
+  '@type': 'ItemList',
+  '@id': `${site.url}${canonicalPath}#questions`,
+  name: 'Okay to Ask question library',
+  numberOfItems: questions.length,
+  itemListOrder: 'https://schema.org/ItemListOrderAscending',
+  itemListElement: questions.map((q, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    url: `${site.url}/anonymous_question/${q.slug}/`,
+    name: q.question,
+  })),
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': ['CollectionPage', 'WebPage'],
+      '@id': `${site.url}${canonicalPath}#webpage`,
+      url: `${site.url}${canonicalPath}`,
+      name: 'Okay to Ask',
+      description: metaDescription,
+      inLanguage: site.schemaLocale,
+      isPartOf: { '@id': `${site.url}/#website` },
+      publisher: { '@id': `${site.url}/#organization` },
+      mainEntity: { '@id': `${site.url}${canonicalPath}#questions` },
+    },
+    itemListNode,
+    breadcrumbJsonLd([{ name: 'Okay to Ask', path: canonicalPath }]),
+  ],
+};
 ---
 
 <BaseLayout
   title="Okay to Ask | anonymous RSE questions, expert answers"
-  description="Honest, age-appropriate answers to real questions about relationships, sex, puberty, the body, and the law, written for young people by RSE specialists at Tailor Education."
-  canonicalPath="/questions/"
+  description={metaDescription}
+  canonicalPath={canonicalPath}
   layer="ota"
+  jsonLd={jsonLd}
 >
   <div class="ota-landing">
 

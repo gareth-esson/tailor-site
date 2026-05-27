@@ -13,7 +13,7 @@ import ServiceFaq from '../../components/ServiceFaq.astro';
 import ServiceMetaStrip from '../../components/ServiceMetaStrip.astro';
 import ServiceTopicsStrip from '../../components/ServiceTopicsStrip.astro';
 import { getBlogPosts, getTestimonialsByService } from '../../lib/content';
-import { serviceJsonLd, breadcrumbJsonLd, faqJsonLd } from '../../lib/site';
+import { serviceJsonLd, breadcrumbJsonLd, faqJsonLd, site } from '../../lib/site';
 
 // --- Data ----------------------------------------------------------
 const slug = 'rse-training';
@@ -136,6 +136,61 @@ const metaTitle = `RSE training for school staff, Tailor Education`;
 const metaDescription = 'RSE training for school staff, led by a specialist who has delivered it in hundreds of schools. Half-day, full-day, or bespoke programmes, in person.';
 const canonicalPath = `/services/${slug}/`;
 
+// Course schema sits alongside Service. Service describes the commercial
+// transaction (a thing a school books); Course describes the educational
+// content delivered (curriculum, learning outcomes, formats). Google
+// surfaces Course Info rich results for training products, and "RSE
+// training" is a high-intent commercial keyword we compete on. Each
+// CourseInstance covers one of the bookable formats from the meta strip.
+const courseNode = {
+  '@type': 'Course',
+  '@id': `${site.url}${canonicalPath}#course`,
+  name: 'RSE training for school staff',
+  description: metaDescription,
+  provider: { '@id': `${site.url}/#organization` },
+  educationalCredentialAwarded: 'CPD',
+  teaches:
+    'Delivering effective relationships and sex education aligned to DfE statutory guidance, KCSIE, and the PSHE Association framework. Includes managing disclosures, handling difficult questions, age-appropriate pitching, and building staff confidence.',
+  about: 'Relationships and Sex Education',
+  inLanguage: site.schemaLocale,
+  audience: [
+    { '@type': 'EducationalAudience', educationalRole: 'Teacher' },
+    { '@type': 'EducationalAudience', educationalRole: 'PSHE lead' },
+    { '@type': 'EducationalAudience', educationalRole: 'School leader' },
+  ],
+  courseMode: 'Onsite',
+  hasCourseInstance: [
+    {
+      '@type': 'CourseInstance',
+      name: 'Twilight session',
+      courseMode: 'Onsite',
+      courseWorkload: 'PT3H',
+      location: { '@type': 'Place', name: 'Client school site, UK' },
+    },
+    {
+      '@type': 'CourseInstance',
+      name: 'Half-day session',
+      courseMode: 'Onsite',
+      courseWorkload: 'PT3H30M',
+      location: { '@type': 'Place', name: 'Client school site, UK' },
+    },
+    {
+      '@type': 'CourseInstance',
+      name: 'Full-day session',
+      courseMode: 'Onsite',
+      courseWorkload: 'PT6H',
+      location: { '@type': 'Place', name: 'Client school site, UK' },
+    },
+  ],
+  offers: {
+    '@type': 'Offer',
+    priceCurrency: 'GBP',
+    description: 'Twilight from £375; full programmes priced on enquiry',
+    availability: 'https://schema.org/InStock',
+    url: `${site.url}/contact?service=${encodeURIComponent(serviceParam)}`,
+  },
+};
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -147,6 +202,7 @@ const jsonLd = {
       audienceRoles: ['School leader', 'PSHE lead', 'Teacher'],
       offer: { priceText: 'Twilight from £375; full programmes priced on enquiry' },
     }),
+    courseNode,
     faqJsonLd(faqItems),
     breadcrumbJsonLd([
       { name: 'Services', path: '/services/' },

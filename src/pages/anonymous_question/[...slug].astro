@@ -195,6 +195,11 @@ const isMedical =
 // parser doesn't follow @id across documents; the canonical full
 // Person with knowsAbout / image / worksFor stays on /about and
 // consolidates with this minimal node by shared @id.
+//
+// speakable marks the question heading and standard-mode answer body as
+// suitable for text-to-speech (Google Assistant news-style read-outs).
+// Simple Mode content is hidden via display:none by default so it
+// isn't picked up by speakable parsers.
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -209,6 +214,10 @@ const jsonLd = {
       author: { '@id': founderUrl },
       publisher: { '@id': `${site.url}/#organization` },
       mainEntity: questionEntity,
+      speakable: {
+        '@type': 'SpeakableSpecification',
+        cssSelector: ['.c1-question-heading', '.c1-answer .mode-content[data-mode="standard"]'],
+      },
     },
     breadcrumbJsonLd([
       { name: 'Okay to Ask', path: '/questions/' },
@@ -216,6 +225,15 @@ const jsonLd = {
     ]),
   ],
 };
+
+// Visible byline. Mirrors the figcaption beneath the post-it ("a real
+// question from a young person, submitted anonymously") with a parallel
+// answer attribution. Establishes Gareth's authorship inline so the
+// E-E-A-T signal Google reads in schema is also visible on the page
+// (parity matters — schema/visible-content mismatches are detectable).
+const lastUpdated = question.lastEditedTime
+  ? new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(question.lastEditedTime))
+  : null;
 
 // §3 top padding. With no crisis/age-flag above, the post-it gets hero
 // air; otherwise it sits on a base struct gap.
@@ -315,6 +333,18 @@ const postItTopPadding = showAlertBand
         >
           {question.question}
         </h1>
+
+        {/* Answer byline — mirrors the post-it figcaption above. Names
+            the expert who wrote the answer + currency signal. */}
+        <p class="c1-answer-attribution mt-[var(--space-global-md)] max-w-[var(--container-max-prose)] mx-auto">
+          Answered by <a href="/about#about-founder-title" rel="author">Gareth Esson</a>, RSE Specialist
+          {lastUpdated && (
+            <>
+              {' · Updated '}
+              <time datetime={question.lastEditedTime}>{lastUpdated}</time>
+            </>
+          )}
+        </p>
       </div>
     </section>
 
@@ -448,6 +478,22 @@ const postItTopPadding = showAlertBand
     outline: var(--focus-ring-width) solid var(--focus-ring);
     outline-offset: var(--focus-ring-offset);
     border-radius: var(--radius-xs);
+  }
+
+  /* Answer byline — matches the post-it figcaption's muted treatment so
+     it reads as a paired attribution rather than competing chrome. */
+  .c1-answer-attribution {
+    font-family: var(--font-ota-body-stack, inherit);
+    font-size: var(--text-util-micro-size, 0.75rem);
+    color: var(--text-ota-muted);
+  }
+  .c1-answer-attribution a {
+    color: var(--link-ota-contextual);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .c1-answer-attribution a:hover {
+    color: var(--brand-accent-strong);
   }
 
   /* Question display heading — Fraunces, display ramp, generous leading */
