@@ -302,7 +302,7 @@ const MEDICAL_CATEGORIES: ReadonlySet<string> = new Set([
   'Puberty',
   'Sex',
   'Sexual Health',
-  'Contraception',
+  'Contraception & Pregnancy',
   // Wider topic categories (question.topic.category, term.topic.category)
   'Sex & Sexual Health',
   'Puberty & The Body',

@@ -20,7 +20,10 @@ const { topic, label = 'This question is part of' } = Astro.props;
 
 if (!topic) return;
 
-// Map OtA category names to badge class suffixes.
+// Map OtA category names to badge class suffixes. Two keys for
+// Contraception because Notion's option was renamed from "Contraception"
+// to "Contraception & Pregnancy" at some point — keep both so old
+// content (if any survives) still picks up the right badge colour.
 const categoryBadgeMap: Record<string, string> = {
   'Anatomy': 'ota-anatomy',
   'Puberty': 'ota-puberty',
@@ -29,6 +32,7 @@ const categoryBadgeMap: Record<string, string> = {
   'Sexual Health': 'ota-sexual-health',
   'Sex & the Law': 'ota-law',
   'Contraception': 'ota-contraception',
+  'Contraception & Pregnancy': 'ota-contraception',
 };
 
 const badgeSuffix = topic.category ? categoryBadgeMap[topic.category] : null;
