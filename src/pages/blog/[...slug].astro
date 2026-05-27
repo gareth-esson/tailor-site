@@ -13,7 +13,7 @@ import { heroPreload } from '../../lib/hero-image';
 import { getBlogPosts, getLandingPages } from '../../lib/content';
 import { getRelatedBlogPosts } from '../../lib/related-blog-posts';
 import type { BlogPost, LandingPageRef } from '../../lib/types';
-import { breadcrumbJsonLd, founderUrl, site } from '../../lib/site';
+import { breadcrumbJsonLd, founderPersonNode, founderUrl, site } from '../../lib/site';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 
 export const prerender = true;
@@ -117,9 +117,18 @@ const breadcrumbNode = breadcrumbJsonLd([
   { name: post.title, path: canonicalPath },
 ]);
 
+// When the author is the founder, emit a minimal Person node inline so
+// Google's parser can resolve the @id reference within this document.
+// Same fix pattern as /anonymous_question/ and /glossary/: the canonical
+// full Person stays on /about and consolidates by shared @id.
+const graph: Record<string, unknown>[] = [articleNode, breadcrumbNode];
+if (post.author === 'Gareth Esson') {
+  graph.unshift(founderPersonNode());
+}
+
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@graph': [articleNode, breadcrumbNode],
+  '@graph': graph,
 };
 
 // All topics (primary + secondary)
