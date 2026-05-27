@@ -48,8 +48,15 @@ export const organisation = {
    *  from GSC query data. Lets Google associate misspellings and
    *  shortened forms with the same Organization entity for branded
    *  search and Knowledge Graph purposes. Not a substitute for the
-   *  canonical name (which stays "Tailor Education"). */
+   *  canonical name (which stays "Tailor Education").
+   *
+   *  "Tailor" sits first because the visible body copy across the site
+   *  refers to the brand as "Tailor" (the wordmark, conversational
+   *  mentions, footer attribution); declaring it as an alternateName
+   *  tells Google the single-word brand and the canonical Org name
+   *  refer to the same entity. */
   alternateName: [
+    'Tailor',
     'Tailored Education',
     'Tailor Ed',
     'Tailor Education UK',
