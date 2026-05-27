@@ -74,7 +74,7 @@ export const founder = {
   /** Free-text credentials surfaced in the UI. Add real, verifiable
    *  credentials only — Google's QRG explicitly flags inflated claims
    *  for YMYL content. */
-  credentials: 'Brook-accredited trainer · Enhanced DBS',
+  credentials: 'Accredited Trainer · Enhanced DBS',
   /** Topics the founder is recognised authorities on — used for
    *  Person.knowsAbout, a strong YMYL E-E-A-T signal. */
   knowsAbout: [
