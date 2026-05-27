@@ -284,6 +284,44 @@ export function breadcrumbJsonLd(
 }
 
 /**
+ * Categories whose content is genuinely medical/health information —
+ * the only OtA pages where schema.org's MedicalWebPage type is honest.
+ *
+ * Drawn from both the OtA category taxonomy (question.okayToAskCategory:
+ * Anatomy / Puberty / Sex / Sexual Health / Contraception) and the wider
+ * topic taxonomy (question.topic.category: Sex & Sexual Health / Puberty
+ * & The Body / Health & Wellbeing). Excluded on purpose: Relationships,
+ * Identity & Diversity, Online Safety & Media, Safety & Safeguarding,
+ * Sex & the Law — these are real OtA topics but they aren't medical
+ * advice, and tagging a consent or misogyny page as MedicalWebPage
+ * misrepresents what it is.
+ */
+const MEDICAL_CATEGORIES: ReadonlySet<string> = new Set([
+  // OtA question categories (question.okayToAskCategory)
+  'Anatomy',
+  'Puberty',
+  'Sex',
+  'Sexual Health',
+  'Contraception',
+  // Wider topic categories (question.topic.category, term.topic.category)
+  'Sex & Sexual Health',
+  'Puberty & The Body',
+  'Health & Wellbeing',
+]);
+
+/**
+ * True when a category string belongs to the medical/health set above.
+ * Pass any of the available category fields — okayToAskCategory or
+ * topic.category — the function null-checks and lookups identically.
+ */
+export function isMedicalCategory(
+  category: string | null | undefined,
+): boolean {
+  if (!category) return false;
+  return MEDICAL_CATEGORIES.has(category);
+}
+
+/**
  * FAQPage helper. Maps a list of Q/A pairs into the schema.org FAQPage
  * shape that Google uses for PAA / featured-snippet eligibility. The
  * question field should match the on-page heading verbatim; the answer
