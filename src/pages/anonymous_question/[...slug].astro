@@ -142,20 +142,33 @@ const answerText =
 // result eligibility for both types was scoped to government/health
 // sites in Aug 2023, so the practical SERP impact is the same — but
 // the semantic correctness still feeds Knowledge Graph signals.
+// Question.alternateName captures search-query variants this page is
+// the canonical answer to — populated from the Notion "Alternate
+// Phrasings" Rich Text field, one phrasing per line. Lets us declare
+// variants like "Can boys hit girls?" alongside the canonical
+// "Is it ok to hit a girl?" without changing the visible H1.
+const questionEntity: Record<string, unknown> = {
+  '@type': 'Question',
+  name: question.question,
+  answerCount: 1,
+  acceptedAnswer: {
+    '@type': 'Answer',
+    text: answerText,
+  },
+};
+// Optional chain defends against a stale dev-only Notion cache
+// written before this field existed — production builds always run
+// against fresh Notion data so this is belt-and-braces only.
+if ((question.alternatePhrasings?.length ?? 0) > 0) {
+  questionEntity.alternateName = question.alternatePhrasings;
+}
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
     {
       '@type': 'QAPage',
-      mainEntity: {
-        '@type': 'Question',
-        name: question.question,
-        answerCount: 1,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: answerText,
-        },
-      },
+      mainEntity: questionEntity,
     },
     breadcrumbJsonLd([
       { name: 'Okay to Ask', path: '/questions/' },

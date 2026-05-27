@@ -104,6 +104,10 @@ export async function fetchQuestions(): Promise<Question[]> {
       okayToAskCategory: getSelectValue(p['Category']),
       metaTitle: getRichTextValue(p['Meta Title']),
       metaDescription: getRichTextValue(p['Meta Description']),
+      alternatePhrasings: getRichTextValue(p['Alternate Phrasings'])
+        .split('\n')
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0),
       signposting: getMultiSelectValues(p['Signposting']),
       hasPostItScan: getCheckboxValue(p['Has Post-it Scan']),
       imageUrl: getRichTextValue(p['Image URL']),

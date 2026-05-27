@@ -72,6 +72,13 @@ export interface Question {
   okayToAskCategory: string | null;
   metaTitle: string;
   metaDescription: string;
+  /** Alternate phrasings the question is searched for — flow into
+   *  schema.org Question.alternateName in the page's QAPage JSON-LD.
+   *  Lets Google associate query variants with the canonical answer
+   *  without rewriting the visible H1. One phrasing per line in the
+   *  Notion "Alternate Phrasings" Rich Text property; blank lines
+   *  are dropped. */
+  alternatePhrasings: string[];
   signposting: string[];
   hasPostItScan: boolean;
   imageUrl: string;
