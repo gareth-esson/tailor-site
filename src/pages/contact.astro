@@ -14,6 +14,7 @@
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import EnquiryForm from '../components/EnquiryForm.astro';
+import { organisation } from '../lib/site';
 
 // --- SEO ---
 
@@ -106,6 +107,15 @@ const contactPageJsonLd = {
               @oktoask.co.uk
             </a>
             <span class="contact-direct__note">(Okay to Ask account)</span>
+          </dd>
+
+          <dt class="contact-direct__term">Registered office</dt>
+          <dd class="contact-direct__value">
+            <address class="contact-direct__address">
+              {organisation.address.streetAddress}<br />
+              {organisation.address.addressLocality}<br />
+              {organisation.address.postalCode}
+            </address>
           </dd>
         </dl>
       </div>
@@ -304,6 +314,12 @@ const contactPageJsonLd = {
     font-size: var(--text-card-size-body);
     color: var(--text-body-muted);
     margin-left: var(--space-global-xs);
+  }
+
+  /* <address> defaults to italic in user-agent CSS; reset to match the
+     surrounding dt/dd typography. */
+  .contact-direct__address {
+    font-style: normal;
   }
 
   @media (max-width: 639px) {

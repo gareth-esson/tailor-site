@@ -62,8 +62,22 @@ export const organisation = {
   telephoneDisplay: '0330 223 7740',
   /** Companies House CIC company number. */
   companyNumber: '17239965' as string | null,
-  /** Loose UK signal; tighten with a registered address line if helpful. */
-  areaServed: 'GB',
+  /** Registered office address — drives Organization.address in JSON-LD
+   *  and the visible footer block. Publishing this strengthens the
+   *  Organization entity in Knowledge Graph and is a prerequisite for
+   *  a verified Google Business Profile with a confirmed location.
+   *  Does not restrict service area; that's conveyed separately via
+   *  `areaServed`. */
+  address: {
+    streetAddress: '17a Electric Lane',
+    addressLocality: 'London',
+    postalCode: 'SW9 8LA',
+    /** ISO 3166-1 alpha-2. */
+    addressCountry: 'GB',
+  },
+  /** Where Tailor actually delivers. Independent of the registered
+   *  office — schools across the UK can book in-person work. */
+  areaServed: 'United Kingdom',
   /** TODO — incorporation date if known (YYYY or YYYY-MM-DD). */
   foundingDate: null as string | null,
   description:
@@ -130,7 +144,7 @@ export function organisationJsonLd() {
     description: organisation.description,
     address: {
       '@type': 'PostalAddress',
-      addressCountry: organisation.areaServed,
+      ...organisation.address,
     },
     areaServed: { '@type': 'Country', name: organisation.areaServed },
     sameAs,
