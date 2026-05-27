@@ -259,7 +259,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       function requireField(fieldName: string, errorId: string) {
         const val = (data.get(fieldName) as string || '').trim();
         if (!val) {
-          const group = form.querySelector(`[data-field="${fieldName}"]`);
+          // Non-null: outer init function already guards `form` with an early
+          // return at line 176, but TS loses the narrowing inside nested decls.
+          const group = form!.querySelector(`[data-field="${fieldName}"]`);
           if (group) {
             group.classList.add('form-group--error');
             const err = document.getElementById(errorId);

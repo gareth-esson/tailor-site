@@ -400,15 +400,18 @@ function initShare() {
   const rawUrl = wrap.dataset.shareUrl || window.location.href;
   const firstItem = dropdown.querySelector<HTMLElement>('.share-dropdown__item');
 
+  // Non-null assertions inside the dropdown helpers: the outer scope
+  // guards both refs at line 396 (`if (!btn || !dropdown) return;`) but
+  // TS doesn't carry that narrowing into nested function declarations.
   function closeDropdown() {
-    dropdown.hidden = true;
-    btn.setAttribute('aria-expanded', 'false');
-    btn.focus();
+    dropdown!.hidden = true;
+    btn!.setAttribute('aria-expanded', 'false');
+    btn!.focus();
   }
 
   function openDropdown() {
-    dropdown.hidden = false;
-    btn.setAttribute('aria-expanded', 'true');
+    dropdown!.hidden = false;
+    btn!.setAttribute('aria-expanded', 'true');
     firstItem?.focus();
   }
 

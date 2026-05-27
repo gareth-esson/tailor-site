@@ -268,6 +268,12 @@ const roleOptions = [
 
     if (!combobox || !input || !list || !selectedEl || !changeBtn || !skipBtn || !unskipBtn || !hiddenName || !hiddenUrn) return;
 
+    // All refs guarded above. Non-null assertions below are because TS
+    // doesn't carry the narrowing across the nested function-declaration
+    // boundaries (setState, closeList, renderList, selectSchool,
+    // updateActiveItem). The init function returns early if any are
+    // missing, so reaching the helpers means every ref is non-null.
+
     type SchoolResult = { urn: number; name: string; local_authority: string; phase: string };
 
     let debounceTimer: number | null = null;
@@ -275,22 +281,22 @@ const roleOptions = [
     let results: SchoolResult[] = [];
 
     function setState(state: 'idle' | 'searching' | 'selected' | 'skipped') {
-      combobox.setAttribute('data-state', state);
+      combobox!.setAttribute('data-state', state);
     }
 
     function closeList() {
-      list.innerHTML = '';
-      input.setAttribute('aria-expanded', 'false');
-      input.removeAttribute('aria-activedescendant');
+      list!.innerHTML = '';
+      input!.setAttribute('aria-expanded', 'false');
+      input!.removeAttribute('aria-activedescendant');
       activeIndex = -1;
       results = [];
     }
 
     function renderList(items: SchoolResult[]) {
       results = items;
-      list.innerHTML = '';
+      list!.innerHTML = '';
       if (items.length === 0) {
-        input.setAttribute('aria-expanded', 'false');
+        input!.setAttribute('aria-expanded', 'false');
         return;
       }
       items.forEach((school, i) => {
@@ -315,33 +321,33 @@ const roleOptions = [
           e.preventDefault(); // keep focus on input so blur doesn't fire first
           selectSchool(school);
         });
-        list.appendChild(li);
+        list!.appendChild(li);
       });
-      input.setAttribute('aria-expanded', 'true');
+      input!.setAttribute('aria-expanded', 'true');
       activeIndex = -1;
     }
 
     function selectSchool(school: SchoolResult) {
-      hiddenName.value = school.name;
-      hiddenUrn.value = String(school.urn);
-      selectedEl.textContent = school.local_authority
+      hiddenName!.value = school.name;
+      hiddenUrn!.value = String(school.urn);
+      selectedEl!.textContent = school.local_authority
         ? `${school.name}, ${school.local_authority}`
         : school.name;
       setState('selected');
       closeList();
-      input.value = '';
+      input!.value = '';
     }
 
     function updateActiveItem() {
-      const items = list.querySelectorAll('.school-combobox__option');
+      const items = list!.querySelectorAll('.school-combobox__option');
       items.forEach((item, i) => {
         item.classList.toggle('school-combobox__option--active', i === activeIndex);
         item.setAttribute('aria-selected', i === activeIndex ? 'true' : 'false');
       });
       if (activeIndex >= 0) {
-        input.setAttribute('aria-activedescendant', `school-option-${activeIndex}`);
+        input!.setAttribute('aria-activedescendant', `school-option-${activeIndex}`);
       } else {
-        input.removeAttribute('aria-activedescendant');
+        input!.removeAttribute('aria-activedescendant');
       }
     }
 
@@ -457,7 +463,8 @@ const roleOptions = [
 
     function applyRoleVisibility() {
       const role = roleSelect?.value || '';
-      form.querySelectorAll<HTMLElement>('[data-show-for]').forEach((group) => {
+      // form guarded at line 430; TS narrowing doesn't reach this nested decl.
+      form!.querySelectorAll<HTMLElement>('[data-show-for]').forEach((group) => {
         const allowed = (group.dataset.showFor || '').split(/\s+/);
         group.hidden = !allowed.includes(role);
       });

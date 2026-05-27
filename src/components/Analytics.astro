@@ -55,9 +55,11 @@
         params.source_page_slug = page;
       }
 
-      // Support comma-separated event names to fire multiple events from one element
+      // Support comma-separated event names to fire multiple events from one element.
+      // Optional-chain: the function existence is checked at the top of initAnalytics,
+      // but TS doesn't carry the narrowing into the click handler's closure scope.
       for (const eventName of eventNames.split(',')) {
-        window.trackEvent(eventName.trim(), params);
+        window.trackEvent?.(eventName.trim(), params);
       }
     });
   }
