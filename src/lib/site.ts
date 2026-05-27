@@ -120,7 +120,7 @@ export const founder = {
   /** Public URL of the founder portrait. Used for Person.image in
    *  schema and the about page hero. Square 1000×1000 expected. */
   portrait: '/images/portrait-gareth.webp',
-  portraitAlt: 'Gareth Esson, founder of Tailor Education',
+  portraitAlt: 'Gareth Esson, founder of Tailor',
   portraitWidth: 1000,
   portraitHeight: 1000,
 } as const;
