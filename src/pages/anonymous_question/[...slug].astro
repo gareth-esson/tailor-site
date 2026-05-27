@@ -27,7 +27,7 @@ import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
 import { getPostItImage, type PostItImage } from '../../lib/post-it-images';
 import { selectRelatedQuestions } from '../../lib/related-questions';
 import type { Question, Topic, GlossaryIndex } from '../../lib/types';
-import { breadcrumbJsonLd } from '../../lib/site';
+import { breadcrumbJsonLd, founderUrl, site } from '../../lib/site';
 
 import SimpleModeToggle from '../../components/SimpleModeToggle.astro';
 import GlossaryTooltips from '../../components/GlossaryTooltips.astro';
@@ -142,6 +142,12 @@ const answerText =
 // result eligibility for both types was scoped to government/health
 // sites in Aug 2023, so the practical SERP impact is the same — but
 // the semantic correctness still feeds Knowledge Graph signals.
+//
+// Dual-typed as MedicalWebPage: these pages are YMYL health content,
+// and Google's AI Overview source-selection on health queries weights
+// MedicalWebPage signals + author attribution. Both types inherit
+// from WebPage so the multi-type is valid and Google accepts it.
+//
 // Question.alternateName captures search-query variants this page is
 // the canonical answer to — populated from the Notion "Alternate
 // Phrasings" Rich Text field, one phrasing per line. Lets us declare
@@ -154,6 +160,7 @@ const questionEntity: Record<string, unknown> = {
   acceptedAnswer: {
     '@type': 'Answer',
     text: answerText,
+    author: { '@id': founderUrl },
   },
 };
 // Optional chain defends against a stale dev-only Notion cache
@@ -167,7 +174,12 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
     {
-      '@type': 'QAPage',
+      '@type': ['QAPage', 'MedicalWebPage'],
+      '@id': `${site.url}${canonicalPath}#webpage`,
+      url: `${site.url}${canonicalPath}`,
+      name: question.question,
+      author: { '@id': founderUrl },
+      publisher: { '@id': `${site.url}/#organization` },
       mainEntity: questionEntity,
     },
     breadcrumbJsonLd([

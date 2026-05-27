@@ -9,7 +9,7 @@ import { getGlossaryTerms, getGlossaryIndex, getLandingPages } from '../../lib/c
 import { renderBlocks } from '../../lib/render-blocks';
 import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
 import type { GlossaryTerm, GlossaryIndex } from '../../lib/types';
-import { breadcrumbJsonLd, site } from '../../lib/site';
+import { breadcrumbJsonLd, founderUrl, site } from '../../lib/site';
 
 import SimpleModeToggle from '../../components/SimpleModeToggle.astro';
 import GlossaryTooltips from '../../components/GlossaryTooltips.astro';
@@ -66,9 +66,25 @@ if (landingTopic) {
 }
 trail.push({ name: term.term, path: canonicalPath });
 
+// MedicalWebPage wraps the DefinedTerm: glossary entries are YMYL
+// health content (RSE terminology), and the MedicalWebPage type +
+// author attribution strengthens E-E-A-T signals Google's AI
+// Overview uses for source-selection on health queries. The
+// DefinedTerm stays as the page's mainEntity — that's what the
+// page semantically *is*.
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
+    {
+      '@type': 'MedicalWebPage',
+      '@id': `${site.url}${canonicalPath}#webpage`,
+      url: `${site.url}${canonicalPath}`,
+      name: term.term,
+      description: term.shortDefinition,
+      author: { '@id': founderUrl },
+      publisher: { '@id': `${site.url}/#organization` },
+      mainEntity: { '@id': `${site.url}${canonicalPath}#term` },
+    },
     {
       '@type': 'DefinedTerm',
       '@id': `${site.url}${canonicalPath}#term`,
