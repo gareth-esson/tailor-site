@@ -24,8 +24,9 @@ const HERO_IMAGES = [
   'public/images/services/tailor-education-secondary-rse-group-activity.webp',
   // Book page
   'public/images/ota-book-product-front.webp',
-  // About page (founder portrait)
+  // About page (leadership portraits)
   'public/images/portrait-gareth.webp',
+  'public/images/portrait-sheila.webp',
   // Services hub + service pages
   'public/images/services/tailor-education-rse-consultant-school-corridor.webp',
   'public/images/services/tailor-education-rse-cpd-workshop-facilitator.webp',

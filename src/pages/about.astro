@@ -34,6 +34,12 @@ interface TeamMember {
   bio: string[];
   portrait: string | null;
   portraitAlt: string | null;
+  /** Intrinsic dimensions of the portrait — passed to <img> so the
+   *  browser reserves the right aspect ratio and avoids CLS. The
+   *  .split-layout__media wrapper still forces a uniform 4:5 display
+   *  crop via object-fit: cover. */
+  portraitWidth: number;
+  portraitHeight: number;
   linkedIn?: string;
   eyebrow: string;
 }
@@ -59,6 +65,8 @@ const team: TeamMember[] = [
     ],
     portrait: portraitIfReady('/images/portrait-gareth.webp'),
     portraitAlt: 'Gareth Esson, founder of Tailor Education',
+    portraitWidth: 1000,
+    portraitHeight: 1000,
     linkedIn: 'https://www.linkedin.com/in/gareth-esson-6886635a/',
   },
   {
@@ -74,6 +82,8 @@ const team: TeamMember[] = [
     ],
     portrait: portraitIfReady('/images/portrait-sheila.webp'),
     portraitAlt: 'Sheila Daley-Danvers, Co-Director of Tailor Education',
+    portraitWidth: 1122,
+    portraitHeight: 1402,
   },
 ];
 
@@ -285,8 +295,8 @@ const aboutJsonLd = {
                 <HeroImage
                   src={person.portrait}
                   alt={person.portraitAlt || `Portrait of ${person.name}`}
-                  width={1000}
-                  height={1000}
+                  width={person.portraitWidth}
+                  height={person.portraitHeight}
                   sizes="(min-width: 1024px) 24rem, (min-width: 768px) 18rem, 14rem"
                 />
               ) : (
