@@ -168,6 +168,11 @@ const questionEntity: Record<string, unknown> = {
   name: question.question,
   text: question.question,
   answerCount: 1,
+  // The asker is anonymous by design — that's the whole premise of Okay
+  // to Ask (real questions submitted anonymously by young people). Google's
+  // QAPage spec wants an author on the Question; a Person named "Anonymous"
+  // is the honest, accurate value rather than omitting the field.
+  author: { '@type': 'Person', name: 'Anonymous' },
   datePublished: question.createdTime,
   dateModified: question.lastEditedTime,
   acceptedAnswer: {
@@ -177,6 +182,10 @@ const questionEntity: Record<string, unknown> = {
     datePublished: question.createdTime,
     dateModified: question.lastEditedTime,
     author: { '@id': founderUrl },
+    // No public voting mechanism exists on these pages, so the honest
+    // value is 0. Google flags upvoteCount as a recommended field on
+    // acceptedAnswer; declaring it explicitly clears the GSC warning.
+    upvoteCount: 0,
   },
 };
 // Optional chain defends against a stale dev-only Notion cache
