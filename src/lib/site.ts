@@ -11,9 +11,9 @@
 
 export const site = {
   url: 'https://tailoreducation.org.uk',
-  brand: 'Tailor Education',
+  brand: 'Tailor RSE',
   defaultDescription:
-    'Expert RSE resources, training and support for schools, from Tailor Education and Okay to Ask.',
+    'Expert RSE resources, training and support for schools, from Tailor RSE and Okay to Ask.',
   /** Used in <html lang="…">. Kept as plain "en" because Pagefind 1.4.0
    *  silently ignores BCP47 regional variants ("en-GB" → 0 pages indexed).
    *  Locale precision lives in og:locale and the WebSite schema's
@@ -40,23 +40,24 @@ export const assets = {
 } as const;
 
 export const organisation = {
-  name: 'Tailor Education',
+  name: 'Tailor RSE',
   /** Companies House registered name. The customer-facing brand is
-   *  "Tailor Education"; "Tailor Learning CIC" is the legal entity. */
+   *  "Tailor RSE"; "Tailor Learning CIC" is the legal entity. */
   legalName: 'Tailor Learning CIC',
   /** Brand-name variants users actually type into Google — picked up
    *  from GSC query data. Lets Google associate misspellings and
    *  shortened forms with the same Organization entity for branded
    *  search and Knowledge Graph purposes. Not a substitute for the
-   *  canonical name (which stays "Tailor Education").
+   *  canonical name (which is now "Tailor RSE").
    *
-   *  "Tailor" sits first because the visible body copy across the site
-   *  refers to the brand as "Tailor" (the wordmark, conversational
-   *  mentions, footer attribution); declaring it as an alternateName
-   *  tells Google the single-word brand and the canonical Org name
-   *  refer to the same entity. */
+   *  Both "Tailor" and "Tailor Education" sit here: "Tailor" is the
+   *  parent wordmark and conversational short form; "Tailor Education"
+   *  is the previous public name, retained so historical branded search
+   *  ("tailor education", "tailored education") still resolves to this
+   *  Organization during and after the rename to Tailor RSE. */
   alternateName: [
     'Tailor',
+    'Tailor Education',
     'Tailored Education',
     'Tailor Ed',
     'Tailor Education UK',
@@ -88,7 +89,7 @@ export const organisation = {
   /** TODO — incorporation date if known (YYYY or YYYY-MM-DD). */
   foundingDate: null as string | null,
   description:
-    'Tailor Education is a UK community-interest company delivering specialist RSE content, training, and support to primary, secondary, special, and alternative-provision schools.',
+    'Tailor RSE is a UK community-interest company delivering specialist RSE content, training, and support to primary, secondary, special, and alternative-provision schools.',
   /** Public profiles where the same brand exists. Add platforms as they
    *  go live; never invent. Each entry must be a real, public URL. */
   sameAs: [

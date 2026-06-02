@@ -133,8 +133,8 @@ const catToken = categoryTokenMap[landingPage.category || ''] || 'relationships'
 const aliases = (topicAliases as Record<string, string[]>)[landingPage.slug] || [];
 
 // SEO metadata
-const metaTitle = landingPage.metaTitle || `${landingPage.title} | Tailor Education`;
-const metaDescription = landingPage.metaDescription || `Explore ${landingPage.title}, questions, key terms, and teaching resources for RSE from Tailor Education.`;
+const metaTitle = landingPage.metaTitle || `${landingPage.title} | Tailor RSE`;
+const metaDescription = landingPage.metaDescription || `Explore ${landingPage.title}, questions, key terms, and teaching resources from Tailor RSE.`;
 const canonicalPath = `/topics/${landingPage.slug}/`;
 
 // JSON-LD — WebPage + BreadcrumbList. Sitewide Organization is emitted

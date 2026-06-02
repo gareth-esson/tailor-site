@@ -51,8 +51,8 @@ interface Props {
 const { term, glossaryIndex, landingTopic } = Astro.props;
 
 // SEO metadata
-const metaTitle = term.metaTitle || `What is ${term.term}? | Tailor Education`;
-const metaDescription = term.metaDescription || term.shortDefinition || `Learn the meaning of ${term.term}, clear, age-appropriate RSE glossary from Tailor Education.`;
+const metaTitle = term.metaTitle || `What is ${term.term}? | Tailor RSE`;
+const metaDescription = term.metaDescription || term.shortDefinition || `Learn the meaning of ${term.term}, clear, age-appropriate RSE glossary from Tailor RSE.`;
 const canonicalPath = `/glossary/${term.slug}/`;
 
 // JSON-LD — DefinedTerm + BreadcrumbList. Glossary entries are reached

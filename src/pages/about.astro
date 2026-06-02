@@ -154,7 +154,7 @@ if (import.meta.env.DEV) {
 // --- SEO ---
 
 const description =
-  'About Tailor Education — a community-interest company founded by Gareth Esson and co-led with Sheila Daley-Danvers, delivering specialist RSE training and programmes in UK schools.';
+  'About Tailor RSE — a community-interest company founded by Gareth Esson and co-led with Sheila Daley-Danvers, delivering specialist RSE training and programmes in UK schools.';
 
 // Page schema graph: AboutPage + Person (founder + co-director) + breadcrumb.
 // Sitewide Organization is emitted by BaseLayout, so we don't duplicate it.
@@ -184,7 +184,7 @@ const aboutJsonLd = {
     {
       '@type': 'AboutPage',
       '@id': 'https://tailoreducation.org.uk/about#aboutpage',
-      name: 'About Tailor Education',
+      name: 'About Tailor RSE',
       description,
       mainEntity: { '@id': 'https://tailoreducation.org.uk/about#about-founder-title' },
       isPartOf: { '@id': 'https://tailoreducation.org.uk/#website' },
@@ -197,7 +197,7 @@ const aboutJsonLd = {
 ---
 
 <BaseLayout
-  title="About Tailor Education | RSE specialists for UK schools"
+  title="About Tailor RSE | RSE specialists for UK schools"
   description={description}
   canonicalPath="/about"
   jsonLd={aboutJsonLd}
@@ -206,10 +206,10 @@ const aboutJsonLd = {
   <header class="about-hero">
     <div class="about-hero__inner">
       <div class="about-hero__text">
-        <span class="about-hero__eyebrow">About Tailor</span>
+        <span class="about-hero__eyebrow">About Tailor RSE</span>
         <h1 class="about-hero__title">RSE built by teachers, trusted by schools.</h1>
         <p class="about-hero__lede">
-          Tailor is a community-interest company delivering expert
+          Tailor RSE is a community-interest company delivering expert
           relationships and sex education resources, training, and support to UK
           schools. Everything we publish is written by practising educators and
           aligned to statutory guidance.
@@ -222,9 +222,9 @@ const aboutJsonLd = {
     <!-- §2 Who we are -->
     <section class="about-intro">
       <div class="about-intro__inner">
-        <h2 class="about-intro__title">Tailor</h2>
+        <h2 class="about-intro__title">Tailor RSE</h2>
         <p class="about-intro__para">
-          Tailor exists to make high-quality relationships and sex
+          Tailor RSE exists to make high-quality relationships and sex
           education feel deliverable in every classroom, not just the ones
           with a specialist on staff. We build the resources, the training,
           and the planning support that let schools teach RSE with confidence,
@@ -232,7 +232,7 @@ const aboutJsonLd = {
           Programme of Study.
         </p>
         <p class="about-intro__para">
-          Tailor is a trading name of Tailor Learning CIC, a <a
+          Tailor RSE is a trading name of Tailor Learning CIC, a <a
             href="https://find-and-update.company-information.service.gov.uk/company/17239965"
             rel="noopener noreferrer"
           >community-interest company</a> registered in England (No. 17239965):

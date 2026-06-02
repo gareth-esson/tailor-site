@@ -19,7 +19,7 @@ import { organisation } from '../lib/site';
 // --- SEO ---
 
 const description =
-  "Contact Tailor Education for RSE training, in-school delivery, drop days, and policy and curriculum consultancy. UK schools, typical reply within two working days.";
+  "Contact Tailor RSE for staff training, in-school delivery, drop days, and policy and curriculum consultancy. UK schools, typical reply within two working days.";
 
 // ContactPage schema. mainEntity is the sitewide Organization (referenced
 // by @id, defined in BaseLayout). The ContactPoint repeats email/phone here
@@ -27,7 +27,7 @@ const description =
 const contactPageJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'ContactPage',
-  name: 'Contact Tailor Education',
+  name: 'Contact Tailor RSE',
   url: 'https://tailoreducation.org.uk/contact',
   mainEntity: { '@id': 'https://tailoreducation.org.uk/#organization' },
   contactPoint: {
@@ -42,7 +42,7 @@ const contactPageJsonLd = {
 ---
 
 <BaseLayout
-  title="Contact Tailor Education | RSE training, delivery and consultancy"
+  title="Contact Tailor RSE | RSE training, delivery and consultancy"
   description={description}
   canonicalPath="/contact"
   jsonLd={contactPageJsonLd}

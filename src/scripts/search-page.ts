@@ -239,8 +239,8 @@ export function initSearchPage(): void {
     if (titleQuery) titleQuery.textContent = `\u201c${query.trim()}\u201d`;
     // Also update the tab title so the browser history entry is meaningful.
     document.title = active
-      ? `Search: "${query.trim()}" \u2014 Tailor Education`
-      : 'Search \u2014 Tailor Education';
+      ? `Search: "${query.trim()}" \u2014 Tailor RSE`
+      : 'Search \u2014 Tailor RSE';
   }
 
   async function runSearch(query: string): Promise<void> {

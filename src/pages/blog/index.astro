@@ -48,7 +48,7 @@ const jsonLd = posts.length > 0
   ? {
       '@context': 'https://schema.org',
       '@type': 'Blog',
-      name: 'Tailor Education, Blog',
+      name: 'Tailor RSE, Blog',
       url: `${siteUrl}/blog/`,
       blogPost: posts.slice(0, 50).map((p) => {
         const entry: Record<string, unknown> = {
@@ -67,7 +67,7 @@ const jsonLd = posts.length > 0
 ---
 
 <BaseLayout
-  title="RSE blog | practical guidance for schools | Tailor Education"
+  title="RSE blog | practical guidance for schools | Tailor RSE"
   description="Evidence-led RSE guidance for school leaders, PSHE leads, and teachers, curriculum planning, classroom practice, safeguarding, and DfE statutory alignment."
   canonicalPath="/blog/"
   jsonLd={jsonLd}

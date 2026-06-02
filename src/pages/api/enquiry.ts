@@ -229,7 +229,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Tailor Education <noreply@mail.tailoreducation.org.uk>',
+        from: 'Tailor RSE <noreply@mail.tailoreducation.org.uk>',
         to: ['hello@tailoreducation.org.uk'],
         subject: (() => {
           const ctx = school || organisation;
