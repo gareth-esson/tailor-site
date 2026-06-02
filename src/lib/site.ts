@@ -50,13 +50,16 @@ export const organisation = {
    *  search and Knowledge Graph purposes. Not a substitute for the
    *  canonical name (which is now "Tailor RSE").
    *
-   *  Both "Tailor" and "Tailor Education" sit here: "Tailor" is the
-   *  parent wordmark and conversational short form; "Tailor Education"
-   *  is the previous public name, retained so historical branded search
-   *  ("tailor education", "tailored education") still resolves to this
+   *  "Tailor" is the parent wordmark and conversational short form.
+   *  "Tailor RSHE" captures the RSHE spelling of the curriculum acronym
+   *  (Relationships, Sex and Health Education) — the broader DfE term
+   *  people will type interchangeably with the canonical "Tailor RSE".
+   *  "Tailor Education" (and its variants) is the previous public name,
+   *  retained so historical branded search still resolves to this
    *  Organization during and after the rename to Tailor RSE. */
   alternateName: [
     'Tailor',
+    'Tailor RSHE',
     'Tailor Education',
     'Tailored Education',
     'Tailor Ed',
