@@ -8,6 +8,16 @@ export default defineConfig({
   output: 'static',
   adapter: vercel(),
   site: 'https://tailoreducation.org.uk',
+  // Canonicalise on trailing-slash URLs. Vercel already redirects
+  // non-slash → slash at the edge (vercel.json: "trailingSlash": true),
+  // but Astro's static-mode default ('ignore') means the sitemap and
+  // generated link helpers don't pick a side, which is what let Google
+  // index both forms of the same OtA URL (e.g. /anonymous_question/foo
+  // and /anonymous_question/foo/) as separate pages. Setting 'always'
+  // here makes every emitted URL — sitemap, BaseLayout canonical, JSON-LD,
+  // dev-server redirects — agree with the edge redirect, so Google
+  // consolidates on the single canonical form.
+  trailingSlash: 'always',
   server: {
     port: process.env.PORT ? Number(process.env.PORT) : 4321,
   },
