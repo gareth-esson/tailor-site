@@ -183,11 +183,11 @@ const aboutJsonLd = {
   '@graph': [
     {
       '@type': 'AboutPage',
-      '@id': 'https://tailoreducation.org.uk/about#aboutpage',
+      '@id': `${site.url}/about#aboutpage`,
       name: 'About Tailor RSE',
       description,
-      mainEntity: { '@id': 'https://tailoreducation.org.uk/about#about-founder-title' },
-      isPartOf: { '@id': 'https://tailoreducation.org.uk/#website' },
+      mainEntity: { '@id': `${site.url}/about#about-founder-title` },
+      isPartOf: { '@id': `${site.url}/#website` },
     },
     founderJsonLd(),
     cofounderJsonLd,

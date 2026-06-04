@@ -10,7 +10,7 @@
  */
 
 export const site = {
-  url: 'https://tailoreducation.org.uk',
+  url: 'https://www.tailor-rse.org.uk',
   brand: 'Tailor RSE',
   defaultDescription:
     'Expert RSE resources, training and support for schools, from Tailor RSE and Okay to Ask.',

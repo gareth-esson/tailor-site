@@ -14,7 +14,7 @@
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import EnquiryForm from '../components/EnquiryForm.astro';
-import { organisation } from '../lib/site';
+import { organisation, site } from '../lib/site';
 
 // --- SEO ---
 
@@ -28,8 +28,8 @@ const contactPageJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'ContactPage',
   name: 'Contact Tailor RSE',
-  url: 'https://tailoreducation.org.uk/contact',
-  mainEntity: { '@id': 'https://tailoreducation.org.uk/#organization' },
+  url: `${site.url}/contact`,
+  mainEntity: { '@id': `${site.url}/#organization` },
   contactPoint: {
     '@type': 'ContactPoint',
     contactType: 'customer service',

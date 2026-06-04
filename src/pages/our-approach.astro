@@ -6,6 +6,7 @@
  * shared with C3.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../lib/site';
 
 // --- Framework reference data ---
 // Four reference frameworks, rendered as editorial blocks in §4.3.
@@ -91,9 +92,9 @@ const aboutPageJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'AboutPage',
   name: 'Our approach, Tailor RSE',
-  url: 'https://tailoreducation.org.uk/our-approach',
-  mainEntity: { '@id': 'https://tailoreducation.org.uk/#organization' },
-  isPartOf: { '@id': 'https://tailoreducation.org.uk/#website' },
+  url: `${site.url}/our-approach`,
+  mainEntity: { '@id': `${site.url}/#organization` },
+  isPartOf: { '@id': `${site.url}/#website` },
 };
 ---
 

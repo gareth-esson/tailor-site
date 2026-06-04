@@ -42,82 +42,75 @@
     {
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "oktoask.co.uk" }],
-      "destination": "https://tailoreducation.org.uk/questions/",
+      "destination": "https://www.tailor-rse.org.uk/questions/",
       "permanent": true
     },
     {
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "www.oktoask.co.uk" }],
-      "destination": "https://tailoreducation.org.uk/questions/",
+      "destination": "https://www.tailor-rse.org.uk/questions/",
       "permanent": true
     },
     {
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "oktoask.org.uk" }],
-      "destination": "https://tailoreducation.org.uk/questions/",
+      "destination": "https://www.tailor-rse.org.uk/questions/",
       "permanent": true
     },
     {
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "www.oktoask.org.uk" }],
-      "destination": "https://tailoreducation.org.uk/questions/",
+      "destination": "https://www.tailor-rse.org.uk/questions/",
       "permanent": true
     },
     {
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "okaytoask.co.uk" }],
-      "destination": "https://tailoreducation.org.uk/questions/",
+      "destination": "https://www.tailor-rse.org.uk/questions/",
       "permanent": true
     },
     {
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "www.okaytoask.co.uk" }],
-      "destination": "https://tailoreducation.org.uk/questions/",
+      "destination": "https://www.tailor-rse.org.uk/questions/",
       "permanent": true
     },
     {
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "okaytoask.org.uk" }],
-      "destination": "https://tailoreducation.org.uk/questions/",
+      "destination": "https://www.tailor-rse.org.uk/questions/",
       "permanent": true
     },
     {
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "www.okaytoask.org.uk" }],
-      "destination": "https://tailoreducation.org.uk/questions/",
+      "destination": "https://www.tailor-rse.org.uk/questions/",
       "permanent": true
     },
     {
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "nosillyquestions.co.uk" }],
-      "destination": "https://tailoreducation.org.uk/questions/",
+      "destination": "https://www.tailor-rse.org.uk/questions/",
       "permanent": true
     },
     {
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "www.nosillyquestions.co.uk" }],
-      "destination": "https://tailoreducation.org.uk/questions/",
+      "destination": "https://www.tailor-rse.org.uk/questions/",
       "permanent": true
     },
     {
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "nosillyquestions.org.uk" }],
-      "destination": "https://tailoreducation.org.uk/questions/",
+      "destination": "https://www.tailor-rse.org.uk/questions/",
       "permanent": true
     },
     {
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "www.nosillyquestions.org.uk" }],
-      "destination": "https://tailoreducation.org.uk/questions/",
+      "destination": "https://www.tailor-rse.org.uk/questions/",
       "permanent": true
     },
-    {
-      "source": "/(.*)",
-      "has": [{ "type": "host", "value": "tailor-rse.co.uk" }],
-      "destination": "https://tailoreducation.org.uk/$1",
-      "permanent": true
-    },
-
     { "source": "/topic/transition-3/", "destination": "/topics/", "permanent": true },
     { "source": "/topic/sexually-transmitted-infections-3/", "destination": "/topics/stis-and-sexual-health/", "permanent": true },
     { "source": "/topic/sex/", "destination": "/topics/sex-and-intimacy/", "permanent": true },

@@ -7,7 +7,7 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   output: 'static',
   adapter: vercel(),
-  site: 'https://tailoreducation.org.uk',
+  site: 'https://www.tailor-rse.org.uk',
   // Canonicalise on trailing-slash URLs. Vercel already redirects
   // non-slash → slash at the edge (vercel.json: "trailingSlash": true),
   // but Astro's static-mode default ('ignore') means the sitemap and
