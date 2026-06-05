@@ -39,6 +39,19 @@
     }
   ],
   "redirects": [
+    { "source": "/anonymous_question/(.*)", "has": [{ "type": "host", "value": "oktoask.co.uk" }],            "destination": "https://www.tailor-rse.org.uk/anonymous_question/$1", "permanent": true },
+    { "source": "/anonymous_question/(.*)", "has": [{ "type": "host", "value": "www.oktoask.co.uk" }],        "destination": "https://www.tailor-rse.org.uk/anonymous_question/$1", "permanent": true },
+    { "source": "/anonymous_question/(.*)", "has": [{ "type": "host", "value": "oktoask.org.uk" }],           "destination": "https://www.tailor-rse.org.uk/anonymous_question/$1", "permanent": true },
+    { "source": "/anonymous_question/(.*)", "has": [{ "type": "host", "value": "www.oktoask.org.uk" }],       "destination": "https://www.tailor-rse.org.uk/anonymous_question/$1", "permanent": true },
+    { "source": "/anonymous_question/(.*)", "has": [{ "type": "host", "value": "okaytoask.co.uk" }],          "destination": "https://www.tailor-rse.org.uk/anonymous_question/$1", "permanent": true },
+    { "source": "/anonymous_question/(.*)", "has": [{ "type": "host", "value": "www.okaytoask.co.uk" }],      "destination": "https://www.tailor-rse.org.uk/anonymous_question/$1", "permanent": true },
+    { "source": "/anonymous_question/(.*)", "has": [{ "type": "host", "value": "okaytoask.org.uk" }],         "destination": "https://www.tailor-rse.org.uk/anonymous_question/$1", "permanent": true },
+    { "source": "/anonymous_question/(.*)", "has": [{ "type": "host", "value": "www.okaytoask.org.uk" }],     "destination": "https://www.tailor-rse.org.uk/anonymous_question/$1", "permanent": true },
+    { "source": "/anonymous_question/(.*)", "has": [{ "type": "host", "value": "nosillyquestions.co.uk" }],   "destination": "https://www.tailor-rse.org.uk/anonymous_question/$1", "permanent": true },
+    { "source": "/anonymous_question/(.*)", "has": [{ "type": "host", "value": "www.nosillyquestions.co.uk" }],"destination": "https://www.tailor-rse.org.uk/anonymous_question/$1", "permanent": true },
+    { "source": "/anonymous_question/(.*)", "has": [{ "type": "host", "value": "nosillyquestions.org.uk" }],  "destination": "https://www.tailor-rse.org.uk/anonymous_question/$1", "permanent": true },
+    { "source": "/anonymous_question/(.*)", "has": [{ "type": "host", "value": "www.nosillyquestions.org.uk" }],"destination": "https://www.tailor-rse.org.uk/anonymous_question/$1", "permanent": true },
+
     {
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "oktoask.co.uk" }],
