@@ -10,7 +10,7 @@ import { createClient } from 'redis';
  * On successful payment:
  * 1. Verifies the Stripe-Signature header (rejects replays > 5 min old).
  * 2. Looks up the pending order in Redis by client_reference_id.
- * 3. Sends the order email to otabook@tailoreducation.org.uk via Resend.
+ * 3. Sends the order email to otabook@tailor-rse.org.uk via Resend.
  * 4. Deletes the Redis entry.
  */
 
@@ -175,7 +175,7 @@ export const POST: APIRoute = async ({ request }) => {
       },
       body: JSON.stringify({
         from:     'Okay to Ask Book <noreply@mail.tailor-rse.org.uk>',
-        to:       ['otabook@tailoreducation.org.uk'],
+        to:       ['otabook@tailor-rse.org.uk'],
         subject:  `New book pre-order: ${order.name}`,
         text:     emailBody,
         reply_to: order.email,

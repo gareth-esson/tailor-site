@@ -67,7 +67,7 @@ export const organisation = {
   ] as ReadonlyArray<string>,
   url: site.url,
   logo: `${site.url}${assets.logo}`,
-  email: 'hello@tailoreducation.org.uk',
+  email: 'hello@tailor-rse.org.uk',
   telephone: '+443302237740',
   /** Same number formatted for display in the footer. */
   telephoneDisplay: '0330 223 7740',

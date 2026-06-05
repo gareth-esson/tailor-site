@@ -230,7 +230,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       },
       body: JSON.stringify({
         from: 'Tailor RSE <noreply@mail.tailor-rse.org.uk>',
-        to: ['hello@tailoreducation.org.uk'],
+        to: ['hello@tailor-rse.org.uk'],
         subject: (() => {
           const ctx = school || organisation;
           const prefix = role === 'press' ? 'Press enquiry' : 'New enquiry';
