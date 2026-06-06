@@ -29,17 +29,17 @@ Read-only test run — nothing written back to Notion.
 
 **Category:** Relationships · **Age Tier:** Open · **Signposting:** Childline, The Mix
 
-> Cheating isn't alright. He made a choice, and it was the wrong one. Whether you take him back is still yours to decide; let's just decide it the right way round.
+> Cheating isn't alright. He made a choice, and it was the wrong one. Whether you take him back is still yours to decide; let's just look at it properly.
 >
-> Start with you, not with him. What kind of relationship do you actually want to be in? What are your boundaries, the things you've decided you won't accept from someone who says they love you? Get clear on those first, because that's the measure you hold all of this against.
+> Start with you, not with him. What kind of relationship do you actually want to be in? What are your boundaries, the things you've decided you won't accept from someone who says they love you? Get clear on those first, because that's what everything else gets measured against.
 >
-> And be honest about this part. Taking him back isn't a neutral act. It can quietly teach him that this is something he can do and still keep you; that the line you drew wasn't a line at all. If that's not the message you want to send, that matters.
+> And be honest about this part. Taking him back isn't nothing. It can quietly teach him that this is something he can do and still keep you; that the line you drew wasn't a line at all. If that's not the message you want to send, that matters.
 >
-> Now, some people genuinely do change after cheating. It happens, and it's worth saying. But there's a difference between him being sorry because he got caught and him understanding what he actually did to you. Real change shows up slowly, in what he does over weeks and months, not in one good apology and a clean slate.
+> Now, some people genuinely do change after cheating. It does happen. But there's a difference between him being sorry because he got caught and him understanding what he actually did to you. Real change shows up slowly, in what he does over weeks and months, not one good apology and everything back to normal.
 >
-> So picture it honestly. If taking him back means spending every quiet evening wondering where he is, that's not the relationship you wanted for yourself. And that's your answer.
+> So be real with yourself. If taking him back means lying awake wondering where he is, that's not the relationship you wanted for yourself. And that's your answer.
 
-*≈ 210 words*
+*≈ 205 words*
 
 ---
 
