@@ -29,17 +29,19 @@ Read-only test run — nothing written back to Notion.
 
 **Category:** Relationships · **Age Tier:** Open · **Signposting:** Childline, The Mix
 
-> Cheating isn't alright. He made a choice, and it was the wrong one. Whether you take him back — that's still up to you. But go into it with your eyes open.
+> Cheating isn't alright. He made a choice, and it was the wrong one. But wanting him back doesn't make you weak, and giving someone a real second chance isn't a failing. So let's take it seriously — both sides of it.
 >
-> Start with you, not him. What do you actually want a relationship to feel like? What are the things you've decided you won't put up with, even from someone who says they love you? Get those clear first, because everything else comes back to them.
+> Start with you, not him. What do you actually want a relationship to feel like? What are the things you've decided you won't put up with, even from someone who loves you? Get those clear first, because everything else comes back to them.
 >
-> And here's the part that's easy to miss. Taking him back isn't nothing. It tells him he can do this and still keep you — that crossing your line cost him nothing. Forgiving someone is allowed. Just don't pretend it sends no message at all.
+> Here's the hard part. Taking him back isn't nothing. It can quietly tell him he can do this and still keep you — that crossing your line cost him nothing. So if you do take him back, let it be because you believe things can be different. Not because you're scared of losing him.
 >
-> Some people do change after cheating. It happens. But ask yourself — is he sorry he did it, or just sorry he got caught? Because those aren't the same. Real change is slow — it's in what he does, week after week, month after month. Not one good apology and straight back to normal.
+> But here's the other half of it. People do come back from cheating. Some couples are stronger afterwards, because they finally got honest about what wasn't working. That only happens when the repair is real, though. It means him owning it without getting defensive. Being patient while you struggle to trust him again. Proving himself in what he does, week after week — not one good apology and straight back to normal. And it means you being able to actually forgive him one day, instead of holding it over him forever. If staying just becomes you policing his phone and bracing for the next time, that's not a relationship either of you will be happy in.
 >
-> So be honest with yourself. If taking him back means lying awake wondering where he is, that's not the relationship you wanted. And that's your answer.
+> So don't get stuck on whether you should give him a chance. Look at whether you honestly believe he'll do the work — and whether you'd be able to trust him again if he did. If you can say yes to both, staying is a fair choice. If taking him back means you never feel sure of him again, you already know it isn't.
+>
+> Either way, this is your call to make. Not his.
 
-*≈ 190 words*
+*≈ 290 words*
 
 ---
 
