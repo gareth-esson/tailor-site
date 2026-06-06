@@ -145,6 +145,11 @@ out loud? If it sounds like an essay, rewrite it.
   - abstract noun-phrases — "a neutral act", "the measure you hold this against"
   - writerly asides — "it's worth saying"
   - flat written buttons — "that matters"
+- **Don't pile up British idioms** ("rings a bell" + "mate's" in the same
+  breath, "down the pub", "having a chinwag"). One folksy phrase in a
+  sentence reads as voice; two reads as AI doing an impression of a Brit.
+  When unsure, pick the plainer phrasing: "sounds familiar" over "rings a
+  bell", "someone you know" over "a mate's".
 - Use contractions throughout (do not → don't, that is → that's).
 - CAPS sparingly, to mark a single word that needs spoken stress.
 - British spelling throughout.

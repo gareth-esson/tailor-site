@@ -103,7 +103,7 @@ Read-only test run — nothing written back to Notion.
 >
 > A lot of the time it's gradual. It starts small and builds up slowly, which is part of what makes it hard to spot from the inside.
 >
-> If any of that rings a bell — about your own relationship, or a mate's — it's worth paying attention to. It can happen to anyone, whatever their gender, age or sexuality. And if you want to talk it through, you can speak to an adult you trust, or call Childline on 0800 1111.
+> If any of that sounds familiar — about your own relationship, or someone you know — it's worth paying attention to. It can happen to anyone, whatever their gender, age or sexuality. And if you want to talk it through, you can speak to an adult you trust, or call Childline on 0800 1111.
 
 *≈ 185 words*
 
