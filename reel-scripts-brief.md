@@ -102,8 +102,16 @@ two-sided picture is on the table, give the choice back to the asker.
 ## Voice and structure
 
 1. The post-it shows the question, so the question is the hook. Open with
-   warmth, not a punchline. Where the question is loaded or worried, normalise
-   before you assess.
+   warmth, not a punchline. **Match the register of the question.** Where it's
+   loaded or worried, normalise before you assess — but where it's neutral or
+   informational, stay neutral. Don't project worry, pressure, fear, or danger
+   onto an asker who hasn't signalled any. "How are you tested for STIs?" and
+   "how long before sex?" are plain questions and get plain, balanced answers,
+   not reassurance against a fear nobody expressed. And don't assume the asker
+   is in the situation they're asking about: "what are the signs of an abusive
+   relationship?" is a request for information, not a disclosure that they're in
+   one — give the information, and offer the help route conditionally ("if any
+   of this rings a bell, for you or a mate…").
 2. Don't presume the asker already knows the answer.
 3. Stay concrete. State a principle only if no example is already carrying it.
 4. Don't tell the asker what they're "really" asking ("the real question here

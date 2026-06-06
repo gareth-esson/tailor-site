@@ -49,15 +49,15 @@ Read-only test run — nothing written back to Notion.
 
 **Category:** Relationships · **Age Tier:** Open · **Signposting:** Brook, Childline
 
-> There's no number here. No set amount of time you're supposed to wait, and no point where it's suddenly meant to happen. Some people have sex early on. Some wait months, or years. Some wait for marriage. None of those is the wrong answer.
+> There's no set amount of time. It's different for every couple. Some people have sex early on, some wait months or years, some wait until marriage — and none of those is more right than the others.
 >
-> If there's a voice in your head going 'is this too soon?' or 'is it too late by now?' — that's other people's timing, not yours. The only thing that matters is that you both actually want to, and neither of you feels pushed.
+> What actually matters is whether you both feel ready, and whether you both want to. 'Too soon' and 'too late' are just other people's opinions. The only timeline that counts is the one you and your partner are both happy with.
 >
-> So talk about it. The right time is when you've both said, out loud, that you're ready. And watch how the other person handles it if you're not there yet. Them being fine to wait — that's the whole test. If they sulk, or guilt-trip you, or act like you owe them — that tells you something far more important than any timeline.
+> The useful move is to talk about it rather than guess. If you're both ready and you both want to, there's your answer. And if one of you isn't there yet, that's something to talk through together — being together a while doesn't put anyone under any obligation.
 >
-> Because you don't owe anyone sex. Not after three months, not after three years. Being together a long time doesn't turn into a debt you have to pay off.
+> So there's no magic number. Long relationship or new one, the right time is when it's a genuine yes from both of you.
 
-*≈ 175 words*
+*≈ 160 words*
 
 ---
 
@@ -65,17 +65,15 @@ Read-only test run — nothing written back to Notion.
 
 **Category:** Sexual Health · **Age Tier:** Open · **Signposting:** Brook, NHS Sexual Health, Childline
 
-> Most of the fear around STI testing is worse than the test itself. So here's what actually happens.
+> It depends a bit on what's being checked, but it's usually pretty simple.
 >
-> A lot of the time, it's literally peeing in a pot. That's how they check for chlamydia and gonorrhoea — the most common ones. For HIV and syphilis, it's a tiny blood sample. If you've had oral or anal sex, they might swab your throat or your bum. And if there's something you can see, like a sore, a nurse just takes a look.
+> For the most common ones — chlamydia and gonorrhoea — you usually just pee in a pot. For HIV and syphilis, it's a small blood sample. If you've had oral or anal sex, they might also swab your throat or your bum. And if there's something visible, like a sore, a nurse might take a look and swab the area.
 >
-> You can go to a sexual health clinic, your GP, or order a kit online and do it yourself at home. It's quick, and nowhere near as awkward as you're picturing. The staff do this all day, every day. You won't shock them.
+> You can get tested a few ways: at a sexual health clinic, at your GP, or with a home kit you order online and do yourself. Results usually come back within a few days. If something does come back positive, they'll talk you through what happens next — and most STIs are treatable.
 >
-> Results come back in a few days. If something's positive, they walk you through exactly what happens next — and most STIs are treatable.
->
-> And it's free. It's confidential. You don't need a parent's permission.
+> It's free, it's confidential, and you don't need a parent's permission.
 
-*≈ 165 words*
+*≈ 145 words*
 
 ---
 
@@ -99,19 +97,15 @@ Read-only test run — nothing written back to Notion.
 
 **Category:** Relationships · **Age Tier:** Open · **Signposting:** Childline, Women's Aid, The Mix
 
-> If you're reading this and quietly checking it against your own relationship — that already means something. So let's go through it gently.
+> The big thing to understand is that abuse is often about control, not just violence. It doesn't always look like someone hitting you.
 >
-> Abuse isn't always someone hitting you. A lot of the time, it's control. Them going through your phone. Them deciding what you wear, or who you're allowed to see. Them getting wound up every time you're out with your mates. Them making you feel like everything that goes wrong is somehow your fault.
+> So the signs are things like: someone going through your phone without asking. Someone getting funny about who you see or what you wear. Someone who's jealous and possessive, and calls it love. Someone who puts you down, then says you're too sensitive when you mind. Someone who pushes you into things you're not comfortable with, or tries to cut you off from your friends and family.
 >
-> And it rarely starts dramatic. It starts small, and it builds so slowly you don't notice how far it's gone — until you're picking your words carefully just to keep the peace.
+> A lot of the time it's gradual. It starts small and builds up slowly, which is part of what makes it hard to spot from the inside.
 >
-> A few things to watch for. They get jealous and possessive, and call it love. They put you down, then tell you you're too sensitive. They push you into stuff you're not comfortable with. They try to cut you off from your friends and family.
->
-> If you're recognising yourself in any of that, trust it. This happens to people of every gender, age, and sexuality — and leaving is rarely as simple as outsiders make it sound, especially when you still love them.
->
-> You don't have to untangle this on your own. Talk to someone you trust, or call Childline on 0800 1111.
+> If any of that rings a bell — about your own relationship, or a mate's — it's worth paying attention to. It can happen to anyone, whatever their gender, age or sexuality. And if you want to talk it through, you can speak to an adult you trust, or call Childline on 0800 1111.
 
-*≈ 215 words*
+*≈ 185 words*
 
 ---
 
@@ -121,7 +115,7 @@ Read-only test run — nothing written back to Notion.
 
 > Short version: yes. Playing with yourself is something you do on your own — no one else involved — so it doesn't touch your virginity.
 >
-> But stay with that word for a second, because it's slipperier than it looks. There's no test for virginity. Nothing in your body changes the moment you supposedly 'lose' it. It's just a word people use for whether you've had sex with someone else. And even then, nobody agrees on what counts. If it only means penis-in-vagina sex, where does that leave two girls together? Or any of the other ways people have sex?
+> But here's the weird thing about that word. There's no test for virginity. Nothing in your body changes the moment you supposedly 'lose' it. It's just a word people use for whether you've had sex with someone else. And even then, nobody agrees on what counts. If it only means penis-in-vagina sex, where does that leave two girls together? Or any of the other ways people have sex?
 >
 > So virginity is more of an idea than a fact. It means one thing in one family, one religion, one friendship group, and something completely different in the next. Which means the only version that gets to define you is yours.
 >
