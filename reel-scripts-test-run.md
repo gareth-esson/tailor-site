@@ -29,15 +29,17 @@ Read-only test run — nothing written back to Notion.
 
 **Category:** Relationships · **Age Tier:** Open · **Signposting:** Childline, The Mix
 
-> Cheating isn't alright. He made a choice, and it was the wrong one.
+> Cheating isn't alright. He made a choice, and it was the wrong one. Whether you take him back is still yours to decide; let's just decide it the right way round.
 >
-> It's understandable that he wants you back. But start with YOURSELF here, not him. What kind of relationship do you actually want to be in? What are your boundaries, the things you won't accept from someone who says they love you?
+> Start with you, not with him. What kind of relationship do you actually want to be in? What are your boundaries, the things you've decided you won't accept from someone who says they love you? Get clear on those first, because that's the measure you hold all of this against.
 >
-> Taking him back isn't a neutral act. It can quietly tell him this is something he can do and still keep you. If that's not the message you want to send, sit with that.
+> And be honest about this part. Taking him back isn't a neutral act. It can quietly teach him that this is something he can do and still keep you; that the line you drew wasn't a line at all. If that's not the message you want to send, that matters.
 >
-> And yes, some people genuinely do change after cheating. It happens. But that's his to prove, through what he does over weeks and months, not through one good apology. If you'd spend every quiet evening wondering where he is, you already have your answer.
+> Now, some people genuinely do change after cheating. It happens, and it's worth saying. But there's a difference between him being sorry because he got caught and him understanding what he actually did to you. Real change shows up slowly, in what he does over weeks and months, not in one good apology and a clean slate.
+>
+> So picture it honestly. If taking him back means spending every quiet evening wondering where he is, that's not the relationship you wanted for yourself. And that's your answer.
 
-*≈ 140 words*
+*≈ 210 words*
 
 ---
 
