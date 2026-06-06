@@ -49,15 +49,15 @@ Read-only test run — nothing written back to Notion.
 
 **Category:** Relationships · **Age Tier:** Open · **Signposting:** Brook, Childline
 
-> There's no number here. No month, no milestone, no point where it's suddenly meant to happen. Every couple is different. Some people have sex early, some wait years, some wait for marriage, and none of those is the wrong answer.
+> There's no number here. No set amount of time you're supposed to wait, and no point where it's suddenly meant to happen. Some people have sex early on. Some wait months, or years. Some wait for marriage. None of those is the wrong answer.
 >
-> If a voice in your head is saying it's "too soon" or "too late," that's other people's clock, not yours. What counts is whether you both want to, and whether you can talk about it without it being weird.
+> If there's a voice in your head going 'is this too soon?' or 'is it too late by now?' — that's other people's timing, not yours. The only thing that matters is that you both actually want to, and neither of you feels pushed.
 >
-> And notice how the other person handles you not being ready. If they're happy to wait, that's a good sign. If they sulk or push, that tells you something too.
+> So talk about it. The right time is when you've both said, out loud, that you're ready. And watch how the other person handles it if you're not there yet. Them being fine to wait — that's the whole test. If they sulk, or guilt-trip you, or act like you owe them — that tells you something far more important than any timeline.
 >
-> Being together a long time doesn't put you in debt. You don't owe anyone sex because of how long it's been.
+> Because you don't owe anyone sex. Not after three months, not after three years. Being together a long time doesn't turn into a debt you have to pay off.
 
-*≈ 140 words*
+*≈ 175 words*
 
 ---
 
@@ -65,15 +65,17 @@ Read-only test run — nothing written back to Notion.
 
 **Category:** Sexual Health · **Age Tier:** Open · **Signposting:** Brook, NHS Sexual Health, Childline
 
-> Most of the dread around STI testing is worse than the thing itself. Here's what it actually involves.
+> Most of the fear around STI testing is worse than the test itself. So here's what actually happens.
 >
-> A lot of the time it's as simple as peeing in a pot; that's how they check for chlamydia and gonorrhoea, the most common ones. For HIV and syphilis it's a small blood sample. If you've had oral or anal sex they might swab your throat or your bum, and if there's something visible like a sore, a nurse takes a look.
+> A lot of the time, it's literally peeing in a pot. That's how they check for chlamydia and gonorrhoea — the most common ones. For HIV and syphilis, it's a tiny blood sample. If you've had oral or anal sex, they might swab your throat or your bum. And if there's something you can see, like a sore, a nurse just takes a look.
 >
-> You can go to a sexual health clinic, your GP, or order a kit and do it yourself at home. Results come back in a few days, and if anything's positive they walk you through what happens next. Most STIs are treatable.
+> You can go to a sexual health clinic, your GP, or order a kit online and do it yourself at home. It's quick, and nowhere near as awkward as you're picturing. The staff do this all day, every day. You won't shock them.
 >
-> It's free, it's confidential, and you don't need a parent's permission.
+> Results come back in a few days. If something's positive, they walk you through exactly what happens next — and most STIs are treatable.
+>
+> And it's free. It's confidential. You don't need a parent's permission.
 
-*≈ 145 words*
+*≈ 165 words*
 
 ---
 
@@ -81,15 +83,15 @@ Read-only test run — nothing written back to Notion.
 
 **Category:** Sexual Health · **Age Tier:** Age-flagged (Year 9+) · **Signposting:** Brook, NHS Sexual Health, Childline
 
-> It's a fair thing to wonder, because the numbers do get quoted. Some STIs, like HIV and syphilis, are more common among men who have sex with men. That part's true. What's worth understanding is why.
+> Honest answer: yes. Some STIs — like HIV and syphilis — are more common among men who have sex with men. That's what the stats say, and pretending otherwise doesn't help anyone. But you have to understand why, because the 'why' is where people get it wrong.
 >
-> Anal sex passes on infections more easily than vaginal sex, because the lining there is thinner and tears more easily. That's true for ANYONE who has anal sex, gay or straight. The risk is in the act, not the identity.
+> It comes down to the type of sex, not the type of person. Anal sex passes infections on more easily than vaginal sex, because the skin there is thinner and tears more easily. That's true for anyone who has anal sex, gay or straight.
 >
-> Gay men also tend to test more often, so more gets found and counted; that alone makes the figures look bigger. And stigma does its own damage, making it harder for some people to get checked or talk openly.
+> There's more to it as well. Gay men tend to get tested more often, so more infections get found and counted. That alone makes the numbers look bigger than the gap actually is. And stigma does real harm here — if you're made to feel judged, you're less likely to go and get checked, and that's how infections keep spreading.
 >
-> Your risk comes from what you do and whether you use protection, not from who you are. A gay man using condoms is safer than a straight man who isn't.
+> So here's the bit that matters. Your risk comes from what you do and whether you protect yourself, not from who you fancy. A gay man who uses condoms is safer than a straight man who doesn't. Protection and regular testing — that's what works. For everyone.
 
-*≈ 150 words*
+*≈ 210 words*
 
 ---
 
@@ -97,17 +99,19 @@ Read-only test run — nothing written back to Notion.
 
 **Category:** Relationships · **Age Tier:** Open · **Signposting:** Childline, Women's Aid, The Mix
 
-> If you're scanning your own relationship while you read this, that already means something.
+> If you're reading this and quietly checking it against your own relationship — that already means something. So let's go through it gently.
 >
-> Abuse isn't always hitting. A lot of it is control. Someone going through your phone. Someone deciding what you wear, or who you're allowed to see. Someone who gets jealous and calls it love. Someone who puts you down until you feel like everything is your fault.
+> Abuse isn't always someone hitting you. A lot of the time, it's control. Them going through your phone. Them deciding what you wear, or who you're allowed to see. Them getting wound up every time you're out with your mates. Them making you feel like everything that goes wrong is somehow your fault.
 >
-> It usually starts small and builds so slowly you don't clock how far it's gone, until you're walking on eggshells in your own relationship.
+> And it rarely starts dramatic. It starts small, and it builds so slowly you don't notice how far it's gone — until you're picking your words carefully just to keep the peace.
 >
-> If you're recognising a pattern in any of that, trust it. This happens to people of every gender and age, and leaving is rarely as simple as it sounds, especially when you still care about them.
+> A few things to watch for. They get jealous and possessive, and call it love. They put you down, then tell you you're too sensitive. They push you into stuff you're not comfortable with. They try to cut you off from your friends and family.
 >
-> You don't have to work this out alone. Talk to someone you trust, or call Childline on 0800 1111.
+> If you're recognising yourself in any of that, trust it. This happens to people of every gender, age, and sexuality — and leaving is rarely as simple as outsiders make it sound, especially when you still love them.
+>
+> You don't have to untangle this on your own. Talk to someone you trust, or call Childline on 0800 1111.
 
-*≈ 150 words*
+*≈ 215 words*
 
 ---
 
@@ -115,12 +119,12 @@ Read-only test run — nothing written back to Notion.
 
 **Category:** Sex · **Age Tier:** Open · **Signposting:** Brook, Childline
 
-> Short answer: yes. Playing with yourself is something you do on your own, with no one else involved, so it doesn't touch your virginity.
+> Short version: yes. Playing with yourself is something you do on your own — no one else involved — so it doesn't touch your virginity.
 >
-> But sit with the word, because it's slipperier than it looks. There's no medical test for virginity. Nothing in your body switches over the moment you "lose" it. It's just a word for whether you've had sex with another person, and people don't even agree on what counts. If you say it only means penis-in-vagina sex, where does that leave gay and lesbian couples, or every other kind of sex?
+> But stay with that word for a second, because it's slipperier than it looks. There's no test for virginity. Nothing in your body changes the moment you supposedly 'lose' it. It's just a word people use for whether you've had sex with someone else. And even then, nobody agrees on what counts. If it only means penis-in-vagina sex, where does that leave two girls together? Or any of the other ways people have sex?
 >
-> So virginity is more of an idea than a fact. It means different things in different cultures, religions, and friend groups. Which is why what it means to YOU is the version that matters, far more than whether the label fits.
+> So virginity is more of an idea than a fact. It means one thing in one family, one religion, one friendship group, and something completely different in the next. Which means the only version that gets to define you is yours.
 >
-> Masturbation is normal, it's healthy, and most people do it.
+> And honestly? Whether you call yourself a virgin matters way less than how you feel in your own body. Playing with yourself is normal. It's healthy. Pretty much everyone does it. There's nothing to feel weird about.
 
-*≈ 150 words*
+*≈ 185 words*
