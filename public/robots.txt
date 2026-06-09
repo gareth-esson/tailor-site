@@ -11,4 +11,4 @@ Disallow: /book/order-confirmed
 Disallow: /blog/category/
 Disallow: /questions/tag/
 
-Sitemap: https://tailoreducation.org.uk/sitemap-index.xml
+Sitemap: https://www.tailor-rse.org.uk/sitemap-index.xml
