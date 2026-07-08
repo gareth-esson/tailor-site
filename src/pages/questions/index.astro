@@ -8,11 +8,18 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import GlossaryTooltips from '../../components/GlossaryTooltips.astro';
 import QuestionCard from '../../components/QuestionCard.astro';
+import { getCollection } from 'astro:content';
 import { getQuestions } from '../../lib/content';
 import type { QuestionRef } from '../../lib/types';
 import { breadcrumbJsonLd, site } from '../../lib/site';
 
 const allQuestions = await getQuestions();
+
+// Pillar hubs — the conceptual "bigger questions" that consolidate a
+// cluster. Surfaced above the browse grid as a way in.
+const pillars = (await getCollection('pillars'))
+  .filter((p) => p.data.status === 'Published')
+  .map((p) => ({ slug: p.id, title: p.data.title, lede: p.data.lede }));
 
 // Only published questions with answers, mapped to QuestionRef
 const questions: QuestionRef[] = allQuestions
@@ -114,6 +121,26 @@ const jsonLd = {
         </a>
       </div>
     </section>
+
+    {/* ── §1b Pillar hubs ── */}
+    {pillars.length > 0 && (
+      <section class="surface--ota-alt w-full py-[var(--space-struct-y-base)] px-[var(--space-global-gutter)]">
+        <div class="mx-auto w-full max-w-[var(--container-max-reading-wide)]">
+          <h2 class="ota-pillars__heading text-center mb-[var(--space-global-md)]">Start with a bigger question</h2>
+          <ul class="list-none p-0 m-0 grid grid-cols-1 gap-[var(--space-global-md)]" role="list">
+            {pillars.map((p) => (
+              <li>
+                <a href={`/explained/${p.slug}/`} class="ota-pillar-card">
+                  <h3 class="ota-pillar-card__title">{p.title}</h3>
+                  {p.lede && <p class="ota-pillar-card__lede">{p.lede}</p>}
+                  <span class="ota-pillar-card__cta">Read the answer</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
 
     {/* ── §2 Category filter + question card grid ── */}
     <section class="ota-questions-band w-full py-[var(--space-struct-y-base)] px-[var(--space-global-gutter)]" id="questions-section">
@@ -321,6 +348,47 @@ const jsonLd = {
     font-size: var(--text-prose-size-body);
     color: var(--text-ota-muted);
     line-height: var(--lh-body);
+  }
+
+  /* --- Pillar hubs --- */
+  .ota-pillars__heading {
+    font-size: var(--text-prose-size-h2);
+    color: var(--text-ota-heading);
+  }
+
+  .ota-pillar-card {
+    display: block;
+    background: var(--bg-ota-paper-panel);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-global-lg) var(--space-global-xl);
+    text-decoration: none;
+    transition: transform var(--transition-duration) var(--transition-easing);
+  }
+
+  .ota-pillar-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .ota-pillar-card__title {
+    font-size: var(--text-prose-size-h2);
+    color: var(--text-ota-heading);
+    margin: 0 0 var(--space-global-xs);
+  }
+
+  .ota-pillar-card__lede {
+    font-size: var(--text-prose-size-body);
+    color: var(--text-ota-body);
+    line-height: var(--lh-prose);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .ota-pillar-card__cta {
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-ota-heading);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
   }
 
   /* --- Book promotion --- */

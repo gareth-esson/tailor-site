@@ -1,0 +1,371 @@
+---
+/**
+ * Pillar / hub template [C5] — /explained/{slug}
+ * Okay-to-Ask layer. A conceptual young-person question that consolidates a
+ * cluster of search variants. Structure in order:
+ *   §1 Hero — post-it scatter (real cluster notes) + typeset H1 + lede
+ *   §2 Conceptual intro — MDX body, prose measure
+ *   §3 "Does it count?" — structured FAQ sub-answers (H2 Q&A)
+ *
+ * The MDX body is the conceptual essay; `faqs` frontmatter is the sub-answers,
+ * rendered verbatim here AND emitted as FAQPage JSON-LD (one source → schema
+ * parity). The post-it hero is queried live from Notion by `clusterTag`:
+ * only questions with a real scan appear, and each links to its own question
+ * page. Nobody handed in a note for the umbrella question, so the H1 is
+ * typeset, never a fabricated post-it.
+ */
+import { getCollection, getEntry, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import SimpleModeToggle from '../../components/SimpleModeToggle.astro';
+import { getQuestions } from '../../lib/content';
+import { getPostItImage, type PostItImage } from '../../lib/post-it-images';
+import { breadcrumbJsonLd, faqJsonLd, founderPersonNode, founderUrl, site } from '../../lib/site';
+
+export const prerender = true;
+
+interface ClusterPostIt {
+  slug: string;
+  question: string;
+  img: PostItImage;
+}
+
+export async function getStaticPaths() {
+  const pillars = (await getCollection('pillars')).filter(
+    (p) => p.data.status === 'Published',
+  );
+  const questions = await getQuestions();
+
+  return Promise.all(
+    pillars.map(async (pillar) => {
+      const tag = pillar.data.clusterTag;
+      // Cluster spokes = questions carrying the tag that have a real
+      // handed-in scan. hasPostItScan is the line between artefact-backed
+      // spokes (their own pages, shown here) and editorial fold-ins (the
+      // faqs). Alphabetical by question for a stable build.
+      const cluster = questions
+        .filter((q) => q.contentTags.includes(tag) && q.hasPostItScan)
+        .sort((a, b) => a.question.localeCompare(b.question));
+
+      const postits = (
+        await Promise.all(
+          cluster.map(async (q): Promise<ClusterPostIt | null> => {
+            const img = await getPostItImage(q.slug);
+            return img ? { slug: q.slug, question: q.question, img } : null;
+          }),
+        )
+      ).filter((p): p is ClusterPostIt => p !== null);
+
+      return { params: { slug: pillar.id }, props: { postits } };
+    }),
+  );
+}
+
+interface Props {
+  postits: ClusterPostIt[];
+}
+
+const { postits } = Astro.props;
+const { slug } = Astro.params;
+
+const entry = await getEntry('pillars', slug!);
+if (!entry) {
+  throw new Error(`Pillar entry not found for slug "${slug}".`);
+}
+const { Content } = await render(entry);
+const { title, lede, faqs, simpleIntro, publishedDate, dateModified } = entry.data;
+
+// Simple Mode ([A6]) is offered when there's a plain-language variant to
+// swap to — a simple intro, or at least one answer with a simpleAnswer.
+const hasSimple = simpleIntro.length > 0 || faqs.some((f) => f.simpleAnswer);
+
+const canonicalPath = `/explained/${slug}/`;
+const metaTitle = entry.data.metaTitle || `${title} | Okay to Ask`;
+const metaDescription = entry.data.metaDescription || lede.slice(0, 155);
+
+// FAQPage answers use the same strings rendered on the page (Google checks
+// parity). Author references the founder Person for E-E-A-T consolidation,
+// same pattern as the question and blog templates.
+const faqNode = {
+  ...faqJsonLd(faqs.map((f) => ({ question: f.question, answer: f.answer }))),
+  author: { '@id': founderUrl },
+};
+const breadcrumbNode = breadcrumbJsonLd([
+  { name: 'Okay to Ask', path: '/questions/' },
+  { name: title, path: canonicalPath },
+]);
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [founderPersonNode(), faqNode, breadcrumbNode],
+};
+
+// Hand-placed tilt per note — never 0, never uniform, so the pile reads as
+// a scatter of real artefacts rather than a grid of thumbnails.
+const rotations = ['-4deg', '3deg', '-2deg', '4deg', '-3deg'];
+---
+
+<BaseLayout
+  title={metaTitle}
+  description={metaDescription}
+  canonicalPath={canonicalPath}
+  ogType="article"
+  layer="ota"
+  jsonLd={jsonLd}
+  articleMeta={{
+    publishedTime: publishedDate ?? undefined,
+    modifiedTime: dateModified ?? publishedDate ?? undefined,
+    author: 'Gareth Esson',
+  }}
+>
+  <article class="pillar" data-pagefind-body>
+
+    <!-- §1 Hero -->
+    <header class="pillar__hero">
+      <div class="mx-auto w-full max-w-[var(--container-max-hero-text)] px-[var(--space-global-gutter)] pt-[var(--space-struct-y-hero)] pb-[var(--space-global-lg)]">
+        <Breadcrumb
+          trail={[
+            { name: 'Okay to Ask', path: '/questions/' },
+            { name: title, path: canonicalPath },
+          ]}
+          class="pillar__breadcrumb"
+        />
+        <h1 class="pillar__title">{title}</h1>
+        {lede && <p class="pillar__lede">{lede}</p>}
+      </div>
+
+      {postits.length > 0 && (
+        <div class="mx-auto w-full max-w-[var(--container-max-reading-wide)] px-[var(--space-global-gutter)] pb-[var(--space-struct-y-base)]">
+          <p class="pillar__postits-caption">The questions young people actually handed in about this:</p>
+          <div class="pillar__postits">
+            {postits.map((p, i) => (
+              <a
+                href={`/anonymous_question/${p.slug}/`}
+                class="pillar__postit"
+                style={`--postit-rotation: ${rotations[i % rotations.length]}`}
+              >
+                <picture>
+                  {p.img.avifPath && <source srcset={p.img.avifPath} type="image/avif" />}
+                  <img
+                    class="postit-image"
+                    src={p.img.path}
+                    width={p.img.width}
+                    height={p.img.height}
+                    alt={p.question}
+                    loading={i === 0 ? 'eager' : 'lazy'}
+                    decoding="async"
+                  />
+                </picture>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </header>
+
+    <!-- §2 Conceptual intro (MDX body) + Simple Mode swap -->
+    <section class="pillar__intro">
+      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        {hasSimple && (
+          <div class="pillar__toggle-row">
+            <span class="pillar__toggle-hint">Want it in plainer words?</span>
+            <SimpleModeToggle />
+          </div>
+        )}
+        {simpleIntro.length > 0 ? (
+          <>
+            <div class="pillar__prose mode-content" data-mode="standard">
+              <Content />
+            </div>
+            <div class="pillar__prose mode-content" data-mode="simple">
+              {simpleIntro.map((para) => <p>{para}</p>)}
+            </div>
+          </>
+        ) : (
+          <div class="pillar__prose">
+            <Content />
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- §3 "Does it count?" — structured sub-answers -->
+    {faqs.length > 0 && (
+      <section class="pillar__faqs">
+        <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] pb-[var(--space-struct-y-hero)]">
+          <p class="pillar__eyebrow">Does it count?</p>
+          {faqs.map((faq) => (
+            <div class="pillar__faq">
+              <h2 class="pillar__faq-q">{faq.question}</h2>
+              {faq.simpleAnswer ? (
+                <>
+                  <p class="pillar__faq-a mode-content" data-mode="standard">{faq.answer}</p>
+                  <p class="pillar__faq-a mode-content" data-mode="simple">{faq.simpleAnswer}</p>
+                </>
+              ) : (
+                <p class="pillar__faq-a">{faq.answer}</p>
+              )}
+              {faq.spokeSlug && (
+                <a class="pillar__faq-more" href={`/anonymous_question/${faq.spokeSlug}/`}>
+                  Read the full answer
+                </a>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+  </article>
+</BaseLayout>
+
+<style>
+  /* Simple Mode visibility ([A6]) — driven by .simple-active on <html>.
+     Both views live in the DOM at build time; only the text swaps.
+     Same mechanism as the question and glossary templates. */
+  [data-mode="simple"] {
+    display: none;
+  }
+  :global(.simple-active [data-mode="standard"]) {
+    display: none !important;
+  }
+  :global(.simple-active [data-mode="simple"]) {
+    display: block !important;
+  }
+
+  /* --- Simple Mode toggle row --- */
+  .pillar__toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-global-md);
+    padding-bottom: var(--space-global-md);
+    margin-bottom: var(--space-global-lg);
+    border-bottom: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  .pillar__toggle-hint {
+    font-size: var(--text-card-size-body);
+    color: var(--text-ota-body);
+  }
+
+  /* --- §1 Hero --- */
+  .pillar__breadcrumb {
+    margin-bottom: var(--space-global-sm);
+  }
+
+  .pillar__title {
+    font-size: var(--text-display-size-h1);
+    color: var(--text-ota-heading);
+    line-height: var(--lh-display);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .pillar__lede {
+    font-size: var(--text-prose-size-body);
+    color: var(--text-ota-body);
+    line-height: var(--lh-prose);
+    max-width: var(--container-max-hero-text);
+    margin: 0;
+  }
+
+  .pillar__postits-caption {
+    font-size: var(--text-card-size-body);
+    color: var(--text-ota-body);
+    text-align: center;
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .pillar__postits {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: var(--space-global-md);
+  }
+
+  .pillar__postit {
+    display: block;
+    text-decoration: none;
+    transition: transform var(--transition-duration) var(--transition-easing);
+  }
+
+  .pillar__postit:hover,
+  .pillar__postit:focus-visible {
+    transform: scale(1.03);
+    z-index: 1;
+  }
+
+  /* Scatter notes are smaller than the single hero post-it on a question
+     page — several sit side by side here. */
+  .pillar__postits :global(.postit-image) {
+    max-width: 11rem;
+  }
+
+  @media (max-width: 768px) {
+    .pillar__postits :global(.postit-image) {
+      max-width: 8.5rem;
+    }
+  }
+
+  /* --- §2 Intro prose --- */
+  .pillar__prose {
+    font-size: var(--text-prose-size-body);
+    color: var(--text-ota-body);
+    line-height: var(--lh-prose);
+  }
+
+  .pillar__prose :global(p) {
+    margin-bottom: var(--space-global-md);
+  }
+
+  .pillar__prose :global(em) {
+    font-style: italic;
+  }
+
+  .pillar__prose :global(a) {
+    color: var(--text-ota-heading);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  /* --- §3 FAQ sub-answers --- */
+  .pillar__eyebrow {
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-ota-heading);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .pillar__faq {
+    padding-top: var(--space-global-lg);
+  }
+
+  .pillar__faq + .pillar__faq {
+    border-top: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  .pillar__faq-q {
+    font-size: var(--text-prose-size-h2);
+    color: var(--text-ota-heading);
+    line-height: var(--lh-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .pillar__faq-a {
+    font-size: var(--text-prose-size-body);
+    color: var(--text-ota-body);
+    line-height: var(--lh-prose);
+    margin: 0;
+  }
+
+  .pillar__faq-more {
+    display: inline-block;
+    margin-top: var(--space-global-sm);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-ota-heading);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+</style>

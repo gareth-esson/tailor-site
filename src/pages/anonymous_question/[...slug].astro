@@ -21,6 +21,7 @@
  * layout-only change.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
 import { getQuestions, getGlossaryIndex, getTopics, getLandingPages } from '../../lib/content';
 import { renderBlocks } from '../../lib/render-blocks';
 import { injectGlossaryTooltips } from '../../lib/glossary-tooltips';
@@ -64,6 +65,19 @@ export async function getStaticPaths() {
   );
   const postItMap = new Map<string, PostItImage | null>(postItImages);
 
+  // Pillar hub-and-spoke: a question is a "spoke" of a pillar when the
+  // pillar's clusterTag is one of the question's content tags. Map each
+  // tag to its pillar so a spoke can link up to the hub it belongs to.
+  const pillarEntries = (await getCollection('pillars')).filter(
+    (p) => p.data.status === 'Published',
+  );
+  const tagToPillar = new Map<string, { slug: string; title: string }>();
+  for (const p of pillarEntries) {
+    if (!tagToPillar.has(p.data.clusterTag)) {
+      tagToPillar.set(p.data.clusterTag, { slug: p.id, title: p.data.title });
+    }
+  }
+
   return questions.map((q) => ({
     params: { slug: q.slug },
     props: {
@@ -73,6 +87,7 @@ export async function getStaticPaths() {
       fullTopic: q.topicIds[0] ? topicMap.get(q.topicIds[0]) || null : null,
       landingPageSlug: q.topicIds[0] ? (granularToLandingSlug.get(q.topicIds[0]) ?? '') : '',
       postItImage: postItMap.get(q.slug) ?? null,
+      pillarLink: q.contentTags.map((t) => tagToPillar.get(t)).find(Boolean) ?? null,
     },
   }));
 }
@@ -84,9 +99,10 @@ interface Props {
   fullTopic: Topic | null;
   landingPageSlug: string;
   postItImage: PostItImage | null;
+  pillarLink: { slug: string; title: string } | null;
 }
 
-const { question, allQuestions, glossaryIndex, fullTopic, landingPageSlug, postItImage } = Astro.props;
+const { question, allQuestions, glossaryIndex, fullTopic, landingPageSlug, postItImage, pillarLink } = Astro.props;
 
 const isSafeguarding = question.topic?.category === 'Safety & Safeguarding';
 const showCrisis = isSafeguarding;
@@ -397,6 +413,15 @@ const postItTopPadding = showAlertBand
             <Fragment set:html={simpleWithTooltips} />
           </div>
         </div>
+
+        {/* Spoke → hub link. When this question belongs to a pillar's
+            cluster, point up to the bigger question it sits under. */}
+        {pillarLink && (
+          <a class="c1-part-of" href={`/explained/${pillarLink.slug}/`}>
+            <span class="c1-part-of__label">Part of the bigger question</span>
+            <span class="c1-part-of__title">{pillarLink.title}</span>
+          </a>
+        )}
       </div>
     </section>
   </div>
@@ -465,6 +490,38 @@ const postItTopPadding = showAlertBand
   }
   :global(.simple-active [data-mode="simple"]) {
     display: block !important;
+  }
+
+  /* Spoke → hub link — sits under the answer, points up to the pillar */
+  .c1-part-of {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    margin-top: var(--space-global-xl);
+    padding: var(--space-global-md) var(--space-global-lg);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: transform var(--transition-duration) var(--transition-easing),
+                border-color var(--transition-duration) var(--transition-easing);
+  }
+  .c1-part-of:hover {
+    transform: translateY(-1px);
+    border-color: var(--text-ota-heading);
+  }
+  .c1-part-of__label {
+    font-family: var(--font-ota-body-stack);
+    font-size: var(--text-card-size-body);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-ota-body);
+  }
+  .c1-part-of__title {
+    font-family: var(--font-ota-heading-stack);
+    font-size: var(--text-prose-size-h3);
+    color: var(--text-ota-heading);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
   }
 
   /* "Book page" panel — white surface that lifts off the --bg-page ground */
