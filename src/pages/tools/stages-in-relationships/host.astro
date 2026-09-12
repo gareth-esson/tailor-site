@@ -1,0 +1,50 @@
+---
+/**
+ * Stages in Relationships — facilitator screen for a live session.
+ * /tools/stages-in-relationships/host/?code=ABC123
+ * Logic: src/scripts/stages/host.ts
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import '../../../styles/stages-tool.css';
+
+const BASE = '/tools/stages-in-relationships';
+---
+
+<BaseLayout
+  title="Stages in Relationships — host"
+  description="Facilitator controls for a live Stages in Relationships session."
+  canonicalPath={`${BASE}/host/`}
+  noIndex={true}
+>
+  <div class="stages-page" id="stages-host">
+    <section class="stages-hero stages-hero--compact">
+      <div class="stages-hero__inner">
+        <div class="stages-hero__text">
+          <h1 class="stages-hero__title">Stages in Relationships: live session</h1>
+          <p class="stages-hero__lede">
+            Share this screen. Everyone else joins on their own device.
+            <a class="link-inline" href={`${BASE}/`}>About the activity</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="stages-toolbar">
+      <div class="stages-toolbar__inner" id="stages-host-toolbar"></div>
+    </div>
+
+    <section class="stages-section">
+      <div class="stages-section__inner stages-stack" id="stages-host-main">
+        <noscript>
+          <p class="stages-note">Live sessions need JavaScript.</p>
+        </noscript>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  import { initHostPage } from '../../../scripts/stages/host';
+  initHostPage();
+  document.addEventListener('astro:after-swap', initHostPage);
+</script>

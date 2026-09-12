@@ -41,6 +41,7 @@ export default defineConfig({
           '/book/order',         // covers /book/order and /book/order-confirmed
           '/blog/category/',     // category archives — noIndex'd
           '/questions/tag/',     // tag archives — noIndex'd
+          '/tools/',             // facilitator tools — unlisted, noIndex'd
         ];
         return !exclusions.some((p) => page.includes(p));
       },

@@ -1,0 +1,43 @@
+---
+/**
+ * Stages in Relationships — participant screen for a live session.
+ * /tools/stages-in-relationships/join/?code=ABC123
+ * Logic: src/scripts/stages/join.ts
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import '../../../styles/stages-tool.css';
+
+const BASE = '/tools/stages-in-relationships';
+---
+
+<BaseLayout
+  title="Stages in Relationships — join"
+  description="Join a live Stages in Relationships session with the code from your facilitator."
+  canonicalPath={`${BASE}/join/`}
+  noIndex={true}
+>
+  <div class="stages-page" id="stages-join">
+    <section class="stages-hero stages-hero--compact">
+      <div class="stages-hero__inner">
+        <div class="stages-hero__text">
+          <h1 class="stages-hero__title">Stages in Relationships</h1>
+          <p class="stages-hero__lede">Your answers go to the facilitator’s screen. Nobody else sees them until the reveal.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="stages-section">
+      <div class="stages-section__inner stages-stack" id="stages-join-main">
+        <noscript>
+          <p class="stages-note">Joining a session needs JavaScript.</p>
+        </noscript>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  import { initJoinPage } from '../../../scripts/stages/join';
+  initJoinPage();
+  document.addEventListener('astro:after-swap', initJoinPage);
+</script>

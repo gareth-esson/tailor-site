@@ -1,0 +1,60 @@
+---
+/**
+ * Stages in Relationships — single-screen board.
+ * /tools/stages-in-relationships/play/
+ * Logic: src/scripts/stages/solo.ts
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import '../../../styles/stages-tool.css';
+
+const BASE = '/tools/stages-in-relationships';
+---
+
+<BaseLayout
+  title="Stages in Relationships — board"
+  description="Single-screen drag-and-drop board for the Stages in Relationships activity."
+  canonicalPath={`${BASE}/play/`}
+  noIndex={true}
+>
+  <div class="stages-page" id="stages-solo">
+    <section class="stages-hero stages-hero--compact">
+      <div class="stages-hero__inner">
+        <div class="stages-hero__text">
+          <h1 class="stages-hero__title">Stages in Relationships</h1>
+          <p class="stages-hero__lede">
+            One screen, drag and drop. Saved in this browser.
+            <a class="link-inline" href={`${BASE}/`}>About the activity</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="stages-toolbar">
+      <div class="stages-toolbar__inner">
+        <ol class="stages-stepper" id="stages-solo-stepper" aria-label="Stages"></ol>
+        <div class="stages-toolbar__spacer"></div>
+        <label class="form-check">
+          <input type="checkbox" id="stages-solo-explicit" />
+          Hide explicit cards
+        </label>
+        <button type="button" class="btn btn--sm btn--tint" id="stages-solo-shuffle">Shuffle the pile</button>
+        <button type="button" class="btn btn--sm btn--danger-text" id="stages-solo-reset">Reset the board</button>
+        <p class="stages-toolbar__status" id="stages-solo-status" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <section class="stages-section">
+      <div class="stages-section__inner" id="stages-solo-stage">
+        <noscript>
+          <p class="stages-note">This board needs JavaScript. Turn it on, or print the card list from the activity page.</p>
+        </noscript>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  import { initSoloPage } from '../../../scripts/stages/solo';
+  initSoloPage();
+  document.addEventListener('astro:after-swap', initSoloPage);
+</script>

@@ -22,10 +22,14 @@
     "postgres": "^3.4.9",
     "probe-image-size": "^7.3.0",
     "redis": "^5.12.1",
+    "sortablejs": "^1.15.6",
     "tailwindcss": "^4.2.2",
     "yaml": "^2.9.0"
   },
   "overrides": {
     "path-to-regexp": "^6.3.0"
+  },
+  "devDependencies": {
+    "@types/sortablejs": "^1.15.9"
   }
 }

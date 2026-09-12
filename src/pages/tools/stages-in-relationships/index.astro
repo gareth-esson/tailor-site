@@ -1,0 +1,144 @@
+---
+/**
+ * Stages in Relationships — landing page for the interactive tool.
+ * /tools/stages-in-relationships/
+ *
+ * Unlisted facilitator resource: noIndex, excluded from the sitemap
+ * (astro.config.mjs). Tailor layer. Operational copy, not marketing.
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import '../../../styles/stages-tool.css';
+import {
+  STAGE_CARDS,
+  ACTIVITY_CARDS,
+  FLUID_CARDS,
+} from '../../../data/stages-in-relationships';
+
+const BASE = '/tools/stages-in-relationships';
+const counts = {
+  stages: STAGE_CARDS.length,
+  activities: ACTIVITY_CARDS.length,
+  fluids: FLUID_CARDS.length,
+  added: [...STAGE_CARDS, ...ACTIVITY_CARDS, ...FLUID_CARDS].filter((c) => c.added).length,
+  explicit: [...STAGE_CARDS, ...ACTIVITY_CARDS, ...FLUID_CARDS].filter((c) => c.explicit).length,
+};
+---
+
+<BaseLayout
+  title="Stages in Relationships — Tailor RSE"
+  description="An interactive card-sorting activity for RSE workshops: order the stages of a relationship, then decide when things happen."
+  canonicalPath={`${BASE}/`}
+  noIndex={true}
+>
+  <div class="stages-page">
+    <section class="stages-hero">
+      <div class="stages-hero__inner">
+        <div class="stages-hero__text">
+          <span class="preheader">Workshop tool</span>
+          <h1 class="stages-hero__title">Stages in Relationships</h1>
+          <p class="stages-hero__lede">
+            A card-sorting activity about what happens when in a relationship, and who gets to decide.
+            Run it on one screen with a group in the room, or live with everyone on their own phone.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="stages-section" aria-labelledby="stages-modes-title">
+      <div class="stages-section__inner">
+        <h2 id="stages-modes-title" class="stages-section__title">Choose how to run it</h2>
+        <div class="stages-modes">
+          <article class="stages-mode">
+            <h3 class="stages-mode__title">On one screen</h3>
+            <p class="stages-mode__text">
+              Drag and drop on a whiteboard, a projector or a tablet passed round the group. Nothing to set up. The board is saved in the browser, so a refresh doesn’t lose it.
+            </p>
+            <div class="stages-mode__actions">
+              <a class="btn btn--std btn--primary has-icon-hover" href={`${BASE}/play/`}>Open the board</a>
+            </div>
+          </article>
+          <article class="stages-mode">
+            <h3 class="stages-mode__title">Host a live session</h3>
+            <p class="stages-mode__text">
+              Everyone joins with a six-character code on their own device and answers privately. You share your screen and reveal each round when you’re ready. Works over video too.
+            </p>
+            <div class="stages-mode__actions">
+              <a class="btn btn--std btn--tint has-icon-hover" href={`${BASE}/host/`}>Start a session</a>
+            </div>
+          </article>
+          <article class="stages-mode">
+            <h3 class="stages-mode__title">Join a session</h3>
+            <p class="stages-mode__text">
+              Got a code from your facilitator? Enter it here.
+            </p>
+            <form class="stages-mode__form" action={`${BASE}/join/`} method="get">
+              <label class="sr-only" for="stages-index-code">Session code</label>
+              <input
+                id="stages-index-code"
+                class="form-input"
+                name="code"
+                type="text"
+                inputmode="text"
+                autocomplete="off"
+                autocapitalize="characters"
+                spellcheck="false"
+                maxlength="6"
+                placeholder="ABC123"
+                required
+              />
+              <button type="submit" class="btn btn--std btn--tint">Join</button>
+            </form>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="stages-section stages-section--band" aria-labelledby="stages-how-title">
+      <div class="stages-section__inner">
+        <div class="stages-section__text">
+          <h2 id="stages-how-title" class="stages-section__title">How the activity runs</h2>
+          <p class="stages-section__intro">
+            Three rounds, each building on the last. The learning is in the disagreement: what one person treats as obvious, someone else sees completely differently.
+          </p>
+        </div>
+        <ol class="stages-steps">
+          <li class="stages-steps__item">
+            <h3 class="stages-steps__title">Build the timeline</h3>
+            <p class="stages-steps__text">
+              {counts.stages} stage cards, from “someone you fancy” through “girlfriend or boyfriend” to “ex”. The group puts them in order and argues about which ones belong at all. In a live session everyone orders their own first, then you reveal the spread and agree one timeline together.
+            </p>
+          </li>
+          <li class="stages-steps__item">
+            <h3 class="stages-steps__title">When does this happen?</h3>
+            <p class="stages-steps__text">
+              {counts.activities} activity cards, from “text each other” to “meet their family” to “live together”. Each one goes on the timeline where the group thinks it belongs. The point: doing a thing doesn’t tell you what stage you’re at. You have to talk about it.
+            </p>
+          </li>
+          <li class="stages-steps__item">
+            <h3 class="stages-steps__title">Sharing fluids</h3>
+            <p class="stages-steps__text">
+              {counts.fluids} cards, from “drink from the same bottle” to “eat their chewed gum”, on the same timeline plus a “Never” column. Then look at where kissing and sex landed compared with the gum.
+            </p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="stages-section" aria-labelledby="stages-notes-title">
+      <div class="stages-section__inner">
+        <div class="stages-section__text">
+          <h2 id="stages-notes-title" class="stages-section__title">Before you run it</h2>
+          <p class="stages-section__intro">
+            <strong>Explicit cards.</strong> {counts.explicit} cards name sexual activity directly. A facilitator switch hides them for younger or SEND groups; the rest of the activity works the same.
+          </p>
+          <p class="stages-section__intro">
+            <strong>New cards.</strong> {counts.added} cards were added when the resource was digitised (social media, location sharing, situationships and the like). They’re marked “new” in the facilitator’s deck so you can leave them out if you prefer.
+          </p>
+          <p class="stages-section__intro">
+            <strong>Privacy.</strong> Live sessions need no accounts. The only thing stored is the first name or nickname each person types and their answers, and the whole session is deleted after 24 hours.
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
