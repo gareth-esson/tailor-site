@@ -44,11 +44,16 @@
   --stages-deck-stages-text: var(--text-on-dark);
   --stages-deck-stages-soft: var(--btn-tint-bg);
   --stages-deck-stages-soft-text: var(--brand-accent-text);
-  --stages-deck-activities-bg: var(--brand-secondary);
-  --stages-deck-activities-text: var(--text-on-dark);
-  --stages-deck-activities-soft: var(--bg-subtle);
-  --stages-deck-activities-soft-text: var(--text-heading);
-  --stages-deck-fluids-bg: var(--ota-cat-contraception);
+  /* Activities: the system's "relationships" coral with dark text
+     (5.25:1). Friendlier than navy, and it reads as a different family
+     from the teal stages and the purple fluids. */
+  --stages-deck-activities-bg: var(--ota-cat-relationships);
+  --stages-deck-activities-text: var(--brand-secondary);
+  --stages-deck-activities-soft: var(--ota-cat-relationships-soft);
+  --stages-deck-activities-soft-text: hsl(11, 60%, 28%);
+  /* Fluids: the contraception purple darkened to 52% lightness so white
+     text clears AA with room (5.99:1; the stock #7B61C4 is only 4.83). */
+  --stages-deck-fluids-bg: hsl(var(--ota-cat-contraception-h), var(--ota-cat-contraception-s), 52%);
   --stages-deck-fluids-text: var(--text-on-dark);
   --stages-deck-fluids-soft: var(--ota-cat-contraception-soft);
   --stages-deck-fluids-soft-text: hsl(var(--ota-cat-contraception-h), var(--ota-cat-contraception-s), 28%);
@@ -461,18 +466,21 @@
   --stages-card-solid-text: var(--stages-deck-stages-text);
   --stages-card-soft: var(--stages-deck-stages-soft);
   --stages-card-soft-text: var(--stages-deck-stages-soft-text);
+  --stages-card-count-text: var(--stages-deck-stages-bg);
 }
 .stages-card--activities {
   --stages-card-solid: var(--stages-deck-activities-bg);
   --stages-card-solid-text: var(--stages-deck-activities-text);
   --stages-card-soft: var(--stages-deck-activities-soft);
   --stages-card-soft-text: var(--stages-deck-activities-soft-text);
+  --stages-card-count-text: var(--stages-deck-activities-text);
 }
 .stages-card--fluids {
   --stages-card-solid: var(--stages-deck-fluids-bg);
   --stages-card-solid-text: var(--stages-deck-fluids-text);
   --stages-card-soft: var(--stages-deck-fluids-soft);
   --stages-card-soft-text: var(--stages-deck-fluids-soft-text);
+  --stages-card-count-text: var(--stages-deck-fluids-bg);
 }
 .stages-card--stages,
 .stages-card--activities,
@@ -497,16 +505,20 @@
 .stages-card--split {
   border: var(--border-width-sm) dashed var(--stages-split-border);
 }
+/* Opaque badge: a translucent white over the purple only reached 3.3:1,
+   so the count sits on the surface colour in the deck's own dark tone. */
 .stages-card__count {
   font-size: var(--text-card-size-h6);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-bold);
   padding: 0 0.45em;
   border-radius: var(--radius-pill);
-  background: var(--on-dark-20);
+  background: var(--bg-surface);
+  color: var(--stages-card-count-text, var(--text-heading));
   line-height: var(--lh-ui);
 }
 .stages-card--minority .stages-card__count {
   background: var(--bg-surface);
+  color: var(--stages-card-soft-text);
 }
 .stages-card__remove { color: inherit; }
 .stages-card__remove {
