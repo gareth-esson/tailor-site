@@ -149,6 +149,7 @@ export interface BlogPost {
   serviceLink: string | null;
   author: string;
   featuredImage: string | null;
+  featuredImageAlt: string;
   /** Intrinsic pixel dimensions of `featuredImage`, resolved by Astro's
    *  image pipeline at build time. Used for og:image:width/height so
    *  social platforms can pre-size the share card without fetching the

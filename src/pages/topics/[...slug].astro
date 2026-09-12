@@ -4,9 +4,12 @@
  * 23 instances. Teacher-facing topic landing pages.
  * Aggregates questions, glossary terms, and blog posts from underlying granular topics.
  * Uses Tailor layer (default — Lexend, neutral surfaces, teal accent).
+ *
+ * §4 used to carry the mid-page CTA [A11] into the app's teaching content.
+ * That content is dummy, so the offer was withdrawn rather than pointed
+ * somewhere else; the page still closes with its service CTA [A12].
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import CtaExploreLessons from '../../components/CtaExploreLessons.astro';
 import CtaBringToSchool from '../../components/CtaBringToSchool.astro';
 import QuestionCard from '../../components/QuestionCard.astro';
 import { getLandingPages, getQuestions, getGlossaryTerms, getBlogPosts, getGlossaryIndex, getCurriculumStatements } from '../../lib/content';
@@ -113,9 +116,6 @@ const safeStatements = curriculumStatements ?? [];
 const dfeStatements = safeStatements.filter(s => s.source.startsWith('DfE'));
 const psheStatements = safeStatements.filter(s => s.source.startsWith('PSHE'));
 const allKeyStages = [...new Set(safeStatements.flatMap(s => s.keyStages))].sort();
-
-// Build granular topic slugs for the CTA URL
-const topicSlugs = landingPage.granularTopics.map((t) => t.slug);
 
 // Map category to --cat-* token name
 const categoryTokenMap: Record<string, string> = {
@@ -285,9 +285,6 @@ const displayQuestions = questions
         </div>
       </section>
     )}
-
-    <!-- §4 CTA [A11] — mid-page -->
-    <CtaExploreLessons topicTitle={landingPage.title} topicSlugs={topicSlugs} />
 
     <!-- §5 Questions young people ask -->
     {displayQuestions.length > 0 && (

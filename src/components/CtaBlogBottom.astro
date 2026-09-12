@@ -2,7 +2,10 @@
 /**
  * CTA block [A13] — bottom of blog posts [C4].
  * If serviceLink is set: "Want help with [service]? Talk to us" → enquiry form.
- * If serviceLink is "none" or empty: "Explore lessons on [topic]" → app library.
+ * If serviceLink is "none" or empty: further reading → the topic page on this
+ * site. The fallback used to offer teaching content from the app, which is
+ * dummy, so that claim was withdrawn and the link now says what it is: a
+ * topic page for teachers.
  */
 import type { LandingPageRef } from '../lib/types';
 
@@ -19,6 +22,7 @@ const serviceMap: Record<string, { label: string; param: string }> = {
   delivery: { label: 'direct RSE delivery', param: 'Direct RSE delivery' },
   training: { label: 'RSE training', param: 'RSE training' },
   'drop-days': { label: 'drop day delivery', param: 'Drop day delivery' },
+  consultancy: { label: 'RSE policy and curriculum planning', param: 'RSE policy & curriculum planning' },
   'rse-policy-curriculum-planning': { label: 'RSE policy and curriculum planning', param: 'RSE policy & curriculum planning' },
 };
 
@@ -49,8 +53,8 @@ const service = hasService ? serviceMap[serviceLink!] : null;
   <section class="cta-blog-bottom">
     <div class="mx-auto max-w-[var(--container-max-hero-text)] px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
       <div class="cta-blog-bottom__card">
-        <h2 class="cta-blog-bottom__title">Explore lessons on {primaryTopic.title}</h2>
-        <p class="cta-blog-bottom__text">Browse expert-written RSE lessons in the Tailor library.</p>
+        <h2 class="cta-blog-bottom__title">More on {primaryTopic.title}</h2>
+        <p class="cta-blog-bottom__text">Background reading for teachers, gathered on the topic page.</p>
         <a
           href={`/topics/${primaryTopic.slug}`}
           class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto"
@@ -58,7 +62,7 @@ const service = hasService ? serviceMap[serviceLink!] : null;
           data-analytics-cta-type="blog_to_app"
           data-analytics-target={`/topics/${primaryTopic.slug}`}
         >
-          Explore topic
+          Read the topic page
         </a>
       </div>
     </div>

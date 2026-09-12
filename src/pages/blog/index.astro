@@ -80,6 +80,10 @@ const jsonLd = posts.length > 0
         <p class="blog-index-hero__intro">
           Practical guidance for RSE teaching, curriculum planning, and bringing relationships education to life in schools.
         </p>
+        <p class="blog-index-hero__route">
+          For help planning and teaching RSE, start with our
+          <a class="link-inline" href="/for-schools/">guidance for schools</a>.
+        </p>
       </div>
     </div>
   </header>
@@ -247,6 +251,17 @@ const jsonLd = posts.length > 0
     line-height: var(--lh-body);
     color: var(--text-body-muted);
     margin: 0;
+  }
+
+  /* One inline route out of the index, for readers who arrived wanting
+     help with a job rather than a post to read. */
+  .blog-index-hero__route {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-body);
+    color: var(--text-body-muted);
+    margin: var(--space-global-sm) 0 0;
   }
 
   /* ── §2 Filter bar ────────────────────────────────────────────────────── */

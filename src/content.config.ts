@@ -103,6 +103,7 @@ const blog = defineCollection({
        *  Allow `null` from YAML so posts without a hero serialise
        *  cleanly. The data layer maps null → undefined downstream. */
       featuredImage: image().nullish(),
+      featuredImageAlt: z.string().default(''),
       imageCredit: z.string().nullable().default(null),
       imageCreditUrl: z.string().url().nullable().default(null),
     }),

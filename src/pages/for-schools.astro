@@ -1,0 +1,242 @@
+---
+/**
+ * Schools hub — /for-schools/
+ *
+ * A calm, text-led routing page for school staff: three sections that
+ * separate curriculum/policy review from classroom delivery, and a short
+ * closing section for the times reading isn't enough. It links fourteen
+ * teacher articles and five service pages and says nothing they don't.
+ *
+ * Deliberately plain: no cards, no photography, no downloads, no prices,
+ * no testimonials, no pupil-layer (Okay to Ask) links. The linked articles
+ * carry the statutory detail and its citations; this page makes no legal,
+ * medical or effectiveness claim of its own.
+ *
+ * Service links are plain routes with no ?service= parameter — the service
+ * pages own that mapping through CtaServiceEnquiry.
+ *
+ * Search: both top-level regions carry `data-pagefind-body`. Every other
+ * indexed template marks a body, so a page without one is dropped from the
+ * index entirely — that is why this hub was missing from the generated
+ * index rather than ranking badly. The hero is marked alongside the section
+ * wrapper so the H1 and the lede are indexed with the section prose. The H1
+ * also sets `title` explicitly rather than relying on Pagefind's automatic
+ * first-H1 rule, so the result title stays "For schools" regardless of how
+ * the body regions are later rearranged.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { breadcrumbJsonLd } from '../lib/site';
+
+const description =
+  'Guidance for school staff reviewing RSE: curriculum and policy, teaching the hardest topics in the classroom, and the support available when your school wants help with either.';
+
+const jsonLd = breadcrumbJsonLd([{ name: 'For schools', path: '/for-schools/' }]);
+---
+
+<BaseLayout
+  title="RSE guidance and teaching support for schools | Tailor RSE"
+  description={description}
+  canonicalPath="/for-schools/"
+  jsonLd={jsonLd}
+>
+  <header class="schools-hub-hero" data-pagefind-body>
+    <div class="schools-hub-hero__inner">
+      <div class="schools-hub-hero__text">
+        <h1 class="schools-hub-hero__title" data-pagefind-meta="title">For schools</h1>
+        <p class="schools-hub-hero__lede">
+          If your school is reviewing RSE this year, the work tends to arrive
+          in two halves. One half is the policy, the curriculum map and the
+          letter to parents. The other half is preparing the teacher who will
+          lead a difficult conversation in the classroom. The writing collected
+          here is for school staff working on either half.
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <div class="schools-hub" data-pagefind-body>
+    <section class="schools-hub-section" aria-labelledby="schools-hub-curriculum">
+      <div class="schools-hub-section__inner">
+        <h2 id="schools-hub-curriculum" class="schools-hub-section__title">
+          Reviewing your curriculum and policy
+        </h2>
+        <p>
+          Start with
+          <a class="link-inline" href="/blog/2026-rse-guidance-plain-english-summary/">What the 2026 RSE guidance means for your school now</a>
+          if you are putting your curriculum map next to the revised DfE
+          guidance and trying to work out which gaps matter first. It starts
+          with the lessons pupils are about to receive, names the sections worth
+          reading closely, and works back to the policy and the information
+          families have been given.
+        </p>
+        <p>
+          For a phase-specific starting point, read the
+          <a class="link-inline" href="/blog/2026-rse-guidance-primary-schools/">primary RSE guidance</a>
+          or the <a class="link-inline" href="/blog/2026-rse-guidance-secondary-schools/">secondary RSE guidance</a>.
+          The <a class="link-inline" href="/blog/rse-policy-checklist-2026/">RSE policy checklist</a>
+          and <a class="link-inline" href="/blog/rse-policy-questions-governors-ask/">questions for governors</a>
+          can help organise the policy review and the discussion that follows.
+        </p>
+        <p>
+          For work with families, start with
+          <a class="link-inline" href="/blog/consulting-parents-rse-policy-2026/">consulting parents on your RSE policy</a>
+          and the <a class="link-inline" href="/blog/parental-right-to-withdraw-rse-2026/">parental right to withdraw</a>.
+          <a class="link-inline" href="/blog/reduce-withdrawals-sex-education-parent-consultation/">Reducing withdrawals through parent consultation</a>
+          looks at the conversations and classroom activities that can help parents understand the teaching.
+        </p>
+        <p>
+          Primary leads planning the puberty sequence will find the decisions
+          set out in
+          <a class="link-inline" href="/blog/teaching-puberty-primary-schools-guide/">Teaching Puberty Before It Happens: A Guide for Primary Schools</a>,
+          including when to teach it, why every pupil learns about menstruation,
+          and how to handle the questions that follow a parent letter. In
+          special schools the planning starts from a different place, and
+          <a class="link-inline" href="/blog/complete-guide-rse-special-schools/">A Complete Guide to Developing RSE in Special Schools</a>
+          works through policy, curriculum design, staff confidence and parent
+          engagement for pupils with complex needs.
+        </p>
+      </div>
+    </section>
+
+    <section class="schools-hub-section" aria-labelledby="schools-hub-classroom">
+      <div class="schools-hub-section__inner">
+        <h2 id="schools-hub-classroom" class="schools-hub-section__title">
+          Teaching the topics that are hardest to get right
+        </h2>
+        <p>
+          If you teach RSE alongside another subject,
+          <a class="link-inline" href="/blog/teaching-hard-topics-when-not-a-specialist/">Teaching the hard topics when you're not a specialist</a>
+          is about what happens in the room when the topic is uncomfortable and
+          you are the adult holding it: preparing the moments you are dreading,
+          what to do with a question you weren't expecting, and who to turn to
+          when a topic is too much to carry alone.
+        </p>
+        <p>
+          <a class="link-inline" href="/blog/talking-to-boys-masculinity-misogyny-online-influencers/">Talking to Boys About Masculinity, Misogyny and Online Influencers</a>
+          is about the class where someone quotes an influencer and the room
+          turns to watch you.
+          <a class="link-inline" href="/blog/teaching-consent-beyond-no-means-no/">How to Teach Consent Beyond &ldquo;No Means No&rdquo;</a>
+          goes past the legal definition into the grey areas pupils raise.
+          <a class="link-inline" href="/blog/sharing-nudes-sextortion-deepfakes-schools-2026/">Sharing Nudes, Sextortion and Deepfakes: What Schools Need to Know in 2026</a>
+          covers what has changed online and how a lesson can handle blame and
+          reporting alongside your safeguarding arrangements.
+        </p>
+      </div>
+    </section>
+
+    <section class="schools-hub-section" aria-labelledby="schools-hub-support">
+      <div class="schools-hub-section__inner">
+        <h2 id="schools-hub-support" class="schools-hub-section__title">
+          Bringing someone in
+        </h2>
+        <p>
+          Reading is sometimes enough. When you need help making the policy and
+          the teaching describe the same programme,
+          <a class="link-inline" href="/services/rse-policy-curriculum-planning/">RSE policy and curriculum planning</a>
+          gives you support with both. Teaching teams can use
+          <a class="link-inline" href="/services/rse-training/">RSE training</a>
+          to prepare for the work in the classroom.
+        </p>
+        <p>
+          For direct delivery, a
+          <a class="link-inline" href="/services/drop-days/">drop day</a>
+          puts a Tailor educator in front of your year group for the day.
+          Whole-school SEND placements have a separate
+          <a class="link-inline" href="/services/rse-for-special-schools/">RSE in special schools</a>
+          offer, built for pupils on EHCPs.
+        </p>
+        <p>
+          If you are not sure which of those fits, the
+          <a class="link-inline" href="/services/">services overview</a>
+          sets out the full range, including primary, secondary and alternative
+          provision. Start with a conversation about where your school is now,
+          and we will work out what would help most.
+        </p>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  /* --------------------------------------------------------------------- */
+  /* Hero — text-only two-tier wrapper (shell alignment, hero-text measure) */
+  /* --------------------------------------------------------------------- */
+  .schools-hub-hero {
+    width: 100%;
+    background: var(--bg-tinted);
+    border-bottom: var(--border-width-xs) solid var(--border-subtle);
+    padding: var(--space-struct-y-base) var(--space-global-gutter);
+  }
+
+  .schools-hub-hero__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-shell);
+  }
+
+  .schools-hub-hero__text {
+    max-width: var(--container-max-hero-text);
+  }
+
+  .schools-hub-hero__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h1);
+    font-weight: var(--heading-weight-h1);
+    line-height: var(--lh-display);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .schools-hub-hero__lede {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-lede);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-prose);
+    color: var(--text-body);
+    margin: 0;
+  }
+
+  /* --------------------------------------------------------------------- */
+  /* Sections — long-form reading measure, one shared typography rule       */
+  /* --------------------------------------------------------------------- */
+  .schools-hub {
+    background: var(--bg-page);
+  }
+
+  .schools-hub-section {
+    width: 100%;
+  }
+
+  .schools-hub-section__inner {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-max-prose);
+    padding: var(--space-struct-y-base) var(--space-global-gutter) 0;
+  }
+
+  .schools-hub-section:last-child .schools-hub-section__inner {
+    padding-bottom: var(--space-struct-y-base);
+  }
+
+  .schools-hub-section__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h2);
+    font-weight: var(--heading-weight-h2);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .schools-hub-section p {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-prose);
+    color: var(--text-body);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .schools-hub-section p:last-child {
+    margin-bottom: 0;
+  }
+</style>

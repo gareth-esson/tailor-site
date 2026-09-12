@@ -150,6 +150,23 @@ const jsonLd = {
 
 // All topics (primary + secondary)
 const allTopics = [...post.topics, ...post.secondaryTopics];
+
+// Pagefind hero metadata. Automatic image metadata is taken from the first
+// image *after* the H1, and on this template §1 sits above the title — so
+// the first candidate Pagefind finds is a §5 related-article thumbnail, and
+// every post picks up a different post's picture and title as its own
+// image/image_alt. Bind both keys to this article's own hero instead.
+// The values are carried in data-* attributes and captured by name rather
+// than written inline as `image:…`, because inline values are comma-
+// separated and several post titles contain commas.
+//
+// No hero means both values are empty: an article without a picture has no
+// picture to report, and neither a sibling's thumbnail nor a stand-in house
+// image would be true of this page. Consumers must treat empty as absent.
+const featuredImageAlt = post.featuredImageAlt || `Featured image for ${post.title}`;
+const isUnsplashCredit = /^https?:\/\/(?:www\.)?unsplash\.com(?:\/|$)/i.test(post.imageCreditUrl ?? '');
+const pagefindHeroImage = post.featuredImage ?? '';
+const pagefindHeroImageAlt = post.featuredImage ? featuredImageAlt : '';
 ---
 
 <BaseLayout
@@ -158,6 +175,7 @@ const allTopics = [...post.topics, ...post.secondaryTopics];
   canonicalPath={canonicalPath}
   ogType="article"
   ogImage={post.featuredImage || undefined}
+  ogImageAlt={post.featuredImage ? featuredImageAlt : undefined}
   ogImageWidth={post.featuredImageWidth ?? undefined}
   ogImageHeight={post.featuredImageHeight ?? undefined}
   articleMeta={{
@@ -167,11 +185,17 @@ const allTopics = [...post.topics, ...post.secondaryTopics];
     section: post.topics[0]?.title ?? post.category ?? undefined,
   }}
   jsonLd={jsonLd}
-  {...(post.featuredImage?.endsWith('.webp') && post.featuredImage.startsWith('/')
+  {...(post.featuredImage?.endsWith('.webp') && post.featuredImage.startsWith('/images/')
     ? heroPreload(post.featuredImage, { sizes: '(min-width: 1024px) 1024px, 100vw' })
     : {})}
 >
-  <article class="blog-post" data-pagefind-body>
+  <article
+    class="blog-post"
+    data-pagefind-body
+    data-pagefind-meta="image[data-hero-image], image_alt[data-hero-image-alt]"
+    data-hero-image={pagefindHeroImage}
+    data-hero-image-alt={pagefindHeroImageAlt}
+  >
 
     <!-- §1 Featured image + §2 Header -->
     <header class="blog-post__header">
@@ -179,10 +203,10 @@ const allTopics = [...post.topics, ...post.secondaryTopics];
         <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] pt-[var(--space-global-xl)]">
           <figure class="blog-post__hero-figure">
             <div class="blog-post__hero-img">
-              {post.featuredImage.endsWith('.webp') && post.featuredImage.startsWith('/') ? (
+              {post.featuredImage.endsWith('.webp') && post.featuredImage.startsWith('/images/') ? (
                 <HeroImage
                   src={post.featuredImage}
-                  alt={`Featured image for ${post.title}`}
+                  alt={featuredImageAlt}
                   width={post.featuredImageWidth ?? 1600}
                   height={post.featuredImageHeight ?? 900}
                   sizes="(min-width: 1024px) 1024px, 100vw"
@@ -191,7 +215,7 @@ const allTopics = [...post.topics, ...post.secondaryTopics];
               ) : (
                 <img
                   src={post.featuredImage}
-                  alt={`Featured image for ${post.title}`}
+                  alt={featuredImageAlt}
                   width={post.featuredImageWidth ?? 1600}
                   height={post.featuredImageHeight ?? 900}
                   loading="eager"
@@ -202,14 +226,18 @@ const allTopics = [...post.topics, ...post.secondaryTopics];
             </div>
             {post.imageCredit && (
               <figcaption class="blog-post__hero-credit">
-                Photo by{' '}
-                {post.imageCreditUrl ? (
+                {isUnsplashCredit ? (
+                  <>
+                    Photo by{' '}
+                    <a href={post.imageCreditUrl!} target="_blank" rel="noopener noreferrer">{post.imageCredit}</a>
+                    {' '}on{' '}
+                    <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer">Unsplash</a>
+                  </>
+                ) : post.imageCreditUrl ? (
                   <a href={post.imageCreditUrl} target="_blank" rel="noopener noreferrer">{post.imageCredit}</a>
                 ) : (
                   post.imageCredit
                 )}
-                {' '}on{' '}
-                <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer">Unsplash</a>
               </figcaption>
             )}
           </figure>

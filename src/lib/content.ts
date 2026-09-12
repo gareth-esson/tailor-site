@@ -146,6 +146,7 @@ async function _loadAllContentImpl(): Promise<void> {
       serviceLink: fm.serviceLink,
       author: fm.author,
       featuredImage: featured?.src ?? null,
+      featuredImageAlt: fm.featuredImageAlt,
       featuredImageWidth: featured?.width ?? null,
       featuredImageHeight: featured?.height ?? null,
       imageCredit: fm.imageCredit,

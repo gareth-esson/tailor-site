@@ -20,14 +20,24 @@ const rseDeliveryLinks = [
   { title: 'Drop Days', href: '/services/drop-days' },
 ];
 
+// "Guidance for schools" sits first: it's the teacher-content hub the other
+// two items are the paid answer to. Listed here rather than as a seventh
+// top-level item so it reaches both the desktop dropdown and the mobile
+// accordion from one array.
 const rseTrainingLinks = [
+  { title: 'Guidance for schools', href: '/for-schools/' },
   { title: 'RSE Training', href: '/services/rse-training' },
   { title: 'RSE Policy & Curriculum Planning', href: '/services/rse-policy-curriculum-planning' },
 ];
 
 // Active-page detection for aria-current. Strip trailing slash so /blog and /blog/ both match.
 const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
-const startsWith = (prefix: string) => pathname === prefix || pathname.startsWith(prefix + '/');
+const startsWith = (prefix: string) => {
+  // Nav hrefs are authored in both forms (/for-schools/ and /services/x), so
+  // normalise the prefix the same way the pathname above is normalised.
+  const base = prefix.replace(/\/$/, '') || '/';
+  return pathname === base || pathname.startsWith(base + '/');
+};
 
 const isTopics = startsWith('/topics');
 const isRseDelivery = rseDeliveryLinks.some((l) => startsWith(l.href));
@@ -123,11 +133,11 @@ const isContact = pathname === '/contact';
     </nav>
 
     <!-- Slot 3: Utility cluster — search + hamburger -->
-    <div class="site-header__utility flex items-center gap-[var(--space-global-sm)] shrink-0 ml-auto lg:ml-0">
+    <div class="site-header__utility flex items-center gap-[var(--space-global-sm)] min-w-0 ml-auto lg:ml-0">
       <SearchBar />
 
       <button
-        class="site-header__hamburger flex lg:hidden flex-col items-center justify-center gap-1 w-11 h-11 p-2 bg-transparent border-0 cursor-pointer"
+        class="site-header__hamburger shrink-0 flex lg:hidden flex-col items-center justify-center gap-1 w-11 h-11 p-2 bg-transparent border-0 cursor-pointer"
         type="button"
         aria-expanded="false"
         aria-controls="mobile-nav"
@@ -421,6 +431,14 @@ const isContact = pathname === '/contact';
     background: var(--bg-page);
     border-bottom: var(--border-width-xs) solid var(--border-subtle);
     font-family: var(--font-shell-body-stack);
+  }
+
+  /* Give the search field room while keeping the menu reachable on small phones. */
+  @media (max-width: 480px) { /* --bp-sm */
+    .site-header__inner,
+    .site-header__utility {
+      gap: var(--space-global-xs);
+    }
   }
 
   .site-header__logo {
