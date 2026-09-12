@@ -7,7 +7,7 @@ import {
   loadSession,
   normaliseCode,
 } from '../../../lib/stages-store';
-import { json, readJson, storageUnavailable } from './_shared';
+import { errorResponse, json, readJson, storageUnavailable } from './_shared';
 
 /**
  * POST /api/stages/join — a participant joins a live session.
@@ -28,19 +28,18 @@ export const POST: APIRoute = async ({ request }) => {
   const code = normaliseCode(body.code);
   if (!code) return json({ error: 'That code doesn’t look right. Codes are six letters and numbers.' }, 400);
 
-  const session = await loadSession(code);
-  if (!session) return json({ error: 'No session found with that code. Check it with your facilitator.' }, 404);
-  if (session.step === 'end') return json({ error: 'That session has finished.' }, 410);
-
   const name = cleanName(body.name);
   if (!name) return json({ error: 'Please enter a name (a first name or nickname is fine).' }, 400);
 
   try {
+    const session = await loadSession(code);
+    if (!session) return json({ error: 'No session found with that code. Check it with your facilitator.' }, 404);
+    if (session.step === 'end') return json({ error: 'That session has finished.' }, 410);
+
     const participant = await addParticipant(code, name);
     if (participant === 'full') return json({ error: 'This session is full.' }, 409);
     return json({ pid: participant.id, name: participant.name, code }, 201);
   } catch (err) {
-    console.error('stages/join failed', err);
-    return json({ error: 'Could not join right now, please try again.' }, 500);
+    return errorResponse('join', err);
   }
 };

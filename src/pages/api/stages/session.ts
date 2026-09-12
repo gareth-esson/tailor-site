@@ -9,12 +9,13 @@ import {
   loadParticipants,
   loadSession,
   normaliseCode,
+  pingStorage,
   touchParticipant,
   type Participant,
   type PlacementStage,
   type Session,
 } from '../../../lib/stages-store';
-import { json, readJson, storageUnavailable } from './_shared';
+import { errorResponse, json, readJson, storageUnavailable } from './_shared';
 
 /**
  * POST /api/stages/session  → create a live session (facilitator).
@@ -98,12 +99,23 @@ export const POST: APIRoute = async ({ request }) => {
     const session = await createSession(hideExplicit);
     return json({ code: session.code, hostToken: session.hostToken }, 201);
   } catch (err) {
-    console.error('stages/session create failed', err);
-    return json({ error: 'Could not create a session' }, 500);
+    return errorResponse('session:create', err);
   }
 };
 
 export const GET: APIRoute = async ({ url }) => {
+  // Health check: GET /api/stages/session/?ping=1
+  if (url.searchParams.has('ping')) {
+    return json(await pingStorage());
+  }
+  try {
+    return await getView(url);
+  } catch (err) {
+    return errorResponse('session:get', err);
+  }
+};
+
+async function getView(url: URL): Promise<Response> {
   const code = normaliseCode(url.searchParams.get('code'));
   if (!code) return json({ error: 'Invalid code' }, 400);
 
@@ -174,4 +186,4 @@ export const GET: APIRoute = async ({ url }) => {
     }
   }
   return json(response);
-};
+}

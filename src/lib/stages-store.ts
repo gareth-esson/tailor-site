@@ -89,15 +89,79 @@ interface Store {
 
 let redisClient: ReturnType<typeof createClient> | null = null;
 
+/** How long to wait for Redis before giving up. A serverless function
+ *  that hangs on connect() runs into the platform timeout and the
+ *  facilitator sees a blank 504; a fast, explicit failure is better. */
+const REDIS_CONNECT_TIMEOUT_MS = 5000;
+
+export class StorageError extends Error {
+  /** Marker checked instead of instanceof: Vite's dev server can load a
+   *  module twice, which breaks instanceof across the API routes. */
+  readonly isStorageError = true;
+}
+
+export function isStorageError(err: unknown): boolean {
+  if (!err || typeof err !== 'object') return false;
+  if ((err as { isStorageError?: boolean }).isStorageError === true) return true;
+  // node-redis reports a dead connection through whichever command runs
+  // next ("The client is closed"), so recognise those too.
+  const message = (err as { message?: string }).message ?? '';
+  return /client is closed|ECONNREFUSED|ECONNRESET|ETIMEDOUT|ENOTFOUND|Socket closed|Connection timeout/i.test(message);
+}
+
 async function getRedis() {
   if (!redisClient) {
-    redisClient = createClient({ url: import.meta.env.REDIS_URL });
-    redisClient.on('error', (err) => console.error('Redis error:', err));
+    redisClient = createClient({
+      url: import.meta.env.REDIS_URL,
+      socket: {
+        connectTimeout: REDIS_CONNECT_TIMEOUT_MS,
+        // No endless retry loop inside a request: fail and report.
+        reconnectStrategy: false,
+      },
+    });
+    redisClient.on('error', (err) => console.error('stages Redis error:', err));
   }
   if (!redisClient.isOpen) {
-    await redisClient.connect();
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const timeout = new Promise<never>((_, reject) => {
+      timer = setTimeout(
+        () => reject(new StorageError(`Redis connect timed out after ${REDIS_CONNECT_TIMEOUT_MS}ms`)),
+        REDIS_CONNECT_TIMEOUT_MS + 500,
+      );
+    });
+    try {
+      await Promise.race([redisClient.connect(), timeout]);
+      // With reconnectStrategy off, a refused connection can surface as a
+      // resolved connect() on a client that is already closed.
+      if (!redisClient.isReady) throw new StorageError('Redis connection is not ready');
+    } catch (err) {
+      // Drop the client so the next request starts a fresh connection
+      // instead of reusing one stuck in a failed state.
+      const failed = redisClient;
+      redisClient = null;
+      failed.destroy();
+      const message = err instanceof Error ? err.message : String(err);
+      console.error('stages Redis connect failed:', message);
+      throw new StorageError(`Redis unavailable: ${message}`);
+    } finally {
+      clearTimeout(timer);
+    }
   }
   return redisClient;
+}
+
+/** Health check used by /api/stages/session/?ping=1 — reports whether
+ *  Redis answers, without exposing the URL. */
+export async function pingStorage(): Promise<{ ok: boolean; store: 'redis' | 'memory'; detail?: string; ms: number }> {
+  const started = Date.now();
+  if (!hasRedis()) return { ok: true, store: 'memory', ms: 0 };
+  try {
+    const client = await getRedis();
+    const pong = await client.ping();
+    return { ok: pong === 'PONG', store: 'redis', ms: Date.now() - started };
+  } catch (err) {
+    return { ok: false, store: 'redis', detail: err instanceof Error ? err.message : String(err), ms: Date.now() - started };
+  }
 }
 
 const redisStore: Store = {

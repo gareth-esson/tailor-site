@@ -16,7 +16,7 @@ import {
   type Session,
   type Step,
 } from '../../../lib/stages-store';
-import { json, readJson, storageUnavailable } from './_shared';
+import { errorResponse, json, readJson, storageUnavailable } from './_shared';
 
 /**
  * POST /api/stages/host — every facilitator action on a live session.
@@ -62,13 +62,13 @@ export const POST: APIRoute = async ({ request }) => {
   if (!code) return json({ error: 'Invalid code' }, 400);
   if (!isValidToken(body.hostToken)) return json({ error: 'Not authorised' }, 403);
 
-  const session = await loadSession(code);
-  if (!session) return json({ error: 'Session not found' }, 404);
-  if (session.hostToken !== body.hostToken) return json({ error: 'Not authorised' }, 403);
-
   const action = typeof body.action === 'string' ? body.action : '';
 
   try {
+    const session = await loadSession(code);
+    if (!session) return json({ error: 'Session not found' }, 404);
+    if (session.hostToken !== body.hostToken) return json({ error: 'Not authorised' }, 403);
+
     switch (action) {
       case 'setHideExplicit': {
         session.hideExplicit = body.hideExplicit === true;
@@ -200,7 +200,6 @@ export const POST: APIRoute = async ({ request }) => {
     await saveSession(session);
     return json({ session: publicSession(session) });
   } catch (err) {
-    console.error('stages/host action failed', action, err);
-    return json({ error: 'Something went wrong, please try again' }, 500);
+    return errorResponse(`host:${action}`, err);
   }
 };

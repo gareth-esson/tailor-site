@@ -10,7 +10,7 @@ import {
   validatePlacement,
   validateStage1,
 } from '../../../lib/stages-store';
-import { json, readJson, storageUnavailable } from './_shared';
+import { errorResponse, json, readJson, storageUnavailable } from './_shared';
 
 /**
  * POST /api/stages/respond — a participant submits an answer.
@@ -37,16 +37,16 @@ export const POST: APIRoute = async ({ request }) => {
   if (!code) return json({ error: 'Invalid code' }, 400);
   if (!isValidPid(body.pid)) return json({ error: 'Invalid participant' }, 400);
 
-  const session = await loadSession(code);
-  if (!session) return json({ error: 'Session not found' }, 404);
-  if (session.step === 'end') return json({ error: 'This session has finished' }, 410);
-
-  const me = await loadParticipant(code, body.pid);
-  if (!me) return json({ error: 'You are no longer in this session' }, 410);
-
   const stage = body.stage;
 
   try {
+    const session = await loadSession(code);
+    if (!session) return json({ error: 'Session not found' }, 404);
+    if (session.step === 'end') return json({ error: 'This session has finished' }, 410);
+
+    const me = await loadParticipant(code, body.pid);
+    if (!me) return json({ error: 'You are no longer in this session' }, 410);
+
     if (stage === 'stage1') {
       if (!session.stage1.open) return json({ error: 'Stage 1 is not open' }, 409);
       if (session.stage1.revealed) return json({ error: 'Stage 1 has been revealed' }, 409);
@@ -66,7 +66,6 @@ export const POST: APIRoute = async ({ request }) => {
     await saveParticipant(code, me);
     return json({ ok: true, version: session.version });
   } catch (err) {
-    console.error('stages/respond failed', err);
-    return json({ error: 'Could not save, please try again' }, 500);
+    return errorResponse('respond', err);
   }
 };
