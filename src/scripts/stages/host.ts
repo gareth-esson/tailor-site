@@ -28,7 +28,10 @@ import {
   joinUrl,
   loadLocal,
   majority,
+  miniEl,
   removeLocal,
+  roundupEl,
+  type Summary,
   renderColumns,
   saveLocal,
   shuffle,
@@ -70,6 +73,8 @@ interface HostView {
   stage1: { submissions: Submission[]; consensus: { order: string[]; out: string[]; submittedCount: number } };
   stage2: Tally;
   stage3: Tally;
+  board: { stage2: Record<string, string>; stage3: Record<string, string> };
+  summary: Summary;
 }
 
 type PlacementStage = 'stage2' | 'stage3';
@@ -629,6 +634,16 @@ export function initHostPage(): void {
           removeTitle: `Take “${card.label}” off the board`,
         }));
       }
+      // Stage 3 keeps the activities on the board so the fluids cards can
+      // be read against them ("you'd kiss here but not meet the parents
+      // until here").
+      if (stage === 'stage3') {
+        for (const [id, col] of Object.entries(v.board.stage2)) {
+          const body = bodies.get(col);
+          const card = getCard(id);
+          if (body && card) body.append(cardEl(card, { static: true, extraClass: 'stages-card--done stages-card--context' }));
+        }
+      }
       if (round.revealed) {
         for (const id of round.open) {
           const t = tally[id];
@@ -649,6 +664,11 @@ export function initHostPage(): void {
       }
       updateColumnCounts(board);
       wrap.append(board);
+      wrap.append(el('p', { class: 'stages-key' },
+        el('span', { class: 'stages-key__item' }, el('span', { class: 'stages-key__swatch', 'aria-hidden': 'true' }), 'Activities'),
+        stage === 'stage3' ? el('span', { class: 'stages-key__item' }, el('span', { class: 'stages-key__swatch stages-key__swatch--fluids', 'aria-hidden': 'true' }), 'Sharing fluids') : null,
+        el('span', { class: 'stages-key__item' }, 'Solid = where most people put it · pale = other answers · dashed = a tie'),
+      ));
       if (unplaced.length) {
         wrap.append(el('p', { class: 'stages-note' }, `Nobody placed: ${unplaced.map(cardLabel).join(', ')}.`));
       }
@@ -780,11 +800,46 @@ export function initHostPage(): void {
 
     // ── End ──
     function renderEnd(): HTMLElement {
-      const s = view!.session;
+      const v = view!;
+      const s = v.session;
+      const rows = el('div', { class: 'stages-reveal' });
+      for (const sub of v.stage1.submissions) {
+        rows.append(
+          el('div', { class: 'stages-reveal__row' },
+            el('span', { class: 'stages-reveal__name' }, sub.name),
+            el('div', { class: 'stages-reveal__cards' },
+              ...sub.order.flatMap((id, i) => [
+                i > 0 ? el('span', { class: 'stages-reveal__arrow', 'aria-hidden': 'true' }, '→') : null,
+                miniEl(id),
+              ]),
+              ...sub.out.map((id) => miniEl(id, 'stages-mini--out')),
+            ),
+          ),
+        );
+      }
+      if (s.timeline.length) {
+        rows.append(
+          el('div', { class: 'stages-reveal__row stages-reveal__row--consensus' },
+            el('span', { class: 'stages-reveal__name' }, 'Agreed'),
+            el('div', { class: 'stages-reveal__cards' },
+              ...s.timeline.flatMap((id, i) => [
+                i > 0 ? el('span', { class: 'stages-reveal__arrow', 'aria-hidden': 'true' }, '→') : null,
+                miniEl(id),
+              ]),
+            ),
+          ),
+        );
+      }
       return el('div', { class: 'stages-stack' },
+        el('div', { class: 'stages-section__text' },
+          el('h2', { class: 'stages-section__title' }, 'Roundup'),
+          el('p', { class: 'stages-section__intro' }, 'Where the group agreed, and where it didn’t. Participants see the same on their phones, along with their own original timeline.'),
+        ),
+        roundupEl(v.summary),
+        rows.childElementCount ? el('div', { class: 'stages-panel' }, el('h3', { class: 'stages-panel__title' }, 'Everyone’s original timelines'), rows) : null,
         el('div', { class: 'stages-panel' },
           el('h2', { class: 'stages-panel__title' }, 'Session finished'),
-          el('p', { class: 'stages-panel__text' }, 'Participants now see a thank-you screen. You can still look back at the boards, or delete the session.'),
+          el('p', { class: 'stages-panel__text' }, 'You can still look back at the boards, or delete the session.'),
           el('div', { class: 'stages-actions' },
             btn('Look at the Stage 3 board', 'tint', () => void act('setStep', { step: 'stage3' })),
             btn('Look at the Stage 2 board', 'tint', () => void act('setStep', { step: 'stage2' })),

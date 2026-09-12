@@ -22,6 +22,9 @@ import {
   deckCards,
   el,
   loadLocal,
+  miniEl,
+  roundupEl,
+  type Summary,
   removeLocal,
   saveLocal,
   shuffle,
@@ -53,9 +56,11 @@ interface RevealTally {
 interface ParticipantView {
   session: PublicSession;
   me: Me;
+  board: { stage2: Record<string, string>; stage3: Record<string, string> };
   stage1Reveal?: { submissions: { name: string; order: string[]; out: string[] }[] };
   stage2Reveal?: RevealTally;
   stage3Reveal?: RevealTally;
+  summary?: Summary;
 }
 
 type PlacementStage = 'stage2' | 'stage3';
@@ -211,6 +216,8 @@ export function initJoinPage(): void {
         view.stage1Reveal ?? null,
         stage ? view[`${stage}Reveal`] ?? null : null,
         s.hideExplicit,
+        view.board,
+        view.summary ?? null,
       ]);
       if (key === phaseKey) return;
       phaseKey = key;
@@ -241,7 +248,7 @@ export function initJoinPage(): void {
           main.append(renderPlacement(s.step));
           break;
         case 'end':
-          main.append(wait('Thanks for taking part', 'The session has finished. You can close this page.'));
+          main.append(renderEnd());
           break;
       }
       main.append(errorLine);
@@ -254,28 +261,28 @@ export function initJoinPage(): void {
       );
     }
 
-    // ── Stage 1: order the cards ──
+    // ── Stage 1: build a timeline from a tray of cards ──
     function renderStage1(): HTMLElement {
       const v = view!;
       const visible = deckCards('stages', v.session.hideExplicit).map((c) => c.id);
       if (v.me.stage1 && v.me.stage1.submitted) {
         order = v.me.stage1.order.filter((id) => visible.includes(id));
-        out = v.me.stage1.out.filter((id) => visible.includes(id));
-      } else if (!order.length && !out.length) {
-        order = shuffle(visible);
-        out = [];
+      } else {
+        order = order.filter((id) => visible.includes(id));
       }
-      // Any card missing from both lists (e.g. explicit toggle changed) goes back on.
-      for (const id of visible) if (!order.includes(id) && !out.includes(id)) order.push(id);
+      // Anything not on the timeline waits in the tray. Cards still in the
+      // tray when you send count as "doesn't belong on a timeline".
+      const trayIds = () => visible.filter((id) => !order.includes(id));
 
       const wrap = el('div', { class: 'stages-stack' });
-      wrap.append(header('Stage 1: put these in order', 'Drag the handle, or use the arrows. Top is the start of a relationship. If you think a card doesn’t belong on a timeline at all, move it to the bottom list.'));
+      wrap.append(header('Stage 1: build your timeline',
+        'Tap a card to add it to your timeline, starting from how a relationship begins. Use the arrows or drag to reorder. Leave out anything you think doesn’t belong on a timeline at all.'));
 
       const list = el('ol', { class: 'stages-sort', 'aria-label': 'Your timeline' });
-      const outList = el('ol', { class: 'stages-sort stages-sort--out', 'aria-label': 'Doesn’t belong on the timeline' });
-      const outEmpty = el('li', { class: 'stages-sort__empty' }, 'Nothing here yet.');
+      const tray = el('div', { class: 'stages-tray', role: 'group', 'aria-label': 'Cards to add' });
+      const count = el('p', { class: 'stages-note', 'aria-live': 'polite' });
 
-      const item = (id: string, inOut: boolean) => {
+      const item = (id: string) => {
         const li = el('li', { class: 'stages-sort__item', dataset: { cardId: id } },
           el('span', { class: 'stages-sort__pos', 'aria-hidden': 'true' }),
           el('span', { class: 'stages-sort__label' }, cardLabel(id)),
@@ -284,14 +291,13 @@ export function initJoinPage(): void {
           el('button', {
             type: 'button',
             class: 'stages-sort__btn',
-            'aria-label': inOut ? `Put ${cardLabel(id)} back on the timeline` : `${cardLabel(id)} doesn’t belong on the timeline`,
-            title: inOut ? 'Back on the timeline' : 'Doesn’t belong',
+            'aria-label': `Take ${cardLabel(id)} off your timeline`,
+            title: 'Take off the timeline',
             onClick: () => {
               li.remove();
-              (inOut ? list : outList).append(item(id, !inOut));
               sync();
             },
-          }, inOut ? '↩' : '×'),
+          }, '×'),
           el('span', { class: 'stages-sort__handle', 'aria-hidden': 'true' }, '⋮⋮'),
         );
         return li;
@@ -304,16 +310,17 @@ export function initJoinPage(): void {
         sync();
         li.querySelector<HTMLButtonElement>(dir < 0 ? 'button:nth-of-type(1)' : 'button:nth-of-type(2)')?.focus();
       };
-      for (const id of order) list.append(item(id, false));
-      for (const id of out) outList.append(item(id, true));
-      outList.append(outEmpty);
 
       const sendBtn = btn(v.me.stage1?.submitted ? 'Send again' : 'Send my timeline', 'primary', async () => {
         sync();
+        if (order.length < 2) {
+          errorLine.textContent = 'Add at least two cards to your timeline first.';
+          return;
+        }
         sendBtn.disabled = true;
         errorLine.textContent = '';
         try {
-          await apiPost('respond', { code: auth.code, pid: auth.pid, stage: 'stage1', order, out });
+          await apiPost('respond', { code: auth.code, pid: auth.pid, stage: 'stage1', order, out: trayIds() });
           sent.textContent = 'Sent. You can still change it and send again until the reveal.';
           sendBtn.textContent = 'Send again';
         } catch (err) {
@@ -326,32 +333,39 @@ export function initJoinPage(): void {
 
       const sync = () => {
         order = Array.from(list.querySelectorAll<HTMLElement>('[data-card-id]')).map((n) => n.dataset.cardId!);
-        out = Array.from(outList.querySelectorAll<HTMLElement>('[data-card-id]')).map((n) => n.dataset.cardId!);
-        outEmpty.hidden = out.length > 0;
-        outList.append(outEmpty);
+        clear(tray);
+        for (const id of trayIds()) {
+          tray.append(el('button', {
+            type: 'button',
+            class: 'stages-tray__item',
+            onClick: () => {
+              list.append(item(id));
+              sync();
+            },
+          }, cardLabel(id)));
+        }
+        const left = trayIds().length;
+        count.textContent = order.length
+          ? `${order.length} on your timeline · ${left} left in the tray${left ? ' (these will count as “doesn’t belong”)' : ''}`
+          : '';
       };
-      for (const l of [list, outList]) {
-        sortables.push(new Sortable(l, {
-          group: 'stage1',
-          handle: '.stages-sort__handle',
-          filter: '.stages-sort__empty',
-          animation: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 150,
-          forceFallback: true,
-          fallbackOnBody: true,
-          ghostClass: 'sortable-ghost',
-          chosenClass: 'sortable-chosen',
-          dragClass: 'sortable-drag',
-          onSort: sync,
-          onAdd: sync,
-          onRemove: sync,
-        }));
-      }
+      for (const id of order) list.append(item(id));
+      sortables.push(new Sortable(list, {
+        handle: '.stages-sort__handle',
+        animation: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 150,
+        forceFallback: true,
+        fallbackOnBody: true,
+        ghostClass: 'sortable-ghost',
+        chosenClass: 'sortable-chosen',
+        dragClass: 'sortable-drag',
+        onSort: sync,
+      }));
       sync();
 
       wrap.append(
         el('div', { class: 'stages-sort-group' },
-          el('div', {}, el('h3', { class: 'stages-sort-group__label' }, 'Your timeline'), list),
-          el('div', {}, el('h3', { class: 'stages-sort-group__label' }, 'Doesn’t belong on the timeline'), outList),
+          el('div', {}, el('h3', { class: 'stages-sort-group__label' }, 'Your timeline'), list, count),
+          el('div', {}, el('h3', { class: 'stages-sort-group__label' }, 'Cards to add'), tray),
         ),
         el('div', { class: 'stages-actions' }, sendBtn),
         sent,
@@ -379,6 +393,48 @@ export function initJoinPage(): void {
         );
       }
       wrap.append(rows);
+      return wrap;
+    }
+
+    // ── End: your timeline, the group's, and how much everyone agreed ──
+    function renderEnd(): HTMLElement {
+      const v = view!;
+      const wrap = el('div', { class: 'stages-stack' });
+      wrap.append(header('Thanks for taking part', 'Here’s how the session went. You can close this page whenever you like.'));
+
+      const mine = v.me.stage1;
+      const agreed = v.session.timeline;
+      const rows = el('div', { class: 'stages-reveal' });
+      if (mine?.submitted) {
+        rows.append(
+          el('div', { class: 'stages-reveal__row' },
+            el('span', { class: 'stages-reveal__name' }, 'Your timeline'),
+            el('div', { class: 'stages-reveal__cards' },
+              ...mine.order.flatMap((id, i) => [
+                i > 0 ? el('span', { class: 'stages-reveal__arrow', 'aria-hidden': 'true' }, '→') : null,
+                miniEl(id),
+              ]),
+              ...mine.out.map((id) => miniEl(id, 'stages-mini--out')),
+            ),
+          ),
+        );
+      }
+      if (agreed.length) {
+        rows.append(
+          el('div', { class: 'stages-reveal__row stages-reveal__row--consensus' },
+            el('span', { class: 'stages-reveal__name' }, 'The group’s timeline'),
+            el('div', { class: 'stages-reveal__cards' },
+              ...agreed.flatMap((id, i) => [
+                i > 0 ? el('span', { class: 'stages-reveal__arrow', 'aria-hidden': 'true' }, '→') : null,
+                miniEl(id),
+              ]),
+            ),
+          ),
+        );
+      }
+      if (rows.childElementCount) wrap.append(el('div', { class: 'stages-panel' }, el('h3', { class: 'stages-panel__title' }, 'Timelines'), rows));
+
+      if (v.summary) wrap.append(roundupEl(v.summary));
       return wrap;
     }
 
@@ -450,7 +506,15 @@ export function initJoinPage(): void {
         cardBox.textContent = cardLabel(id);
         question.textContent = placed[id] ? `You said: ${columns.find((c) => c.id === placed[id])?.label ?? placed[id]}` : 'Where does this belong?';
         clear(options);
+        // Cards already on the shared board, so people can see what
+        // else sits at each stage. Stage 3 shows the activities too.
+        const onBoard: Record<string, string[]> = {};
+        const boards = stage === 'stage3' ? [v.board.stage2, v.board.stage3] : [v.board.stage2];
+        for (const b of boards) for (const [cardId, col] of Object.entries(b)) (onBoard[col] ??= []).push(cardId);
+        const MAX_CHIPS = 4;
         columns.forEach((c, i) => {
+          const here = onBoard[c.id] ?? [];
+          const shown = here.slice(0, MAX_CHIPS);
           const b = el('button', {
             type: 'button',
             class: `stages-option${c.kind === 'never' ? ' stages-option--never' : ''}${placed[id] === c.id ? ' is-selected' : ''}`,
@@ -458,7 +522,13 @@ export function initJoinPage(): void {
             onClick: () => void choose(id, c.id),
           },
             c.kind === 'stage' ? el('span', { class: 'stages-option__pos', 'aria-hidden': 'true' }, String(i + 1)) : null,
-            c.label,
+            el('span', { class: 'stages-option__label' }, c.label),
+            here.length
+              ? el('span', { class: 'stages-option__board', 'aria-label': `Already here: ${here.map(cardLabel).join(', ')}` },
+                  ...shown.map((cid) => miniEl(cid)),
+                  here.length > MAX_CHIPS ? el('span', { class: 'stages-option__more' }, `+${here.length - MAX_CHIPS} more`) : null,
+                )
+              : null,
           );
           options.append(b);
         });
@@ -506,5 +576,6 @@ export function initJoinPage(): void {
     }
   }
 }
+
 
 void NEVER_COLUMN_ID;

@@ -109,6 +109,18 @@ export function cardLabel(cardId: string): string {
   return getCard(cardId)?.label ?? cardId;
 }
 
+/** Which deck a card belongs to, from its id prefix. Drives the colour. */
+export function deckOf(cardId: string): DeckId {
+  if (cardId.startsWith('a-')) return 'activities';
+  if (cardId.startsWith('f-')) return 'fluids';
+  return 'stages';
+}
+
+/** Small coloured chip for a card (used inside option buttons, roundups). */
+export function miniEl(cardId: string, extraClass = ''): HTMLElement {
+  return el('span', { class: `stages-mini stages-mini--${deckOf(cardId)}${extraClass ? ` ${extraClass}` : ''}` }, cardLabel(cardId));
+}
+
 export interface CardElOptions {
   static?: boolean;
   extraClass?: string;
@@ -120,7 +132,7 @@ export interface CardElOptions {
 /** A card on the board. */
 export function cardEl(card: Card, opts: CardElOptions = {}): HTMLElement {
   const node = el('div', {
-    class: `stages-card${opts.static ? ' stages-card--static' : ''}${opts.extraClass ? ` ${opts.extraClass}` : ''}`,
+    class: `stages-card stages-card--${deckOf(card.id)}${opts.static ? ' stages-card--static' : ''}${opts.extraClass ? ` ${opts.extraClass}` : ''}`,
     dataset: { cardId: card.id },
     tabindex: opts.static ? undefined : '0',
   },
@@ -322,3 +334,71 @@ export function majority(counts: Record<string, number>): { columns: string[]; m
   const columns = Object.entries(counts).filter(([, n]) => n === max && n > 0).map(([c]) => c);
   return { columns, max, total };
 }
+
+// ─── End-of-session roundup ─────────────────────────────────────────
+
+export interface Summary {
+  participants: number;
+  stage1: { submitted: number; timeline: string[]; items: { cardId: string; spread: number; median: number; outCount: number; placedCount: number }[] };
+  stage2: { cardId: string; columnId: string | null; max: number; total: number; agreement: number }[];
+  stage3: { cardId: string; columnId: string | null; max: number; total: number; agreement: number }[];
+}
+
+/** Agreement roundup shared by the phone and the host screen. */
+export function roundupEl(summary: Summary): HTMLElement {
+  const pctClass = (pct: number) => pct >= 75 ? ' stages-roundup__pct--high' : pct < 50 ? ' stages-roundup__pct--low' : '';
+  const placementList = (items: Summary['stage2']) => {
+    const list = el('ul', { class: 'stages-roundup__list' });
+    for (const it of items) {
+      list.append(
+        el('li', { class: 'stages-roundup__row' },
+          el('span', {}, miniEl(it.cardId), ' ', el('span', { class: 'stages-roundup__where' }, it.columnId ? `→ ${columnLabel(it.columnId)}` : '')),
+          el('span', { class: `stages-roundup__pct${pctClass(it.agreement)}`, title: `${it.max} of ${it.total}` }, `${it.agreement}% agreed`),
+        ),
+      );
+    }
+    return list;
+  };
+  const panels: HTMLElement[] = [];
+
+  const s1 = summary.stage1.items;
+  if (summary.stage1.submitted > 1 && s1.length) {
+    const list = el('ul', { class: 'stages-roundup__list' });
+    for (const it of s1) {
+      const n = summary.stage1.submitted;
+      const mixed = it.outCount > 0 && it.placedCount > 0;
+      const label = it.placedCount === 0
+        ? 'everyone left it off'
+        : mixed ? `${it.outCount} of ${n} left it off` : `±${it.spread} places`;
+      const tone = mixed ? ' stages-roundup__pct--low' : it.placedCount === 0 || it.spread <= 1 ? ' stages-roundup__pct--high' : it.spread >= 4 ? ' stages-roundup__pct--low' : '';
+      list.append(
+        el('li', { class: 'stages-roundup__row' },
+          el('span', {}, miniEl(it.cardId)),
+          el('span', { class: `stages-roundup__pct${tone}` }, label),
+        ),
+      );
+    }
+    panels.push(el('div', { class: 'stages-panel' },
+      el('h3', { class: 'stages-panel__title' }, 'Stage 1: where people agreed'),
+      el('p', { class: 'stages-panel__text' }, 'Most agreed at the top: how far people’s positions were from the middle answer.'),
+      list,
+    ));
+  }
+  if (summary.stage2.length) {
+    panels.push(el('div', { class: 'stages-panel' },
+      el('h3', { class: 'stages-panel__title' }, 'Stage 2: activities'),
+      el('p', { class: 'stages-panel__text' }, 'Share of the group who put each card where most people did.'),
+      placementList(summary.stage2),
+    ));
+  }
+  if (summary.stage3.length) {
+    panels.push(el('div', { class: 'stages-panel' },
+      el('h3', { class: 'stages-panel__title' }, 'Stage 3: sharing fluids'),
+      el('p', { class: 'stages-panel__text' }, 'Same measure. Look at what everyone said “never” to, next to where kissing landed.'),
+      placementList(summary.stage3),
+    ));
+  }
+  if (!panels.length) return el('p', { class: 'stages-note' }, 'No rounds were completed, so there is nothing to round up.');
+  return el('div', { class: 'stages-roundup' }, ...panels);
+}
+

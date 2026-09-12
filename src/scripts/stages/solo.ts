@@ -274,12 +274,25 @@ export function initSoloPage(): void {
     // Board
     const board = el('div', { class: 'stages-board' });
     const bodies = renderColumns(board, columns, { fill: true });
+    // Stage 3 keeps the activity cards on the board, read-only, so the
+    // fluids cards can be compared against them.
+    if (step === 'stage3') {
+      for (const [cardId, col] of Object.entries(state.stage2.placed)) {
+        const body = bodies.get(col);
+        const card = getCard(cardId);
+        if (body && card) body.append(cardEl(card, { static: true, extraClass: 'stages-card--done stages-card--context' }));
+      }
+    }
     for (const [cardId, col] of Object.entries(s.placed)) {
       const body = bodies.get(col);
       const card = getCard(cardId);
       if (body && card) body.append(cardEl(card));
     }
     section.append(board);
+    section.append(el('p', { class: 'stages-key' },
+      el('span', { class: 'stages-key__item' }, el('span', { class: 'stages-key__swatch', 'aria-hidden': 'true' }), 'Activities'),
+      step === 'stage3' ? el('span', { class: 'stages-key__item' }, el('span', { class: 'stages-key__swatch stages-key__swatch--fluids', 'aria-hidden': 'true' }), 'Sharing fluids') : null,
+    ));
 
     const actions = el('div', { class: 'stages-actions' });
     if (step === 'stage2') actions.append(btn('Go to Stage 3', 'primary', () => goTo('stage3')));
@@ -311,6 +324,7 @@ export function initSoloPage(): void {
         new Sortable(list, {
           ...SORTABLE_BASE,
           group: step,
+          draggable: '.stages-card:not(.stages-card--context)',
           animation: reducedMotion() ? 0 : 150,
           onSort: sync,
           onAdd: sync,
@@ -335,7 +349,7 @@ export function initSoloPage(): void {
   }
 
   function ids(list: Element): string[] {
-    return Array.from(list.querySelectorAll<HTMLElement>('[data-card-id]')).map((n) => n.dataset.cardId!);
+    return Array.from(list.querySelectorAll<HTMLElement>('[data-card-id]:not(.stages-card--context)')).map((n) => n.dataset.cardId!);
   }
 
   function render() {

@@ -87,6 +87,84 @@ function consensusTimeline(participants: Participant[]) {
   return { order, out, submittedCount: submitted.length };
 }
 
+/** Majority column per closed card — the "board so far" everyone sees. */
+function boardSoFar(session: Session, participants: Participant[]) {
+  const out: Record<PlacementStage, Record<string, string>> = { stage2: {}, stage3: {} };
+  for (const stage of ['stage2', 'stage3'] as const) {
+    const t = tally(participants, stage, session[stage].done, false);
+    for (const [cardId, { counts }] of Object.entries(t)) {
+      let best: string | null = null;
+      let bestN = 0;
+      for (const [col, n] of Object.entries(counts)) {
+        if (n > bestN) {
+          best = col;
+          bestN = n;
+        }
+      }
+      if (best) out[stage][cardId] = best;
+    }
+  }
+  return out;
+}
+
+/** End-of-session roundup: how much the group agreed, card by card. */
+function buildSummary(session: Session, participants: Participant[]) {
+  const submitted = participants.filter((p) => p.stage1?.submitted);
+  const n = submitted.length;
+
+  // Stage 1: for each card, the spread of positions people gave it
+  // (mean absolute deviation from the median), plus how many left it off.
+  const stage1: { cardId: string; spread: number; median: number; outCount: number; placedCount: number }[] = [];
+  const cardIds = new Set<string>();
+  for (const p of submitted) for (const id of [...p.stage1!.order, ...p.stage1!.out]) cardIds.add(id);
+  for (const id of cardIds) {
+    const positions = submitted
+      .map((p) => p.stage1!.order.indexOf(id))
+      .filter((i) => i >= 0)
+      .sort((a, b) => a - b);
+    const outCount = submitted.filter((p) => p.stage1!.out.includes(id)).length;
+    if (!positions.length) {
+      stage1.push({ cardId: id, spread: 0, median: -1, outCount, placedCount: 0 });
+      continue;
+    }
+    const median = positions[Math.floor(positions.length / 2)];
+    const spread = positions.reduce((acc, x) => acc + Math.abs(x - median), 0) / positions.length;
+    stage1.push({ cardId: id, spread: Math.round(spread * 10) / 10, median, outCount, placedCount: positions.length });
+  }
+  // Order: cards everyone placed (tightest first), then cards everyone
+  // left off (also agreement), then cards the group split on — some
+  // placed it, some left it off — most split first.
+  const bucket = (it: (typeof stage1)[number]) => (it.outCount === 0 ? 0 : it.placedCount === 0 ? 1 : 2);
+  stage1.sort((a, b) => bucket(a) - bucket(b) || (bucket(a) === 2 ? Math.min(b.outCount, b.placedCount) - Math.min(a.outCount, a.placedCount) : 0) || a.spread - b.spread);
+
+  const placement = (stage: PlacementStage) => {
+    const t = tally(participants, stage, session[stage].done, false);
+    const items: { cardId: string; columnId: string | null; max: number; total: number; agreement: number }[] = [];
+    for (const [cardId, { counts }] of Object.entries(t)) {
+      let best: string | null = null;
+      let max = 0;
+      let total = 0;
+      for (const [col, c] of Object.entries(counts)) {
+        total += c;
+        if (c > max) {
+          max = c;
+          best = col;
+        }
+      }
+      items.push({ cardId, columnId: best, max, total, agreement: total ? Math.round((max / total) * 100) : 0 });
+    }
+    items.sort((a, b) => b.agreement - a.agreement || b.total - a.total);
+    return items;
+  };
+
+  return {
+    participants: participants.length,
+    stage1: { submitted: n, timeline: session.timeline, items: stage1 },
+    stage2: placement('stage2'),
+    stage3: placement('stage3'),
+  };
+}
+
 export const POST: APIRoute = async ({ request }) => {
   const unavailable = storageUnavailable();
   if (unavailable) return unavailable;
@@ -150,6 +228,8 @@ async function getView(url: URL): Promise<Response> {
       },
       stage2: tally(participants, 'stage2', [...session.stage2.open, ...session.stage2.done], true),
       stage3: tally(participants, 'stage3', [...session.stage3.open, ...session.stage3.done], true),
+      board: boardSoFar(session, participants),
+      summary: buildSummary(session, participants),
       neverColumnId: NEVER_COLUMN_ID,
     });
   }
@@ -170,9 +250,14 @@ async function getView(url: URL): Promise<Response> {
     },
   };
 
+  const participants = await loadParticipants(code);
+
+  // Closed cards' majority columns are public: they are the board on
+  // the shared screen, and the phone shows them for context.
+  response.board = boardSoFar(session, participants);
+
   // Reveal data only after the host reveals.
   if (session.stage1.revealed) {
-    const participants = await loadParticipants(code);
     response.stage1Reveal = {
       submissions: participants
         .filter((p) => p.stage1?.submitted)
@@ -181,9 +266,11 @@ async function getView(url: URL): Promise<Response> {
   }
   for (const stage of ['stage2', 'stage3'] as const) {
     if (session[stage].revealed && session[stage].open.length) {
-      const participants = await loadParticipants(code);
       response[`${stage}Reveal`] = tally(participants, stage, session[stage].open, false);
     }
+  }
+  if (session.step === 'end') {
+    response.summary = buildSummary(session, participants);
   }
   return json(response);
 }

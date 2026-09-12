@@ -36,6 +36,26 @@
   --stages-minority-bg: var(--btn-tint-bg);
   --stages-minority-text: var(--btn-tint-text);
   --stages-code-ls: 0.18em;
+
+  /* One colour per deck. Cards are solid ("inverted") with light text;
+     the -soft pair is for minority answers and tray chips. Solid teal is
+     the darker button teal so white text passes AA (see v2 notes). */
+  --stages-deck-stages-bg: var(--btn-primary-bg);
+  --stages-deck-stages-text: var(--text-on-dark);
+  --stages-deck-stages-soft: var(--btn-tint-bg);
+  --stages-deck-stages-soft-text: var(--brand-accent-text);
+  --stages-deck-activities-bg: var(--brand-secondary);
+  --stages-deck-activities-text: var(--text-on-dark);
+  --stages-deck-activities-soft: var(--bg-subtle);
+  --stages-deck-activities-soft-text: var(--text-heading);
+  --stages-deck-fluids-bg: var(--ota-cat-contraception);
+  --stages-deck-fluids-text: var(--text-on-dark);
+  --stages-deck-fluids-soft: var(--ota-cat-contraception-soft);
+  --stages-deck-fluids-soft-text: hsl(var(--ota-cat-contraception-h), var(--ota-cat-contraception-s), 28%);
+  --stages-never-accent: var(--ota-cat-law);
+  --stages-never-soft: var(--ota-cat-law-soft);
+  --stages-never-text: hsl(var(--ota-cat-law-h), var(--ota-cat-law-s), 24%);
+  --stages-split-border: var(--ota-cat-law);
 }
 
 /* ── Page shell ────────────────────────────────────────────────────── */
@@ -336,8 +356,9 @@
 }
 
 .stages-column--never .stages-column__title {
-  color: var(--stages-never-title);
-  background: var(--stages-never-bg);
+  color: var(--stages-never-text);
+  background: var(--stages-never-soft);
+  border-bottom-color: var(--stages-never-accent);
   border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
 .stages-column--out {
@@ -433,21 +454,48 @@
   color: var(--text-body-muted);
 }
 
+/* Deck colours: every card is solid with light text. Minority answers on
+   a reveal use the soft pair so the majority stands out. */
+.stages-card--stages {
+  --stages-card-solid: var(--stages-deck-stages-bg);
+  --stages-card-solid-text: var(--stages-deck-stages-text);
+  --stages-card-soft: var(--stages-deck-stages-soft);
+  --stages-card-soft-text: var(--stages-deck-stages-soft-text);
+}
+.stages-card--activities {
+  --stages-card-solid: var(--stages-deck-activities-bg);
+  --stages-card-solid-text: var(--stages-deck-activities-text);
+  --stages-card-soft: var(--stages-deck-activities-soft);
+  --stages-card-soft-text: var(--stages-deck-activities-soft-text);
+}
+.stages-card--fluids {
+  --stages-card-solid: var(--stages-deck-fluids-bg);
+  --stages-card-solid-text: var(--stages-deck-fluids-text);
+  --stages-card-soft: var(--stages-deck-fluids-soft);
+  --stages-card-soft-text: var(--stages-deck-fluids-soft-text);
+}
+.stages-card--stages,
+.stages-card--activities,
+.stages-card--fluids {
+  background: var(--stages-card-solid);
+  color: var(--stages-card-solid-text);
+}
+
 /* Reveal states on the host board */
 .stages-card--majority {
-  background: var(--stages-majority-bg);
-  color: var(--stages-majority-text);
+  box-shadow: var(--shadow-md);
 }
 .stages-card--minority {
-  background: var(--stages-minority-bg);
-  color: var(--stages-minority-text);
+  background: var(--stages-card-soft);
+  color: var(--stages-card-soft-text);
+  box-shadow: none;
 }
 .stages-card--done {
   cursor: default;
   touch-action: auto;
 }
 .stages-card--split {
-  border: var(--border-width-sm) dashed var(--brand-accent);
+  border: var(--border-width-sm) dashed var(--stages-split-border);
 }
 .stages-card__count {
   font-size: var(--text-card-size-h6);
@@ -460,6 +508,7 @@
 .stages-card--minority .stages-card__count {
   background: var(--bg-surface);
 }
+.stages-card__remove { color: inherit; }
 .stages-card__remove {
   appearance: none;
   border: none;
@@ -497,6 +546,29 @@
   border: var(--border-width-xs) dashed var(--border-strong);
   color: var(--text-body-muted);
 }
+.stages-mini--stages { background: var(--stages-deck-stages-soft); color: var(--stages-deck-stages-soft-text); box-shadow: none; }
+.stages-mini--activities { background: var(--stages-deck-activities-bg); color: var(--stages-deck-activities-text); box-shadow: none; }
+.stages-mini--fluids { background: var(--stages-deck-fluids-bg); color: var(--stages-deck-fluids-text); box-shadow: none; }
+.stages-mini--out.stages-mini--stages { background: transparent; color: var(--text-body-muted); }
+
+/* Colour key */
+.stages-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-global-xs) var(--space-global-sm);
+  font-size: var(--text-card-size-h6);
+  color: var(--text-body-muted);
+  margin: 0;
+}
+.stages-key__item { display: inline-flex; align-items: center; gap: 0.4em; }
+.stages-key__swatch {
+  width: 0.9em;
+  height: 0.9em;
+  border-radius: var(--radius-xs);
+  background: var(--stages-deck-activities-bg);
+}
+.stages-key__swatch--fluids { background: var(--stages-deck-fluids-bg); }
+.stages-key__swatch--stages { background: var(--stages-deck-stages-bg); }
 
 /* ── Stage 1 ordering list (participant + solo) ────────────────────── */
 .stages-sort {
@@ -522,11 +594,12 @@
   align-items: center;
   gap: var(--space-global-xs);
   padding: var(--stages-card-padding);
-  background: var(--stages-card-bg);
+  background: var(--stages-deck-stages-bg);
+  color: var(--stages-deck-stages-text);
   border-radius: var(--stages-card-radius);
   box-shadow: var(--stages-card-shadow);
   font-size: var(--text-card-size-body);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-semibold);
   line-height: var(--lh-card);
   cursor: grab;
   user-select: none;
@@ -542,10 +615,14 @@
 .stages-sort__pos {
   flex-shrink: 0;
   min-width: 1.6em;
-  text-align: center;
+  height: 1.6em;
+  display: inline-grid;
+  place-items: center;
+  border-radius: var(--radius-circle);
+  background: var(--on-dark-20);
   font-size: var(--text-card-size-h6);
-  font-weight: var(--font-weight-semibold);
-  color: var(--brand-accent-text);
+  font-weight: var(--font-weight-bold);
+  color: var(--stages-deck-stages-text);
 }
 .stages-sort__pos::before {
   content: counter(stages-pos);
@@ -554,7 +631,7 @@
 .stages-sort__label { flex: 1; }
 .stages-sort__handle {
   flex-shrink: 0;
-  color: var(--text-body-muted);
+  color: var(--on-dark-70);
   line-height: 1;
   cursor: grab;
   touch-action: none;
@@ -594,8 +671,8 @@
 .stages-sort__btn {
   appearance: none;
   border: none;
-  background: var(--btn-tint-bg);
-  color: var(--btn-tint-text);
+  background: var(--on-dark-20);
+  color: var(--stages-deck-stages-text);
   font: inherit;
   font-size: var(--text-card-size-h6);
   font-weight: var(--font-weight-semibold);
@@ -606,7 +683,7 @@
   cursor: pointer;
   flex-shrink: 0;
 }
-.stages-sort__btn:hover { background: var(--btn-tint-bg-hover); }
+.stages-sort__btn:hover { background: var(--on-dark-40); }
 .stages-sort__btn:focus-visible {
   outline: var(--focus-ring-width) solid var(--focus-ring);
   outline-offset: var(--focus-ring-offset);
@@ -634,6 +711,51 @@
   font-size: var(--text-card-size-body);
   color: var(--text-body-muted);
   margin: 0 0 var(--space-global-xs);
+}
+
+/* ── Tray of cards still to place (phone Stage 1) ──────────────────── */
+.stages-tray {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-global-xs);
+  padding: var(--space-global-sm);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  border: var(--border-width-xs) dashed var(--border-strong);
+  min-height: 3.5rem;
+}
+.stages-tray:empty::after {
+  content: "Everything is on your timeline.";
+  font-size: var(--text-card-size-body);
+  color: var(--text-body-muted);
+}
+.stages-tray__item {
+  appearance: none;
+  border: none;
+  font: inherit;
+  font-size: var(--text-card-size-body);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--lh-card);
+  padding: 0.55em 0.9em;
+  border-radius: var(--radius-pill);
+  background: var(--stages-deck-stages-soft);
+  color: var(--stages-deck-stages-soft-text);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background var(--transition-duration) var(--transition-easing);
+}
+.stages-tray__item:hover { background: var(--btn-tint-bg-hover); }
+.stages-tray__item:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+.stages-tray__item::before { content: "+ "; opacity: 0.7; }
+
+/* Empty timeline hint */
+.stages-sort:empty::after {
+  content: "Tap cards below to build your timeline. The first one you add is the start.";
+  font-size: var(--text-card-size-body);
+  color: var(--text-body-muted);
 }
 
 /* ── Participant placement (join page) ─────────────────────────────── */
@@ -712,15 +834,70 @@
 .stages-option.is-selected .stages-option__pos {
   color: var(--stages-majority-text);
 }
+/* Cards already on the board, shown inside each option for context */
+.stages-option__board {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  width: 100%;
+}
+.stages-option__board .stages-mini {
+  font-size: var(--badge-font-size);
+  padding: 0.1em 0.45em;
+  white-space: normal;
+}
+.stages-option__more {
+  font-size: var(--badge-font-size);
+  color: var(--text-body-muted);
+  align-self: center;
+}
+.stages-option { flex-wrap: wrap; }
+.stages-option__label { flex: 1; }
+.stages-option.is-selected .stages-option__more { color: var(--on-dark-70); }
 .stages-option--never {
-  border-color: var(--state-error);
-  color: var(--stages-never-title);
+  border-color: var(--stages-never-accent);
+  color: var(--stages-never-text);
+  background: var(--stages-never-soft);
 }
 .stages-option--never.is-selected {
-  background: var(--state-error);
-  border-color: var(--state-error);
+  background: var(--stages-never-text);
+  border-color: var(--stages-never-text);
   color: var(--text-on-dark);
 }
+
+/* ── Roundup (end of session) ───────────────────────────────────────── */
+.stages-roundup {
+  display: grid;
+  gap: var(--space-global-md);
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+}
+.stages-roundup__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.stages-roundup__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-global-xs);
+  align-items: center;
+  font-size: var(--text-card-size-body);
+}
+.stages-roundup__where { color: var(--text-body-muted); font-size: var(--text-card-size-h6); }
+.stages-roundup__pct {
+  font-weight: var(--font-weight-bold);
+  font-size: var(--text-card-size-h6);
+  padding: 0.2em 0.6em;
+  border-radius: var(--radius-pill);
+  background: var(--bg-surface-alt);
+  color: var(--text-heading);
+  white-space: nowrap;
+}
+.stages-roundup__pct--high { background: var(--state-success-soft); color: var(--state-success-text); }
+.stages-roundup__pct--low { background: var(--stages-never-soft); color: var(--stages-never-text); }
 .stages-place__nav {
   display: flex;
   flex-wrap: wrap;
@@ -1054,4 +1231,9 @@
   .stages-summary__fill > span {
     transition: none;
   }
+}
+
+/* Read-only cards kept on a later stage's board for comparison */
+.stages-card--context {
+  opacity: 0.85;
 }
