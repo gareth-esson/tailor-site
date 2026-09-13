@@ -12,6 +12,9 @@
 
 import {
   $,
+  getRecap,
+  isRecapId,
+  recapSlide,
   NEVER_COLUMN_ID,
   OUT_PILE_ID,
   Sortable,
@@ -33,7 +36,7 @@ import {
 
 const STORE_KEY = 'stages-solo-v1';
 
-type SoloStep = 'stage1' | 'stage2' | 'stage3';
+type SoloStep = 'stage1' | 'recap1' | 'stage2' | 'recap2' | 'stage3' | 'recap3';
 
 interface SoloState {
   step: SoloStep;
@@ -120,8 +123,10 @@ export function initSoloPage(): void {
   });
 
   shuffleBtn.addEventListener('click', () => {
-    if (state.step === 'stage1') state.stage1.deck = shuffle(state.stage1.deck);
-    else state[state.step].deck = shuffle(state[state.step].deck);
+    // Nothing to shuffle on a section break.
+    if (isRecapId(state.step)) return;
+    const pile = state[state.step];
+    pile.deck = shuffle(pile.deck);
     save();
     render();
   });
@@ -144,11 +149,12 @@ export function initSoloPage(): void {
 
   function renderStepper() {
     clear(stepper);
+    const onStep = isRecapId(state.step) ? getRecap(state.step).stage : state.step;
     for (const s of STEPS) {
       const item = el('button', {
         type: 'button',
-        class: `stages-stepper__item${state.step === s.id ? ' is-active' : ''}`,
-        'aria-current': state.step === s.id ? 'step' : undefined,
+        class: `stages-stepper__item${onStep === s.id ? ' is-active' : ''}`,
+        'aria-current': onStep === s.id ? 'step' : undefined,
         onClick: () => goTo(s.id),
       }, s.label);
       stepper.append(el('li', {}, item));
@@ -156,13 +162,35 @@ export function initSoloPage(): void {
   }
 
   function goTo(step: SoloStep) {
-    if (step !== 'stage1' && state.stage1.order.length < 2) {
+    const needsTimeline = step !== 'stage1' && step !== 'recap1';
+    if (needsTimeline && state.stage1.order.length < 2) {
       toolbarStatus.textContent = 'Put at least two stage cards on the timeline first.';
       return;
     }
     state.step = step;
     save();
     render();
+  }
+
+  // ─── Section break between stages ────────────────────────────────
+  function renderRecap(id: 'recap1' | 'recap2' | 'recap3') {
+    const recap = getRecap(id, state.hideExplicit);
+    const forward: Record<typeof id, { label: string; step: SoloStep }> = {
+      recap1: { label: 'Continue to Stage 2: activities', step: 'stage2' },
+      recap2: { label: 'Continue to Stage 3: sharing fluids', step: 'stage3' },
+      recap3: { label: 'Back to the board', step: 'stage3' },
+    };
+    const go = forward[id];
+    clear(stage);
+    stage.append(
+      el('div', { class: 'stages-stack' },
+        recapSlide(recap),
+        el('div', { class: 'stages-actions' },
+          btn(go.label, 'primary', () => goTo(go.step)),
+          id === 'recap3' ? null : btn(`Back to ${recap.stage === 'stage1' ? 'Stage 1' : 'Stage 2'}`, 'tint', () => goTo(recap.stage)),
+        ),
+      ),
+    );
   }
 
   // ─── Stage 1: build the timeline ─────────────────────────────────
@@ -203,7 +231,7 @@ export function initSoloPage(): void {
       ),
     );
 
-    const next = btn('Use this timeline for Stage 2', 'primary', () => goTo('stage2'));
+    const next = btn('Use this timeline and continue', 'primary', () => goTo('recap1'));
     const actions = el('div', { class: 'stages-actions' }, next);
 
     section.append(intro, deck, groups, actions);
@@ -295,8 +323,17 @@ export function initSoloPage(): void {
     ));
 
     const actions = el('div', { class: 'stages-actions' });
-    if (step === 'stage2') actions.append(btn('Go to Stage 3', 'primary', () => goTo('stage3')));
-    else actions.append(btn('Back to Stage 2', 'tint', () => goTo('stage2')));
+    if (step === 'stage2') {
+      actions.append(
+        btn('Show the key points from Stage 2', 'primary', () => goTo('recap2')),
+        btn('Skip to Stage 3', 'tint', () => goTo('stage3')),
+      );
+    } else {
+      actions.append(
+        btn('Show the key points from Stage 3', 'primary', () => goTo('recap3')),
+        btn('Back to Stage 2', 'tint', () => goTo('stage2')),
+      );
+    }
     actions.append(btn('Edit the timeline', 'text', () => goTo('stage1')));
     section.append(actions);
 
@@ -357,6 +394,7 @@ export function initSoloPage(): void {
     toolbarStatus.textContent = '';
     renderStepper();
     if (state.step === 'stage1') renderStage1();
+    else if (isRecapId(state.step)) renderRecap(state.step);
     else renderPlacement(state.step);
   }
 

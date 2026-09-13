@@ -29,8 +29,13 @@ import {
   loadLocal,
   majority,
   miniEl,
+  closingMessagesEl,
+  getRecap,
+  isRecapId,
+  recapSlide,
   removeLocal,
   roundupEl,
+  type RecapId,
   type Summary,
   renderColumns,
   saveLocal,
@@ -307,6 +312,11 @@ export function initHostPage(): void {
         case 'stage3':
           main.append(renderPlacement(s.step));
           break;
+        case 'recap1':
+        case 'recap2':
+        case 'recap3':
+          main.append(renderRecap(s.step));
+          break;
         case 'end':
           main.append(renderEnd());
           break;
@@ -321,19 +331,22 @@ export function initHostPage(): void {
       const s = view.session;
       clear(toolbar);
       const steps: { id: Step; label: string; enabled: boolean }[] = [
-        { id: 'lobby', label: 'Lobby', enabled: true },
+        { id: 'lobby', label: 'Welcome', enabled: true },
         { id: 'stage1', label: '1 · Timeline', enabled: true },
         { id: 'stage2', label: '2 · Activities', enabled: s.timeline.length >= 2 },
         { id: 'stage3', label: '3 · Sharing fluids', enabled: s.timeline.length >= 2 },
+        { id: 'end', label: 'Roundup', enabled: true },
       ];
+      // A section break lights up the stage it belongs to.
+      const onStep = isRecapId(s.step) ? getRecap(s.step).stage : s.step;
       const stepper = el('ol', { class: 'stages-stepper', 'aria-label': 'Stages' });
       for (const st of steps) {
         stepper.append(
           el('li', {},
             el('button', {
               type: 'button',
-              class: `stages-stepper__item${s.step === st.id ? ' is-active' : ''}`,
-              'aria-current': s.step === st.id ? 'step' : undefined,
+              class: `stages-stepper__item${onStep === st.id ? ' is-active' : ''}`,
+              'aria-current': onStep === st.id ? 'step' : undefined,
               disabled: !st.enabled,
               title: st.enabled ? undefined : 'Agree a timeline in Stage 1 first',
               onClick: () => {
@@ -397,19 +410,34 @@ export function initHostPage(): void {
       return list;
     }
 
-    // ── Lobby ──
+    // ── Front page: the title screen, shown while people join ──
     function renderLobby(): HTMLElement {
       const s = view!.session;
       const hide = el('input', { type: 'checkbox', checked: s.hideExplicit }) as HTMLInputElement;
       hide.addEventListener('change', () => void act('setHideExplicit', { hideExplicit: hide.checked }));
+
+      const running = el('ol', { class: 'stages-running-order' },
+        el('li', {}, el('strong', {}, 'Put the stages in order'), ' — everyone builds their own timeline, then we compare.'),
+        el('li', {}, el('strong', {}, 'Decide when things happen'), ' — activity cards go onto the timeline we agree.'),
+        el('li', {}, el('strong', {}, 'Sharing fluids'), ' — the same timeline, plus a column for “never”.'),
+      );
+
       return el('div', { class: 'stages-stack' },
-        el('div', { class: 'stages-lobby' },
+        el('section', { class: 'stages-cover' },
+          el('p', { class: 'stages-cover__eyebrow' }, 'An activity about relationships'),
+          el('h2', { class: 'stages-cover__title' }, 'Stages in Relationships'),
+          el('p', { class: 'stages-cover__lede' },
+            'What happens when in a relationship — and who gets to decide. Three rounds of cards, and a lot of disagreement.'),
           codePanel(),
+        ),
+        el('div', { class: 'stages-lobby' },
           el('div', { class: 'stages-panel' },
             el('h2', { class: 'stages-panel__title' }, 'Who’s here'),
             participantsList(),
-            el('p', { class: 'stages-panel__text' }, ''),
-            el('label', { class: 'form-check' }, hide, ' Hide the explicit cards'),
+          ),
+          el('div', { class: 'stages-panel' },
+            el('h2', { class: 'stages-panel__title' }, 'How it runs'),
+            running,
           ),
         ),
         el('div', { class: 'stages-panel' },
@@ -419,8 +447,37 @@ export function initHostPage(): void {
           el('div', { class: 'stages-actions' },
             btn('Start Stage 1', 'primary', () => void act('openStage1'), { disabled: view!.participants.length === 0 }),
           ),
+          el('label', { class: 'form-check' }, hide, ' Hide the explicit cards (younger or SEND groups)'),
         ),
       );
+    }
+
+    // ── Section break between stages ──
+    function renderRecap(id: RecapId): HTMLElement {
+      const s = view!.session;
+      const recap = getRecap(id, s.hideExplicit);
+      const next: Record<RecapId, { label: string; step: Step }> = {
+        recap1: { label: 'Continue to Stage 2: activities', step: 'stage2' },
+        recap2: { label: 'Continue to Stage 3: sharing fluids', step: 'stage3' },
+        recap3: { label: 'Finish and show the roundup', step: 'end' },
+      };
+      const forward = next[id];
+      const blocked = (forward.step === 'stage2' || forward.step === 'stage3') && s.timeline.length < 2;
+      return el('div', { class: 'stages-stack' },
+        recapSlide(recap),
+        el('div', { class: 'stages-actions' },
+          btn(forward.label, 'primary', () => {
+            if (forward.step === 'end') void act('end');
+            else void act('setStep', { step: forward.step });
+          }, { disabled: blocked, title: blocked ? 'Agree a timeline in Stage 1 first' : undefined }),
+          btn(`Back to ${stageName(recap.stage)}`, 'tint', () => void act('setStep', { step: recap.stage })),
+        ),
+      );
+    }
+
+    function stageName(step: 'stage1' | 'stage2' | 'stage3'): string {
+      if (step === 'stage1') return 'Stage 1';
+      return step === 'stage2' ? 'Stage 2' : 'Stage 3';
     }
 
     // ── Stage 1 live ──
@@ -569,7 +626,7 @@ export function initHostPage(): void {
             el('div', {}, el('h3', { class: 'stages-sort-group__label' }, 'Left off'), outPile),
           ),
           el('div', { class: 'stages-actions' },
-            btn(s.timeline.length >= 2 ? 'Save timeline and go to Stage 2' : 'Use this timeline and start Stage 2', 'primary', async () => {
+            btn('Save the timeline and continue', 'primary', async () => {
               sync();
               if (editTimeline!.order.length < 2) {
                 errorText = 'The timeline needs at least two cards.';
@@ -577,7 +634,7 @@ export function initHostPage(): void {
                 return;
               }
               const ok = await act('setTimeline', { timeline: editTimeline!.order });
-              if (ok) await act('setStep', { step: 'stage2' });
+              if (ok) await act('setStep', { step: 'recap1' });
             }),
             btn('Restart Stage 1', 'text', () => {
               if (window.confirm('Clear everyone’s timelines and start Stage 1 again?')) {
@@ -776,13 +833,14 @@ export function initHostPage(): void {
       // Navigation between stages
       const nav = el('div', { class: 'stages-actions' });
       if (stage === 'stage2') {
-        nav.append(btn('Go to Stage 3: sharing fluids', 'tint', () => void act('setStep', { step: 'stage3' })));
+        nav.append(
+          btn('Show the key points from Stage 2', 'primary', () => void act('setStep', { step: 'recap2' })),
+          btn('Skip to Stage 3', 'tint', () => void act('setStep', { step: 'stage3' })),
+        );
       } else {
         nav.append(
+          btn('Show the key points from Stage 3', 'primary', () => void act('setStep', { step: 'recap3' })),
           btn('Back to Stage 2', 'tint', () => void act('setStep', { step: 'stage2' })),
-          btn('Finish the session', 'tint', () => {
-            if (window.confirm('Finish the session for everyone? The board stays here until you delete it.')) void act('end');
-          }),
         );
       }
       nav.append(
@@ -831,6 +889,11 @@ export function initHostPage(): void {
         );
       }
       return el('div', { class: 'stages-stack' },
+        el('section', { class: 'stages-cover stages-cover--end' },
+          el('p', { class: 'stages-cover__eyebrow' }, 'That’s the activity'),
+          el('h2', { class: 'stages-cover__title' }, 'Three things worth taking away'),
+          closingMessagesEl(),
+        ),
         el('div', { class: 'stages-section__text' },
           el('h2', { class: 'stages-section__title' }, 'Roundup'),
           el('p', { class: 'stages-section__intro' }, 'Where the group agreed, and where it didn’t. Participants see the same on their phones, along with their own original timeline.'),

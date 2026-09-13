@@ -9,6 +9,7 @@
  */
 
 import Sortable from 'sortablejs';
+import { CLOSING_MESSAGES, getRecap, isRecapId, type Recap, type RecapId } from '../../data/stages-recaps';
 import {
   NEVER_COLUMN_ID,
   OUT_PILE_ID,
@@ -21,6 +22,8 @@ import {
 import type { Participant, RoundState, Session, Step } from '../../lib/stages-store';
 
 export { NEVER_COLUMN_ID, OUT_PILE_ID, STAGE_CARDS, deckCards, getCard, Sortable };
+export { CLOSING_MESSAGES, getRecap, isRecapId };
+export type { Recap, RecapId };
 export type { Card, DeckId, Participant, RoundState, Session, Step };
 
 export type PublicSession = Omit<Session, 'hostToken'>;
@@ -301,10 +304,13 @@ export function startPolling(
 
 export function stepLabel(step: Step): string {
   switch (step) {
-    case 'lobby': return 'Lobby';
+    case 'lobby': return 'Welcome';
     case 'stage1': return 'Stage 1 · Timeline';
+    case 'recap1': return 'Stage 1 · Key points';
     case 'stage2': return 'Stage 2 · Activities';
+    case 'recap2': return 'Stage 2 · Key points';
     case 'stage3': return 'Stage 3 · Sharing fluids';
+    case 'recap3': return 'Stage 3 · Key points';
     case 'end': return 'Finished';
   }
 }
@@ -402,3 +408,40 @@ export function roundupEl(summary: Summary): HTMLElement {
   return el('div', { class: 'stages-roundup' }, ...panels);
 }
 
+// ─── Section-break slides ───────────────────────────────────────────
+
+/**
+ * A section-break screen. Rendered identically on the host's shared
+ * screen and on every participant's phone; the CSS scales the type.
+ */
+export function recapSlide(recap: Recap): HTMLElement {
+  const points = el('ol', { class: 'stages-slide__points' });
+  for (const p of recap.points) {
+    points.append(
+      el('li', { class: 'stages-slide__point' },
+        el('h3', { class: 'stages-slide__point-heading' }, p.heading),
+        el('p', { class: 'stages-slide__point-body' }, p.body),
+      ),
+    );
+  }
+  return el('section', { class: `stages-slide stages-slide--${recap.deck}`, 'aria-label': recap.title },
+    el('p', { class: 'stages-slide__eyebrow' }, recap.eyebrow),
+    el('h2', { class: 'stages-slide__title' }, recap.title),
+    points,
+    el('p', { class: 'stages-slide__closer' }, recap.closer),
+  );
+}
+
+/** The three one-line takeaways, for the closing screen. */
+export function closingMessagesEl(): HTMLElement {
+  const list = el('ol', { class: 'stages-takeaways' });
+  CLOSING_MESSAGES.forEach((m, i) => {
+    list.append(
+      el('li', { class: `stages-takeaways__item stages-takeaways__item--${m.deck}` },
+        el('span', { class: 'stages-takeaways__num', 'aria-hidden': 'true' }, String(i + 1)),
+        el('span', {}, m.text),
+      ),
+    );
+  });
+  return list;
+}

@@ -1249,3 +1249,243 @@
 .stages-card--context {
   opacity: 0.85;
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   Presenter screens — cover, section breaks, closing takeaways
+   ----------------------------------------------------------------------
+   Shared markup between the host's shared screen and the participants'
+   phones: the type scale is display-based and clamped, so the same slide
+   reads across a room and on a 375px phone. Each slide is tinted with
+   the colour of the deck its stage used.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── Cover (front page and closing page) ───────────────────────────── */
+.stages-cover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-global-sm);
+  text-align: center;
+  padding: var(--space-global-xl) var(--space-global-md);
+  border-radius: var(--radius-xl);
+  background: var(--bg-tinted);
+  box-shadow: var(--shadow-sm);
+}
+.stages-cover__eyebrow {
+  font-size: var(--text-card-size-h6);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--section-eyebrow-ls);
+  text-transform: uppercase;
+  color: var(--brand-accent-text);
+  margin: 0;
+}
+.stages-cover__title {
+  font-family: var(--font-tailor-heading-stack);
+  font-size: var(--text-display-size-h1);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--lh-display);
+  color: var(--text-heading);
+  margin: 0;
+  max-width: var(--container-max-hero-text);
+}
+.stages-cover__lede {
+  font-size: var(--text-display-size-body);
+  line-height: var(--lh-body);
+  color: var(--text-body);
+  margin: 0 0 var(--space-global-sm);
+  max-width: var(--container-max-hero-text);
+}
+.stages-cover .stages-code-panel {
+  width: 100%;
+  max-width: var(--container-max-hero-text);
+  background: var(--bg-page);
+}
+.stages-cover--end .stages-cover__title {
+  font-size: var(--text-display-size-h2);
+}
+
+/* Running order on the front page */
+.stages-running-order {
+  margin: 0;
+  padding-left: var(--space-global-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-global-xs);
+  font-size: var(--text-card-size-body);
+  line-height: var(--lh-body);
+  color: var(--text-body-muted);
+}
+.stages-running-order strong { color: var(--text-heading); }
+
+/* ── Section-break slide ───────────────────────────────────────────── */
+.stages-slide {
+  --stages-slide-accent: var(--brand-accent);
+  --stages-slide-accent-text: var(--text-on-dark);
+  --stages-slide-bg: var(--bg-tinted);
+  --stages-slide-ink: var(--brand-accent-text);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-global-md);
+  padding: var(--space-global-xl) var(--space-global-lg);
+  border-radius: var(--radius-xl);
+  background: var(--stages-slide-bg);
+}
+.stages-slide--stages {
+  --stages-slide-accent: var(--stages-deck-stages-bg);
+  --stages-slide-accent-text: var(--stages-deck-stages-text);
+  --stages-slide-bg: var(--bg-tinted);
+  --stages-slide-ink: var(--brand-accent-text);
+}
+.stages-slide--activities {
+  --stages-slide-accent: var(--stages-deck-activities-bg);
+  --stages-slide-accent-text: var(--stages-deck-activities-text);
+  --stages-slide-bg: var(--stages-deck-activities-soft);
+  --stages-slide-ink: var(--stages-deck-activities-soft-text);
+}
+.stages-slide--fluids {
+  --stages-slide-accent: var(--stages-deck-fluids-bg);
+  --stages-slide-accent-text: var(--stages-deck-fluids-text);
+  --stages-slide-bg: var(--stages-deck-fluids-soft);
+  --stages-slide-ink: var(--stages-deck-fluids-soft-text);
+}
+/* The colour lives in a solid pill rather than an edge bar. */
+.stages-slide__eyebrow {
+  font-size: var(--text-card-size-h6);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--section-eyebrow-ls);
+  text-transform: uppercase;
+  color: var(--stages-slide-accent-text);
+  background: var(--stages-slide-accent);
+  padding: 0.45em 1em;
+  border-radius: var(--radius-pill);
+  margin: 0;
+}
+.stages-slide__title {
+  font-family: var(--font-tailor-heading-stack);
+  font-size: var(--text-display-size-h2);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--lh-display);
+  color: var(--text-heading);
+  margin: 0;
+  max-width: var(--container-max-reading-wide);
+}
+.stages-slide__points {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-global-md);
+  counter-reset: stages-slide-point;
+  max-width: var(--container-max-reading-wide);
+}
+.stages-slide__point {
+  counter-increment: stages-slide-point;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-global-xs) var(--space-global-sm);
+  align-items: baseline;
+}
+.stages-slide__point::before {
+  content: counter(stages-slide-point);
+  grid-row: span 2;
+  align-self: start;
+  min-width: 1.9em;
+  height: 1.9em;
+  display: inline-grid;
+  place-items: center;
+  border-radius: var(--radius-circle);
+  background: var(--stages-slide-accent);
+  color: var(--text-on-dark);
+  font-size: var(--text-card-size-h6);
+  font-weight: var(--font-weight-bold);
+}
+.stages-slide--activities .stages-slide__point::before {
+  color: var(--stages-deck-activities-text);
+}
+.stages-slide__point-heading {
+  font-family: var(--font-tailor-heading-stack);
+  font-size: var(--text-display-size-h5);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--lh-heading-sub);
+  color: var(--text-heading);
+  margin: 0;
+}
+.stages-slide__point-body {
+  grid-column: 2;
+  font-size: var(--text-prose-size-body);
+  line-height: var(--lh-body);
+  color: var(--text-body);
+  margin: 0;
+}
+.stages-slide__closer {
+  font-family: var(--font-tailor-heading-stack);
+  font-size: var(--text-display-size-h4);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--lh-heading-sub);
+  color: var(--text-heading);
+  margin: 0;
+  padding-top: var(--space-global-md);
+  border-top: var(--border-width-xs) solid var(--border-subtle);
+  max-width: var(--container-max-reading-wide);
+}
+
+/* ── Closing takeaways ─────────────────────────────────────────────── */
+.stages-takeaways {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-global-sm);
+  text-align: left;
+  width: 100%;
+  max-width: var(--container-max-reading-wide);
+}
+.stages-takeaways__item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-global-sm);
+  align-items: center;
+  padding: var(--space-global-md);
+  border-radius: var(--radius-lg);
+  background: var(--bg-page);
+  font-size: var(--text-prose-size-body);
+  line-height: var(--lh-body);
+  color: var(--text-body);
+}
+.stages-takeaways__item--stages { background: var(--stages-deck-stages-soft); }
+.stages-takeaways__item--activities { background: var(--stages-deck-activities-soft); }
+.stages-takeaways__item--fluids { background: var(--stages-deck-fluids-soft); }
+.stages-takeaways__num {
+  min-width: 1.9em;
+  height: 1.9em;
+  display: inline-grid;
+  place-items: center;
+  border-radius: var(--radius-circle);
+  font-size: var(--text-card-size-h6);
+  font-weight: var(--font-weight-bold);
+  background: var(--bg-surface-alt);
+  color: var(--text-heading);
+}
+.stages-takeaways__item--stages .stages-takeaways__num {
+  background: var(--stages-deck-stages-bg);
+  color: var(--stages-deck-stages-text);
+}
+.stages-takeaways__item--activities .stages-takeaways__num {
+  background: var(--stages-deck-activities-bg);
+  color: var(--stages-deck-activities-text);
+}
+.stages-takeaways__item--fluids .stages-takeaways__num {
+  background: var(--stages-deck-fluids-bg);
+  color: var(--stages-deck-fluids-text);
+}
+
+@media (max-width: 640px) { /* below --bp-md, mobile */
+  .stages-slide {
+    padding: var(--space-global-lg) var(--space-global-md);
+  }
+  .stages-cover {
+    padding: var(--space-global-lg) var(--space-global-sm);
+  }
+  .stages-slide__point-body { grid-column: 1 / -1; }
+}

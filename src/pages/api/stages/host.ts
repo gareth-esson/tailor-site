@@ -40,7 +40,7 @@ import { errorResponse, json, readJson, storageUnavailable } from './_shared';
  */
 
 const PLACEMENT_STAGES: PlacementStage[] = ['stage2', 'stage3'];
-const STEPS: Step[] = ['lobby', 'stage1', 'stage2', 'stage3', 'end'];
+const STEPS: Step[] = ['lobby', 'stage1', 'recap1', 'stage2', 'recap2', 'stage3', 'recap3', 'end'];
 
 function isPlacementStage(v: unknown): v is PlacementStage {
   return typeof v === 'string' && (PLACEMENT_STAGES as string[]).includes(v);

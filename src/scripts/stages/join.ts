@@ -19,7 +19,10 @@ import {
   btn,
   cardLabel,
   clear,
+  closingMessagesEl,
   deckCards,
+  getRecap,
+  recapSlide,
   el,
   loadLocal,
   miniEl,
@@ -247,6 +250,11 @@ export function initJoinPage(): void {
         case 'stage3':
           main.append(renderPlacement(s.step));
           break;
+        case 'recap1':
+        case 'recap2':
+        case 'recap3':
+          main.append(recapSlide(getRecap(s.step, s.hideExplicit)));
+          break;
         case 'end':
           main.append(renderEnd());
           break;
@@ -401,6 +409,12 @@ export function initJoinPage(): void {
       const v = view!;
       const wrap = el('div', { class: 'stages-stack' });
       wrap.append(header('Thanks for taking part', 'Here’s how the session went. You can close this page whenever you like.'));
+      wrap.append(
+        el('section', { class: 'stages-cover stages-cover--end' },
+          el('p', { class: 'stages-cover__eyebrow' }, 'Worth taking away'),
+          closingMessagesEl(),
+        ),
+      );
 
       const mine = v.me.stage1;
       const agreed = v.session.timeline;

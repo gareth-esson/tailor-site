@@ -30,7 +30,9 @@ export const SESSION_TTL_SECONDS = 24 * 60 * 60;
 export const MAX_PARTICIPANTS = 60;
 export const MAX_NAME_LENGTH = 24;
 
-export type Step = 'lobby' | 'stage1' | 'stage2' | 'stage3' | 'end';
+/** Screens the session can be on. The `recap*` steps are the section
+ *  breaks shown after each stage — text only, no answers collected. */
+export type Step = 'lobby' | 'stage1' | 'recap1' | 'stage2' | 'recap2' | 'stage3' | 'recap3' | 'end';
 export type PlacementStage = 'stage2' | 'stage3';
 
 export interface RoundState {
