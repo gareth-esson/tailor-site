@@ -33,7 +33,13 @@ import {
   resetCatalogueCache,
   splitExcerpt,
 } from '../src/lib/search-client.ts';
-import { getContentType, isSearchableType, typeOrder } from '../src/lib/searchTypes.ts';
+import {
+  getContentType,
+  isOtaSearchableType,
+  isSearchableType,
+  otaTypeOrder,
+  typeOrder,
+} from '../src/lib/searchTypes.ts';
 import {
   buildCatalogueDocument,
   createIndexOnlyFetch,
@@ -675,4 +681,64 @@ test('full search reports an empty plan when every match is out of scope', () =>
   assert.equal(plan.ok, true, 'an all-excluded result set is a plan, not a failure');
   assert.equal(plan.total, 0);
   assert.deepEqual(plan.groups, []);
+});
+
+/* -------------------------------------------------------------------------- */
+/* OtA search scope                                                           */
+/* -------------------------------------------------------------------------- */
+
+test('pillar hubs are their own type, not "other"', () => {
+  // /explained/ pages used to fall through to 'other', which both scopes
+  // exclude — so the pillar hubs were findable from neither search surface.
+  assert.equal(getContentType('/explained/what-counts-as-losing-your-virginity/'), 'pillar');
+  assert.equal(isOtaSearchableType('pillar'), true, 'OtA search can reach a pillar');
+  assert.equal(isSearchableType('pillar'), false, 'site search still cannot');
+});
+
+test('the two search scopes are disjoint', () => {
+  // The guarantee both surfaces rely on: a reader is looking either for a
+  // service (chrome / B10) or for an answer (OtA). If a type ever appeared in
+  // both sets, OtA content would leak into the buyer-facing search — the
+  // exact thing the exclusion exists to prevent.
+  const everyType = [
+    'anonymous_question',
+    'pillar',
+    'glossary',
+    'topics',
+    'blog',
+    'services',
+    'other',
+  ];
+  for (const type of everyType) {
+    assert.ok(
+      !(isSearchableType(type) && isOtaSearchableType(type)),
+      `${type} must not be in both scopes`,
+    );
+  }
+});
+
+test('OtA scope admits every OtA URL shape and nothing else', () => {
+  const inScope = [
+    '/anonymous_question/periods/',
+    '/explained/what-counts-as-losing-your-virginity/',
+    '/glossary/consent/',
+  ];
+  for (const url of inScope) {
+    assert.ok(isOtaSearchableType(getContentType(url)), `${url} should be in OtA scope`);
+  }
+
+  const outOfScope = ['/blog/one/', '/services/rse-training/', '/topics/consent/', '/about/'];
+  for (const url of outOfScope) {
+    assert.ok(!isOtaSearchableType(getContentType(url)), `${url} should not be in OtA scope`);
+  }
+});
+
+test('otaTypeOrder covers exactly the OtA scope', () => {
+  // A type in the scope but missing from the order would still render — via
+  // planFullSearch's appearance fallback — but in an unspecified position.
+  for (const type of otaTypeOrder) {
+    assert.ok(isOtaSearchableType(type), `${type} is ordered but not in scope`);
+  }
+  assert.equal(otaTypeOrder.length, 3);
+  assert.ok(!otaTypeOrder.some((t) => typeOrder.indexOf(t) === -1), 'types stay known to typeOrder');
 });

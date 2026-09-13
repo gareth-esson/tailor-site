@@ -1,0 +1,246 @@
+---
+/**
+ * Okay to Ask search — /questions/search
+ *
+ * The OtA-internal search surface. Scoped to the young-person side of the
+ * site (questions, pillar hubs, glossary) via `otaTypeOrder` /
+ * `isOtaSearchableType` in src/lib/searchTypes.ts — the exact complement of
+ * the chrome/B10 scope, which excludes all three.
+ *
+ * Reached from the floating pill on every OtA page (OtaSearchPill.astro).
+ * The pill is suppressed here, since this page has its own input.
+ *
+ * Reuses the existing Pagefind index and every helper in search-client.ts
+ * unchanged — `planFullSearch` takes the scope as an argument, so no second
+ * index and no extra build step were needed.
+ *
+ * Safeguarding: the signposting block is server-rendered but hidden, and
+ * revealed only in the no-results branch. A search that returns answers
+ * doesn't need it — every question page carries its own. A search that
+ * returns nothing is a dead end, and that's the state worth catching.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SignpostingBlock from '../../components/SignpostingBlock.astro';
+import { breadcrumbJsonLd } from '../../lib/site';
+
+export const prerender = true;
+
+const canonicalPath = '/questions/search';
+const metaDescription =
+  'Search the Okay to Ask questions, glossary and explainers for honest answers about relationships, sex, puberty, the body and the law.';
+
+const jsonLd = breadcrumbJsonLd([
+  { name: 'Okay to Ask', path: '/questions/' },
+  { name: 'Search', path: `${canonicalPath}/` },
+]);
+---
+
+<BaseLayout
+  title="Search Okay to Ask"
+  description={metaDescription}
+  canonicalPath={canonicalPath}
+  layer="ota"
+  jsonLd={jsonLd}
+  noIndex={true}
+>
+  <div class="ota-search">
+    <!-- Hero -->
+    <section class="surface--ota w-full py-[var(--space-global-2xl)] px-[var(--space-global-gutter)]">
+      <div class="mx-auto w-full max-w-[var(--container-max-reading-wide)] text-center">
+        <h1 class="ota-search__title mb-[var(--space-global-sm)]">Search the questions</h1>
+        <p class="lede ota-search__lede">
+          Type what you want to know. You'll get answers from the questions
+          other people have asked, the explainers, and the glossary.
+        </p>
+      </div>
+    </section>
+
+    <!-- Input -->
+    <section class="surface--ota-alt w-full py-[var(--space-struct-y-base)] px-[var(--space-global-gutter)]">
+      <div class="mx-auto w-full max-w-[var(--container-max-reading-wide)]">
+        <div class="form-group ota-search__field">
+          <label class="form-label ota-search__label" for="ota-search-input">
+            What do you want to know?
+          </label>
+          <input
+            class="form-input"
+            type="search"
+            id="ota-search-input"
+            name="q"
+            placeholder="Search questions, explainers and the glossary"
+            autocomplete="off"
+            enterkeyhint="search"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- Results -->
+    <section class="ota-search__results-band w-full py-[var(--space-struct-y-base)] px-[var(--space-global-gutter)]">
+      <div class="mx-auto w-full max-w-[var(--container-max-reading-wide)]">
+        <p class="ota-search__meta" id="ota-search-meta" aria-live="polite" role="status" hidden></p>
+        <div id="ota-search-results"></div>
+        <div id="ota-search-empty" hidden></div>
+
+        <!-- Revealed by the no-results branch only. Server-rendered so the
+             safeguarding copy and numbers are never assembled in JS. -->
+        <div id="ota-search-signposting" class="ota-search__signposting" hidden>
+          <SignpostingBlock services={['Childline', 'The Mix', 'Brook']} />
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  import { initOtaSearch } from '../../scripts/search-ota';
+  initOtaSearch();
+  document.addEventListener('astro:after-swap', initOtaSearch);
+</script>
+
+<style>
+  .ota-search__lede {
+    color: var(--text-ota-muted);
+    max-width: var(--container-max-prose);
+    margin-inline: auto;
+  }
+
+  .ota-search__label {
+    font-family: var(--font-ota-body-stack);
+  }
+
+  .ota-search__meta {
+    color: var(--text-ota-muted);
+    margin-bottom: var(--space-global-md);
+  }
+
+  .ota-search__signposting {
+    margin-top: var(--space-global-xl);
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* Result groups and rows — :global() because this HTML is injected by   */
+  /* search-ota.ts and never receives Astro's scoped data attribute. Same  */
+  /* pattern as the B10 page.                                              */
+  /*                                                                       */
+  /* Font family and colour are deliberately NOT set here: these nodes sit */
+  /* inside .layer-ota, whose `h1-h6` and root rules already supply        */
+  /* Fraunces/Atkinson and the OtA text colours at higher specificity.     */
+  /* Restating them would be a second source of truth.                     */
+  /* -------------------------------------------------------------------- */
+  :global(.ota-search-group) {
+    margin: 0 0 var(--space-global-lg);
+  }
+
+  :global(.ota-search-group:last-child) {
+    margin-bottom: 0;
+  }
+
+  :global(.ota-search-group__heading) {
+    font-size: var(--text-prose-size-h3);
+    line-height: var(--lh-heading);
+    margin: 0 0 var(--space-global-sm);
+    padding-bottom: var(--space-global-xs);
+    border-bottom: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  :global(.ota-search-group__count) {
+    font-weight: var(--font-weight-regular);
+    color: var(--text-ota-muted);
+    font-size: var(--text-card-size-body);
+  }
+
+  :global(.ota-search-group__list) {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  :global(.ota-search-group__item) {
+    border-bottom: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  :global(.ota-search-group__item:last-child) {
+    border-bottom: none;
+  }
+
+  :global(.ota-search-row) {
+    display: block;
+    padding: var(--space-global-xs) 0;
+    text-decoration: none;
+    color: var(--text-ota-body);
+  }
+
+  :global(.ota-search-row:focus-visible) {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-xs);
+  }
+
+  :global(.ota-search-row__title) {
+    display: block;
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-ota-heading);
+    line-height: var(--lh-heading);
+  }
+
+  :global(.ota-search-row:hover .ota-search-row__title),
+  :global(.ota-search-row:focus-visible .ota-search-row__title) {
+    color: var(--link-ota-contextual);
+    text-decoration: underline;
+  }
+
+  :global(.ota-search-row__excerpt) {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: var(--text-card-size-body);
+    color: var(--text-ota-muted);
+    line-height: var(--lh-body);
+    margin-top: var(--space-global-xs);
+  }
+
+  :global(.ota-search-row__excerpt mark) {
+    background: var(--brand-accent-soft);
+    color: inherit;
+    border-radius: var(--radius-xs);
+    padding: 0 0.125em;
+  }
+
+  :global(.ota-search-group__toggle) {
+    margin-top: var(--space-global-sm);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: var(--text-card-size-body);
+    color: var(--link-ota-contextual);
+    text-decoration: underline;
+  }
+
+  :global(.ota-search-group__toggle:focus-visible) {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  :global(.ota-search-no-results__title) {
+    font-size: var(--text-prose-size-h2);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  :global(.ota-search-no-results__suggestions) {
+    margin: 0 0 var(--space-global-lg);
+    padding-left: var(--space-global-md);
+  }
+
+  :global(.ota-search-no-results__actions),
+  :global(.ota-search-unavailable__actions) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-global-sm);
+  }
+</style>

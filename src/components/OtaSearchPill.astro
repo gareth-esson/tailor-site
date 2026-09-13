@@ -1,0 +1,96 @@
+---
+/**
+ * Okay to Ask floating search pill.
+ *
+ * A glyph-only link, fixed bottom-right, present on every OtA page. Rendered
+ * once by BaseLayout when `layer === 'ota'` — there is deliberately no
+ * per-template wiring, so any OtA template added later gets it for free.
+ *
+ * It is a LINK, not a search field. A fixed-position input at the bottom of
+ * the viewport fights the mobile on-screen keyboard (the keyboard covers the
+ * lower half of the screen, which is exactly where the input and anything it
+ * rendered would be). Typing belongs on /questions/search, which has the room.
+ *
+ * The glyph is the same magnifier drawn in SearchBar.astro. The two search
+ * affordances on the site should look like the same thing.
+ *
+ * Accessibility: glyph-only, so the accessible name has to be explicit —
+ * hence aria-label. The SVG is aria-hidden; it carries no meaning of its own.
+ */
+interface Props {
+  /** Suppressed on the search surface itself, which has its own input. */
+  href?: string;
+}
+
+const { href = '/questions/search' } = Astro.props;
+---
+
+<a class="ota-search-pill" href={href} aria-label="Search questions">
+  <svg width="24" height="24" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+    <circle cx="8.5" cy="8.5" r="5.75" stroke="currentColor" stroke-width="1.5"/>
+    <path d="M13 13L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  </svg>
+</a>
+
+<style>
+  .ota-search-pill {
+    position: fixed;
+    /* env() is neither a token nor a hardcoded design value — it's the
+       device's safe area. Without it the pill sits under the iPhone home
+       indicator. This is a deliberate exception to the token rule, in the
+       same spirit as raw px inside @media. */
+    right: var(--ota-searchpill-inset);
+    bottom: calc(var(--ota-searchpill-inset) + env(safe-area-inset-bottom, 0px));
+    z-index: var(--z-ota-searchpill);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--ota-searchpill-size);
+    height: var(--ota-searchpill-size);
+    border-radius: var(--radius-pill);
+
+    /* Opaque warm-paper base with the tint layered over it. The tint token
+       is translucent by design; over scrolling content (post-it hero imagery
+       on question pages) that would composite unpredictably, so the base
+       gives it something fixed to sit on. Not .glass — the operating rules
+       are explicit that glass needs something behind it to frost, and OtA
+       pages are flat paper. */
+    background-color: var(--bg-ota-surface);
+    background-image: linear-gradient(var(--btn-tint-bg), var(--btn-tint-bg));
+    color: var(--btn-tint-text);
+    box-shadow: var(--shadow-lg);
+
+    transition:
+      background-color var(--transition-duration) var(--transition-easing),
+      transform var(--transition-duration) var(--transition-easing);
+  }
+
+  .ota-search-pill:hover {
+    background-image: linear-gradient(var(--btn-tint-bg-hover), var(--btn-tint-bg-hover));
+    transform: translateY(var(--card-lift-distance));
+  }
+
+  .ota-search-pill:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  /* The cookie banner is fixed to the same edge at --z-toast and spans the
+     full width. While it's showing it would sit over the pill, and a reader
+     who never answers it would keep it there indefinitely — so stand the
+     pill down until the choice is made. No JS: the banner's own `hidden`
+     attribute is the signal. */
+  :global(body:has(#cookie-banner:not([hidden]))) .ota-search-pill {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ota-search-pill {
+      transition: none;
+    }
+    .ota-search-pill:hover {
+      transform: none;
+    }
+  }
+</style>
