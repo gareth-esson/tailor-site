@@ -373,12 +373,14 @@ const description =
 }
 .field__rule{border-bottom:var(--border-width-xs) solid var(--border-strong);}
 
-/* ── priority panel (.surface--alt, tokens tuned for print density) ─ */
+/* ── priority panel (.surface--alt, tokens tuned for print density) ─
+   No single-side accent border: a thick border on one edge of a rounded
+   box tapers to nothing at both corners. The tinted surface separates the
+   panel and the teal title carries the accent. */
 .primer{
   --surface-padding:var(--space-global-sm);
   --surface-radius:var(--radius-base);
   margin-top:var(--space-global-sm);
-  border-left:var(--border-width-md) solid var(--brand-accent);
 }
 .primer__title{
   font-size:var(--text-card-size-h6);

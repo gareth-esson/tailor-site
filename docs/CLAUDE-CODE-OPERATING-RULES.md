@@ -334,6 +334,7 @@ Each of these is a real failure mode that has happened. If you start writing cod
 | `.btn--white-tint` next to `.btn--primary` (or `.btn--tint` next to `.btn--white-primary`) | Stay inside one family — standard (`primary`/`tint`/`outline`) OR white (`white-primary`/`white-tint`/`white-outline`). Never mix. |
 | Custom focus ring | `var(--focus-ring)` / `var(--focus-ring-on-dark)` with `--focus-ring-width` and `--focus-ring-offset` |
 | A hand-rolled colour derivation | A `-soft`, `-strong`, or `-on-dark` sibling that already exists |
+| A thick single-side border (`border-left: 4px`) on a box with `border-radius` | Nothing — the border tapers to nothing at both rounded corners, which reads as generated. Separate the block with a surface tint, or square the corners if the rule is the point |
 
 ---
 

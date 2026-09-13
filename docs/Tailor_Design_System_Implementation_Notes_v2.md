@@ -451,6 +451,7 @@ These come from CLAUDE-CODE-OPERATING-RULES.md Section 5, applied to the Tailor 
 | Mixing button families (`--white-tint` next to `--primary`) | Stay inside one family — standard OR white |
 | Custom focus ring | `var(--focus-ring)` / `var(--focus-ring-on-dark)` |
 | A hand-rolled colour derivation | A `-soft`, `-strong`, or `-on-dark` sibling that already exists |
+| A thick single-side border (`border-left: 4px`) on a box with `border-radius` | Nothing — the border tapers to nothing at both rounded corners, which reads as generated. Separate the block with a surface tint, or square the corners if the rule is the point |
 | `.alert__dismiss` on A8 or A9 components | Nothing — these must never be dismissible |
 | `--border-radius-*` | `--radius-*` (correct prefix) |
 | `--box-shadow-*` | `--shadow-*` (correct prefix) |
