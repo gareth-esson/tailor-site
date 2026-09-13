@@ -16,7 +16,12 @@
  * page-title match Pagefind ranked far down — before loading any of them.
  */
 
-import { getContentType, typeLabels, type ContentType } from '../lib/searchTypes';
+import {
+  getContentType,
+  isSearchableType,
+  typeLabels,
+  type ContentType,
+} from '../lib/searchTypes';
 import {
   createRequestGate,
   hydrateRefs,
@@ -26,6 +31,8 @@ import {
   pickRowUrl,
   planHeaderRefs,
   splitExcerpt,
+  type ScopeOptions,
+  type CatalogueEntry,
   type PagefindModule,
   type PagefindResponse,
   type PagefindResultData,
@@ -38,6 +45,16 @@ declare global {
     trackEvent?: (name: string, payload: Record<string, unknown>) => void;
   }
 }
+
+/**
+ * Search scope, shared with the planner. OtA content (anonymous questions,
+ * glossary) is out of scope for this box on every page, including OtA pages
+ * — see SEARCHABLE_TYPES in searchTypes.ts for why.
+ */
+const SEARCH_SCOPE: ScopeOptions = {
+  getType: getContentType,
+  isAllowedType: (type) => isSearchableType(type as ContentType),
+};
 
 /** Hard ceiling on rows shown — and therefore on data loads — per query. */
 const TOP_RESULTS = 8;
@@ -56,6 +73,22 @@ interface HeaderRow {
   url: string | null;
   title: string;
   excerpt: unknown;
+}
+
+/**
+ * Resolve a hydrated row's URL and content type the one way. Both the scope
+ * backstop and the renderer call this, so a row can never be admitted as one
+ * type and then displayed under another.
+ */
+function resolveRow(
+  ref: PagefindResultRef,
+  data: PagefindResultData,
+  catalogue: SearchCatalogue | null,
+): { url: string | null; entry: CatalogueEntry | undefined; type: ContentType } {
+  const id = typeof ref.id === 'string' ? ref.id : null;
+  const entry = id && catalogue ? catalogue.byId.get(id) : undefined;
+  const url = pickRowUrl(data.url, entry?.url);
+  return { url, entry, type: getContentType(url ?? entry?.url ?? '') };
 }
 
 export function initSearchHeader(): void {
@@ -136,6 +169,13 @@ export function initSearchHeader(): void {
     resultsContainer?.replaceChildren();
   }
 
+  /** Genuine empty result: the query matched nothing this box can show. */
+  function showNoResults(query: string): void {
+    renderNotice('No results for “' + query + '”');
+    dropdown?.removeAttribute('hidden');
+    setSeeAllVisible(false, query);
+  }
+
   function showUnavailable(): void {
     renderNotice('Search is temporarily unavailable.');
     dropdown?.removeAttribute('hidden');
@@ -183,11 +223,8 @@ export function initSearchHeader(): void {
     // page-title match first, so its group leads the dropdown.
     const grouped = new Map<ContentType, HeaderRow[]>();
     for (const { ref, data } of hydrated) {
-      const id = typeof ref.id === 'string' ? ref.id : null;
-      const entry = id && catalogue ? catalogue.byId.get(id) : undefined;
-      const url = pickRowUrl(data.url, entry?.url);
+      const { url, entry, type } = resolveRow(ref, data, catalogue);
       const title = pickRowTitle(data.meta?.title, entry?.title, url);
-      const type = getContentType(url ?? entry?.url ?? '');
       const row: HeaderRow = { url, title, excerpt: data.excerpt };
       const bucket = grouped.get(type);
       if (bucket) bucket.push(row);
@@ -270,16 +307,24 @@ export function initSearchHeader(): void {
       return;
     }
 
-    const total = response.results.length;
-    if (total === 0) {
-      renderNotice('No results for “' + query + '”');
-      dropdown?.removeAttribute('hidden');
-      setSeeAllVisible(false, query);
+    if (response.results.length === 0) {
+      showNoResults(query);
       return;
     }
 
-    const planned = planHeaderRefs(response.results, query, catalogue, TOP_RESULTS);
-    const hydrated = await hydrateRefs(planned);
+    // Plan the whole in-scope set (limit -1), then cut to the budget. The
+    // uncut length is the honest "matches in this search's scope" count for
+    // analytics, and costs no `.data()` loads to obtain.
+    const inScope = planHeaderRefs(response.results, query, catalogue, -1, SEARCH_SCOPE);
+
+    // Pagefind matched pages, but every one of them is out of scope. That is
+    // an empty result for this box, not a failure.
+    if (inScope.length === 0) {
+      showNoResults(query);
+      return;
+    }
+
+    const hydrated = await hydrateRefs(inScope.slice(0, TOP_RESULTS));
     if (gate.isStale(token)) return;
 
     // Results exist but none of them would load: a data failure, not an empty
@@ -289,14 +334,27 @@ export function initSearchHeader(): void {
       return;
     }
 
-    renderResults(query, hydrated, catalogue);
+    // Scope backstop against the authoritative hydrated URL. The planner can
+    // only scope refs the catalogue knows; with no catalogue it scopes none,
+    // so without this an OtA page would still reach the dropdown whenever
+    // /search-titles.json failed to load.
+    const visible = hydrated.filter(({ ref, data }) =>
+      isSearchableType(resolveRow(ref, data, catalogue).type),
+    );
+
+    if (visible.length === 0) {
+      showNoResults(query);
+      return;
+    }
+
+    renderResults(query, visible, catalogue);
     setSeeAllVisible(true, query);
     dropdown?.removeAttribute('hidden');
 
     if (typeof window.trackEvent === 'function') {
       window.trackEvent('site_search_query', {
         query,
-        result_count: total,
+        result_count: inScope.length,
         source_page: window.location.pathname,
       });
     }

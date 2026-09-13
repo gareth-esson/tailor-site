@@ -20,7 +20,13 @@
  * fragment requests behind every keystroke.
  */
 
-import { getContentType, typeLabels, typeOrder, type ContentType } from '../lib/searchTypes';
+import {
+  getContentType,
+  isSearchableType,
+  typeLabels,
+  typeOrder,
+  type ContentType,
+} from '../lib/searchTypes';
 import {
   createRequestGate,
   hydrateRefs,
@@ -424,27 +430,36 @@ export function initSearchPage(): void {
 
     const total = response.results.length;
 
+    const plan = planFullSearch(response.results, trimmed, catalogue, {
+      getType: getContentType,
+      typeOrder,
+      // OtA content is out of scope for site search — see SEARCHABLE_TYPES.
+      isAllowedType: (type) => isSearchableType(type as ContentType),
+    });
+
+    // The count both surfaces report is matches *in scope*, so an excluded
+    // page never inflates it. Falls back to the raw count only when the plan
+    // could not be built, where the scoped figure is unknowable.
+    const scopedTotal = plan.ok ? plan.total : total;
+
     // Fire analytics once per settled query (don't re-fire on identical re-runs).
     if (lastFiredQuery !== trimmed && typeof window.trackEvent === 'function') {
       window.trackEvent('site_search_query', {
         query: trimmed,
-        result_count: total,
+        result_count: scopedTotal,
         source_page: '/search',
       });
       lastFiredQuery = trimmed;
     }
 
-    if (total === 0) {
+    // Nothing matched, or everything that matched was out of scope. Both are
+    // an empty result for this search, not a failure — don't show the error.
+    if (total === 0 || (plan.ok && plan.total === 0)) {
       renderNoResults(trimmed);
       setFooterCtaVisible(true);
       syncUrl(trimmed);
       return;
     }
-
-    const plan = planFullSearch(response.results, trimmed, catalogue, {
-      getType: getContentType,
-      typeOrder,
-    });
 
     // No usable catalogue for this result set. Show the existing
     // temporarily-unavailable surface rather than quietly hydrating every

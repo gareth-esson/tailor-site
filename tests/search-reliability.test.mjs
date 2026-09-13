@@ -33,7 +33,7 @@ import {
   resetCatalogueCache,
   splitExcerpt,
 } from '../src/lib/search-client.ts';
-import { getContentType, typeOrder } from '../src/lib/searchTypes.ts';
+import { getContentType, isSearchableType, typeOrder } from '../src/lib/searchTypes.ts';
 import {
   buildCatalogueDocument,
   createIndexOnlyFetch,
@@ -43,6 +43,9 @@ import {
 const HEADER_LIMIT = 8;
 const ROWS_BEFORE_TOGGLE = 5;
 const groupOptions = { getType: getContentType, typeOrder };
+/** What both surfaces actually pass: OtA content out of scope. */
+const scopedGroupOptions = { ...groupOptions, isAllowedType: isSearchableType };
+const searchScope = { getType: getContentType, isAllowedType: isSearchableType };
 
 /** Result references shaped like Pagefind's, counting their own data loads. */
 function makeRefs(specs) {
@@ -300,12 +303,12 @@ test('full search groups and counts from the catalogue with the exact group firs
   // The exact match's own group leads; the taxonomy order holds for the rest.
   assert.deepEqual(
     plan.groups.map((group) => group.type),
-    ['other', 'anonymous_question', 'glossary', 'blog'],
+    ['other', 'blog', 'anonymous_question', 'glossary'],
   );
   assert.equal(plan.groups[0].refs[0].id, 'hub', 'an exact match is never buried');
   assert.deepEqual(
     plan.groups.map((group) => group.total),
-    [1, 3, 2, 7],
+    [1, 7, 3, 2],
   );
   // Counts are the real group sizes, reached without hydrating anything.
   assert.equal(loads.length, 0);
@@ -320,10 +323,12 @@ test('full search groups and counts from the catalogue with the exact group firs
   assert.equal(ordinary.ok, true);
   assert.deepEqual(
     ordinary.groups.map((group) => group.type),
-    ['anonymous_question', 'glossary', 'blog', 'other'],
+    ['blog', 'anonymous_question', 'glossary', 'other'],
   );
+  // Find the group by type rather than by position: this asserts Pagefind's
+  // order *within* a group, which has nothing to do with typeOrder.
   assert.deepEqual(
-    ordinary.groups[0].refs.map((ref) => ref.id),
+    ordinary.groups.find((group) => group.type === 'anonymous_question').refs.map((ref) => ref.id),
     ['q1', 'q2', 'q3'],
   );
 
@@ -333,7 +338,7 @@ test('full search groups and counts from the catalogue with the exact group firs
   assert.equal(inFirstGroup.ok, true);
   assert.deepEqual(
     inFirstGroup.groups.map((group) => group.type),
-    ['anonymous_question', 'glossary', 'blog', 'other'],
+    ['anonymous_question', 'blog', 'glossary', 'other'],
   );
   assert.deepEqual(
     inFirstGroup.groups[0].refs.map((ref) => ref.id),
@@ -557,4 +562,117 @@ test('the generator fetch adapter only reads inside the index directory', async 
     () => indexOnlyFetch(new URL('package.json', new URL('file://' + repoRoot + '/')).href),
     /Refused read outside the index/,
   );
+});
+
+/* -------------------------------------------------------------------------- */
+/* Search scope: OtA content is excluded from both surfaces                   */
+/* -------------------------------------------------------------------------- */
+
+test('header planning drops out-of-scope pages without spending a data load', async () => {
+  // Eight OtA pages rank above the two searchable ones. Unscoped, they would
+  // fill the header's budget and the blog posts would never be seen.
+  const specs = [];
+  for (let i = 0; i < 8; i += 1) {
+    specs.push({ id: 'q' + i, url: '/anonymous_question/q-' + i + '/', title: 'Question ' + i });
+  }
+  specs.push({ id: 'b1', url: '/blog/one/', title: 'Post one' });
+  specs.push({ id: 'g1', url: '/glossary/consent/', title: 'Consent' });
+
+  const catalogue = catalogueFrom(specs);
+  const { refs, loads } = makeRefs(specs);
+
+  const planned = planHeaderRefs(refs, 'consent', catalogue, HEADER_LIMIT, searchScope);
+  assert.deepEqual(
+    planned.map((ref) => ref.id),
+    ['b1'],
+    'only searchable types survive planning',
+  );
+  assert.equal(loads.length, 0, 'scoping happens before any .data() call');
+
+  const hydrated = await hydrateRefs(planned);
+  assert.deepEqual(loads, ['b1'], 'an excluded page never costs a data load');
+  assert.equal(hydrated.length, 1);
+});
+
+test('header planning without a scope still returns everything', () => {
+  const specs = [
+    { id: 'q1', url: '/anonymous_question/periods/', title: 'Periods' },
+    { id: 'b1', url: '/blog/one/', title: 'Post one' },
+  ];
+  const catalogue = catalogueFrom(specs);
+  const { refs } = makeRefs(specs);
+
+  assert.deepEqual(
+    planHeaderRefs(refs, 'periods', catalogue, HEADER_LIMIT).map((ref) => ref.id),
+    ['q1', 'b1'],
+    'scoping is opt-in — the planner stays generic',
+  );
+});
+
+test('an out-of-scope exact title match is excluded, not promoted', () => {
+  // Exact-title promotion must not be a back door into the results.
+  const specs = [
+    { id: 'b1', url: '/blog/one/', title: 'Post one' },
+    { id: 'g1', url: '/glossary/consent/', title: 'Consent' },
+  ];
+  const catalogue = catalogueFrom(specs);
+  const { refs } = makeRefs(specs);
+
+  assert.deepEqual(
+    planHeaderRefs(refs, 'Consent', catalogue, HEADER_LIMIT, searchScope).map((ref) => ref.id),
+    ['b1'],
+    'the glossary page is dropped despite being an exact title hit',
+  );
+});
+
+test('header planning cannot scope what the catalogue does not cover', () => {
+  // Documents why the header re-checks scope after hydration: with no
+  // catalogue there is no URL to judge a ref by, so nothing is dropped here.
+  const specs = [{ id: 'q1', url: '/anonymous_question/periods/', title: 'Periods' }];
+  const { refs } = makeRefs(specs);
+
+  assert.deepEqual(
+    planHeaderRefs(refs, 'periods', null, HEADER_LIMIT, searchScope).map((ref) => ref.id),
+    ['q1'],
+    'unknown-type refs survive planning and must be filtered after hydration',
+  );
+});
+
+test('full search excludes out-of-scope groups and does not count them', () => {
+  const specs = [
+    { id: 'q1', url: '/anonymous_question/periods/', title: 'Periods' },
+    { id: 'g1', url: '/glossary/consent/', title: 'Consent' },
+    { id: 'b1', url: '/blog/one/', title: 'Post one' },
+    { id: 's1', url: '/services/rse-training/', title: 'RSE training' },
+  ];
+  const catalogue = catalogueFrom(specs);
+  const { refs } = makeRefs(specs);
+
+  const unscoped = planFullSearch(refs, 'consent', catalogue, groupOptions);
+  assert.equal(unscoped.total, 4);
+
+  const plan = planFullSearch(refs, 'consent', catalogue, scopedGroupOptions);
+  assert.equal(plan.ok, true);
+  assert.deepEqual(
+    plan.groups.map((group) => group.type),
+    ['services', 'blog'],
+    'no OtA group is built',
+  );
+  assert.equal(plan.total, 2, 'excluded pages do not inflate the reported count');
+});
+
+test('full search reports an empty plan when every match is out of scope', () => {
+  // The surfaces branch on this to say "no results" instead of showing the
+  // temporarily-unavailable error, which would be a lie.
+  const specs = [
+    { id: 'q1', url: '/anonymous_question/periods/', title: 'Periods' },
+    { id: 'g1', url: '/glossary/consent/', title: 'Consent' },
+  ];
+  const catalogue = catalogueFrom(specs);
+  const { refs } = makeRefs(specs);
+
+  const plan = planFullSearch(refs, 'periods', catalogue, scopedGroupOptions);
+  assert.equal(plan.ok, true, 'an all-excluded result set is a plan, not a failure');
+  assert.equal(plan.total, 0);
+  assert.deepEqual(plan.groups, []);
 });

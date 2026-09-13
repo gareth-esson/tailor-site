@@ -256,6 +256,23 @@ export function exactTitleIds(query: string, catalogue: SearchCatalogue | null):
 }
 
 /**
+ * Optional search-scope narrowing, injected by the caller.
+ *
+ * This module stays taxonomy-free on purpose (it has no imports at all), so
+ * the type vocabulary arrives as callbacks: `getType` maps a catalogue URL to
+ * a type string, `isAllowedType` says whether that type is in scope. Both
+ * surfaces pass the `searchTypes.ts` pair.
+ *
+ * Scoping happens here, against catalogue URLs, rather than after hydration:
+ * an out-of-scope page is dropped before it can consume one of the caller's
+ * `.data()` loads or occupy a result slot a searchable page should have had.
+ */
+export interface ScopeOptions {
+  getType(url: string): string;
+  isAllowedType(type: string): boolean;
+}
+
+/**
  * Header ranking: move any result whose page title exactly equals the query
  * to the front, keep Pagefind's order for everything else, drop duplicate
  * ids and duplicate URLs, then cut to `limit`.
@@ -263,12 +280,18 @@ export function exactTitleIds(query: string, catalogue: SearchCatalogue | null):
  * Only members of this result set move — nothing is added. The returned list
  * is exactly what the caller will hydrate, so the header's "at most `limit`
  * data loads per settled query" budget is structural.
+ *
+ * With `scope`, refs the catalogue places out of scope are dropped first.
+ * Refs the catalogue can't identify are kept: the header still renders when
+ * the catalogue is missing, so the caller re-checks scope after hydration
+ * against the authoritative result URL.
  */
 export function planHeaderRefs<T extends object>(
   refs: readonly T[],
   query: string,
   catalogue: SearchCatalogue | null,
   limit: number,
+  scope?: ScopeOptions,
 ): T[] {
   const exact = exactTitleIds(query, catalogue);
   const seenIds = new Set<string>();
@@ -284,6 +307,7 @@ export function planHeaderRefs<T extends object>(
     }
     const entry = id && catalogue ? catalogue.byId.get(id) : undefined;
     if (entry) {
+      if (scope && !scope.isAllowedType(scope.getType(entry.url))) continue;
       if (seenUrls.has(entry.url)) continue;
       seenUrls.add(entry.url);
     }
@@ -331,7 +355,12 @@ export function planFullSearch<T extends object>(
   refs: readonly T[],
   query: string,
   catalogue: SearchCatalogue | null,
-  options: { getType(url: string): string; typeOrder: readonly string[] },
+  options: {
+    getType(url: string): string;
+    typeOrder: readonly string[];
+    /** Out-of-scope types are dropped: no group, no contribution to `total`. */
+    isAllowedType?(type: string): boolean;
+  },
 ): FullSearchPlan<T> {
   if (!catalogue) return { ok: false, reason: 'no-catalogue' };
 
@@ -356,6 +385,7 @@ export function planFullSearch<T extends object>(
     seenUrls.add(entry.url);
 
     const type = options.getType(entry.url);
+    if (options.isAllowedType && !options.isAllowedType(type)) continue;
     if (!appearance.includes(type)) appearance.push(type);
     const isExact = exact.has(id);
     const bucket = isExact ? exactRefs : otherRefs;

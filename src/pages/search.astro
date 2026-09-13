@@ -13,7 +13,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const description =
-  'Search questions, glossary, topics, blog, and services across Tailor RSE.';
+  'Search services, training, blog posts and topics across Tailor RSE.';
 ---
 
 <BaseLayout
@@ -34,10 +34,10 @@ const description =
           Search results for <em class="search-page__title-query" data-search-title-query></em>
         </h1>
         <p class="search-page__lede" data-search-lede="empty">
-          Type a question, topic, or term. Okay to Ask answers, glossary definitions, blog pieces, and services all search together.
+          Search across services, training, blog posts and topics.
         </p>
         <p class="search-page__lede" data-search-lede="active" hidden>
-          Matches across questions, glossary, topics, blog, and services. Keep typing to refine.
+          Matches across services, training, blog and topics. Keep typing to refine.
         </p>
       </div>
     </section>
@@ -63,7 +63,7 @@ const description =
             class="search-page__input"
             type="search"
             name="q"
-            placeholder="Search questions, topics, glossary…"
+            placeholder="Search services, training and articles"
             autocomplete="off"
             autocorrect="off"
             spellcheck="false"
