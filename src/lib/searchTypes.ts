@@ -1,15 +1,14 @@
 /**
  * Shared search-type taxonomy for Pagefind-powered site search.
  *
- * Source of truth for:
- *   - `src/scripts/search-page.ts` (B10 search results page, module script)
- *   - `src/components/SearchBar.astro` (A4 header search, `<script is:inline>`
- *     — must duplicate the literals below verbatim because inline scripts
- *     cannot import modules; a cross-reference comment in that file points
- *     back here)
+ * Single source of truth — both surfaces import it:
+ *   - `src/scripts/search-page.ts` (B10 search results page)
+ *   - `src/scripts/search-header.ts` (A4 header search)
  *
- * If you change a label, a type key, or a URL-matching rule here, mirror
- * the change in SearchBar.astro in the same commit.
+ * SearchBar.astro used to carry a hand-kept copy of the literals below,
+ * because its `<script is:inline>` block couldn't import modules. That script
+ * is now a bundled module, so the duplicate is gone and a change here reaches
+ * both surfaces on its own.
  */
 
 export type ContentType =

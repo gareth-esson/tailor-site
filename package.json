@@ -4,9 +4,11 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && npx pagefind --site .vercel/output/static --output-path .vercel/output/static/pagefind",
-    "build:index": "npx pagefind --site .vercel/output/static --output-path .vercel/output/static/pagefind",
+    "build": "astro build && npm run build:index",
+    "build:index": "npx pagefind --site .vercel/output/static --output-path .vercel/output/static/pagefind && npm run build:search-titles",
+    "build:search-titles": "node scripts/build-search-titles.mjs",
     "preview": "astro preview",
+    "test": "node --test \"tests/**/*.test.mjs\"",
     "astro": "astro"
   },
   "dependencies": {
