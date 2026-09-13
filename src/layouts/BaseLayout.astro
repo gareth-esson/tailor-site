@@ -18,6 +18,7 @@ import lexend600LatinUrl from '@fontsource/lexend/files/lexend-latin-600-normal.
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import CookieBanner from '../components/CookieBanner.astro';
+import OtaSearchPill from '../components/OtaSearchPill.astro';
 import Analytics from '../components/Analytics.astro';
 import {
   site,
@@ -121,6 +122,13 @@ function normaliseCanonical(path: string): string {
 
 const rawPath = canonicalPath ?? Astro.url.pathname;
 const canonical = `${siteUrl}${normaliseCanonical(rawPath)}`;
+
+/**
+ * The OtA search surface has its own input, so it doesn't also carry the
+ * floating pill that links to it. Matched on the real request path rather
+ * than `canonicalPath`, which a page may override for SEO reasons.
+ */
+const isOtaSearchPage = normaliseCanonical(Astro.url.pathname) === '/questions/search/';
 const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`;
 
 // Default OG image dimensions when the page hasn't overridden them.
@@ -302,6 +310,7 @@ const sitewideJsonLd: Record<string, unknown> = isHomepage
     </main>
 
     <SiteFooter />
+    {layer === 'ota' && !isOtaSearchPage && <OtaSearchPill />}
     <CookieBanner />
     <Analytics />
 

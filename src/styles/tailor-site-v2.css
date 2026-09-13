@@ -856,6 +856,14 @@ body:has(.layer-ota) {
     background-color: var(--bg-ota-surface);
 }
 
+/* OtA pages carry the floating search pill, which is fixed to the
+   viewport's bottom-right. At full scroll that corner is the footer, so the
+   footer reserves the pill's height; nothing else on the page can be
+   permanently covered, because anything above the footer scrolls clear. */
+body:has(.layer-ota) .site-footer {
+    padding-bottom: var(--ota-searchpill-clearance);
+}
+
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading-stack);
     color: var(--text-heading);
@@ -2914,6 +2922,18 @@ textarea.form-input {
     --z-header: 100;        /* sticky site header */
     --z-mega: 90;           /* mega menu + dropdown panels — under header border, above page content */
     --z-mobile-nav: 95;     /* mobile nav panel — between mega and header */
+
+    /* OtA floating search pill (bottom-right, OtA pages only).
+       --size is the circle's diameter; --clearance is what the footer
+       needs so the pill can't sit over footer content at full scroll.
+       Both live here because the pill component and the footer rule
+       below must agree on one number. */
+    --ota-searchpill-size: 3.5rem;
+    --ota-searchpill-inset: var(--space-global-md);
+    --ota-searchpill-clearance: calc(
+        var(--ota-searchpill-size) + var(--ota-searchpill-inset)
+    );
+    --z-ota-searchpill: 96;  /* above page content, below header and cookie banner */
 
     /* ====================================
        BREAKPOINTS (reference values)

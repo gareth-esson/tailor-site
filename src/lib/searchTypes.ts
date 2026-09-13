@@ -13,6 +13,7 @@
 
 export type ContentType =
   | 'anonymous_question'
+  | 'pillar'
   | 'glossary'
   | 'topics'
   | 'blog'
@@ -25,6 +26,7 @@ export type ContentType =
  */
 export const typeLabels: Record<ContentType, string> = {
   anonymous_question: 'Okay to Ask',
+  pillar: 'Bigger questions',
   glossary: 'Glossary',
   topics: 'Topics',
   blog: 'Blog',
@@ -41,6 +43,7 @@ export const typeOrder: ContentType[] = [
   'blog',
   'topics',
   'anonymous_question',
+  'pillar',
   'glossary',
   'other',
 ];
@@ -48,6 +51,7 @@ export const typeOrder: ContentType[] = [
 /** Map a result URL to its content type. */
 export function getContentType(url: string): ContentType {
   if (url.includes('/anonymous_question/')) return 'anonymous_question';
+  if (url.includes('/explained/')) return 'pillar';
   if (url.includes('/glossary/')) return 'glossary';
   if (url.includes('/topics/')) return 'topics';
   if (url.includes('/blog/')) return 'blog';
@@ -75,6 +79,38 @@ const SEARCHABLE_TYPES: ReadonlySet<ContentType> = new Set([
 export function isSearchableType(t: ContentType): boolean {
   return SEARCHABLE_TYPES.has(t);
 }
+
+/**
+ * OtA search scope: which content types appear on the Okay to Ask search
+ * surface (`/questions/search`). The exact complement of the young-person
+ * side of the site — questions, the pillar hubs that consolidate question
+ * clusters, and the glossary.
+ *
+ * Deliberately disjoint from SEARCHABLE_TYPES: no type appears in both. A
+ * reader is either looking for a service (chrome / B10) or for an answer
+ * (here), and the two surfaces never return each other's content.
+ */
+const OTA_SEARCHABLE_TYPES: ReadonlySet<ContentType> = new Set([
+  'anonymous_question',
+  'pillar',
+  'glossary',
+]);
+
+export function isOtaSearchableType(t: ContentType): boolean {
+  return OTA_SEARCHABLE_TYPES.has(t);
+}
+
+/**
+ * Display order for OtA results. A young person types their actual question,
+ * so the real handed-in questions lead; the pillar hubs follow as the
+ * broader "bigger question" behind a cluster; the glossary last, since a
+ * term definition answers a narrower need than a question does.
+ */
+export const otaTypeOrder: ContentType[] = [
+  'anonymous_question',
+  'pillar',
+  'glossary',
+];
 
 /**
  * Strict substring match — drops Pagefind fuzzy/prefix false-positives like
