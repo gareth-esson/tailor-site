@@ -30,7 +30,7 @@ Read his post "Are We Leaving Boys Behind? Teaching Masculinity in Schools" for 
 
 ## Structure
 
-**Length:** 600–900 words. Shorter is better. Every sentence should give the reader something they can use.
+**Length:** No fixed word count — let the piece be as long as its job needs. Shorter is better, and every sentence should give the reader something they can use.
 
 **Opening:** Start with something personal, relatable, or grounded in real experience. Not a statistic, not a policy quote, not a shocking case study used as clickbait. The reader already clicked the title — they don't need to be convinced to keep reading. The opening should feel like the start of a conversation, not the start of an essay.
 
