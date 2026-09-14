@@ -284,3 +284,25 @@ added to the five that had none. The original prompt is kept below for the recor
 > §3 also asks that a review re-checks every cited URL for a 200 and for the content still saying what it said. That is not part of this pass — this pass sets the flags. Say so plainly in your report so nobody later reads `lastReviewedDate` as meaning the URLs were checked.
 >
 > Run `npm test` and `npx astro build`, and report the real exit statuses. Commit when done; do not push without asking.
+
+---
+
+## 11. Rewrite: teaching-hard-topics-when-not-a-specialist — from scratch
+
+> Deliberately short. Two previous attempts failed by writing to a list of things to avoid, which produces prose shaped by the avoiding. Read the voice rules, then write the piece.
+
+> Rewrite `src/content/blog/teaching-hard-topics-when-not-a-specialist/index.mdx` from scratch. Read what is there, then write it again — do not edit the existing text into shape.
+>
+> **Who it is for.** A teacher handed a difficult RSE topic who did not train in RSE. The updated guidance came into force this school year and schools have more to cover than specialists to cover it, so this is increasingly common and not a sign anything has gone wrong.
+>
+> **What it is about.** The topics that are hard to teach — plural, and wider than the current draft allows. It narrows to pornography and sexual violence. The real territory also includes FGM, misogyny, sexual violence, consent, LGBT+ inclusion and others. They are hard for different reasons: some for the content, some for what pupils bring to them, some for where the teacher stands personally. Work out the real list and what actually separates these topics from the rest of a teacher's week.
+>
+> **Two things the current version gets right**, worth carrying in whatever form you land on: it hands the reader sentences they can say out loud, and it is clear about the point where a question stops being a question and becomes a safeguarding matter.
+>
+> **Two things it gets wrong.** It treats the reader as though they cannot run a room. They can — the gap is subject grounding, not classroom management, and advice about staying calm or reading the lesson plan reads as an insult to a teacher of fifteen years. And it misses that the difficulty runs both ways: pupils can find it harder to take this material from a teacher they know in another register, the tutor who takes their register or last year's chemistry teacher.
+>
+> Read `docs/Tailor_Blog_Writing_Rules.md` and write to it. Do not bring a list of banned phrases to the desk with you.
+>
+> First-person material is Gareth's. Where the piece would be better for something he has actually seen, leave the gap and ask him rather than inventing it. Two earlier claims were cut for exactly this reason and should not come back in another form.
+>
+> Write the piece rather than proposing an outline. Run `npx astro build` and report the real exit status. Commit; do not push.
