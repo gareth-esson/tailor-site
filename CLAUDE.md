@@ -31,6 +31,19 @@ system catalogue. Reference it when the operating rules or v2 notes
 point to a specific section; it doesn't need to be read up-front every
 session.
 
+## Tone of voice (mandatory before writing any marketing copy)
+
+Before editing any prose on a service page, the homepage, a CTA
+component, or any marketing surface, read **`docs/tone-of-voice.md`**
+in full. It codifies the rule that the customer (school / teacher /
+PSHE lead) is the protagonist of every marketing sentence and Tailor
+recedes into the means — and the specific sentence patterns and word
+tics ("We deliver…", "actually", "committed to", etc.) that must be
+rewritten.
+
+This rule does **not** apply to blog posts, legal/operational copy,
+or the trust strip — see the doc for the exclusions list.
+
 ## The one rule that governs everything
 
 Every visual value must reference a design token. No hardcoded hex, rgb,
