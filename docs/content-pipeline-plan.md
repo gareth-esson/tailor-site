@@ -405,9 +405,7 @@ The Tailor editorial system is now three companion documents working together. C
 
 **Scope**: every blog post drafted for the Tailor site.
 
-**Authoritative for**: golden rule ("read like a conversation, not an essay"), voice characterisation (warm, direct, human — colleague at a conference), structure (600–900 words, personal opening, prose not bullet lists, natural CTA, "Trusted resources" section), tone rules, things to avoid (em-dash lists, "It's not X; it's Y," bold labels, throat-clearing, filler intensifiers, summary paragraphs, rhetorical-question transitions, balanced triplets), practical requirements (British spelling, hyperlink sources in text, every post links to at least one topic page), the 90% test and the read-aloud test.
-
-**Benchmark post**: "Are We Leaving Boys Behind? Teaching Masculinity in Schools" (already in the existing 16).
+**Authoritative for**: golden rule ("read like advice from an experienced colleague, not an essay"), author persona and the ban on writing experience Gareth hasn't had, reader level, structure (no fixed word count, straightforward opening with no hook or problem statement, prose not bullet lists, flat two-line CTA, "Trusted resources" section), tone rules (assume good faith in schools and parents; don't characterise the absent party as failing), things to avoid (em-dash lists, "It's not X; it's Y," bold labels, throat-clearing anywhere, filler intensifiers, summary paragraphs, rhetorical-question transitions, balanced triplets), practical requirements (British spelling, hyperlink sources in text, every post links to at least one topic page, check guidance claims against source text including the previous version), the 90% test and the read-aloud test.
 
 ### 5.2 `docs/Tailor_Site_Copy_Writing_Rules.md` — site copy voice (organisation "we")
 
