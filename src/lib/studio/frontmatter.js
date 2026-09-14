@@ -22,6 +22,9 @@ export const FIELD_ORDER = [
   'status',
   'publishedDate',
   'dateModified',
+  'guidanceSensitive',
+  'reviewBy',
+  'lastReviewedDate',
   'author',
   'category',
   'targetAudience',
@@ -175,7 +178,17 @@ export function serialiseFile(fields, patch, body) {
   // is set) get inserted at their schema position rather than appended,
   // so frontmatter blocks stay comparable across posts.
   const additions = Object.keys(patch).filter(
-    (k) => !seen.has(k) && patch[k] !== null && patch[k] !== undefined && patch[k] !== '',
+    (k) =>
+      !seen.has(k) &&
+      patch[k] !== null &&
+      patch[k] !== undefined &&
+      patch[k] !== '' &&
+      // A boolean sitting at its schema default (guidanceSensitive is
+      // `false` by default) says exactly what the key's absence already
+      // says. The form posts every field on every save, so writing it
+      // out would add a line to every post the first time anyone pressed
+      // Save — churn in return for no information.
+      patch[k] !== false,
   );
   for (const key of additions) {
     const emitted = emitField(key, patch[key]);

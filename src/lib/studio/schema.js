@@ -25,6 +25,9 @@ export const EDITABLE_FIELDS = {
   status: { kind: 'enum', label: 'Status', options: STATUSES, required: true },
   publishedDate: { kind: 'date', label: 'Published' },
   dateModified: { kind: 'date', label: 'Last updated' },
+  guidanceSensitive: { kind: 'boolean', label: 'Guidance-sensitive' },
+  reviewBy: { kind: 'date', label: 'Review by' },
+  lastReviewedDate: { kind: 'date', label: 'Last reviewed' },
   author: { kind: 'text', label: 'Author', max: 120 },
   category: { kind: 'enum', label: 'Category', options: CATEGORIES, nullable: true },
   targetAudience: { kind: 'enum', label: 'Audience', options: AUDIENCES, nullable: true },
@@ -72,6 +75,23 @@ export function validatePatch(patch) {
           break;
         }
         value[key] = raw;
+        break;
+      }
+
+      case 'boolean': {
+        // Must arrive as a real boolean. The collection schema is
+        // z.boolean(), so a string — even "true" — would be emitted as a
+        // quoted scalar and fail the build on the next deploy. Blank or
+        // absent means the schema default, which is false.
+        if (raw === true || raw === false) {
+          value[key] = raw;
+          break;
+        }
+        if (isBlank) {
+          value[key] = false;
+          break;
+        }
+        errors.push(`${field.label} must be true or false.`);
         break;
       }
 
