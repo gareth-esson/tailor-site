@@ -80,6 +80,34 @@ const selects = [
           </p>
         </div>
 
+        <h2 class="studio__rail-heading">Review</h2>
+        <div class="form-group">
+          <label class="form-check" for="studio-guidanceSensitive">
+            <input type="checkbox" id="studio-guidanceSensitive" data-field="guidanceSensitive" />
+            Guidance-sensitive
+          </label>
+          <p class="studio__rail-note">
+            Tick for posts resting on statutory guidance, KCSIE, Ofsted, RSHE, mental-health
+            intervention, age of consent or online-safety law — anything whose landscape can change
+            under the published text. Such a post gets a review date six months out.
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="studio-reviewBy">Review by</label>
+          <input class="form-input" type="date" id="studio-reviewBy" data-field="reviewBy" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="studio-lastReviewedDate">Last reviewed</label>
+          <input class="form-input" type="date" id="studio-lastReviewedDate" data-field="lastReviewedDate" />
+          <p class="studio__rail-note">
+            Set on completing a review — re-run the Red Team pass, re-check every cited URL, then
+            bump this and set the next review date.
+          </p>
+        </div>
+
+        <h2 class="studio__rail-heading">Byline</h2>
         <div class="form-group">
           <label class="form-label" for="studio-author">Author</label>
           <input class="form-input" type="text" id="studio-author" data-field="author" />

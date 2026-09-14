@@ -136,7 +136,10 @@ export function initStudioEditor(slug: string): void {
     for (const input of fieldInputs) {
       const key = input.dataset.field;
       if (!key) continue;
-      out[key] = input.value;
+      // A checkbox must post a real boolean: the collection schema is
+      // z.boolean(), and its .value is the string "on" either way.
+      out[key] =
+        input instanceof HTMLInputElement && input.type === 'checkbox' ? input.checked : input.value;
     }
     return out;
   };
@@ -146,6 +149,10 @@ export function initStudioEditor(slug: string): void {
       const key = input.dataset.field;
       if (!key) continue;
       const value = frontmatter[key];
+      if (input instanceof HTMLInputElement && input.type === 'checkbox') {
+        input.checked = value === true;
+        continue;
+      }
       input.value = value === null || value === undefined ? '' : String(value);
     }
     tags = Array.isArray(frontmatter.contentTags) ? (frontmatter.contentTags as string[]).slice() : [];
