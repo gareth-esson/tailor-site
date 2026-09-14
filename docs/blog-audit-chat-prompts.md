@@ -173,24 +173,48 @@ added to the five that had none. The original prompt is kept below for the recor
 
 ---
 
-## 9. Reframe: rse-programme-more-than-drop-down-day — one chat, this post only
+## 9. Reframe rse-programme, and fix its out-of-date Ofsted claims — one chat, this post only
 
-> `src/content/blog/rse-programme-more-than-drop-down-day/index.mdx` argues a position Tailor's own service page contradicts. Reframe it.
+> `src/content/blog/rse-programme-more-than-drop-down-day/index.mdx` needs two things doing together: its description of Ofsted inspection is out of date, and its central argument contradicts Tailor's own service page. They interact, because the out-of-date material is what the argument leans on.
 >
-> Read first, in full: `docs/Tailor_Blog_Writing_Rules.md`, the **D2** entry under "Decisions settled" in `docs/blog-audit-2026-09-14.md`, cross-cutting pattern 4 in the same document, and `src/pages/services/drop-days.astro`.
+> Read first, in full: `docs/Tailor_Blog_Writing_Rules.md`, `docs/editorial-policy.md` §1, the **D2** entry under "Decisions settled" in `docs/blog-audit-2026-09-14.md`, cross-cutting pattern 4 in the same document, and `src/pages/services/drop-days.astro`.
+>
+> ### Part 1 — the factual error, do this first
+>
+> The post describes an Ofsted framework that no longer exists. Verified on 14 Sept 2026 by fetching <https://www.gov.uk/government/publications/education-inspection-framework-eif/education-inspection-framework-for-use-from-november-2025> (HTTP 200, page updated 9 September 2025, "For use on inspections from 10 November 2025"):
+>
+> - The post says "The inspection methodology includes deep dives". The phrase "deep dive" does not appear anywhere in the current framework, in any casing.
+> - The post names the judgement areas "quality of education", "personal development" and "behaviour and attitudes". None is a current evaluation area name for schools. The framework's term is now "evaluation areas", and for schools they are: safeguarding, inclusion, curriculum and teaching, achievement, attendance and behaviour, personal development and wellbeing, early years (where applicable), post-16 provision (where applicable), leadership and governance.
+> - Since November 2025 Ofsted no longer gives an overall effectiveness grade, and the scale is five points — Exceptional, Strong standard, Expected standard, Needs attention, Urgent improvement. Safeguarding is graded met / not met.
+> - "Ofsted doesn't grade RSE as a separate subject" is uncited and should be checked against the current framework rather than restated.
+>
+> **One caveat to check rather than assume:** the framework page defers methodology to separate "inspection toolkits" and "operating guides" per remit. "Deep dive" may survive in the school inspection toolkit even though it is absent from the framework. Fetch the school toolkit, linked from the framework page, before wording the correction.
+>
+> This is the most actionable wrong thing on the blog — a school leader could plan an inspection response around it.
+>
+> ### Part 2 — the reframe
 >
 > **The decision is already made — implement it, do not reopen it.** `/services/drop-days` sells the concentrated day as a legitimate delivery model ("Some schools prefer to concentrate their RSE delivery into a single, high-quality day rather than spread it thinly across the year"). This post says the opposite ("as the backbone of your RSE programme? They don't work"). Gareth's position, given on 14 Sept 2026: for most schools the drop day **is** their RSE, and the writing has to meet that reader. The service page is the line.
 >
-> Keep the guidance-backed argument — the 2026 guidance expects secondary RSE to provide clear progression from primary, and a single day cannot carry that alone. Change what the post does with it: from *this doesn't work* to *here is how to make the day carry weight, and the smallest thing to put around it*. The reader running one drop day a year should finish the post with something to do, not a verdict on their programme.
+> Keep the guidance-backed argument — the 2026 guidance expects secondary RSE to provide clear progression from primary, and a single day cannot carry that alone. Change what the post does with it: from *this doesn't work* to *here is how to make the day carry weight, and the smallest thing to put around it*. The reader running one drop day a year should finish with something to do, not a verdict on their programme.
 >
-> This also closes the cross-cutting pattern 4 good-faith breach ("here is what most schools currently do, and it isn't enough") that the audit flags against this post, and the "Why one-off sessions don't stick" heading is where it is sharpest.
+> This also closes the cross-cutting pattern 4 good-faith breach ("here is what most schools currently do, and it isn't enough"), sharpest under the "Why one-off sessions don't stick" heading.
 >
 > Note the post already contains "the external input should supplement your programme, not replace it" — that sentence is not the fix and was considered and rejected as one.
 >
-> Add a cross-link to `src/content/blog/drop-day-setup/index.mdx`, which is the practical companion piece and currently takes no position on the drop day's role. `drop-day-setup` needs no sentence added to it — see D2 for why.
+> Add a cross-link to `src/content/blog/drop-day-setup/index.mdx`, the practical companion piece, which currently takes no position on the drop day's role. `drop-day-setup` itself needs no sentence added — see D2 for why.
 >
-> Do not invent first-person experience. A mechanical pass on 14 Sept deleted 31 sentences across the blog, so some sentences quoted in the audit no longer exist. Check the file, not the quote.
+> ### Part 3 — two claims still unsourced
 >
-> **Coordination:** this post is also in prompt 1 (the citation pass), which owns its three placeholder citations in Trusted resources and its unsourced Ofsted 2021 and Sex Education Forum 2024 statistics. Do not run both chats at once on this file, and leave the citations to that pass unless you are running it too.
+> - "A spiral curriculum… is what the evidence supports" — cite it or drop the appeal to evidence.
+> - "Most RSE in England is delivered by form tutors or PSHE teachers who haven't had specialist training" — uncited, and it also breaches the good-faith rule by attributing a shortcoming to schools. Handle both faults.
 >
-> Run `npx astro build` when done and report the real exit status.
+> ### Already done — do not redo
+>
+> This post's Ofsted 2021 review citation and its Sex Education Forum 2024 poll figure (57%) were sourced and verified on 14 Sept, and its three placeholder Trusted resources links were replaced. Leave all of those alone. The earlier coordination note about prompt 1 owning this file is spent — prompt 1's work here is finished.
+>
+> ### Finally
+>
+> This post is exactly the case `docs/editorial-policy.md` §3 exists to catch: guidance that moves under published text. The blog schema now carries `guidanceSensitive`, `reviewBy` and `lastReviewedDate`, and the studio editor can set them. No post yet does. Propose setting them here, and raise with Gareth whether the other guidance-sensitive posts should follow.
+>
+> Do not invent first-person experience. A mechanical pass on 14 Sept deleted 31 sentences across the blog, so some sentences quoted in the audit no longer exist — check the file, not the quote. Run `npx astro build` and report the real exit status. Commit when done; do not push without asking.
