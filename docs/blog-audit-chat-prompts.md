@@ -237,3 +237,38 @@ added to the five that had none. The original prompt is kept below for the recor
 > This post is exactly the case `docs/editorial-policy.md` §3 exists to catch: guidance that moves under published text. The blog schema now carries `guidanceSensitive`, `reviewBy` and `lastReviewedDate`, and the studio editor can set them. No post yet does. Propose setting them here, and raise with Gareth whether the other guidance-sensitive posts should follow.
 >
 > Do not invent first-person experience. A mechanical pass on 14 Sept deleted 31 sentences across the blog, so some sentences quoted in the audit no longer exist — check the file, not the quote. Run `npx astro build` and report the real exit status. Commit when done; do not push without asking.
+
+---
+
+## 10. Set the periodic-review fields across the guidance-sensitive posts — one chat, frontmatter and one policy edit
+
+> `docs/editorial-policy.md` §3 requires posts whose underlying landscape can change to carry `guidanceSensitive: true`, a `reviewBy` date, and `lastReviewedDate` when reviewed. The schema and the studio editor both support them since 14 Sept 2026. Exactly one post sets them.
+>
+> Read first: `docs/editorial-policy.md` §3, and `src/content/blog/rse-programme-more-than-drop-down-day/index.mdx`, which is the worked example — `guidanceSensitive: true`, `lastReviewedDate: "2026-09-14"`, `reviewBy: "2027-03-14"`.
+>
+> ### The candidate list
+>
+> 18 of the 24 published posts cite statutory or legal sources (DfE assets, gov.uk, Ofsted, KCSIE, UKCIS or the Sexual Offences Act). `rse-programme-more-than-drop-down-day` is already done, leaving **17**:
+>
+> `2026-rse-guidance-plain-english-summary` (11 refs), `2026-rse-guidance-primary-schools` (11), `2026-rse-guidance-secondary-schools` (7), `complete-guide-rse-special-schools` (3), `consulting-parents-rse-policy-2026` (10), `parental-right-to-withdraw-rse-2026` (17), `reduce-withdrawals-sex-education-parent-consultation` (12), `rse-policy-checklist-2026` (33), `rse-policy-questions-governors-ask` (5), `rse-send-practical-approaches` (11), `sharing-nudes-sextortion-deepfakes-schools-2026` (16), `talking-to-boys-masculinity-misogyny-online-influencers` (8), `teaching-consent-beyond-no-means-no` (3), `teaching-hard-topics-when-not-a-specialist` (6), `teaching-porn-literacy-what-it-is-why-it-matters` (2), `teaching-puberty-primary-schools-guide` (4), `what-young-people-want-to-know-sex-relationships` (8).
+>
+> The six with no statutory citation are the partner-session write-ups plus `drop-day-setup`. Check rather than assume — a post can be guidance-sensitive without a hyperlink.
+>
+> ### Two decisions to settle with Gareth before editing
+>
+> **1. Stagger the dates.** Seventeen posts all dated `2027-03-14` means seventeen reviews due in one week, which is how a review date becomes something people ignore. Propose a staggering principle and get it agreed. A sensible basis is volatility of the underlying source rather than an arbitrary spread:
+>
+> - Fastest-moving, shortest interval: anything resting on the Ofsted framework or the school inspection toolkit (the toolkit reached v2.0 in June 2026), and anything resting on criminal or online-safety law — `sharing-nudes-sextortion-deepfakes-schools-2026` especially.
+> - Slower: posts resting on the RSHE statutory guidance, which only came into force on 1 September 2026 and is unlikely to move soon.
+>
+> Do not invent a schedule unilaterally — put the principle to Gareth, then apply it.
+>
+> **2. Amend `docs/editorial-policy.md` §3.** It says a guidance-sensitive post is "given a `reviewBy` date six months from publish". The practice established on `rse-programme` is six months from **review**, so the clock restarts each time someone actually looks. That is the more useful rule and the doc should be amended to match, rather than left contradicting what the posts do. Make the edit as part of this pass.
+>
+> ### The work
+>
+> Frontmatter only — do not edit prose. For each post: `guidanceSensitive: true`, `reviewBy` per the agreed schedule, and `lastReviewedDate` only where a genuine review has happened. **Do not set `lastReviewedDate` to today for a post nobody has reviewed** — that would assert a check that did not occur, which is the quiet kind of false record §3 exists to prevent. Posts reviewed on 14 Sept 2026 (the audit pass) can carry that date; the rest should leave it null until reviewed.
+>
+> §3 also asks that a review re-checks every cited URL for a 200 and for the content still saying what it said. That is not part of this pass — this pass sets the flags. Say so plainly in your report so nobody later reads `lastReviewedDate` as meaning the URLs were checked.
+>
+> Run `npm test` and `npx astro build`, and report the real exit statuses. Commit when done; do not push without asking.
