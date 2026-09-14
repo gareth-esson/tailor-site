@@ -1,78 +1,180 @@
 # Teaching the hard topics when you're not a specialist
 
-The topics that get called hard are not hard in the same way. [Pornography](/topics/pornography-and-media-literacy) has to be taught about material the lesson cannot show. [Sending nudes](/topics/sexting-and-sharing-nudes) sits where the criminal law and the safeguarding response pull against each other, so the lesson has to be accurate about both without landing as a caution. With [FGM](/topics/fgm-and-harmful-practices), a legal duty sits on the teacher personally rather than on the school: the FGM Act 2003 requires teachers in England and Wales to report "'known' cases of FGM in under 18s which they identify in the course of their professional work" to the police ([DfE and Home Office procedural information, 2016](https://www.gov.uk/government/publications/mandatory-reporting-of-female-genital-mutilation-procedural-information)). [Misogyny](/topics/masculinity-and-misogyny) is a topic where part of the class may disagree out loud and expect an argument. Suicide carries risk in the phrasing itself, to the point that schools "should consult mental health professionals and put in place high quality, evidence-based staff training before addressing suicide directly with secondary aged pupils" ([paragraph 44 of the 2025 RSHE guidance, printed page 25](https://assets.publishing.service.gov.uk/media/6970e7e67e827090d02d42e0/Relationships_education_relationships_and_sex_education__RSE__and_health_education__for_intro_1_September_2026_.pdf#page=26)). [Consent](/topics/consent) looks the most straightforward of the lot, and then [the grey areas](/blog/teaching-consent-beyond-no-means-no/) arrive.
+The topics that get called *hard* are not hard in the same way.
 
-What those have in common is not subject matter. The DfE's revised RSHE guidance, published in July 2025, [came into effect in England on 1 September 2026](https://www.gov.uk/government/publications/relationships-education-relationships-and-sex-education-rse-and-health-education). It expects these subjects to be delivered by staff "who have the knowledge, skills and confidence to create a safe and supportive environment", and adds that staff "should be trained in safeguarding and offering support, recognising the increased possibility of disclosures" ([paragraph 15f, printed page 5](https://assets.publishing.service.gov.uk/media/6970e7e67e827090d02d42e0/Relationships_education_relationships_and_sex_education__RSE__and_health_education__for_intro_1_September_2026_.pdf#page=6)). That is a fair description of what is missing when a hard topic is handed to someone who trained in a different subject, and the three parts of it are not the same problem. Knowledge is the part you can go and get. Skills here are a short, specific set that can be taught. Confidence is mostly what the first two produce, plus knowing what the school has already decided.
+[Pornography](/topics/pornography-and-media-literacy) has to be taught about material the lesson cannot show. [Sending nudes](/topics/sexting-and-sharing-nudes) sits where criminal law and safeguarding meet, and a simplified version of either can mislead pupils. With [FGM](/topics/fgm-and-harmful-practices), a legal duty sits on the teacher personally: teachers in England and Wales must report "'known' cases of FGM in under 18s which they identify in the course of their professional work" to the police ([DfE and Home Office procedural information](https://www.gov.uk/government/publications/mandatory-reporting-of-female-genital-mutilation-procedural-information)). [Misogyny](/topics/masculinity-and-misogyny) can produce a class in which some pupils disagree with the premise of the lesson and expect an argument. Suicide carries risk in how it is taught. [Consent](/topics/consent) looks straightforward until [the grey areas](/blog/teaching-consent-beyond-no-means-no/) arrive.
 
-There is more in the curriculum than any school has RSE specialists to cover, so a good deal of this teaching lands with people who trained in something else. Being one of them is a normal position to be in, not a gap to apologise for. What follows assumes the classroom craft is already there — sequencing, pace, knowing when a quiet class is thinking and when it has gone somewhere else — and deals with the rest.
+Calling all of these *sensitive topics* is useful up to a point. It can also hide the thing a teacher most needs to know:
 
-## Start with the school's decisions, not the lesson plan
+**What, exactly, is hard about this lesson?**
 
-A hard topic arrives as a title on a timetable. Before you plan anything, find out what has already been decided about it, because those decisions are not yours to make in the room at short notice.
+Sometimes it is a knowledge problem. You need to be precise about contraception, anatomy, the law or what a particular term means.
 
-Read the RSE policy for what it says about this topic and about withdrawal, so you know whether anyone in that class is not meant to be in the lesson. Find out how questions beyond the scope of the lesson are handled. The guidance is explicit that this belongs in the policy: pupils may ask about things that go past what the school teaches, and "The school's policy should explain how teachers will handle such questions, with an emphasis on supporting the child" ([paragraph 87, printed page 40](https://assets.publishing.service.gov.uk/media/6970e7e67e827090d02d42e0/Relationships_education_relationships_and_sex_education__RSE__and_health_education__for_intro_1_September_2026_.pdf#page=41)). Find out what pupils were taught before this lesson, and by whom. And find out who is covering the designated safeguarding lead role on the day you're teaching, not in general.
+Sometimes it is a room problem. Pupils may laugh, challenge the premise, perform for each other or try to turn the lesson into a debate about whether the issue exists at all.
 
-If any of that turns out not to exist in a usable form yet, that is worth saying to whoever gave you the topic, before the lesson rather than after it.
+Sometimes it is a distance problem. The subject sits close enough to pupils' own lives that ordinary classroom questions can become intrusive.
 
-## Be accurate about the things you will actually say
+Sometimes it is a safeguarding problem. The lesson has a realistic chance of prompting a disclosure.
 
-You don't need the subject knowledge of a specialist. You need to be right about the specific things that will come out of your mouth, which is a much smaller set.
+And sometimes the risk sits in the teaching itself. The subject needs specialist preparation because handling it badly can do harm.
 
-The curriculum content lists in the guidance are short and unusually concrete, and they tell you what pupils are meant to end up knowing. Use them as the floor for the lesson and work outwards. Where the content is clinical, take it from the [NHS](https://www.nhs.uk/) or [Brook](https://www.brook.org.uk) rather than from memory. Where it touches the law, be more careful still — the thresholds in this area come with complications that a one-line version loses, and a pupil acting on the simplified version is the problem you are trying to avoid. [Sex and the law](/topics/sex-and-the-law) is its own topic for a reason.
+A lesson can involve several of these at once. But once you know which problems you are dealing with, preparation becomes much more specific.
 
-"I don't know, and I'll find out" is a complete answer, as long as you come back with the answer. Planning to come back is what separates it from a deflection.
+The revised RSHE guidance, published in July 2025 and [in effect in England since 1 September 2026](https://www.gov.uk/government/publications/relationships-education-relationships-and-sex-education-rse-and-health-education), expects staff delivering these subjects to have the "knowledge, skills and confidence to create a safe and supportive environment" ([paragraph 15f, printed page 5](https://assets.publishing.service.gov.uk/media/6970e7e67e827090d02d42e0/Relationships_education_relationships_and_sex_education__RSE__and_health_education__for_intro_1_September_2026_.pdf#page=6)). Those are three different things. Knowledge can be checked. Skills can be practised. Confidence usually follows when the first two are in place and you know what the school has already decided.
 
-## Three techniques do most of the work
+Most teachers delivering RSE did not train as RSE specialists. That does not make the classroom craft they already have irrelevant. Sequencing, pace, reading a room and knowing when a quiet class is thinking rather than disappearing still matter.
 
-The guidance names them in one sentence: "When teaching sensitive topics, teachers can use approaches such as distancing techniques, setting ground rules with the class to help manage sensitive discussion, and using question boxes to allow pupils to raise issues anonymously" ([paragraph 36, printed page 12](https://assets.publishing.service.gov.uk/media/6970e7e67e827090d02d42e0/Relationships_education_relationships_and_sex_education__RSE__and_health_education__for_intro_1_September_2026_.pdf#page=13)). The same sentence appeared in the 2019 version, so this is settled practice rather than a new requirement. It is also compressed to the point of being unusable if nobody has shown you what each one looks like.
+The additional work is narrower than it can first appear.
 
-Distancing means teaching the material through someone who isn't in the room. A scenario, a character, a "someone your age might". A pupil who has lived the thing being discussed can then take part in the lesson without having to choose between saying nothing and exposing themselves, and a pupil who hasn't can think about it without performing an opinion. It is the single most useful habit to build if you are new to this, and it works as well in [healthy relationships](/topics/healthy-relationships) as it does in [online safety](/topics/online-safety) or [personal safety](/topics/personal-safety).
+## Start with the things that are not yours to decide
 
-Ground rules should be agreed at the start and few enough that pupils can hold them in their heads. The one that earns its place is that nobody is asked about their own experience and nobody discusses anyone else's. That rule binds you too, so no "has this ever happened to anyone here?", however naturally the discussion seems to invite it.
+A hard topic often arrives as a title on a timetable.
 
-Question boxes work better collected in advance than passed round at the end. Take them at the close of the previous lesson, so you have time to look up what you don't know, decide what falls outside the scope of the lesson, and notice anything that needs passing to the safeguarding lead before you next stand in front of that class. Ask everyone to write something, so that writing nothing isn't visible. There is more on running an anonymous Q&A well in [the post about the question box at the British Museum](/blog/british-museum-no-sex-please-anonymous-questions/).
+Before you start planning activities, find out what the school has already decided about it.
 
-## Say how confidentiality works before you need it
+Read the RSE policy. Know what it says about the topic, withdrawal and how questions beyond the scope of the curriculum are handled. The guidance puts that last one in the policy rather than leaving it to the room: "The school's policy should explain how teachers will handle such questions, with an emphasis on supporting the child" ([paragraph 87, printed page 40](https://assets.publishing.service.gov.uk/media/6970e7e67e827090d02d42e0/Relationships_education_relationships_and_sex_education__RSE__and_health_education__for_intro_1_September_2026_.pdf#page=41)). Find out what pupils have already been taught, because a lesson on consent lands differently if pupils already have a shared language around pressure, boundaries and [healthy relationships](/topics/healthy-relationships).
 
-Pupils should "understand how confidentiality will be handled in a lesson and what might happen if they choose to make a report, about themselves or a peer", and staff "should never promise a child that they will not tell anyone about a report of abuse" ([paragraph 85, printed pages 39–40](https://assets.publishing.service.gov.uk/media/6970e7e67e827090d02d42e0/Relationships_education_relationships_and_sex_education__RSE__and_health_education__for_intro_1_September_2026_.pdf#page=40)). Both of those are much easier to honour if the class hears it at the start, while it is a general statement about how the room works, than if you have to introduce it to one pupil mid-sentence.
+Know who is covering the designated safeguarding lead role on the day you are teaching, not just whose name normally sits at the top of the policy.
 
-A plain version told to the whole class does the job. Something you are told in this lesson stays in this lesson, unless it makes me think someone isn't safe, and then I have to pass it on to the person whose job that is, and I will tell you that I'm doing it. Say it in your own words, then teach the lesson.
+And know where an unanswered question goes.
 
-## When something is disclosed
+If those things do not exist in a usable form, that is worth finding out before the lesson rather than while thirty pupils are looking at you.
 
-The guidance is direct about this: "Discussions about sensitive topics in RSHE can lead to increased safeguarding reports" ([paragraph 84, printed page 39](https://assets.publishing.service.gov.uk/media/6970e7e67e827090d02d42e0/Relationships_education_relationships_and_sex_education__RSE__and_health_education__for_intro_1_September_2026_.pdf#page=40)). A disclosure is an expected outcome of teaching this material, not evidence that the lesson went wrong.
+## If the problem is knowledge, shrink it
 
-In the moment, let the pupil finish. Don't ask questions that shape the account, and don't investigate — that is somebody else's job and doing it can make their job harder. Write down what was said in the pupil's own words as soon as you reasonably can, and pass it to the designated safeguarding lead the same day, following Part 1 of [Keeping children safe in education](https://www.gov.uk/government/publications/keeping-children-safe-in-education--2). Paragraph 84 also points to mandatory reporting duties, including those relating to FGM; if a lesson is anywhere near that ground, the DSL should know in advance, and [FGM and harmful practices](/topics/fgm-and-harmful-practices) covers what the teaching itself has to do. Where an external visitor is delivering the session, the guidance requires the school to agree in advance how a safeguarding concern raised with that visitor would be dealt with.
+You do not need the subject knowledge of a specialist.
 
-Work out beforehand how a pupil could speak to you without the class watching, and what the rest of the class does for the two minutes that takes.
+You need to be right about the specific things that are going to come out of your mouth.
 
-## Some topics are not a lone teacher's to take on
+That is a much smaller task.
 
-There is a real limit to "you'll be fine", and the guidance draws it clearly. Eating disorders and self-harm "can be taught about in secondary schools in a safe and sensitive way but are specialised areas", where schools "should use qualified support or advice", and it "is important that schools ensure that teachers are properly equipped to lead discussions about these topics, including what to do if a pupil makes a disclosure" ([paragraph 42, printed page 25](https://assets.publishing.service.gov.uk/media/6970e7e67e827090d02d42e0/Relationships_education_relationships_and_sex_education__RSE__and_health_education__for_intro_1_September_2026_.pdf#page=26)). On suicide, schools "should consult mental health professionals and put in place high quality, evidence-based staff training before addressing suicide directly with secondary aged pupils" ([paragraph 44, printed page 25](https://assets.publishing.service.gov.uk/media/6970e7e67e827090d02d42e0/Relationships_education_relationships_and_sex_education__RSE__and_health_education__for_intro_1_September_2026_.pdf#page=26)), and should weigh "the confidence and skills of teachers" when deciding whether to deliver it at all ([paragraph 45, printed page 26](https://assets.publishing.service.gov.uk/media/6970e7e67e827090d02d42e0/Relationships_education_relationships_and_sex_education__RSE__and_health_education__for_intro_1_September_2026_.pdf#page=27)).
+Start with what pupils are actually supposed to learn. Use the curriculum content as the floor rather than trying to become an expert on the whole subject. For clinical information, and for [anatomy](/topics/bodies-and-anatomy), use sources such as the [NHS](https://www.nhs.uk/) or [Brook](https://www.brook.org.uk/) rather than memory.
 
-Read that as protection rather than a hurdle. If one of these has been put in front of you without the training the guidance describes, the next step is a conversation with whoever timetabled it, not a longer evening's planning. [Mental health and wellbeing](/topics/mental-health-and-wellbeing) sits next to these topics without requiring you to teach them cold.
+Be particularly careful with [the law](/topics/sex-and-the-law). The memorable one-line version is tempting, but legal thresholds often have qualifications that disappear when they are simplified. If a pupil could make a decision based on something you tell them, the simplified version needs to hold.
 
-## Practise the words
+And "I don't know, but I'll find out" is a complete answer.
 
-Read the lesson aloud before you teach it, particularly the parts with anatomical terms in them. The correct names for body parts are in the primary curriculum content of the guidance, which means pupils are meant to hear them said normally, and the first time you say a word out loud should not be in front of thirty of them. The same applies to whatever the specific vocabulary of your topic is — the words used in [pornography and media literacy](/topics/pornography-and-media-literacy) work, or in [abuse, exploitation and violence](/topics/abuse-exploitation-and-violence), are not words most adults say in a professional register very often.
+It only becomes a deflection if you never come back.
 
-Decide in advance, too, what you will do with laughter. Not stop it dead, and not join in, but a line you have already chosen so that you aren't choosing one while it happens.
+## If the subject sits close to pupils' lives, create distance
 
-## What to ask the school for
+Distancing is one of the most useful habits in RSE.
 
-Because the guidance expects staff delivering these subjects to have the knowledge, skills and confidence to do it, asking for support is asking for something the guidance already assumes. Ask for the scheme of work and the resources rather than a topic title. Ask to watch someone teach the lesson, or to teach it alongside them the first time. Ask what training is planned and when, and ask for the answer to be a date. Ask where the questions you can't answer in the room are meant to go.
+It simply means teaching through someone who is not in the room.
 
-None of that is an admission of anything. A teacher who has read the policy and knows what to do with a disclosure is better placed than a specialist who has done neither.
+Instead of asking:
 
-We run [RSE training](/services/rse-training) for teaching staff, including sessions on managing disclosures and handling the questions staff most dread. If that would be useful for your school, [get in touch](/contact).
+*What would you do if your partner kept asking you to send a nude?*
+
+give pupils somebody else to think about:
+
+*Sam's partner keeps asking them to send a nude and says, "If you trusted me, you would." What is happening here? What options does Sam have?*
+
+The difference is not cosmetic.
+
+A pupil who has lived something similar can now take part without choosing between exposing themselves and saying nothing. A pupil who has not can consider the situation without having to perform a personal opinion for the room.
+
+Good RSE does not depend on getting pupils to open up about themselves. Often, the more distance you create, the more honestly they can think.
+
+The same principle should shape your ground rules. Keep them few enough that pupils can remember them. One deserves a place in almost every sensitive lesson:
+
+**Nobody is asked about their own experience, and nobody discusses somebody else's.**
+
+That rule applies to the teacher too. No "Has this ever happened to anyone here?", however naturally the discussion seems to invite it.
+
+Anonymous questions help for the same reason. They work better when they are planned, not handed out in the final five minutes. Collect them in the previous lesson if you can. That gives you time to check what you do not know, decide what sits outside the lesson and notice anything that needs to reach the safeguarding lead before you teach. There is more on running one well in [the post about the question box at the British Museum](/blog/british-museum-no-sex-please-anonymous-questions/).
+
+Ask everybody to write something, even if it is only "no question", so nobody has to reveal that they submitted one.
+
+## If a disclosure is possible, plan for it before it happens
+
+A disclosure is not evidence that the lesson went wrong.
+
+Sensitive teaching can bring safeguarding concerns to the surface, and the guidance says so plainly: "Discussions about sensitive topics in RSHE can lead to increased safeguarding reports" ([paragraph 84, printed page 39](https://assets.publishing.service.gov.uk/media/6970e7e67e827090d02d42e0/Relationships_education_relationships_and_sex_education__RSE__and_health_education__for_intro_1_September_2026_.pdf#page=40)).
+
+Pupils therefore need to know the limits of confidentiality before anyone tests them. The guidance asks for this from both directions: staff "should never promise a child that they will not tell anyone about a report of abuse", and children should "understand how confidentiality will be handled in a lesson and what might happen if they choose to make a report, about themselves or a peer" ([paragraph 85, printed pages 39–40](https://assets.publishing.service.gov.uk/media/6970e7e67e827090d02d42e0/Relationships_education_relationships_and_sex_education__RSE__and_health_education__for_intro_1_September_2026_.pdf#page=40)).
+
+A plain explanation at the beginning is enough:
+
+**"I'm not going to ask anyone to share personal experiences today. If you choose to tell me something that makes me worried that you or somebody else is not safe, I may need to pass that on to the safeguarding team. If I can, I'll explain what happens next."**
+
+That is much easier to say while it is still a general rule than to introduce it halfway through a pupil telling you something difficult.
+
+If a disclosure happens, let the pupil speak. Do not start investigating and do not ask questions that shape the account. Record what was said in the pupil's own words as soon as you reasonably can and follow the school's safeguarding procedure. [Keeping children safe in education](https://www.gov.uk/government/publications/keeping-children-safe-in-education--2) sets out the wider responsibilities.
+
+There is also a practical question no policy can solve for you:
+
+**How could a pupil speak to you without the rest of the class watching?**
+
+Work that out beforehand.
+
+Then work out what the other pupils will be doing for those two minutes.
+
+That bit of planning may be more useful than another five slides.
+
+## If the problem is the room, rehearse the awkward parts
+
+Read the lesson aloud before you teach it.
+
+Especially the bits containing words you do not normally say in a professional setting.
+
+The first time you discover whether you can say an anatomical term without rushing it, apologising for it or visibly bracing yourself should not be in front of thirty thirteen-year-olds.
+
+The same applies to language around pornography, sexual health, [abuse and exploitation](/topics/abuse-exploitation-and-violence) and harmful practices. Pupils notice very quickly when the adult in the room is uncomfortable with the vocabulary.
+
+Say it beforehand.
+
+Decide what you will do with laughter too. You do not need to stop every laugh dead, and joining in can make the embarrassment worse. Have a calm line ready so you are not inventing your response while the room waits to see whether you are embarrassed as well.
+
+And if the difficulty is disagreement, remember that not every challenge requires a debate. Your job is not to win an argument with a fourteen-year-old. It is to keep the lesson moving, make the learning clear and create enough room for pupils to examine an idea properly.
+
+## Know when the answer is not better preparation
+
+There is a limit to "you'll be fine".
+
+Some topics become safer when the teacher knows the facts, uses good distancing and has thought through the safeguarding.
+
+Others require more.
+
+The revised guidance describes eating disorders and self-harm as topics that "can be taught about in secondary schools in a safe and sensitive way but are specialised areas", where schools "should use qualified support or advice" ([paragraph 42, printed page 25](https://assets.publishing.service.gov.uk/media/6970e7e67e827090d02d42e0/Relationships_education_relationships_and_sex_education__RSE__and_health_education__for_intro_1_September_2026_.pdf#page=26)). On suicide it goes further: schools "should consult mental health professionals and put in place high quality, evidence-based staff training before addressing suicide directly with secondary aged pupils" ([paragraph 44, printed page 25](https://assets.publishing.service.gov.uk/media/6970e7e67e827090d02d42e0/Relationships_education_relationships_and_sex_education__RSE__and_health_education__for_intro_1_September_2026_.pdf#page=26)). [Mental health and wellbeing](/topics/mental-health-and-wellbeing) sits alongside these without requiring you to teach them cold.
+
+Read that as protection rather than a hurdle.
+
+If a topic requiring specialist preparation has been handed to you without it, the answer is not a longer evening making resources.
+
+It is a conversation with whoever put the lesson on the timetable.
+
+Some topics need better preparation. Some need specialist preparation. Those are not the same thing.
+
+## Ask for what good teaching requires
+
+If a school expects staff to teach RSE with knowledge, skills and confidence, then asking for the things that make that possible is part of doing the job properly.
+
+Ask for the scheme of work and the resources rather than a topic title. Ask what pupils have already covered. Ask to observe the lesson or teach alongside somebody the first time. Ask what training is planned and when. Ask where difficult questions are meant to go. Ask what happens if a pupil stays behind afterwards.
+
+A teacher who has read the policy, understands where the lesson sits in the curriculum and knows what to do with a disclosure is better placed than a specialist who has done none of those things.
+
+The aim is not to become impossible to surprise. You will not.
+
+It is to remove the surprises you can remove.
+
+Work out what makes this particular lesson hard. Know what the school has already decided. Get the knowledge you actually need. Put distance between pupils and questions that are too personal. Prepare for the disclosure you hope does not happen. Practise the words that feel awkward before thirty pupils hear you say them.
+
+And know when the right professional response is not *prepare harder*, but *get more support*.
+
+Hard topics do not become easy.
+
+They become teachable.
+
+We run [RSE training](/services/rse-training) for teaching staff, including practical work on sensitive topics, managing disclosures and handling the questions staff most dread. If that would be useful for your school, [get in touch](/contact).
 
 ## Trusted resources
 
 - [Relationships Education, Relationships and Sex Education (RSE) and Health Education, DfE, July 2025](https://assets.publishing.service.gov.uk/media/6970e7e67e827090d02d42e0/Relationships_education_relationships_and_sex_education__RSE__and_health_education__for_intro_1_September_2026_.pdf). Teaching sensitive topics at printed page 12; specialised mental-health topics at printed pages 25–26; safeguarding and disclosure at printed pages 39–40; managing difficult questions at printed page 40.
 - [DfE publication page: current guidance and commencement date](https://www.gov.uk/government/publications/relationships-education-relationships-and-sex-education-rse-and-health-education).
-- [Keeping children safe in education, DfE](https://www.gov.uk/government/publications/keeping-children-safe-in-education--2). Part 1 sets out what staff do when they have a concern about a child.
-- [PSHE Association Programme of Study for PSHE education, key stages 1–5](https://pshe-association.org.uk/guidance/ks1-5/programme-of-study). Useful for seeing where a single topic sits in a longer sequence.
+- [Keeping children safe in education, DfE](https://www.gov.uk/government/publications/keeping-children-safe-in-education--2).
+- [Mandatory reporting of female genital mutilation: procedural information, DfE and Home Office, 2016](https://www.gov.uk/government/publications/mandatory-reporting-of-female-genital-mutilation-procedural-information).
+- [PSHE Association Programme of Study for PSHE education, key stages 1–5](https://pshe-association.org.uk/guidance/ks1-5/programme-of-study).
 - [Sex Education Forum curriculum design tool](https://www.sexeducationforum.org.uk/resources/advice-guidance/curriculum-design-tool).
 - [NSPCC Learning: safeguarding and child protection](https://learning.nspcc.org.uk/safeguarding-child-protection).
-- [Mandatory reporting of female genital mutilation: procedural information, DfE and Home Office, 2016](https://www.gov.uk/government/publications/mandatory-reporting-of-female-genital-mutilation-procedural-information). What the duty covers, and how a report is made.
-- [Brook](https://www.brook.org.uk) and the [NHS](https://www.nhs.uk/) for anything clinical.
+- [Brook](https://www.brook.org.uk/) and the [NHS](https://www.nhs.uk/) for clinical information.
