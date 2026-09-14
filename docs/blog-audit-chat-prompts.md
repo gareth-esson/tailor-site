@@ -123,34 +123,46 @@ session to check the file rather than trust the quote.
 
 ---
 
-## 6. The partner-session series — five posts, one chat
+## 6. The partner-session series — five thought pieces, one chat
 
-> Five published posts are first-person write-ups of sessions Tailor delivered with partner organisations. They run one visible template and it is not working.
+> **Read the "Correction" section of `docs/blog-audit-2026-09-14.md` before anything else.** The audit originally judged these five posts as guides that fail to deliver a method. That was wrong. They are thought pieces — reflective writing about work Tailor did — and the audit's "what can a reader do on Monday?" verdicts for all five are void. Do not ask them to carry transferable practice, do not criticise their venue-to-practice ratio, and do not add method sections.
 >
-> Read first, in full: `docs/Tailor_Blog_Writing_Rules.md` and the "Partner session write-ups" section plus pattern 7 in `docs/blog-audit-2026-09-14.md`.
+> `work-out-consent-masculinity-athletes` is **out of scope** — closed by decision on 14 Sept 2026, nothing further to do to it.
 >
-> The five:
-> - `british-museum-no-sex-please-anonymous-questions`
-> - `rada-consent-for-film-and-tv`
-> - `red-cross-angel-youth-group`
-> - `tate-modern-bedfellows-porn-literacy`
-> - `work-out-consent-masculinity-athletes`
+> The four in scope, in `src/content/blog/`: `british-museum-no-sex-please-anonymous-questions`, `rada-consent-for-film-and-tv`, `red-cross-angel-youth-group`, `tate-modern-bedfellows-porn-literacy`.
 >
-> The template: intro naming the partner → why they asked / who was in the room → what the sessions looked like → a closing section headed "What I took away" → an identically shaped CTA. Read consecutively they sound like one filled-in form.
+> Read `docs/Tailor_Blog_Writing_Rules.md` and `docs/editorial-policy.md` §1.
 >
-> Two structural faults. The fourth slot is a summary-paragraph heading, which the voice rules ban. The third slot describes how the room felt rather than what happened in it, in three of the five.
+> ### 1. The safety item — the only one that is not stylistic
 >
-> The job: differentiate them. Each post should carry the transferable practice at its centre rather than the venue. Specific targets from the audit:
-> - British Museum: the question-box method is nearly usable but never gives the sift criteria or what happens when a disclosure comes out of the box. In a school those two gaps are the whole risk of the format.
-> - Red Cross: the strongest of the five. Its audit paragraph asks the reader to find who on their roll is getting less, then stops at the door of the answer. Also carries more locational precision about a group of unaccompanied minors than the story needs — consider dropping the weekday or the location, and it wants Red Cross sign-off either way.
-> - Tate Modern: the five-question set is the most usable artefact in the series and is buried in a definitional aside. Promote it, and show how you run it without showing the material.
-> - RADA and Work Out: see chats 4 and 5 — if those have run, don't redo them.
+> `red-cross-angel-youth-group` names the organisation, the project, the nickname, the neighbourhood, the weekday and the age range: "Every Tuesday evening, the British Red Cross runs a youth group at its office near Angel… young unaccompanied refugees and asylum seekers in London, aged roughly fourteen to twenty-one." No individual is identified and nothing breaches §1 as written, but a recurring time and place for a group of unaccompanied minors is more locational precision than the writing needs. Dropping either the weekday or the location costs the piece nothing. Raise with Gareth that it also wants Red Cross sign-off either way.
 >
-> Note: a mechanical pass on 14 Sept already removed the throat-clearing openers and closing payoffs from these posts, so sentences quoted in the audit may no longer exist. Check the files.
+> ### 2. Two unsourced quantified generalisations
 >
-> Do not invent session content or first-person experience.
-
----
+> These survive the genre correction — editorial-policy §1.3 applies to a reflective piece as much as a guide.
+>
+> - British Museum: "Most people over thirty had no sex education that contained the word consent as we now understand it." and "Most people of any age have unanswered questions they've never had permission to ask out loud."
+> - Tate Modern: "It isn't how most people first encounter pornography. Most people encounter it accidentally, usually young, usually with no framework at all."
+>
+> Cite them, narrow them to what was actually observed in those rooms, or cut them. Do not stretch a source to fit.
+>
+> ### 3. Residual voice items the mechanical pass did not reach
+>
+> That pass removed throat-clearing openers and closing payoffs only. Still present:
+>
+> - Three-item em-dash lists — Red Cross's "because of language, because of care status, because of what's happening at home" (the most important sentence in that post, and the one you least want reading as a pattern); RADA's "kissing, partial nudity, simulated sex"; Tate's "a slightly nervy energy at the start, some deflection through humour, some very sharp observations once the room warmed up".
+> - "It's not X; it's Y" — twice in Tate, twice remaining in RADA.
+> - Filler intensifiers: "genuinely" twice in RADA, once in Tate, twice in British Museum.
+>
+> ### 4. The sameness problem
+>
+> All five run one shape: intro naming the partner, who was in the room, what the sessions looked like, a section headed "What I took away" (or "What I took from it" / "What the two sessions told me"), then an identically constructed CTA. Read consecutively they sound like one filled-in form. Summary-paragraph headings are on the avoid list, and three of them open that section with a numbered preview ("Two things. Firstly…").
+>
+> This is a legitimate criticism of reflective writing — it is about the writing being formulaic, not about it failing to instruct. Vary the shape. The fix is usually to delete the heading and let the last insight sit as the final body paragraph.
+>
+> ### Constraints
+>
+> Do not invent session content or first-person experience — ask Gareth. Check the files rather than trusting quotes in the audit; 31 sentences were deleted on 14 Sept. Run `npx astro build` and report the real exit status. Commit when done; do not push without asking.
 
 ## 7. Two structural decisions, plus the topic taxonomy — one short chat — **DONE, 14 Sept 2026**
 

@@ -28,7 +28,9 @@ This audit judged `rada-consent-for-film-and-tv` and `work-out-consent-masculini
 - Work Out's good-faith breach: "In a lot of settings it's delivered as a set of rules."
 - The safety notes: confirming the Work Out participant quote was cleared for use, and the locational precision around a group of unaccompanied minors in the Red Cross post.
 
-**Open question at the time of writing:** whether the same correction applies to the other three partner-session posts — `british-museum-no-sex-please-anonymous-questions`, `red-cross-angel-youth-group` and `tate-modern-bedfellows-porn-literacy`. Those three do contain transferable material the audit identified (a question-box format, a roll audit, a five-question set), so they may sit differently. Do not action the partner-series findings for those three until that is settled.
+**Settled, 14 September 2026: the correction covers all five partner-session posts.** `british-museum-no-sex-please-anonymous-questions`, `red-cross-angel-youth-group` and `tate-modern-bedfellows-porn-literacy` are reflective writing on the same footing as RADA and Work Out. The transferable material the audit pulled out of them — the question-box format, the roll audit, the five-question set — is not something those posts owe the reader, and the recommendations built on it are withdrawn. Every "what a reader can actually do after reading it" verdict in the partner-session section is void.
+
+**`work-out-consent-masculinity-athletes` is closed.** Gareth's decision, same date: nothing further is worth doing to it. Its voice fixes landed in the mechanical pass. The good-faith sentence and the participant-quote clearance are not being pursued.
 
 **The lesson for future passes:** establish what a post is claiming to be before judging whether it delivers. A reflective piece and a how-to fail in different ways, and the audit applied one rubric to both.
 
