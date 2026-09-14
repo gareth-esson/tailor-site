@@ -42,6 +42,7 @@ export default defineConfig({
           '/blog/category/',     // category archives — noIndex'd
           '/questions/tag/',     // tag archives — noIndex'd
           '/tools/',             // facilitator tools — unlisted, noIndex'd
+          '/studio',             // post editor — authenticated, noIndex'd
         ];
         return !exclusions.some((p) => page.includes(p));
       },
