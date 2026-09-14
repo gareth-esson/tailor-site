@@ -9,6 +9,35 @@ It exists so a small fix doesn't need a laptop, a terminal, or Notion.
 
 ---
 
+## Quick setup
+
+Four variables in Vercel → Project → Settings → Environment Variables.
+**Tick both Production and Preview for each one**, or the editor will
+only work on one of them.
+
+| Name | Value |
+|---|---|
+| `STUDIO_PASSWORD` | A long passphrase you choose. |
+| `STUDIO_SESSION_SECRET` | Output of `openssl rand -base64 32`. Never typed by anyone. |
+| `STUDIO_GITHUB_REPO` | `gareth-esson/tailor-site` |
+| `STUDIO_GITHUB_TOKEN` | A fine-grained GitHub token — the only fiddly one, see below. |
+
+**The token, in six clicks:** github.com/settings/personal-access-tokens/new
+→ Repository access: *Only select repositories* → `tailor-site`
+→ Permissions: *Repository permissions* → **Contents** → *Read and write*
+→ Generate → copy it (GitHub shows it once).
+
+Nothing else. That one permission on that one repository is the whole
+blast radius: a leaked token can change files here and nowhere else.
+
+Then redeploy — Vercel only picks up new environment variables on a new
+build, so setting them doesn't affect the deployment already running.
+
+Everything below is the reasoning and the detail. You don't need it to
+get started.
+
+---
+
 ## Why it commits to git rather than writing to a database
 
 Three people change these files: Gareth in the browser, Claude and Codex
