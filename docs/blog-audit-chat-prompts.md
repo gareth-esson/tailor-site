@@ -142,3 +142,23 @@ session to check the file rather than trust the quote.
 > **2. Two posts argue opposite sides.** `rse-programme-more-than-drop-down-day` argues drop-down days fail as a programme backbone. `drop-day-setup` closes by selling one. A reader who finds both sees Tailor on both sides. One sentence in `drop-day-setup` positioning the drop day as supplementary would fix it, and that's already the other post's stated position — but confirm that's the line Tailor wants to take.
 >
 > **3. Eleven posts have no `topicIds` and eight have no `/topics/` link.** They're the policy, governance, guidance and SEND posts. There is no landing page for "policy", "governance" or "SEND" — the 23 topics are content topics for young people. So either these posts legitimately have no topic, or the taxonomy needs new entries. Note that `src/lib/related-blog-posts.ts` scores primary topic at 10 and secondary at 5, and five of these posts have no content tags either, so their related-posts block currently matches on `targetAudience` alone and shows arbitrary results. Those five are the newest and strongest posts on the site.
+
+---
+
+## 8. Make the review fields editable in the studio post editor — one chat, no blog content
+
+> `src/content.config.ts` gained three fields on the blog collection that `src/lib/studio/schema.js` does not know about: `guidanceSensitive` (boolean), `reviewBy` and `lastReviewedDate` (nullable ISO date strings). `CLAUDE.md` says the two schemas must mirror each other. Close the gap.
+>
+> Read first, in full: `docs/POST-EDITOR.md`, the "Post editor (`/studio`)" section of `CLAUDE.md`, and §3 of `docs/editorial-policy.md` (which is why these fields exist).
+>
+> **What is already true, verified — do not re-derive it.** The editor does *not* currently strip these fields. `serialiseFile` in `src/lib/studio/frontmatter.js` re-emits any field it wasn't asked to change from its original source verbatim, so a post carrying all three round-trips byte-for-byte through a save today. The gap is narrower than data loss: the fields survive, but they cannot be set or changed from the editor, so populating them per editorial-policy §3 currently means hand-editing the file.
+>
+> The job:
+> - Add all three to `EDITABLE_FIELDS` in `src/lib/studio/schema.js` and to `FIELD_ORDER` in `src/lib/studio/frontmatter.js`, positioned to match `src/content.config.ts` (they sit after `dateModified`, before `author`).
+> - `reviewBy` and `lastReviewedDate` are dates and the `date` kind already exists — these should be small.
+> - `guidanceSensitive` is a boolean and there is **no boolean field kind**. The existing kinds are `enum | date | url | list | text | textarea`. Adding one means a validator branch in `validatePatch`, an emitter that writes an unquoted `true`/`false` (not a string), a control in the editor UI, and a round-trip test case. Consider whether a new `boolean` kind or a two-option `enum` is the better fit, and say which you chose and why.
+> - Extend `tests/studio-roundtrip.test.mjs` to cover all three. At minimum: setting each from empty, changing each, clearing the nullable dates back to null, and confirming a post that carries them is still rewritten byte-for-byte when untouched.
+>
+> Run `npm test` and report the real exit status, not a filtered tail. Then run `npx astro build` and report its exit status too.
+>
+> Touch nothing under `src/content/blog/`. This chat is code only, and is safe to run alongside any of the content chats.
