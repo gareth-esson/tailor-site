@@ -22,13 +22,29 @@ only work on one of them.
 | `STUDIO_GITHUB_REPO` | `gareth-esson/tailor-site` |
 | `STUDIO_GITHUB_TOKEN` | A fine-grained GitHub token — the only fiddly one, see below. |
 
-**The token, in six clicks:** github.com/settings/personal-access-tokens/new
-→ Repository access: *Only select repositories* → `tailor-site`
-→ Permissions: *Repository permissions* → **Contents** → *Read and write*
-→ Generate → copy it (GitHub shows it once).
+**The token:** github.com/settings/personal-access-tokens/new — it must
+be a *fine-grained* token, not a classic one. A classic token can't be
+scoped to a single repository; the narrowest it goes is every repo the
+account can reach.
 
-Nothing else. That one permission on that one repository is the whole
-blast radius: a leaked token can change files here and nowhere else.
+| Field on that page | What to set |
+|---|---|
+| Token name | `tailor-site-studio` (free text, for your own reference) |
+| Resource owner | `gareth-esson` — pick an org here and `tailor-site` won't be listed |
+| Expiration | 1 year, with a calendar reminder a week before |
+| Repository access | *Only select repositories* → `tailor-site` |
+| Repository permissions | **Contents → Read and write**, and nothing else |
+| Account permissions | All *No access* |
+
+Copy the token when it appears — GitHub shows it once.
+
+Setting Contents makes GitHub add **Metadata: Read-only** on its own and
+refuse to remove it. That's mandatory on every fine-grained token and
+only exposes the repository's name and description. It is not a mistake.
+
+That one permission on that one repository is the whole blast radius: a
+leaked token can change files here and nowhere else — not other repos,
+not the account, not Vercel.
 
 Then redeploy — Vercel only picks up new environment variables on a new
 build, so setting them doesn't affect the deployment already running.
@@ -89,8 +105,12 @@ Fine-grained tokens**:
 
 - **Repository access**: *Only select repositories* → `tailor-site`.
 - **Permissions**: *Contents: Read and write*. Nothing else.
-- **Expiry**: set one. Ninety days is reasonable; put a reminder in the
-  calendar, because the editor stops saving the day it lapses.
+- **Expiry**: a year, with a calendar reminder a week before. Shorter
+  rotation buys little here — the token is one permission on one
+  repository, and if it ever leaks you revoke it in seconds whatever the
+  expiry says. What a short expiry reliably does is strand you mid-edit,
+  because the symptom when it lapses is saves failing with a GitHub
+  error.
 
 That scope is the blast radius. A leaked token can change files in this
 one repository and nothing else — not other repos, not the account, not
