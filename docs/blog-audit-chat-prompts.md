@@ -133,7 +133,15 @@ session to check the file rather than trust the quote.
 
 ---
 
-## 7. Two structural decisions, plus the topic taxonomy — one short chat
+## 7. Two structural decisions, plus the topic taxonomy — one short chat — **DONE, 14 Sept 2026**
+
+**Settled. Do not re-run this prompt.** The answers, the reasoning and what was applied are
+written up as D1–D3 in `docs/blog-audit-2026-09-14.md` ("Decisions settled"). In short:
+D1 the plain-English post was retitled as the review it is and ten inbound links reworded;
+D2 the drop-day line follows `/services/drop-days`, and `rse-programme` gets reframed —
+carried into prompt 9 below; D3 the 11 posts keep empty `topicIds`, and `contentTags` were
+added to the five that had none. The original prompt is kept below for the record.
+
 
 > Three decisions about the Tailor blog that sit above any single post. Read `docs/blog-audit-2026-09-14.md` (the status section and cross-cutting patterns) first, then work through these with me — ask rather than deciding alone, since each changes what readers see.
 >
@@ -162,3 +170,27 @@ session to check the file rather than trust the quote.
 > Run `npm test` and report the real exit status, not a filtered tail. Then run `npx astro build` and report its exit status too.
 >
 > Touch nothing under `src/content/blog/`. This chat is code only, and is safe to run alongside any of the content chats.
+
+---
+
+## 9. Reframe: rse-programme-more-than-drop-down-day — one chat, this post only
+
+> `src/content/blog/rse-programme-more-than-drop-down-day/index.mdx` argues a position Tailor's own service page contradicts. Reframe it.
+>
+> Read first, in full: `docs/Tailor_Blog_Writing_Rules.md`, the **D2** entry under "Decisions settled" in `docs/blog-audit-2026-09-14.md`, cross-cutting pattern 4 in the same document, and `src/pages/services/drop-days.astro`.
+>
+> **The decision is already made — implement it, do not reopen it.** `/services/drop-days` sells the concentrated day as a legitimate delivery model ("Some schools prefer to concentrate their RSE delivery into a single, high-quality day rather than spread it thinly across the year"). This post says the opposite ("as the backbone of your RSE programme? They don't work"). Gareth's position, given on 14 Sept 2026: for most schools the drop day **is** their RSE, and the writing has to meet that reader. The service page is the line.
+>
+> Keep the guidance-backed argument — the 2026 guidance expects secondary RSE to provide clear progression from primary, and a single day cannot carry that alone. Change what the post does with it: from *this doesn't work* to *here is how to make the day carry weight, and the smallest thing to put around it*. The reader running one drop day a year should finish the post with something to do, not a verdict on their programme.
+>
+> This also closes the cross-cutting pattern 4 good-faith breach ("here is what most schools currently do, and it isn't enough") that the audit flags against this post, and the "Why one-off sessions don't stick" heading is where it is sharpest.
+>
+> Note the post already contains "the external input should supplement your programme, not replace it" — that sentence is not the fix and was considered and rejected as one.
+>
+> Add a cross-link to `src/content/blog/drop-day-setup/index.mdx`, which is the practical companion piece and currently takes no position on the drop day's role. `drop-day-setup` needs no sentence added to it — see D2 for why.
+>
+> Do not invent first-person experience. A mechanical pass on 14 Sept deleted 31 sentences across the blog, so some sentences quoted in the audit no longer exist. Check the file, not the quote.
+>
+> **Coordination:** this post is also in prompt 1 (the citation pass), which owns its three placeholder citations in Trusted resources and its unsourced Ofsted 2021 and Sex Education Forum 2024 statistics. Do not run both chats at once on this file, and leave the citations to that pass unless you are running it too.
+>
+> Run `npx astro build` when done and report the real exit status.
