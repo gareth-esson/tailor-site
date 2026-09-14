@@ -8,6 +8,22 @@
 
 ---
 
+## Provenance — which commit this audit describes
+
+The audit was read from the working tree at **`5cc8bde`** ("Blog: make the withdrawal post read as a reference").
+
+`origin/main` had moved on by seven commits while this ran, three of them blog edits. Checked afterwards: **22 of the 24 posts are byte-identical** between `5cc8bde` and `origin/main`, so their findings describe the live text exactly. Two posts differ:
+
+**`consulting-parents-rse-policy-2026`** — every finding listed below has already been fixed upstream, independently: "Two obligations sit in one sentence.", the governance-calendar closing payoff, "That is worth knowing before you design one", "A policy describes a subject. It does not show a parent what a lesson contains.", and the "I'd say which is which in the invitation itself." author-check. **Treat this post's entry as closed.**
+
+**`2026-rse-guidance-primary-schools`** — most voice findings fixed upstream ("The fifth needs planning rather than slotting.", "The shift that's easiest to miss in an audit", "That makes the choice a more visible one.", "significant restoration", and the opening preview triplet). **Two findings still stand:**
+- The "additions that need curriculum time" section is still entirely uncited. Upstream expanded it from four items to five (adding mental-health language, and a wider family-structures list) without adding a single paragraph or page reference. This was the highest-value finding for the post and it is now larger than when audited.
+- Bold labels are still there — `**Personal safety**`, `**Vaping**`, `**Online financial harms**`.
+
+That an independent editor converged on the same voice fixes for these two posts is corroboration of the method, not a contradiction of it. But the lesson holds: **check the sentence against the file before acting on any quote in this document.** Every prompt in `docs/blog-audit-chat-prompts.md` says so.
+
+---
+
 ## Status — what has already been actioned
 
 Applied on 14 September 2026, after the audit. `astro build` exits 0 with all 24 posts.
