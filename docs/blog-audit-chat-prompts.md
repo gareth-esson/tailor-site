@@ -146,12 +146,12 @@ session to check the file rather than trust the quote.
 >
 > Cite them, narrow them to what was actually observed in those rooms, or cut them. Do not stretch a source to fit.
 >
-> ### 3. Residual voice items the mechanical pass did not reach
+> ### 3. Residual voice items not yet reached
 >
-> That pass removed throat-clearing openers and closing payoffs only. Still present:
+> The 14 Sept mechanical pass removed throat-clearing openers and closing payoffs. A later pass on **RADA only** removed its three remaining throat-clearing sentences ("If that title sounds fairly normal now…", "The honest answer is that…", "It's strange looking back.") and the two "here is how" promises it never kept — so do not go looking for those in RADA. Still present across the four:
 >
 > - Three-item em-dash lists — Red Cross's "because of language, because of care status, because of what's happening at home" (the most important sentence in that post, and the one you least want reading as a pattern); RADA's "kissing, partial nudity, simulated sex"; Tate's "a slightly nervy energy at the start, some deflection through humour, some very sharp observations once the room warmed up".
-> - "It's not X; it's Y" — twice in Tate, twice remaining in RADA.
+> - "It's not X; it's Y" — twice in Tate. **RADA is done**: a pass on 14 Sept left only the instance carrying a real argument ("the people with power in a room are the ones who set the consent culture, not the ones most affected by it"), which should stay.
 > - Filler intensifiers: "genuinely" twice in RADA, once in Tate, twice in British Museum.
 >
 > ### 4. The sameness problem
