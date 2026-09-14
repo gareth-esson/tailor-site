@@ -26,20 +26,6 @@ Most teachers delivering RSE did not train as RSE specialists. That does not mak
 
 The additional work is narrower than it can first appear.
 
-## Start with the things that are not yours to decide
-
-A hard topic often arrives as a title on a timetable.
-
-Before you start planning activities, find out what the school has already decided about it.
-
-Read the RSE policy. Know what it says about the topic, withdrawal and how questions beyond the scope of the curriculum are handled. The guidance puts that last one in the policy rather than leaving it to the room: "The school's policy should explain how teachers will handle such questions, with an emphasis on supporting the child" ([paragraph 87, printed page 40](https://assets.publishing.service.gov.uk/media/6970e7e67e827090d02d42e0/Relationships_education_relationships_and_sex_education__RSE__and_health_education__for_intro_1_September_2026_.pdf#page=41)). Find out what pupils have already been taught, because a lesson on consent lands differently if pupils already have a shared language around pressure, boundaries and [healthy relationships](/topics/healthy-relationships).
-
-Know who is covering the designated safeguarding lead role on the day you are teaching, not just whose name normally sits at the top of the policy.
-
-And know where an unanswered question goes.
-
-If those things do not exist in a usable form, that is worth finding out before the lesson rather than while thirty pupils are looking at you.
-
 ## If the problem is knowledge, shrink it
 
 You do not need the subject knowledge of a specialist.
