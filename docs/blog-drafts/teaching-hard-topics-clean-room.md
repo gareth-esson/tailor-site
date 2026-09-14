@@ -120,7 +120,7 @@ Especially the bits containing words you do not normally say in a professional s
 
 The first time you discover whether you can say an anatomical term without rushing it, apologising for it or visibly bracing yourself should not be in front of thirty thirteen-year-olds.
 
-The same applies to language around pornography, sexual health, [abuse and exploitation](/topics/abuse-exploitation-and-violence) and harmful practices. Pupils notice very quickly when the adult in the room is uncomfortable with the vocabulary.
+The same applies to language around pornography, sexual health, abuse, exploitation and harmful practices.
 
 Say it beforehand.
 
