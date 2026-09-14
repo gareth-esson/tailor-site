@@ -1,0 +1,144 @@
+# Prompts for the follow-up chats
+
+Copy one into a fresh Claude Code session in `~/Sites/tailor-site`.
+
+**A note that applies to all of them, already included in each prompt below:**
+the mechanical pass of 14 Sept 2026 deleted 31 sentences, so some sentences
+quoted in the audit no longer exist in the posts. Every prompt tells the new
+session to check the file rather than trust the quote.
+
+---
+
+## 1. The citation pass — four posts, one chat
+
+> Four published blog posts in this repo carry publish-gate breaches under `docs/editorial-policy.md` §1. Fix them.
+>
+> Read first, in full: `docs/editorial-policy.md` (§1 especially) and Part 1 of `docs/blog-audit-2026-09-14.md`.
+>
+> The four posts:
+> - `src/content/blog/teaching-porn-literacy-what-it-is-why-it-matters/index.mdx`
+> - `src/content/blog/what-young-people-want-to-know-sex-relationships/index.mdx`
+> - `src/content/blog/rse-send-practical-approaches/index.mdx`
+> - `src/content/blog/rse-programme-more-than-drop-down-day/index.mdx`
+>
+> Between them they carry 12 placeholder citations (bare `http://` domain homepages standing in for named documents, all in Trusted resources lists) and 12 statistics with no source URL. `rse-send-practical-approaches` also states "There's no exemption, and there shouldn't be" about RSE being statutory, which flattens the parental right to request withdrawal from sex education — a SENCO repeating that to a parent would be wrong — and links the claim to Tailor's own blog rather than the DfE document.
+>
+> The house pattern to copy is in `src/content/blog/rse-policy-checklist-2026/index.mdx` and `src/content/blog/teaching-hard-topics-when-not-a-specialist/index.mdx`: the document named with its year, a deep link with a `#page=` anchor, and the obligation quoted rather than paraphrased. `src/content/blog/parental-right-to-withdraw-rse-2026/index.mdx` has the correct statement of the withdrawal position.
+>
+> For each unsourced statistic: find the real source, verify the figure actually says what the post claims, and hyperlink it at first mention. If you cannot verify a figure, say so and leave it flagged rather than linking something approximate — do not link a homepage or a search result as a substitute.
+>
+> Note: a mechanical pass on 14 Sept deleted 31 sentences across the blog, so some sentences quoted in the audit no longer exist. Check the file, not the quote.
+>
+> Run `npx astro build` when done and report the real exit status.
+
+---
+
+## 2. Rebuild: teaching-porn-literacy — one chat, this post only
+
+> `src/content/blog/teaching-porn-literacy-what-it-is-why-it-matters/index.mdx` needs a method written into it. It currently has none.
+>
+> Read first, in full: `docs/Tailor_Blog_Writing_Rules.md`, `docs/editorial-policy.md`, and the entry for this post in `docs/blog-audit-2026-09-14.md` Part 2.
+>
+> The problem: the post says sessions should "focus on attitudes and assumptions", that "Ground rules matter", that distancing "helps", and that you should "start small". Those describe the conditions for good teaching. None is a move a teacher can make. There is no question to ask, no activity, no worked example of handling a wrong answer, and — in a post about pornography — nothing on what to do when a pupil discloses having seen or been shown something.
+>
+> The job: replace the "What good teaching looks like" section with the actual lesson. The opening question you put to a Year 10 class, the two or three assumptions you surface, what you say when a pupil says something graphic, and what you do on a disclosure. Let the two rationale sections shrink to make room — the post currently spends two full sections before any teaching content.
+>
+> Two constraints:
+> - `src/content/blog/tate-modern-bedfellows-porn-literacy/index.mdx` contains a five-question set ("Who made this. Who's it aimed at. What's it selling. What's it leaving out. What would it be like if you took it as instructions for real life."). That is the closest thing to a usable spine that exists. Decide whether this post should carry it, reference it, or use something else — don't silently duplicate.
+> - The opening quotation attributed to a teacher at a Tate Modern session is flagged NEEDS-AUTHOR-CHECK. Do not invent replacement anecdotes or first-person experience. Where a first-person observation would go, write the point without one and leave the gap — that material is Gareth's to add.
+>
+> Note: a mechanical pass on 14 Sept deleted 31 sentences across the blog; check the file rather than trusting quotes in the audit.
+>
+> This post also has outstanding citation breaches. If chat 1 has not run yet, flag them but leave them.
+
+---
+
+## 3. Rebuild: what-young-people-want-to-know — one chat, this post only
+
+> `src/content/blog/what-young-people-want-to-know-sex-relationships/index.mdx` diagnoses a gap and gives the reader one action, which is a link out to another post.
+>
+> Read first, in full: `docs/Tailor_Blog_Writing_Rules.md`, `docs/editorial-policy.md`, and this post's entry in `docs/blog-audit-2026-09-14.md` Part 2.
+>
+> The job: the post's real asset is the themed clusters of what young people actually ask. Turn that into something a PSHE lead can use — what the clusters imply for a scheme of work, which ones schools systematically under-teach, what you do with a question you can't answer in the room. The final section is currently the thinnest in the piece and is where it should deepen.
+>
+> Handled well and worth preserving: no pupil question is reproduced verbatim, only themed paraphrase. Keep it that way — verbatim questions from a real question box carry identification risk.
+>
+> Constraints:
+> - Eight statistics in this post have no source URL and its three Trusted resources are placeholder homepages. That is a publish-gate breach (see chat 1). Do not add more unsourced figures.
+> - "We've had over 150 questions so far" is load-bearing for the post's authority and unverifiable from the repo. Check it against the live Okay to Ask total or flag it; don't restate it on trust.
+> - Do not invent first-person experience.
+>
+> Note: a mechanical pass on 14 Sept deleted 31 sentences across the blog; check the file rather than trusting quotes in the audit.
+
+---
+
+## 4. Rewrite: work-out-consent-masculinity-athletes — one chat, this post only
+
+> `src/content/blog/work-out-consent-masculinity-athletes/index.mdx` is a write-up of a real project that teaches the reader nothing they can do.
+>
+> Read first: `docs/Tailor_Blog_Writing_Rules.md` and this post's entry in `docs/blog-audit-2026-09-14.md` Part 2.
+>
+> The post's own method section says there wasn't a method: "The project didn't start with a fixed curriculum. The team shaped the sessions around what was emerging from the group as we went." Roughly 65% of it is who was involved, 10% method, 25% reflection.
+>
+> The job: one reflective-dialogue session written out end to end — the opening question, how the group was set up, the rule about not resolving, the handoff between the art activity and the talking — plus a paragraph on what transfers from a university sports team to a Year 11 form group, which is the only reason a PSHE lead would read this.
+>
+> If that material isn't available, say so plainly rather than padding: the honest alternative is to drop the "Our Work" educational framing and let it be a project record.
+>
+> Constraints: do not invent the session content. The participant quote is the only directly quoted participant in the partner series and should be confirmed as cleared for use. Do not invent first-person experience.
+
+---
+
+## 5. Rewrite: rada-consent-for-film-and-tv — one chat, this post only
+
+> `src/content/blog/rada-consent-for-film-and-tv/index.mdx` contains this sentence: "If you're directing that scene, here is how you set it up so that both performers can do their best work without being asked to choose between their boundaries and their reputation."
+>
+> It then doesn't say how. That is the one sentence in the post a headteacher could translate into a school, and it's empty.
+>
+> Read first: `docs/Tailor_Blog_Writing_Rules.md` and this post's entry in `docs/blog-audit-2026-09-14.md` Part 2.
+>
+> The job: cash that cheque. One concrete setup sequence — the check-in, the order it happens in, what gets agreed before anyone is in the room. Then cut into the industry-history section ("Before intimacy coordination", roughly 25% of the post) to make room, since it teaches a school nothing.
+>
+> The post is currently about 70% context to 30% usable, and the reflective closing section is its most useful part, which means it's upside down.
+>
+> Constraints: do not invent the RADA session content or dialogue. Do not invent first-person experience.
+
+---
+
+## 6. The partner-session series — five posts, one chat
+
+> Five published posts are first-person write-ups of sessions Tailor delivered with partner organisations. They run one visible template and it is not working.
+>
+> Read first, in full: `docs/Tailor_Blog_Writing_Rules.md` and the "Partner session write-ups" section plus pattern 7 in `docs/blog-audit-2026-09-14.md`.
+>
+> The five:
+> - `british-museum-no-sex-please-anonymous-questions`
+> - `rada-consent-for-film-and-tv`
+> - `red-cross-angel-youth-group`
+> - `tate-modern-bedfellows-porn-literacy`
+> - `work-out-consent-masculinity-athletes`
+>
+> The template: intro naming the partner → why they asked / who was in the room → what the sessions looked like → a closing section headed "What I took away" → an identically shaped CTA. Read consecutively they sound like one filled-in form.
+>
+> Two structural faults. The fourth slot is a summary-paragraph heading, which the voice rules ban. The third slot describes how the room felt rather than what happened in it, in three of the five.
+>
+> The job: differentiate them. Each post should carry the transferable practice at its centre rather than the venue. Specific targets from the audit:
+> - British Museum: the question-box method is nearly usable but never gives the sift criteria or what happens when a disclosure comes out of the box. In a school those two gaps are the whole risk of the format.
+> - Red Cross: the strongest of the five. Its audit paragraph asks the reader to find who on their roll is getting less, then stops at the door of the answer. Also carries more locational precision about a group of unaccompanied minors than the story needs — consider dropping the weekday or the location, and it wants Red Cross sign-off either way.
+> - Tate Modern: the five-question set is the most usable artefact in the series and is buried in a definitional aside. Promote it, and show how you run it without showing the material.
+> - RADA and Work Out: see chats 4 and 5 — if those have run, don't redo them.
+>
+> Note: a mechanical pass on 14 Sept already removed the throat-clearing openers and closing payoffs from these posts, so sentences quoted in the audit may no longer exist. Check the files.
+>
+> Do not invent session content or first-person experience.
+
+---
+
+## 7. Two structural decisions, plus the topic taxonomy — one short chat
+
+> Three decisions about the Tailor blog that sit above any single post. Read `docs/blog-audit-2026-09-14.md` (the status section and cross-cutting patterns) first, then work through these with me — ask rather than deciding alone, since each changes what readers see.
+>
+> **1. `2026-rse-guidance-plain-english-summary` is a review method wearing a summary's title.** It's titled "What the 2026 RSE guidance means for your school now"; its five headings are Start with the teaching / What pupils do with the information / Parents need to see the materials / Read sensitive sections together / Give the review an owner. No section summarises what changed. Meanwhile `rse-policy-checklist-2026` links to it as "the full picture of what changed", and the primary and secondary guidance posts are where that picture actually lives. Retitle, rewrite, or repoint the inbound links — but the decision comes first, because the links change either way.
+>
+> **2. Two posts argue opposite sides.** `rse-programme-more-than-drop-down-day` argues drop-down days fail as a programme backbone. `drop-day-setup` closes by selling one. A reader who finds both sees Tailor on both sides. One sentence in `drop-day-setup` positioning the drop day as supplementary would fix it, and that's already the other post's stated position — but confirm that's the line Tailor wants to take.
+>
+> **3. Eleven posts have no `topicIds` and eight have no `/topics/` link.** They're the policy, governance, guidance and SEND posts. There is no landing page for "policy", "governance" or "SEND" — the 23 topics are content topics for young people. So either these posts legitimately have no topic, or the taxonomy needs new entries. Note that `src/lib/related-blog-posts.ts` scores primary topic at 10 and secondary at 5, and five of these posts have no content tags either, so their related-posts block currently matches on `targetAudience` alone and shows arbitrary results. Those five are the newest and strongest posts on the site.
