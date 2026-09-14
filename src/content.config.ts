@@ -84,9 +84,12 @@ const blog = defineCollection({
        *  guidance, KCSIE, Ofsted, RSHE, mental-health intervention,
        *  age of consent or online-safety law — anything whose
        *  underlying landscape can change under the published text.
-       *  Such a post gets a `reviewBy` date six months out; on
-       *  completing a review, bump `lastReviewedDate` and set the
-       *  next `reviewBy`. Both are ISO date strings. */
+       *  Such a post gets a `reviewBy` date, its interval set by
+       *  how fast the underlying source moves (§3). The clock runs
+       *  from the last review, not from publish: on completing one,
+       *  bump `lastReviewedDate` and set the next `reviewBy`.
+       *  `lastReviewedDate` stays null until a human has actually
+       *  re-read the post. Both are ISO date strings. */
       guidanceSensitive: z.boolean().default(false),
       reviewBy: z.string().nullable().default(null),
       lastReviewedDate: z.string().nullable().default(null),

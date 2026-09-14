@@ -62,7 +62,9 @@ test('changing one field leaves every other line untouched', async (t) => {
 });
 
 test('a field the post lacks is inserted in schema order', () => {
-  const raw = read(slugs[0]);
+  // Stripped of the review fields so dateModified's schema neighbours are
+  // publishedDate and author, which is what this test is asserting about.
+  const raw = withoutReviewFields();
   const { fields, body } = parseFile(raw);
   const stripped = fields.filter((f) => f.key !== 'dateModified');
   const next = serialiseFile(stripped, { dateModified: '2026-09-14' }, body);
@@ -242,14 +244,22 @@ test('every real post survives the signature check', async (t) => {
  *
  * guidanceSensitive / reviewBy / lastReviewedDate live in
  * content.config.ts and must be settable from the editor, not merely
- * passed through. No post in the corpus carries them yet, so the tests
- * that need one build a fixture by splicing the three lines into a real
- * post rather than editing anything under src/content/blog.
+ * passed through. Real posts now carry these fields, so both fixtures
+ * below are derived rather than assumed: strip the three lines to get a
+ * post that lacks them, and splice onto that stripped copy to get one
+ * that carries exactly the expected values. Deriving both keeps these
+ * tests true however many posts are flagged, instead of silently
+ * decaying the next time the corpus changes.
  */
 
-/** A real post with the three review fields spliced in after dateModified. */
+const REVIEW_FIELD_LINE = /^(?:guidanceSensitive|reviewBy|lastReviewedDate):.*\n/gm;
+
+/** A real post with the three review fields removed. */
+const withoutReviewFields = (slug = slugs[0]) => read(slug).replace(REVIEW_FIELD_LINE, '');
+
+/** A real post carrying exactly the three review fields, after dateModified. */
 const withReviewFields = (slug = slugs[0]) =>
-  read(slug).replace(/^dateModified:.*$/m, (line) =>
+  withoutReviewFields(slug).replace(/^dateModified:.*$/m, (line) =>
     [line, 'guidanceSensitive: true', 'reviewBy: "2027-03-21"', 'lastReviewedDate: "2026-09-21"'].join('\n'),
   );
 
@@ -289,7 +299,7 @@ test('the validator accepts the review fields and rejects what would break the b
 });
 
 test('setting the review fields from empty inserts them in schema order', () => {
-  const raw = read(slugs[0]);
+  const raw = withoutReviewFields();
   const { fields, body } = parseFile(raw);
   const next = serialiseFile(
     fields,
@@ -327,7 +337,7 @@ test('setting the review fields from empty inserts them in schema order', () => 
 test('an unticked guidanceSensitive adds no line to a post that lacks it', () => {
   // The form posts every field on every save, so a false here must read
   // as "still the schema default", not as a new line on every post.
-  const raw = read(slugs[0]);
+  const raw = withoutReviewFields();
   const { fields, body } = parseFile(raw);
   assert.equal(serialiseFile(fields, { guidanceSensitive: false }, body), raw);
 });

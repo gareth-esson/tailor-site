@@ -120,7 +120,19 @@ Surfaced in Content Studio next to the draft as a sidebar. Each flag has a "dism
 
 ## 3. Periodic review
 
-Posts that touch statutory guidance, KCSIE, Ofsted, RSHE, mental-health intervention, age-of-consent, online-safety law, or any topic where the underlying landscape can change are flagged in frontmatter with `guidanceSensitive: true` and given a `reviewBy` date six months from publish.
+Posts that touch statutory guidance, KCSIE, Ofsted, RSHE, mental-health intervention, age-of-consent, online-safety law, or any topic where the underlying landscape can change are flagged in frontmatter with `guidanceSensitive: true` and given a `reviewBy` date.
+
+`reviewBy` runs from the **last review**, not from publication. Completing a review sets the next `reviewBy` from the date of that review, so the clock restarts whenever someone actually looks rather than drifting from a publication date nobody revisits. A post that has never been reviewed takes its first `reviewBy` from the date it was flagged.
+
+`lastReviewedDate` is null until a human has genuinely re-read the post against its sources. It records that a check happened, so it must never be set to mean "flagged", "published" or "edited" — a date asserting a review that did not occur is the precise failure this section exists to prevent.
+
+How far out `reviewBy` sits depends on how fast the post's underlying source moves, so that reviews land when there is plausibly something to find:
+
+- **Six months** — posts resting on criminal or online-safety law, online-pornography regulation, or UKCIS advice. These move between editions and without much notice.
+- **Twelve months** — posts resting on the RSHE statutory guidance, which came into force on 1 September 2026 and is not expected to move soon.
+- **Each September** — posts citing Keeping children safe in education, reviewed shortly after the new edition takes effect on 1 September.
+
+Where several posts share an interval, space their dates roughly a week apart. Seventeen reviews falling due in the same week is how a review date becomes something everyone ignores.
 
 GDH SEO's monthly Tailor report includes a "Posts due for review this month" section. When a post hits its review date:
 
@@ -134,5 +146,6 @@ If a statutory document the post references has been superseded, either update t
 
 ## 4. Changelog
 
+- **2026-09-14 v0.3**: Amended §3. `reviewBy` now runs from the last review rather than from publish, so the clock restarts when someone actually looks; added the volatility-based intervals (six months for criminal/online-safety law, twelve for RSHE, each September for KCSIE) and the instruction to space shared intervals about a week apart. Stated explicitly that `lastReviewedDate` stays null until a human has re-read the post. Applied the flags across the 17 remaining guidance-sensitive posts the same day; those carry `reviewBy` only, with `lastReviewedDate` left null because no review has yet happened.
 - **2026-05-12 v0.2**: Rewrote to be a safety-focused complement to the existing `Tailor_Blog_Writing_Rules.md` and `Tailor_Site_Copy_Writing_Rules.md` docs, after Gareth flagged that the v0.1 draft duplicated and partly contradicted the voice rules that already existed. Removed the speculative voice rules section, removed the invented political-third-rails section, kept the safeguarding hard rules and the Red Team review spec.
 - **2026-05-12 v0.1**: Initial draft. Superseded.
