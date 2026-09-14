@@ -55,22 +55,41 @@ session to check the file rather than trust the quote.
 
 ## 3. Rebuild: what-young-people-want-to-know — one chat, this post only
 
-> `src/content/blog/what-young-people-want-to-know-sex-relationships/index.mdx` diagnoses a gap and gives the reader one action, which is a link out to another post.
+> `src/content/blog/what-young-people-want-to-know-sex-relationships/index.mdx` diagnoses a gap and gives the reader one action, which is a link out to another post. It also publishes four wrong statistics.
 >
 > Read first, in full: `docs/Tailor_Blog_Writing_Rules.md`, `docs/editorial-policy.md`, and this post's entry in `docs/blog-audit-2026-09-14.md` Part 2.
 >
-> The job: the post's real asset is the themed clusters of what young people actually ask. Turn that into something a PSHE lead can use — what the clusters imply for a scheme of work, which ones schools systematically under-teach, what you do with a question you can't answer in the room. The final section is currently the thinnest in the piece and is where it should deepen.
+> ### The statistics — verified against the source on 14 September 2026
+>
+> Every figure below was checked by extracting the text of the [Sex Education Forum Young People's RSE Poll 2024 report PDF](https://www.sexeducationforum.org.uk/sites/default/files/field/attachment/Young%20Peoples%20RSE%20Poll%202024%20-%20Report.pdf). **Do not re-derive these from search results — use the report.**
+>
+> **Correct as published, keep them:**
+> - 50% rated their RSE good or very good. The report gives 50.05% for 2024 against 40.42% (2022), 35.33% (2021) and 41.10% (2019), and calls it "the highest percentage since polling began". The post's "highest since polling began" is sound.
+> - 43% felt personally represented. Report: "Only 43% of young people agree that they felt personally represented and included in the RSE that they received at school."
+> - 30% social media ahead of school at 25% for LGBT+ information. Report, verbatim: "for learning about LGBT+ issues, young people are more likely to turn to social media (30%) ahead of school (25%)".
+>
+> **Wrong, must be fixed:**
+> - **"not learning enough about pornography (58%)" — this figure does not exist.** The same bogus 58% was found and removed from the porn literacy post on 14 Sept. The report says: "Over 1 in 5 respondents (23%) learnt nothing at all about pornography at school, with a combined 49% learning nothing at all or not enough** about pornography."
+> - **"LGBTQ+ relevant information (54%)" — wrong.** The report gives "38% learnt nothing at all or not enough** about sexual orientation, and 44% learnt nothing at all or not enough about gender identity". There is no 54%.
+> - **"healthy relationships (54%)" — not in the report's coverage-gaps list at all.** That list covers sexual pleasure (60%), pornography (23%/49%), power imbalances (49%), sexual orientation (38%), gender identity (44%), sexual health services (46%), HIV (40%) and STIs (35%). Either find the real figure in the report or drop the item.
+> - **"Only 46% learned about how to access local sexual health services" — this states the opposite of the finding.** The report says "46% learnt nothing at all or not enough** about how to access local sexual health services". 46% is the proportion who did *not* learn enough. Separately the report notes 49% learnt all they needed to. As published the post reverses the meaning.
+>
+> `src/content/blog/teaching-porn-literacy-what-it-is-why-it-matters/index.mdx` now carries verified wording for the pornography figures — reuse its phrasing rather than inventing new wording.
+>
+> Also still outstanding: the three Trusted resources entries are placeholder `http://` homepages (editorial-policy §1.1), and "Anonymous question boxes… are one of the simplest and most effective tools in RSE" is a bare superlative with nothing behind it — attribute it or drop the claim.
+>
+> ### The rewrite
+>
+> The post's real asset is the themed clusters of what young people actually ask. Turn that into something a PSHE lead can use — what the clusters imply for a scheme of work, which ones schools systematically under-teach, what you do with a question you cannot answer in the room. The final section is currently the thinnest in the piece and is exactly where it should deepen.
 >
 > Handled well and worth preserving: no pupil question is reproduced verbatim, only themed paraphrase. Keep it that way — verbatim questions from a real question box carry identification risk.
 >
-> Constraints:
-> - Eight statistics in this post have no source URL and its three Trusted resources are placeholder homepages. That is a publish-gate breach (see chat 1). Do not add more unsourced figures.
-> - "We've had over 150 questions so far" is load-bearing for the post's authority and unverifiable from the repo. Check it against the live Okay to Ask total or flag it; don't restate it on trust.
-> - Do not invent first-person experience.
+> ### Constraints
 >
-> Note: a mechanical pass on 14 Sept deleted 31 sentences across the blog; check the file rather than trusting quotes in the audit.
-
----
+> - "We've had over 150 questions so far" is load-bearing for the post's authority and cannot be verified from the repository. Check it against the live Okay to Ask total or ask Gareth; do not restate it on trust.
+> - Do not invent first-person experience. Ask Gareth for real material rather than filling gaps.
+> - A mechanical pass on 14 Sept deleted 31 sentences across the blog — check the file rather than trusting quotes in the audit.
+> - Run `npx astro build` and report the real exit status. Commit when done; do not push without asking.
 
 ## 4. Rewrite: work-out-consent-masculinity-athletes — one chat, this post only
 
