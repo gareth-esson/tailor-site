@@ -79,6 +79,17 @@ const blog = defineCollection({
        *  (new sources, internal links rewired, factual correction).
        *  Drives schema.org Article.dateModified and og:modified_time. */
       dateModified: z.string().nullable().default(null),
+      /** Periodic-review machinery — see docs/editorial-policy.md §3.
+       *  Set `guidanceSensitive: true` on posts touching statutory
+       *  guidance, KCSIE, Ofsted, RSHE, mental-health intervention,
+       *  age of consent or online-safety law — anything whose
+       *  underlying landscape can change under the published text.
+       *  Such a post gets a `reviewBy` date six months out; on
+       *  completing a review, bump `lastReviewedDate` and set the
+       *  next `reviewBy`. Both are ISO date strings. */
+      guidanceSensitive: z.boolean().default(false),
+      reviewBy: z.string().nullable().default(null),
+      lastReviewedDate: z.string().nullable().default(null),
       author: z.string().default('Gareth Esson'),
       category: z
         .enum(['RSE in Practice', 'Guidance and Policy', 'Our Work'])
