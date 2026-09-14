@@ -39,10 +39,100 @@ Applied on 14 September 2026, after the audit. `astro build` exits 0 with all 24
 **Still open — deliberately not done:**
 - Every **publish-gate breach in Part 1** except §1.4. The citation work needs the real source documents.
 - **8 posts still have no `/topics/` link.** In most of them the only natural anchor sits inside a sentence flagged for rewrite (the opening anecdotes in `teaching-consent`, `sharing-nudes`, `teaching-puberty`) or inside a quoted passage from the guidance (`2026-rse-guidance-plain-english-summary`). `rse-policy-questions-governors-ask` contains no topic term at all. These want the rewrite first, then the link.
-- **11 posts still have empty `topicIds`** — the policy, governance, guidance and SEND posts. There is no landing page matching "policy", "governance" or "SEND", so any assignment would have been a guess that changes what shows in related posts. Needs a decision: either accept no topic for these, or add a topic.
+- ~~**11 posts still have empty `topicIds`**~~ — **settled, see D1–D3 below.** These posts keep empty `topicIds` by decision; `contentTags` were added to the five that had none.
 - **Every rewrite.** Nothing that required replacing a sentence rather than removing one was touched, and no `[AUTHOR]` claim was resolved.
 
 One reviewer quote could not be found in the source — "That's a complex piece of work" in `complete-guide-rse-special-schools` does not appear in the file, and that finding has been dropped.
+
+---
+
+## Decisions settled — 14 September 2026
+
+Three questions that sat above any single post, put to Gareth and answered. They are
+settled; the rewrite sessions should treat them as given, not reopen them.
+
+### D1. `2026-rse-guidance-plain-english-summary` is the review, not the summary — **applied**
+
+The post is retitled to what it is: **"How to review your RSE against the 2026 guidance"**
+(`metaTitle` follows). The slug is unchanged, so no URL breaks.
+
+The audit described one inbound link. There were **ten**, seven of them describing the post
+as a summary of what changed. The decision was to keep every destination and reword the
+link text, rather than repoint at the primary and secondary posts — those are split by
+phase, and most of the linking posts serve both phases, so repointing would have meant each
+one picking a phase or carrying two links. Instead the post now opens with a phase signpost
+of its own, so a reader who wanted "what changed" is one click away:
+
+> This post is the review itself. For what the revised guidance changed, there is a post on
+> the primary changes and one on the secondary changes.
+
+Reworded: `rse-policy-checklist-2026`, `consulting-parents-rse-policy-2026`,
+`talking-to-boys…`, `teaching-hard-topics…`, `teaching-puberty…`,
+`complete-guide-rse-special-schools`, `sharing-nudes…`, `src/pages/for-schools.astro`,
+`src/pages/services/rse-training.astro`.
+
+**Deliberately not touched:** `rse-send-practical-approaches:38` links the post as
+"The [2026 DfE guidance]", which is a different error — a blog post standing in for the DfE
+document — and it sits in the same sentence as the §1.3 withdrawal oversimplification.
+It belongs to the citation pass (prompt 1), which owns that sentence.
+
+### D2. Drop days: the service page is the line, not the post — **decision only, not applied**
+
+The audit framed this as two posts disagreeing. It is three pages, and the third one
+settles it. `/services/drop-days` sells the day as a legitimate delivery model in its own
+right — *"Some schools prefer to concentrate their RSE delivery into a single,
+high-quality day rather than spread it thinly across the year."*
+`rse-programme-more-than-drop-down-day` says the opposite: *"as the backbone of your RSE
+programme? They don't work."* `drop-day-setup` takes no position.
+
+Gareth's view: for most schools the drop day **is** their RSE. That is the reality the
+writing has to meet, and it matches what the service page already offers.
+
+**The line is the service page.** `rse-programme` is reframed rather than reinforced: keep
+the guidance-backed argument (the 2026 guidance expects progression from primary; one day
+cannot carry that alone) but turn it from *this doesn't work* into *here is how to make the
+day carry weight, and the smallest thing to put around it*. This also closes the
+cross-cutting pattern 4 good-faith breach flagged against this post.
+
+Note that `rse-programme` **already contains** the supplementary sentence — "the external
+input should supplement your programme, not replace it." Adding one to `drop-day-setup`
+would have propagated the prescriptive line to a second post, not resolved anything. That
+is why the one-sentence fix the audit proposed was rejected.
+
+This is a prose rewrite of a post already queued for the citation pass, so it was not
+applied here. See prompt 9 in `docs/blog-audit-chat-prompts.md`.
+
+### D3. No topic for the policy, governance, guidance and SEND posts — **applied**
+
+The 23 landing pages in `.cache/notion/landing-pages.json` are curriculum topics for young
+people, and `/topics/` presents them as *"curriculum-aligned topics… the questions young
+people actually ask"*. A `/topics/policy` or `/topics/governance` page would ship publicly
+into that grid. So: **these 11 posts legitimately have no `topicIds`, and the taxonomy is
+not extended.** `topicIds` and `secondaryTopicIds` stay empty on them.
+
+The related-posts problem is real but belongs at the tag layer, where the vocabulary
+already exists — `contentTags` already carried `"school policy"` (4 posts) and `"SEND"`
+(2 posts). `contentTags` are now populated on the five posts that had none:
+
+| Post | Tags |
+|---|---|
+| `2026-rse-guidance-primary-schools` | RSE guidance, 2026 changes, primary schools, curriculum planning |
+| `2026-rse-guidance-secondary-schools` | RSE guidance, 2026 changes, curriculum planning, misogyny |
+| `reduce-withdrawals-sex-education-parent-consultation` | RSE guidance, school policy, parents |
+| `rse-policy-checklist-2026` | RSE guidance, school policy, 2026 changes, curriculum planning |
+| `rse-policy-questions-governors-ask` | RSE guidance, school policy, governance, 2026 changes |
+
+`"governance"` is a new tag on one post. It scores nothing until a second governance post
+exists, and it describes the post accurately.
+
+Scored against `src/lib/related-blog-posts.ts`, all five now surface genuinely related
+posts at 8–14 points instead of a flat 2. `rse-policy-questions-governors-ask`, for
+example, goes from three arbitrary "School leaders" posts to `rse-policy-checklist-2026`,
+`parental-right-to-withdraw-rse-2026` and `consulting-parents-rse-policy-2026`.
+
+`src/lib/related-blog-posts.ts` was **not** changed. It still does not score `category`,
+which is populated on all 24 posts and is the remaining cheap signal if tags prove
+insufficient.
 
 ---
 
