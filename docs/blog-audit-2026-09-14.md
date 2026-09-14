@@ -8,6 +8,32 @@
 
 ---
 
+## Correction — the RADA and Work Out findings rest on a wrong premise
+
+**Recorded 14 September 2026, after Gareth overruled the RADA brief.**
+
+This audit judged `rada-consent-for-film-and-tv` and `work-out-consent-masculinity-athletes` against a standard they never claimed to meet. Both were read as guides that fail to deliver a method. They are not guides. They are thought pieces — journal entries about work Tailor did — and "what can a reader do on Monday?" is the wrong question to ask of them.
+
+**Void, do not action:**
+
+- Every "what a reader can actually do after reading it" verdict for those two posts, including "Almost nothing" for RADA and "Nothing" for Work Out.
+- The recommendation that Work Out needs "one reflective-dialogue session written out in full", and that it should otherwise drop its educational framing.
+- The recommendation that RADA must "cash the cheque" on its setup sentence with a concrete director's-side sequence.
+- The venue-to-practice ratio criticism for both, and the framing that either post is "upside down".
+- Cross-cutting pattern 1 ("actionability splits on whether the words someone actually says were written down") as applied to these two. The observation holds for the teaching posts; it is not a standard these two are subject to.
+
+**Still stands, because it applies to any post regardless of genre:**
+
+- The voice-rule findings — throat clearing, closing payoffs, "It's not X; it's Y", filler intensifiers, repeated sentence frames. The mechanical pass of 14 Sept already applied these to both posts.
+- Work Out's good-faith breach: "In a lot of settings it's delivered as a set of rules."
+- The safety notes: confirming the Work Out participant quote was cleared for use, and the locational precision around a group of unaccompanied minors in the Red Cross post.
+
+**Open question at the time of writing:** whether the same correction applies to the other three partner-session posts — `british-museum-no-sex-please-anonymous-questions`, `red-cross-angel-youth-group` and `tate-modern-bedfellows-porn-literacy`. Those three do contain transferable material the audit identified (a question-box format, a roll audit, a five-question set), so they may sit differently. Do not action the partner-series findings for those three until that is settled.
+
+**The lesson for future passes:** establish what a post is claiming to be before judging whether it delivers. A reflective piece and a how-to fail in different ways, and the audit applied one rubric to both.
+
+---
+
 ## Provenance — which commit this audit describes
 
 The audit was read from the working tree at **`5cc8bde`** ("Blog: make the withdrawal post read as a reference").
