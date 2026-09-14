@@ -1,0 +1,100 @@
+---
+export const prerender = false;
+
+import StudioLayout from '../../layouts/StudioLayout.astro';
+import { isConfigured, sessionFromRequest } from '../../lib/studio/auth';
+
+// Already signed in — no reason to show the form again.
+if (sessionFromRequest(Astro.request)) {
+  return Astro.redirect('/studio/');
+}
+
+const configured = isConfigured();
+---
+
+<StudioLayout title="Sign in">
+  <main class="studio__login">
+    <div class="studio__login-panel surface surface--light">
+      <h1 class="studio__rail-heading">Tailor Studio</h1>
+
+      {
+        configured ? (
+          <form id="studio-login-form" novalidate>
+            <div class="form-group">
+              <label class="form-label" for="studio-password">Passphrase</label>
+              <input
+                class="form-input"
+                type="password"
+                id="studio-password"
+                name="password"
+                autocomplete="current-password"
+                required
+                autofocus
+              />
+            </div>
+
+            <div class="alert alert--error" id="studio-login-error" hidden>
+              <div class="alert__content">
+                <div class="alert__body"><p id="studio-login-error-text" /></div>
+              </div>
+            </div>
+
+            <button class="btn btn--std btn--primary" type="submit" id="studio-login-submit">
+              Sign in
+            </button>
+          </form>
+        ) : (
+          <div class="alert alert--warning">
+            <div class="alert__content">
+              <div class="alert__title">The editor isn’t configured yet</div>
+              <div class="alert__body">
+                <p>
+                  This deployment is missing the editor’s environment variables. See
+                  <code>docs/POST-EDITOR.md</code> for the four values it needs.
+                </p>
+              </div>
+            </div>
+          </div>
+        )
+      }
+    </div>
+  </main>
+</StudioLayout>
+
+<script>
+  const form = document.getElementById('studio-login-form') as HTMLFormElement | null;
+  const error = document.getElementById('studio-login-error');
+  const errorText = document.getElementById('studio-login-error-text');
+  const submit = document.getElementById('studio-login-submit') as HTMLButtonElement | null;
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!submit || !error || !errorText) return;
+
+    const password = (document.getElementById('studio-password') as HTMLInputElement).value;
+    submit.disabled = true;
+    submit.textContent = 'Signing in…';
+    error.hidden = true;
+
+    try {
+      const res = await fetch('/api/studio/login/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+      if (res.ok) {
+        window.location.href = '/studio/';
+        return;
+      }
+      const body = await res.json().catch(() => ({ error: 'Sign-in failed.' }));
+      errorText.textContent = body.error ?? 'Sign-in failed.';
+      error.hidden = false;
+    } catch {
+      errorText.textContent = 'Could not reach the server. Check your connection.';
+      error.hidden = false;
+    } finally {
+      submit.disabled = false;
+      submit.textContent = 'Sign in';
+    }
+  });
+</script>

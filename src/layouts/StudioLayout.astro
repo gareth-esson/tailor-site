@@ -1,0 +1,41 @@
+---
+/**
+ * Shell for the post editor (/studio).
+ *
+ * Deliberately not BaseLayout. The editor is an app surface, not a page
+ * of the site: the site header, footer, cookie banner, OtA search pill
+ * and analytics would all be noise around a writing pane, and running
+ * analytics on an authenticated admin screen isn't something to do by
+ * accident. It loads the same stylesheet and the same Lexend weights, so
+ * the design tokens and typography are identical to everywhere else.
+ *
+ * Every studio route is noindex + nofollow and disallowed in robots.txt.
+ */
+import '../styles/tailwind.css';
+import '../styles/tailor-site-v2.css';
+import '../styles/studio.css';
+import '@fontsource/lexend/400.css';
+import '@fontsource/lexend/600.css';
+import '@fontsource/lexend/700.css';
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <meta name="referrer" content="same-origin" />
+    <title>{title} — Tailor Studio</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

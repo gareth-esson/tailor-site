@@ -1,0 +1,86 @@
+---
+export const prerender = false;
+
+import { getCollection } from 'astro:content';
+import StudioLayout from '../../layouts/StudioLayout.astro';
+import { sessionFromRequest } from '../../lib/studio/auth';
+
+if (!sessionFromRequest(Astro.request)) {
+  return Astro.redirect('/studio/login/');
+}
+
+/**
+ * The list comes from the build snapshot rather than the GitHub API:
+ * twenty-four round trips to list twenty-four titles would make this
+ * page slow for no gain. Opening a post fetches it live, so an edit
+ * always starts from the current file — only the list itself can lag,
+ * and only until the next deploy.
+ */
+const posts = (await getCollection('blog')).sort((a, b) => {
+  const aDate = a.data.dateModified ?? a.data.publishedDate ?? '';
+  const bDate = b.data.dateModified ?? b.data.publishedDate ?? '';
+  return bDate.localeCompare(aDate);
+});
+
+const badgeFor = (status: string) =>
+  status === 'Published' ? 'badge--published' : status === 'In Review' ? 'badge--review' : 'badge--draft';
+
+const formatDate = (value: string | null) =>
+  value ? new Date(value).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
+---
+
+<StudioLayout title="Posts">
+  <div class="studio">
+    <header class="studio__bar">
+      <h1 class="studio__bar-title">Tailor Studio</h1>
+      <span class="studio__bar-spacer"></span>
+      <span class="studio__bar-status">{posts.length} posts</span>
+      <button class="btn btn--sm btn--text" type="button" id="studio-signout">Sign out</button>
+    </header>
+
+    <div class="studio__body studio__body--single">
+      <main class="studio__main studio__main--bare">
+        <label class="form-label" for="studio-filter">Find a post</label>
+        <input
+          class="form-input studio__search"
+          type="search"
+          id="studio-filter"
+          placeholder="Type part of a title…"
+          autocomplete="off"
+        />
+
+        <ul class="studio__list" id="studio-list">
+          {
+            posts.map((post) => (
+              <li class="studio__list-item" data-title={post.data.title.toLowerCase()} data-slug={post.id}>
+                <a class="studio__list-link" href={`/studio/${post.id}/`}>
+                  {post.data.title}
+                </a>
+                <span class={`badge badge--pill ${badgeFor(post.data.status)}`}>{post.data.status}</span>
+                <span class="studio__list-meta">{formatDate(post.data.dateModified ?? post.data.publishedDate)}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </main>
+    </div>
+  </div>
+</StudioLayout>
+
+<script>
+  const filter = document.getElementById('studio-filter') as HTMLInputElement | null;
+  const items = Array.from(document.querySelectorAll<HTMLLIElement>('.studio__list-item'));
+
+  filter?.addEventListener('input', () => {
+    const query = filter.value.trim().toLowerCase();
+    for (const item of items) {
+      const haystack = `${item.dataset.title ?? ''} ${item.dataset.slug ?? ''}`;
+      item.hidden = query.length > 0 && !haystack.includes(query);
+    }
+  });
+
+  document.getElementById('studio-signout')?.addEventListener('click', async () => {
+    await fetch('/api/studio/logout/', { method: 'POST' });
+    window.location.href = '/studio/login/';
+  });
+</script>

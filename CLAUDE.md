@@ -77,6 +77,29 @@ elements — heading and body must share the same right edge.
 - **Dev server**: `preview_start` with the `dev` launch config (port
   4321). Use it for any observable CSS/UI change.
 
+## Post editor (`/studio`)
+
+The site has a browser-based editor for blog posts. It reads and writes
+the same `src/content/blog/<slug>/index.mdx` files you edit from here,
+committing each save to `main` through the GitHub API — so it is a third
+writer on the same source of truth, not a parallel one.
+
+Two things follow for any session that touches blog content or the
+editor:
+
+- **Frontmatter and body formatting are load-bearing.** The editor keeps
+  diffs minimal by re-emitting only the fields that changed. Reformatting
+  a post's frontmatter by hand (re-quoting, reordering keys) will show up
+  as churn in the next editor save.
+- **`src/lib/studio/schema.js` mirrors the blog schema in
+  `src/content.config.ts`.** Add a field to one and you must add it to
+  the other, or the editor will refuse to save that field.
+
+Read `docs/POST-EDITOR.md` before changing anything under
+`src/pages/studio/`, `src/pages/api/studio/` or `src/lib/studio/`.
+Run `npm test` after — `tests/studio-roundtrip.test.mjs` checks the
+round-trip guarantees against every real post.
+
 ## Git and deploy
 
 - Commit style: imperative, topical; multi-line bodies with concrete

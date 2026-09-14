@@ -1,0 +1,481 @@
+/**
+ * Post editor (/studio) — project-specific app chrome.
+ *
+ * Per CLAUDE-CODE-OPERATING-RULES.md §7 these are project components,
+ * not candidates for the master system: an editor shell, a formatting
+ * toolbar and a metadata rail aren't reusable on a different site. They
+ * follow the same rules as everything else — BEM-ish names, every value
+ * a token, focus rings from --focus-ring, reduced-motion handled.
+ *
+ * Typography splits by role, per the three-scales rule: the chrome
+ * (rail, toolbar, labels, buttons) is card scale because it's compact
+ * app UI; the editing surface itself is prose scale and capped to
+ * --container-max-prose, so the words sit at the same measure and size
+ * they will on the published page.
+ *
+ * Where the design system already has a component, it is used as-is:
+ * .btn for every action, .badge--draft/--review/--published for status,
+ * .alert for errors, .form-input/.form-select/.form-label for fields.
+ */
+
+/* ── Tokens ─────────────────────────────────────────────────────── */
+
+:root {
+    --studio-rail-width: 20rem;
+    --studio-bar-height: 3.5rem;
+    --studio-gap: var(--space-global-md);
+    --studio-bg: var(--bg-page);
+    --studio-panel-bg: var(--bg-surface);
+    --studio-border: var(--border-width-sm) solid var(--border-subtle);
+    --studio-radius: var(--radius-md);
+    --studio-toolbar-btn-size: 2rem;
+}
+
+/* ── Shell ──────────────────────────────────────────────────────── */
+
+.studio {
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: var(--studio-bg);
+    color: var(--text-body);
+    display: flex;
+    flex-direction: column;
+}
+
+.studio__bar {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+    display: flex;
+    align-items: center;
+    gap: var(--space-global-sm);
+    min-height: var(--studio-bar-height);
+    padding: var(--space-global-xs) var(--space-global-gutter);
+    background: var(--studio-panel-bg);
+    border-bottom: var(--studio-border);
+}
+
+.studio__bar-title {
+    font-size: var(--text-card-size-h4);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-heading);
+    line-height: var(--lh-tight);
+    margin: 0;
+    /* A long post title must not push the save button off-screen. */
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.studio__bar-spacer {
+    flex: 1 1 auto;
+}
+
+.studio__bar-status {
+    font-size: var(--text-card-size-h6);
+    color: var(--text-body-muted);
+    white-space: nowrap;
+}
+
+.studio__body {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: var(--studio-rail-width) minmax(0, 1fr);
+    gap: var(--studio-gap);
+    align-items: start;
+    padding: var(--studio-gap) var(--space-global-gutter);
+    max-width: var(--container-max-shell);
+    width: 100%;
+    margin-inline: auto;
+}
+
+/* Single-column variant — the post list has no metadata rail. */
+.studio__body--single {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+/* Content that sits directly on the page ground rather than in a panel
+   (the post list supplies its own per-row surfaces). */
+.studio__main--bare {
+    background: none;
+}
+
+/* ── Metadata rail ──────────────────────────────────────────────── */
+
+.studio__rail {
+    position: sticky;
+    top: calc(var(--studio-bar-height) + var(--studio-gap));
+    background: var(--studio-panel-bg);
+    border-radius: var(--studio-radius);
+    padding: var(--space-global-md);
+    max-height: calc(100vh - var(--studio-bar-height) - (var(--studio-gap) * 2));
+    overflow-y: auto;
+}
+
+.studio__rail-heading {
+    font-size: var(--text-card-size-h5);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-heading);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0 0 var(--space-global-sm);
+}
+
+.studio__rail-heading + .form-group {
+    margin-top: 0;
+}
+
+.studio__rail .form-group:last-child {
+    margin-bottom: 0;
+}
+
+.studio__rail-note {
+    font-size: var(--text-card-size-h6);
+    color: var(--text-body-muted);
+    line-height: var(--lh-ui);
+    margin: var(--space-global-xs) 0 0;
+}
+
+/* Tag list — chips the editor can remove. Uses the system .chip. */
+.studio__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-global-xs);
+    margin-bottom: var(--space-global-xs);
+}
+
+.studio__tags:empty {
+    display: none;
+}
+
+.studio__tag-remove {
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: var(--space-global-xs);
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    line-height: 1;
+}
+
+.studio__tag-remove:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+}
+
+/* ── Editing surface ────────────────────────────────────────────── */
+
+.studio__main {
+    background: var(--studio-panel-bg);
+    border-radius: var(--studio-radius);
+    min-width: 0;
+}
+
+.studio__toolbar {
+    position: sticky;
+    top: var(--studio-bar-height);
+    z-index: var(--z-base);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-global-xs);
+    padding: var(--space-global-xs) var(--space-global-md);
+    background: var(--studio-panel-bg);
+    border-bottom: var(--studio-border);
+    border-radius: var(--studio-radius) var(--studio-radius) 0 0;
+}
+
+.studio__toolbar-sep {
+    width: var(--border-width-sm);
+    align-self: stretch;
+    background: var(--border-subtle);
+}
+
+.studio__tool {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--studio-toolbar-btn-size);
+    height: var(--studio-toolbar-btn-size);
+    padding-inline: var(--space-global-xs);
+    font-family: inherit;
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-body);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background-color var(--transition-duration) var(--transition-easing);
+}
+
+.studio__tool:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.studio__tool:not(:disabled):hover {
+    background: var(--bg-surface-alt);
+}
+
+.studio__tool:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+}
+
+.studio__tool[aria-pressed='true'] {
+    background: var(--btn-tint-bg);
+    color: var(--btn-tint-text);
+}
+
+.studio__tool--wide {
+    min-width: auto;
+}
+
+/* The formatting controls wrap among themselves; the view toggle stays
+   pinned to the end of the first row. An auto margin can't do this — in
+   a wrapping flex container it absorbs the free space and pushes the
+   item onto a line of its own — so they are two groups instead. */
+.studio__toolbar-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-global-xs);
+    min-width: 0;
+}
+
+.studio__tool--end {
+    flex: 0 0 auto;
+}
+
+/* The ProseMirror host. Prose scale so the measure and rhythm match the
+   published post rather than the app chrome around it. */
+.studio__editor {
+    padding: var(--space-global-lg) var(--space-global-md) var(--space-global-xl);
+}
+
+.studio__editor .ProseMirror {
+    max-width: var(--container-max-prose);
+    margin-inline: auto;
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    line-height: var(--lh-prose);
+    color: var(--text-body);
+    outline: none;
+}
+
+.studio__editor .ProseMirror:focus-visible {
+    outline: none;
+}
+
+/* A focus ring on the whole surface would be a large moving box; ring
+   the panel instead so keyboard users still see where they are. */
+.studio__main:focus-within {
+    box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring);
+}
+
+.studio__editor .ProseMirror > * + * {
+    margin-top: var(--space-global-md);
+}
+
+.studio__editor .ProseMirror h2 {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h2);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
+    margin-top: var(--space-global-xl);
+    margin-bottom: 0;
+}
+
+.studio__editor .ProseMirror h3 {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h3);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
+    margin-top: var(--space-global-lg);
+    margin-bottom: 0;
+}
+
+.studio__editor .ProseMirror h4 {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h4);
+    line-height: var(--lh-heading-sub);
+    color: var(--text-heading);
+    margin-top: var(--space-global-lg);
+    margin-bottom: 0;
+}
+
+.studio__editor .ProseMirror a {
+    color: var(--brand-accent-text);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+}
+
+.studio__editor .ProseMirror blockquote {
+    padding-left: var(--space-global-md);
+    border-left: var(--border-width-md) solid var(--brand-accent);
+    color: var(--text-body-muted);
+    font-size: var(--text-prose-size-quote);
+    line-height: var(--lh-prose);
+}
+
+.studio__editor .ProseMirror ul,
+.studio__editor .ProseMirror ol {
+    padding-left: var(--space-global-lg);
+}
+
+.studio__editor .ProseMirror li + li {
+    margin-top: var(--space-global-xs);
+}
+
+.studio__editor .ProseMirror li > p {
+    margin: 0;
+}
+
+.studio__editor .ProseMirror code {
+    font-size: 0.9em;
+    padding: 0.1em 0.3em;
+    border-radius: var(--radius-xs);
+    background: var(--bg-surface-alt);
+}
+
+/* Placeholder for an empty document. */
+.studio__editor .ProseMirror p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    color: var(--form-placeholder-color);
+    float: left;
+    height: 0;
+    pointer-events: none;
+}
+
+/* Plain-Markdown fallback, used when a body doesn't round-trip cleanly
+   through the document model. */
+.studio__source {
+    display: block;
+    width: 100%;
+    max-width: var(--container-max-prose);
+    margin-inline: auto;
+    min-height: 60vh;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: var(--text-card-size-body);
+    line-height: var(--lh-body);
+}
+
+/* ── Post list ──────────────────────────────────────────────────── */
+
+.studio__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-xs);
+}
+
+.studio__list-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-global-sm);
+    padding: var(--space-global-sm) var(--space-global-md);
+    background: var(--studio-panel-bg);
+    border-radius: var(--studio-radius);
+    transition: background-color var(--transition-duration) var(--transition-easing);
+}
+
+.studio__list-item:hover {
+    background: var(--bg-surface-alt);
+}
+
+.studio__list-link {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: var(--text-card-size-h4);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-heading);
+    text-decoration: none;
+}
+
+.studio__list-link:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+}
+
+.studio__list-meta {
+    font-size: var(--text-card-size-h6);
+    color: var(--text-body-muted);
+    white-space: nowrap;
+}
+
+.studio__search {
+    margin-bottom: var(--space-global-md);
+    width: 100%;
+}
+
+/* ── Login ──────────────────────────────────────────────────────── */
+
+.studio__login {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: grid;
+    place-items: center;
+    padding: var(--space-global-gutter);
+    background: var(--studio-bg);
+}
+
+.studio__login-panel {
+    width: 100%;
+    max-width: var(--container-max-text-col);
+}
+
+/* ── Save state ─────────────────────────────────────────────────── */
+
+.studio__toast {
+    position: fixed;
+    left: 50%;
+    bottom: var(--space-global-lg);
+    transform: translateX(-50%);
+    z-index: var(--z-toast);
+    max-width: var(--container-max-text-col);
+    box-shadow: var(--shadow-lg);
+}
+
+.studio__toast[hidden] {
+    display: none;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────── */
+
+@media (max-width: 1024px) { /* --bp-lg */
+    .studio__body {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .studio__rail {
+        position: static;
+        max-height: none;
+        order: 2;
+    }
+
+    .studio__main {
+        order: 1;
+    }
+}
+
+@media (max-width: 640px) { /* below --bp-md, mobile */
+    .studio__editor {
+        padding: var(--space-global-md) var(--space-global-sm) var(--space-global-lg);
+    }
+
+    .studio__bar-status {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .studio__tool,
+    .studio__list-item {
+        transition: none;
+    }
+}

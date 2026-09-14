@@ -1,0 +1,167 @@
+---
+export const prerender = false;
+
+import { getCollection } from 'astro:content';
+import StudioLayout from '../../layouts/StudioLayout.astro';
+import { sessionFromRequest } from '../../lib/studio/auth';
+import { isValidSlug } from '../../lib/studio/github';
+import { AUDIENCES, CATEGORIES, SERVICE_LINKS, STATUSES } from '../../lib/studio/schema.js';
+
+if (!sessionFromRequest(Astro.request)) {
+  return Astro.redirect('/studio/login/');
+}
+
+const { slug } = Astro.params;
+
+// Two gates: the slug must be well-formed (no traversal reaches the
+// GitHub path builder) and must name a post that exists.
+if (!isValidSlug(slug)) return new Response('Not found', { status: 404 });
+const known = await getCollection('blog');
+const post = known.find((entry) => entry.id === slug);
+if (!post) return new Response('Not found', { status: 404 });
+
+/** Fields are rendered here but validated server-side against the same
+ *  option lists, so the two can't drift apart. */
+const selects = [
+  { key: 'status', label: 'Status', options: STATUSES, blank: null },
+  { key: 'category', label: 'Category', options: CATEGORIES, blank: 'No category' },
+  { key: 'targetAudience', label: 'Audience', options: AUDIENCES, blank: 'No audience' },
+  { key: 'serviceLink', label: 'Service link', options: SERVICE_LINKS, blank: 'No service link' },
+];
+---
+
+<StudioLayout title={post.data.title}>
+  <div class="studio">
+    <header class="studio__bar">
+      <a class="btn btn--sm btn--text" href="/studio/">← Posts</a>
+      <h1 class="studio__bar-title" id="studio-bar-title">{post.data.title}</h1>
+      <span class="studio__bar-spacer"></span>
+      <span class="studio__bar-status" id="studio-save-status">Loading…</span>
+      <button class="btn btn--sm btn--primary" type="button" id="studio-save" disabled>Save</button>
+    </header>
+
+    <div class="studio__body">
+      <aside class="studio__rail">
+        <h2 class="studio__rail-heading">Post</h2>
+
+        <div class="form-group">
+          <label class="form-label" for="studio-title">Title <span class="required">*</span></label>
+          <input class="form-input" type="text" id="studio-title" data-field="title" />
+        </div>
+
+        {
+          selects.map((field) => (
+            <div class="form-group">
+              <label class="form-label" for={`studio-${field.key}`}>
+                {field.label}
+              </label>
+              <select class="form-select" id={`studio-${field.key}`} data-field={field.key}>
+                {field.blank && <option value="">{field.blank}</option>}
+                {field.options.map((option: string) => (
+                  <option value={option}>{option}</option>
+                ))}
+              </select>
+            </div>
+          ))
+        }
+
+        <div class="form-group">
+          <label class="form-label" for="studio-publishedDate">Published</label>
+          <input class="form-input" type="date" id="studio-publishedDate" data-field="publishedDate" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="studio-dateModified">Last updated</label>
+          <input class="form-input" type="date" id="studio-dateModified" data-field="dateModified" />
+          <button class="btn btn--sm btn--tint" type="button" id="studio-touch-date">Mark as updated today</button>
+          <p class="studio__rail-note">
+            This drives the “last updated” date Google sees. Set it when a post is materially
+            refreshed — not for a typo fix.
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="studio-author">Author</label>
+          <input class="form-input" type="text" id="studio-author" data-field="author" />
+        </div>
+
+        <h2 class="studio__rail-heading">Tags</h2>
+        <div class="form-group">
+          <div class="studio__tags" id="studio-tags"></div>
+          <label class="form-label" for="studio-tag-input">Add a content tag</label>
+          <input class="form-input" type="text" id="studio-tag-input" autocomplete="off" />
+          <p class="studio__rail-note">Press Enter to add.</p>
+        </div>
+
+        <h2 class="studio__rail-heading">Search &amp; social</h2>
+        <div class="form-group">
+          <label class="form-label" for="studio-metaTitle">Meta title</label>
+          <input class="form-input" type="text" id="studio-metaTitle" data-field="metaTitle" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="studio-metaDescription">Meta description</label>
+          <textarea class="form-input" id="studio-metaDescription" data-field="metaDescription" rows="4"></textarea>
+        </div>
+
+        <h2 class="studio__rail-heading">Featured image</h2>
+        <div class="form-group">
+          <label class="form-label" for="studio-featuredImageAlt">Alt text</label>
+          <input class="form-input" type="text" id="studio-featuredImageAlt" data-field="featuredImageAlt" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="studio-imageCredit">Credit</label>
+          <input class="form-input" type="text" id="studio-imageCredit" data-field="imageCredit" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="studio-imageCreditUrl">Credit URL</label>
+          <input class="form-input" type="url" id="studio-imageCreditUrl" data-field="imageCreditUrl" />
+          <p class="studio__rail-note">
+            Swapping the image itself still means committing a new file — the editor doesn’t upload.
+          </p>
+        </div>
+      </aside>
+
+      <main class="studio__main">
+        <div class="studio__toolbar" id="studio-toolbar" role="toolbar" aria-label="Formatting">
+          <div class="studio__toolbar-group">
+          <button class="studio__tool" type="button" data-action="bold" data-mark="bold" aria-pressed="false" title="Bold (⌘B)"><strong>B</strong></button>
+          <button class="studio__tool" type="button" data-action="italic" data-mark="italic" aria-pressed="false" title="Italic (⌘I)"><em>I</em></button>
+          <button class="studio__tool" type="button" data-action="code" data-mark="code" aria-pressed="false" title="Inline code">&lt;/&gt;</button>
+          <span class="studio__toolbar-sep"></span>
+          <button class="studio__tool" type="button" data-action="paragraph" data-node="paragraph" aria-pressed="false">Body</button>
+          <button class="studio__tool" type="button" data-action="heading" data-node="heading" data-level="2" aria-pressed="false">H2</button>
+          <button class="studio__tool" type="button" data-action="heading" data-node="heading" data-level="3" aria-pressed="false">H3</button>
+          <button class="studio__tool" type="button" data-action="heading" data-node="heading" data-level="4" aria-pressed="false">H4</button>
+          <span class="studio__toolbar-sep"></span>
+          <button class="studio__tool" type="button" data-action="bulletList" data-node="bulletList" aria-pressed="false">• List</button>
+          <button class="studio__tool" type="button" data-action="orderedList" data-node="orderedList" aria-pressed="false">1. List</button>
+          <button class="studio__tool" type="button" data-action="blockquote" data-node="blockquote" aria-pressed="false">Quote</button>
+          <span class="studio__toolbar-sep"></span>
+          <button class="studio__tool studio__tool--wide" type="button" data-action="link" data-mark="link" aria-pressed="false">Link</button>
+          <button class="studio__tool studio__tool--wide" type="button" data-action="unlink">Unlink</button>
+          <span class="studio__toolbar-sep"></span>
+          <button class="studio__tool" type="button" data-action="undo" title="Undo (⌘Z)">↶</button>
+          <button class="studio__tool" type="button" data-action="redo" title="Redo (⇧⌘Z)">↷</button>
+          </div>
+          <button class="studio__tool studio__tool--wide studio__tool--end" type="button" id="studio-source-toggle" aria-pressed="false">Markdown</button>
+        </div>
+
+        <div id="studio-messages" aria-live="polite"></div>
+
+        <div class="studio__editor">
+          <div id="studio-editor"></div>
+          <textarea class="form-input studio__source" id="studio-source" spellcheck="false" hidden></textarea>
+        </div>
+      </main>
+    </div>
+  </div>
+</StudioLayout>
+
+<script define:vars={{ slug }}>
+  window.__studioSlug = slug;
+</script>
+
+<script>
+  import { initStudioEditor } from '../../scripts/studio-editor';
+  initStudioEditor(window.__studioSlug);
+</script>
