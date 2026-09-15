@@ -163,13 +163,31 @@ const jsonLd = [
               )}
             </p>
           )}
-          <p class="cluster-hero__credentials">
-            Delivered by QTS-qualified RSE specialists. Tailor Learning is a
-            community-interest company working in UK schools.
-          </p>
+
         </div>
       </div>
     </header>
+
+    <!-- Trust strip — same dot-separated treatment as /topics/. Scannable
+         rather than prose: this answers "who are these people" in the two
+         seconds before the offer, which is where the claim is made.
+
+         Every claim here must be verifiable. site.ts records
+         `foundingDate: null`, so there is no "since 20XX" to make — an
+         earlier draft of this strip invented one. -->
+    <section class="cluster-trust">
+      <div class="cluster-trust__inner">
+        <p class="cluster-trust__text">
+          Taught by QTS-qualified RSE specialists
+          <span class="cluster-trust__sep">·</span>
+          Delivered in UK schools
+          <span class="cluster-trust__sep">·</span>
+          Built around the 2026 statutory guidance
+          <span class="cluster-trust__sep">·</span>
+          Direct teaching and staff CPD
+        </p>
+      </div>
+    </section>
 
     <!-- §2 How we can help -->
     <div class="cluster-offer">
@@ -242,6 +260,29 @@ const jsonLd = [
               </li>
             ))}
           </ol>
+
+          {data.unit.sampleActivity && (
+            <div class="cluster-activity">
+              <p class="cluster-activity__kicker">
+                One activity from {data.unit.sampleActivity.fromLesson}
+              </p>
+              <h3 class="cluster-activity__title">{data.unit.sampleActivity.name}</h3>
+              {data.unit.sampleActivity.intro && (
+                <p class="cluster-activity__intro">{data.unit.sampleActivity.intro}</p>
+              )}
+              <dl class="cluster-activity__steps">
+                {data.unit.sampleActivity.steps.map((step) => (
+                  <div class="cluster-activity__step">
+                    <dt class="cluster-activity__label">{step.label}</dt>
+                    <dd class="cluster-activity__detail">
+                      <span class="cluster-activity__prompt">{step.prompt}</span>
+                      <span class="cluster-activity__example">{step.example}</span>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          )}
         </div>
       </section>
     )}
@@ -250,7 +291,7 @@ const jsonLd = [
     <ClusterOfferRoutes
       headingId="cluster-convert-heading"
       heading="Want this taught in your school?"
-      note="Tell us the year group and where your pupils are starting from, and we will say what we would do."
+      note="Tell us the year group and where your pupils are starting from, and we will say what we would do. Not ready for that? The guidance below is free to read and written for the teacher taking the lesson."
     />
 
     <!-- §6 Guidance -->
@@ -377,6 +418,107 @@ const jsonLd = [
     color: var(--text-body-muted);
   }
 
+  /* Trust strip ------------------------------------------------ */
+
+  .cluster-trust {
+    background: var(--bg-surface-alt);
+  }
+
+  .cluster-trust__inner {
+    max-width: var(--container-max-shell);
+    margin-inline: auto;
+    padding-inline: var(--space-global-gutter);
+    padding-block: var(--space-global-lg);
+  }
+
+  .cluster-trust__text {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-body-muted);
+    text-align: center;
+    margin: 0;
+  }
+
+  .cluster-trust__sep {
+    padding: 0 var(--space-global-xs);
+  }
+
+  /* Sample activity --------------------------------------------- */
+
+  /* Shown in full rather than described. A reader can judge the teaching
+     from three lines here in a way six lesson summaries do not allow. */
+  .cluster-activity {
+    margin-top: var(--space-global-lg);
+    padding: var(--space-global-lg);
+    background: var(--bg-tinted);
+    border-radius: var(--radius-lg);
+  }
+
+  /* --brand-accent-text is clamped for light page grounds and lands at
+     4.44:1 on --bg-tinted, just under AA. The -strong sibling is the same
+     hue at 9.48:1 — reach for the sibling rather than derive a colour. */
+  .cluster-activity__kicker {
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    color: var(--brand-accent-strong);
+    margin: 0 0 var(--space-global-xs);
+  }
+
+  .cluster-activity__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-card-size-h3);
+    font-weight: var(--heading-weight-h3);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-xs);
+  }
+
+  .cluster-activity__intro {
+    max-width: var(--container-max-prose);
+    font-size: var(--text-card-size-body);
+    line-height: var(--lh-prose);
+    color: var(--text-body-muted);
+    margin: 0 0 var(--space-global-lg);
+  }
+
+  .cluster-activity__steps {
+    display: grid;
+    gap: var(--space-global-md);
+    margin: 0;
+  }
+
+  .cluster-activity__step {
+    display: grid;
+    gap: var(--space-global-xs);
+  }
+
+  .cluster-activity__label {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-card-size-h4);
+    font-weight: var(--heading-weight-h4);
+    color: var(--brand-accent-strong);
+  }
+
+  .cluster-activity__detail {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-xs);
+    margin: 0;
+  }
+
+  .cluster-activity__prompt {
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+  }
+
+  /* The example is the pupil-facing sentence, so it gets the weight. */
+  .cluster-activity__example {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-body);
+    line-height: var(--lh-prose);
+    color: var(--text-heading);
+  }
+
   /* §2 Offer ------------------------------------------------- */
 
   .cluster-offer {
@@ -390,13 +532,6 @@ const jsonLd = [
     margin-inline: auto;
     padding-inline: var(--space-global-gutter);
     padding-bottom: var(--space-struct-y-base);
-  }
-
-  .cluster-hero__credentials {
-    max-width: var(--container-max-hero-text);
-    margin: var(--space-global-sm) 0 0;
-    font-size: var(--text-card-size-body);
-    color: var(--text-body-muted);
   }
 
   /* §3 Approach ------------------------------------------------ */
@@ -592,6 +727,9 @@ const jsonLd = [
   }
 
   @media (min-width: 640px) { /* --bp-md */
+    .cluster-activity__steps {
+      grid-template-columns: repeat(3, 1fr);
+    }
     .cluster-routes__grid,
     .cluster-asks__grid,
     .cluster-guidance__grid {

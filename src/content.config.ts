@@ -200,6 +200,27 @@ const clusters = defineCollection({
          *  spine beside the lessons so a PSHE lead can see the progression
          *  without reading all six rows. */
         arc: z.array(z.string()).default([]),
+        /** One activity, shown in full. A page that only describes lessons
+         *  asks the reader to take the teaching on trust; showing a single
+         *  activity lets a PSHE lead judge it. Clearly labelled as a sample
+         *  because the unit itself is still being written. */
+        sampleActivity: z
+          .object({
+            fromLesson: z.string(),
+            name: z.string(),
+            intro: z.string().default(''),
+            steps: z
+              .array(
+                z.object({
+                  label: z.string(),
+                  prompt: z.string(),
+                  example: z.string(),
+                }),
+              )
+              .default([]),
+          })
+          .nullable()
+          .default(null),
         lessons: z
           .array(
             z.object({
