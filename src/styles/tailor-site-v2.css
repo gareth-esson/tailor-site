@@ -1297,15 +1297,22 @@ h6 { font-weight: var(--heading-weight-h6); }
     font-size: var(--text-display-size-body);
 }
 
-/* Action link — muted variant (quiet, low-emphasis; typically on dark surfaces).
-   Uses the --on-dark-* opacity ramp so the colour stays visually neutral
-   instead of adopting the brand accent. Pair with .surface--dark or .on-dark. */
+/* Action link — muted variant (quiet, low-emphasis). Stays visually neutral
+   instead of adopting the brand accent.
+
+   The base is the LIGHT-surface colour, per the system rule that the base
+   class serves the default surface and *-on-dark variants are scoped. It
+   previously set --on-dark-70 here, i.e. white at 70%, which rendered every
+   use at roughly 1.1:1 — all nine of them sit on light surfaces, so the
+   secondary CTA link and "Read more testimonials" across the service pages
+   were invisible rather than quiet. Dark surfaces are handled by the
+   .surface--dark / .on-dark rules below, which already carried these values. */
 .link-action--muted {
-    color: var(--on-dark-70);
+    color: var(--text-body-muted);
     font-weight: var(--font-weight-regular);
 }
 .link-action--muted:hover {
-    color: var(--on-dark-90);
+    color: var(--text-body);
 }
 .surface--dark .link-action--muted,
 .on-dark .link-action--muted {

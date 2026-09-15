@@ -37,3 +37,35 @@ export function isValidEnquiryService(value) {
     (option) => option.toLowerCase() === String(value).toLowerCase(),
   );
 }
+
+/**
+ * `serviceCtaTarget` (set per landing page and per blog post) → the wording
+ * a CTA shows and the value it sends to the form.
+ *
+ * `label` is prose and appears mid-sentence, so it stays lowercase and
+ * spells out "and". `param` must be an ENQUIRY_SERVICES member exactly.
+ * They differ on purpose; don't collapse them.
+ *
+ * Consumed by CtaBlogBottom [A14] and the topic landing template [C3].
+ * Kept here rather than in either component so a third caller can't
+ * introduce a third slightly-different copy — which is how the enquiry
+ * links broke in the first place.
+ */
+export const SERVICE_CTA = {
+  delivery: { label: 'direct RSE delivery', param: 'Direct RSE delivery' },
+  training: { label: 'RSE training', param: 'RSE training' },
+  'drop-days': { label: 'drop day delivery', param: 'Drop day delivery' },
+  consultancy: {
+    label: 'RSE policy and curriculum planning',
+    param: 'RSE policy & curriculum planning',
+  },
+  'rse-policy-curriculum-planning': {
+    label: 'RSE policy and curriculum planning',
+    param: 'RSE policy & curriculum planning',
+  },
+};
+
+/** The CTA mapping for a serviceCtaTarget, falling back to training. */
+export function serviceCta(target) {
+  return SERVICE_CTA[target] ?? SERVICE_CTA.training;
+}

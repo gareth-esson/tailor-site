@@ -8,6 +8,7 @@
  * topic page for teachers.
  */
 import type { LandingPageRef } from '../lib/types';
+import { SERVICE_CTA } from '../lib/enquiry-services.js';
 
 interface Props {
   /** Service link value from blog post (delivery, drop-days, etc.) or "none" */
@@ -18,16 +19,10 @@ interface Props {
 
 const { serviceLink, primaryTopic } = Astro.props;
 
-const serviceMap: Record<string, { label: string; param: string }> = {
-  delivery: { label: 'direct RSE delivery', param: 'Direct RSE delivery' },
-  training: { label: 'RSE training', param: 'RSE training' },
-  'drop-days': { label: 'drop day delivery', param: 'Drop day delivery' },
-  consultancy: { label: 'RSE policy and curriculum planning', param: 'RSE policy & curriculum planning' },
-  'rse-policy-curriculum-planning': { label: 'RSE policy and curriculum planning', param: 'RSE policy & curriculum planning' },
-};
-
-const hasService = serviceLink && serviceLink !== 'none' && serviceMap[serviceLink];
-const service = hasService ? serviceMap[serviceLink!] : null;
+// Shared with the topic landing template so the wording and the form
+// value can't drift apart. See src/lib/enquiry-services.js.
+const hasService = serviceLink && serviceLink !== 'none' && SERVICE_CTA[serviceLink];
+const service = hasService ? SERVICE_CTA[serviceLink!] : null;
 ---
 
 {service ? (

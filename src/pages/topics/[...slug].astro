@@ -11,6 +11,8 @@
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CtaBringToSchool from '../../components/CtaBringToSchool.astro';
+import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
+import { serviceCta } from '../../lib/enquiry-services.js';
 import QuestionCard from '../../components/QuestionCard.astro';
 import { getLandingPages, getQuestions, getGlossaryTerms, getBlogPosts, getGlossaryIndex, getCurriculumStatements } from '../../lib/content';
 import { renderBlocks } from '../../lib/render-blocks';
@@ -102,6 +104,10 @@ interface Props {
 }
 
 const { landingPage, questions, glossary, blogPosts, relatedPages, glossaryIndex, curriculumStatements } = Astro.props;
+
+// §4 mid-page CTA. Same serviceCtaTarget the §8 CTA reads, resolved through
+// the shared map so the form value stays an ENQUIRY_SERVICES member.
+const midPageCta = serviceCta(landingPage.serviceCtaTarget);
 
 // Topic illustration
 import { getTopicIllustrationPath } from '../../lib/topic-illustrations';
@@ -285,6 +291,21 @@ const displayQuestions = questions
         </div>
       </section>
     )}
+
+    <!-- §4 Mid-page enquiry CTA [A13]
+         Sits on the boundary between the teacher-facing half of the page
+         (overview, curriculum mapping) and the pupil question list below —
+         the point where a PSHE lead has just seen how much of this they are
+         expected to cover. The §8 CTA routes to a service page to read more;
+         this one goes straight to the enquiry form with the service
+         pre-selected, so booking doesn't depend on reaching the foot of a
+         long aggregating page. The slot previously held an offer into the
+         app's teaching content, which was dummy and withdrawn. -->
+    <CtaServiceEnquiry
+      serviceName={midPageCta.label}
+      serviceParam={midPageCta.param}
+      variant="tinted"
+    />
 
     <!-- §5 Questions young people ask -->
     {displayQuestions.length > 0 && (

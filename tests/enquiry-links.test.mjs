@@ -24,7 +24,12 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { ENQUIRY_SERVICES, isValidEnquiryService } from '../src/lib/enquiry-services.js';
+import {
+  ENQUIRY_SERVICES,
+  SERVICE_CTA,
+  isValidEnquiryService,
+  serviceCta,
+} from '../src/lib/enquiry-services.js';
 
 const SRC = fileURLToPath(new URL('../src/', import.meta.url));
 
@@ -116,14 +121,15 @@ test('every interpolated ?service= variable resolves to an accepted option', () 
   );
 });
 
-test('service maps that feed ?service= hold accepted options', () => {
-  // CtaBlogBottom keys a { label, param } map by service and interpolates
-  // `service.param` into the enquiry URL. Those literals are as capable of
-  // drifting from the dropdown as any other.
+test('any { label, param } service map anywhere holds accepted options', () => {
+  // SERVICE_CTA is the canonical map and is covered directly above. This
+  // scan is the tripwire for a *new* inline copy appearing in a component —
+  // which is how the vocabulary fragmented the first time. Every `param:`
+  // literal in src today belongs to a service map, so scanning broadly
+  // costs nothing.
   const checked = [];
   const bad = [];
   for (const { rel, text } of FILES) {
-    if (!text.includes('?service=')) continue;
     for (const m of text.matchAll(/\bparam:\s*'([^']*)'/g)) {
       checked.push(`${rel}: ${m[1]}`);
       if (!isValidEnquiryService(m[1])) bad.push(`${rel}: ${m[1]}`);
@@ -131,6 +137,25 @@ test('service maps that feed ?service= hold accepted options', () => {
   }
   assert.ok(checked.length > 0, 'expected at least one service map to check — has the pattern moved?');
   assert.deepEqual(bad, [], `service-map params the form will discard:\n${bad.join('\n')}`);
+});
+
+test('SERVICE_CTA maps every target onto an accepted option', () => {
+  const entries = Object.entries(SERVICE_CTA);
+  assert.ok(entries.length > 0, 'SERVICE_CTA is empty');
+  const bad = entries
+    .filter(([, cta]) => !isValidEnquiryService(cta.param))
+    .map(([target, cta]) => `${target} → ${cta.param}`);
+  assert.deepEqual(bad, [], `SERVICE_CTA params the form will discard:\n${bad.join('\n')}`);
+});
+
+test('serviceCta falls back rather than returning undefined', () => {
+  // Landing pages may carry no serviceCtaTarget, or one that has since been
+  // renamed. A missing fallback would render a CTA with an undefined href.
+  for (const target of [null, undefined, '', 'no-such-service']) {
+    const cta = serviceCta(target);
+    assert.ok(cta && cta.param, `serviceCta(${JSON.stringify(target)}) returned nothing usable`);
+    assert.ok(isValidEnquiryService(cta.param), `fallback param is not an option: ${cta.param}`);
+  }
 });
 
 test('every declared enquiryService is an accepted option', () => {
