@@ -158,6 +158,13 @@ const clusters = defineCollection({
     /** The statutory line this cluster hangs on, if any. Rendered in the
      *  hero as the reason this is on a PSHE lead's desk this year. */
     statutoryNote: z.string().default(''),
+    /** Source for the statutory claim. The page makes no legal assertion of
+     *  its own, so the claim carries a link to the guidance it rests on. */
+    statutoryHref: z.string().default(''),
+    /** Testimonial service tag to pull proof from, e.g. "RSE delivery".
+     *  Must be a ServiceTag (types.ts) — a different vocabulary from the
+     *  enquiry form's. Empty means no proof band renders. */
+    testimonialTag: z.string().default(''),
     /** Real anonymous questions to feature, by question slug. Resolved
      *  against Notion at build; any slug that no longer exists is dropped
      *  rather than rendered as a dead card, and the build warns. */

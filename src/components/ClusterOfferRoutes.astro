@@ -1,0 +1,156 @@
+---
+/**
+ * Offer routes [A19] — the two ways to buy a topic, for cluster pages [C6].
+ *
+ * Rendered twice on a cluster page: once under the hero for a visitor who
+ * arrives ready, and again after the sample unit, which is the moment of
+ * maximum intent. Both instances read the same `routes` data, so the two
+ * cannot drift; only the heading and note differ.
+ *
+ * Both routes appear in both places deliberately. An earlier version closed
+ * the page with a delivery-only CTA, so staff training disappeared at the
+ * point where someone had just read the whole argument for it.
+ *
+ * Each button deep-links into the enquiry form with the service already
+ * chosen. Values come from SERVICE_CTA, so they always match the form's
+ * dropdown — see src/lib/enquiry-services.js and the guard in
+ * tests/enquiry-links.test.mjs.
+ */
+import { serviceCta } from '../lib/enquiry-services.js';
+
+interface Props {
+  heading: string;
+  /** Optional line under the cards. */
+  note?: string;
+  /** Heading level — h2 under the hero, h2 again after the unit. */
+  headingId: string;
+}
+
+const { heading, note, headingId } = Astro.props;
+
+const delivery = serviceCta('delivery');
+const training = serviceCta('training');
+
+const routes = [
+  {
+    kicker: 'We teach it',
+    title: 'RSE delivery in your classrooms',
+    text: 'A specialist takes the lessons with your pupils, so the hardest sessions are led by someone who teaches them every week.',
+    cta: delivery,
+    label: 'Bring this to your pupils',
+  },
+  {
+    kicker: 'You teach it',
+    title: 'Training for your staff',
+    text: 'CPD that leaves your team able to teach this themselves, including what to do with the question nobody saw coming.',
+    cta: training,
+    label: 'Train your team to teach it',
+  },
+];
+---
+
+<section class="offer-routes" aria-labelledby={headingId}>
+  <div class="offer-routes__inner">
+    <h2 id={headingId} class="offer-routes__title">{heading}</h2>
+    <div class="offer-routes__grid">
+      {routes.map((route) => (
+        <div class="offer-route">
+          <p class="offer-route__kicker">{route.kicker}</p>
+          <h3 class="offer-route__title">{route.title}</h3>
+          <p class="offer-route__text">{route.text}</p>
+          <a
+            class="btn btn--std btn--tint has-icon-hover offer-route__cta"
+            href={`/contact/?service=${encodeURIComponent(route.cta.param)}`}
+            data-analytics-event="cta_click"
+            data-analytics-cta-type="cluster_route"
+            data-analytics-service-type={route.cta.param}
+          >
+            {route.label}
+          </a>
+        </div>
+      ))}
+    </div>
+    {note && <p class="offer-routes__note">{note}</p>}
+  </div>
+</section>
+
+<style>
+  /* The block bands itself rather than relying on a wrapper, because it is
+     used standalone after the sample unit as well as inside the hero's
+     offer band. White cards on the page ground have almost no separation. */
+  .offer-routes {
+    background: var(--bg-surface-alt);
+  }
+
+  .offer-routes__inner {
+    max-width: var(--container-max-shell);
+    margin-inline: auto;
+    padding-inline: var(--space-global-gutter);
+    padding-block: var(--space-struct-y-base);
+  }
+
+  .offer-routes__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h2);
+    font-weight: var(--heading-weight-h2);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-lg);
+  }
+
+  .offer-routes__grid {
+    display: grid;
+    gap: var(--space-global-md);
+  }
+
+  .offer-route {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-global-xs);
+    padding: var(--space-global-lg);
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
+  }
+
+  .offer-route__kicker {
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    color: var(--brand-accent-text);
+    margin: 0;
+  }
+
+  .offer-route__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h3);
+    font-weight: var(--heading-weight-h3);
+    color: var(--text-heading);
+    margin: 0;
+  }
+
+  .offer-route__text {
+    font-size: var(--text-prose-size-body);
+    line-height: var(--lh-prose);
+    color: var(--text-body-muted);
+    margin: 0;
+  }
+
+  /* Pushed to the card foot so both buttons align even when the two
+     descriptions run to different lengths. */
+  .offer-route__cta {
+    margin-top: auto;
+    padding-top: var(--space-global-sm);
+  }
+
+  .offer-routes__note {
+    max-width: var(--container-max-hero-text);
+    margin: var(--space-global-lg) 0 0;
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+  }
+
+  @media (min-width: 640px) { /* --bp-md */
+    .offer-routes__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

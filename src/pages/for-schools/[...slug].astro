@@ -22,11 +22,10 @@
  *   §3 Our approach (MDX body)
  *   §4 The sample unit — lessons carry their own download when one exists
  *   §5 Guidance we have published
- *   §6 What pupils actually asked — QuestionCard, the same component the
+ *   §7 What pupils actually asked — QuestionCard, the same component the
  *      topic pages and tag archives use, so a handed-in note looks and
  *      behaves identically wherever it appears
- *   §7 Related topics, on the system .card primitive
- *   §8 Enquiry CTA [A13]
+ *   §8 Related topics — ServiceTopicsStrip, shared with the service pages
  *
  * Carries no statutory claim of its own; `statutoryNote` names the guidance
  * in general terms and the linked posts hold the citations.
@@ -34,13 +33,14 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
-import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
 import QuestionCard from '../../components/QuestionCard.astro';
 import ServiceTopicsStrip from '../../components/ServiceTopicsStrip.astro';
 import ServiceMetaStrip from '../../components/ServiceMetaStrip.astro';
-import { getQuestions, getBlogPosts } from '../../lib/content';
+import ClusterOfferRoutes from '../../components/ClusterOfferRoutes.astro';
+import TestimonialCard from '../../components/TestimonialCard.astro';
+import { getQuestions, getBlogPosts, getTestimonialsByService } from '../../lib/content';
 import { serviceCta } from '../../lib/enquiry-services.js';
-import { breadcrumbJsonLd } from '../../lib/site';
+import { breadcrumbJsonLd, serviceJsonLd } from '../../lib/site';
 
 export const prerender = true;
 
@@ -106,10 +106,30 @@ const routes = [
   },
 ];
 
-const jsonLd = breadcrumbJsonLd([
-  { name: 'For schools', path: '/for-schools/' },
-  { name: data.title, path: canonicalPath },
-]);
+// One relevant testimonial, by the cluster's own service tag. Proof sits
+// beside the offer rather than at the foot, because the claim being made
+// ("specialist RSE") is made there.
+const [proofTestimonial] = data.testimonialTag
+  ? await getTestimonialsByService(data.testimonialTag as any)
+  : [];
+
+// Both a Service and a BreadcrumbList. Without the Service node this reads
+// to Google as an article, not a commercial page — every /services/ page
+// emits one and this page sells the same two products.
+const jsonLd = [
+  serviceJsonLd({
+    name: data.title,
+    description: data.metaDescription,
+    canonicalPath,
+    serviceType: 'RSE delivery and training',
+    enquiryValue: closingCta.param,
+    audienceRoles: ['School leader', 'PSHE lead', 'Teacher'],
+  }),
+  breadcrumbJsonLd([
+    { name: 'For schools', path: '/for-schools/' },
+    { name: data.title, path: canonicalPath },
+  ]),
+];
 ---
 
 <BaseLayout
@@ -133,43 +153,37 @@ const jsonLd = breadcrumbJsonLd([
           <h1 class="cluster-hero__title" data-pagefind-meta="title">{data.title}</h1>
           {data.lede && <p class="cluster-hero__lede">{data.lede}</p>}
           {data.statutoryNote && (
-            <p class="cluster-hero__statutory">{data.statutoryNote}</p>
+            <p class="cluster-hero__statutory">
+              {data.statutoryHref ? (
+                <a class="link-inline" href={data.statutoryHref} rel="noopener">
+                  {data.statutoryNote}
+                </a>
+              ) : (
+                data.statutoryNote
+              )}
+            </p>
           )}
+          <p class="cluster-hero__credentials">
+            Delivered by QTS-qualified RSE specialists. Tailor Learning is a
+            community-interest company working in UK schools.
+          </p>
         </div>
       </div>
     </header>
 
     <!-- §2 How we can help -->
-    <section class="cluster-routes" aria-labelledby="cluster-routes-heading">
-      <div class="cluster-routes__inner">
-        <h2 id="cluster-routes-heading" class="cluster-routes__title">
-          Two ways to get this taught
-        </h2>
-        <div class="cluster-routes__grid">
-          {routes.map((route) => (
-            <div class="cluster-route">
-              <p class="cluster-route__kicker">{route.kicker}</p>
-              <h3 class="cluster-route__title">{route.title}</h3>
-              <p class="cluster-route__text">{route.text}</p>
-              <a
-                class="btn btn--std btn--tint has-icon-hover cluster-route__cta"
-                href={`/contact/?service=${encodeURIComponent(route.cta.param)}`}
-                data-analytics-event="cta_click"
-                data-analytics-cta-type="cluster_route"
-                data-analytics-service-type={route.cta.param}
-              >
-                {route.label}
-              </a>
-            </div>
-          ))}
+    <div class="cluster-offer">
+      <ClusterOfferRoutes
+        headingId="cluster-routes-heading"
+        heading="Two ways to get this taught"
+        note="One lesson, a full sequence or a drop day. Everything is adapted to the year group, the prior knowledge in the room and what has already happened in your school."
+      />
+      {proofTestimonial && (
+        <div class="cluster-offer__proof">
+          <TestimonialCard testimonial={proofTestimonial} variant="band" />
         </div>
-        <p class="cluster-routes__note">
-          One lesson, a full sequence or a drop day. Everything is adapted to
-          the year group, the prior knowledge in the room and what has already
-          happened in your school.
-        </p>
-      </div>
-    </section>
+      )}
+    </div>
 
     <!-- §3 Our approach -->
     <section class="cluster-body">
@@ -232,7 +246,14 @@ const jsonLd = breadcrumbJsonLd([
       </section>
     )}
 
-    <!-- §5 Guidance -->
+    <!-- §5 Conversion — the moment of maximum intent, both routes -->
+    <ClusterOfferRoutes
+      headingId="cluster-convert-heading"
+      heading="Want this taught in your school?"
+      note="Tell us the year group and where your pupils are starting from, and we will say what we would do."
+    />
+
+    <!-- §6 Guidance -->
     {posts.length > 0 && (
       <section class="cluster-guidance" aria-labelledby="cluster-guidance-heading">
         <div class="cluster-guidance__inner">
@@ -270,16 +291,17 @@ const jsonLd = breadcrumbJsonLd([
       </section>
     )}
 
-    <!-- §6 What pupils actually asked -->
+    <!-- §7 What pupils actually asked -->
     {questions.length > 0 && (
       <section class="cluster-asks" aria-labelledby="cluster-asks-heading">
         <div class="cluster-asks__inner">
           <h2 id="cluster-asks-heading" class="cluster-asks__title">
-            What pupils actually asked
+            These conversations are already happening
           </h2>
           <p class="cluster-asks__note">
-            Handed in anonymously, on paper, in schools we have worked in.
-            Every one is answered in full on Okay to Ask.
+            Questions pupils handed us anonymously, on paper, in schools we
+            have worked in. Printed as they were written. Every one is
+            answered in full on Okay to Ask.
           </p>
           <ul class="cluster-asks__grid" role="list">
             {questions.map((q: any) => (
@@ -292,7 +314,7 @@ const jsonLd = breadcrumbJsonLd([
       </section>
     )}
 
-    <!-- §7 Related topics — the shared strip the service pages and the
+    <!-- §8 Related topics — the shared strip the service pages and the
          homepage use, so a topic card looks the same everywhere. The
          commercial framing sits in the heading and intro; the buy actions
          live in §2 where actions belong. -->
@@ -302,12 +324,6 @@ const jsonLd = breadcrumbJsonLd([
       intro="Any of these can be taught in your classrooms or built into staff training, on their own or as part of a longer sequence."
     />
 
-    <!-- §8 Enquiry CTA -->
-    <CtaServiceEnquiry
-      serviceName={closingCta.label}
-      serviceParam={closingCta.param}
-      variant="alt"
-    />
 
   </article>
 </BaseLayout>
@@ -361,71 +377,24 @@ const jsonLd = breadcrumbJsonLd([
     color: var(--text-body-muted);
   }
 
-  /* §2 Routes -------------------------------------------------- */
+  /* §2 Offer ------------------------------------------------- */
 
-  .cluster-routes {
+  .cluster-offer {
     background: var(--bg-surface-alt);
   }
 
-  .cluster-routes__inner {
-    padding-block: var(--space-struct-y-base);
+  /* The proof sits inside the offer band, directly under the two routes,
+     so the claim and the evidence for it are read together. */
+  .cluster-offer__proof {
+    max-width: var(--container-max-shell);
+    margin-inline: auto;
+    padding-inline: var(--space-global-gutter);
+    padding-bottom: var(--space-struct-y-base);
   }
 
-  .cluster-routes__title {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-display-size-h2);
-    font-weight: var(--heading-weight-h2);
-    color: var(--text-heading);
-    margin: 0 0 var(--space-global-lg);
-  }
-
-  .cluster-routes__grid {
-    display: grid;
-    gap: var(--space-global-md);
-  }
-
-  .cluster-route {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-global-xs);
-    padding: var(--space-global-lg);
-    background: var(--bg-surface);
-    border-radius: var(--radius-lg);
-  }
-
-  .cluster-route__kicker {
-    font-size: var(--text-card-size-body);
-    font-weight: var(--font-weight-semibold);
-    color: var(--brand-accent-text);
-    margin: 0;
-  }
-
-  .cluster-route__title {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-display-size-h3);
-    font-weight: var(--heading-weight-h3);
-    color: var(--text-heading);
-    margin: 0;
-  }
-
-  .cluster-route__text {
-    font-size: var(--text-prose-size-body);
-    line-height: var(--lh-prose);
-    color: var(--text-body-muted);
-    margin: 0;
-  }
-
-  /* Pushed to the card foot so both buttons align even when the two
-     descriptions run to different lengths. */
-  .cluster-route__cta {
-    margin-top: auto;
-    padding-top: var(--space-global-sm);
-  }
-
-  .cluster-routes__note {
+  .cluster-hero__credentials {
     max-width: var(--container-max-hero-text);
-    margin: var(--space-global-lg) 0 0;
+    margin: var(--space-global-sm) 0 0;
     font-size: var(--text-card-size-body);
     color: var(--text-body-muted);
   }
