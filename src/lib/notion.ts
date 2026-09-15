@@ -241,3 +241,11 @@ export function getNumberValue(property: NotionProperty): number | null {
   }
   return null;
 }
+
+export function getUrlValue(property: NotionProperty): string | null {
+  if (!property) return null;
+  if (property.type === 'url') {
+    return property.url;
+  }
+  return null;
+}
