@@ -26,6 +26,23 @@ The **source of truth** is `src/styles/tailor-site-v2.css`. Grep it for
 specific classes and tokens — never guess, and don't read it wholesale
 (it's ~3,700 lines; wholesale reads waste context).
 
+## Components (mandatory before designing any page)
+
+Read **`docs/COMPONENT-INVENTORY.md`** before designing or building a
+page. It lists all 28 components, what each is for, and which pages use
+them. The two documents above describe the system in the abstract; the
+inventory describes what is actually built.
+
+This is not optional advice. In one session six existing components were
+rebuilt from scratch — the post-it scatter, `QuestionCard`, the `.card`
+primitive, the blog-card pattern, `ServiceTopicsStrip` and
+`ServiceMetaStrip` — because the brief was treated as the spec and the
+codebase as somewhere to put the output.
+
+One rule worth memorising: **every card on this site has exactly one
+action**, a `<span>` cue inside a card-wide anchor. Two actions on a card
+is a new pattern — raise it rather than inventing it.
+
 `docs/SYSTEM-RULES.md` is the canonical Guess Design House master
 system catalogue. Reference it when the operating rules or v2 notes
 point to a specific section; it doesn't need to be read up-front every
