@@ -123,4 +123,67 @@ const blog = defineCollection({
     }),
 });
 
-export const collections = { blog, pillars };
+/**
+ * clusters: teacher-facing cluster pages under /for-schools/<slug>/.
+ *
+ * One teaching intent ("teaching about misogyny and masculinity") that
+ * consolidates a group of search variants a PSHE lead actually types —
+ * "online misogyny lesson plan", "toxic masculinity lesson plan", "pshe
+ * andrew tate". Distinct from /topics/<slug>, which is the taxonomy hub
+ * the OtA questions and glossary roll up into and stays exactly as it is:
+ * a cluster page answers "how do I teach this, and who can help", a topic
+ * page answers "everything we hold on this subject". They cross-link
+ * rather than compete.
+ *
+ * Distinct too from /for-schools/ itself, which is deliberately plain —
+ * no cards, no downloads, no prices. That restraint is the hub's; its
+ * children carry the offer.
+ *
+ * The MDX body is the teaching content. Everything else is structured so
+ * the template can compose the page: real handed-in pupil questions
+ * (resolved from Notion by slug — the artefact no competitor has),
+ * further reading, the downloadable resource, and where the enquiry goes.
+ */
+const clusters = defineCollection({
+  loader: glob({ pattern: '**/index.{md,mdx}', base: './src/content/clusters' }),
+  schema: z.object({
+    title: z.string(),
+    /** One sentence under the H1, written from the teacher's side. */
+    lede: z.string().default(''),
+    status: z.enum(['Draft', 'In Review', 'Published']).default('Draft'),
+    publishedDate: z.string().nullable().default(null),
+    dateModified: z.string().nullable().default(null),
+    metaTitle: z.string().default(''),
+    metaDescription: z.string().default(''),
+    /** The statutory line this cluster hangs on, if any. Rendered in the
+     *  hero as the reason this is on a PSHE lead's desk this year. */
+    statutoryNote: z.string().default(''),
+    /** Real anonymous questions to feature, by question slug. Resolved
+     *  against Notion at build; any slug that no longer exists is dropped
+     *  rather than rendered as a dead card, and the build warns. */
+    questionSlugs: z.array(z.string()).default([]),
+    /** Further reading, by blog slug, in the order they should appear. */
+    postSlugs: z.array(z.string()).default([]),
+    /** Topic pages to cross-link down to, by landing-page slug. */
+    topicSlugs: z.array(z.string()).default([]),
+    /** Which service the enquiry CTA points at. Same vocabulary the
+     *  landing pages and blog posts use; mapped through SERVICE_CTA. */
+    serviceCtaTarget: z
+      .enum(['delivery', 'training', 'drop-days', 'consultancy', 'rse-policy-curriculum-planning'])
+      .default('delivery'),
+    /** The free download. Null until one exists — the template omits the
+     *  whole section rather than advertising something that isn't there. */
+    resource: z
+      .object({
+        title: z.string(),
+        description: z.string(),
+        href: z.string(),
+        /** Shown on the button, e.g. "PDF, 6 pages". */
+        format: z.string().default(''),
+      })
+      .nullable()
+      .default(null),
+  }),
+});
+
+export const collections = { blog, pillars, clusters };

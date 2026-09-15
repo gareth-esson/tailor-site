@@ -1,0 +1,497 @@
+---
+/**
+ * Cluster page template [C6] — /for-schools/{slug}
+ *
+ * A teacher-facing landing page for one teaching intent. Where a topic
+ * page [C3] aggregates everything the site holds on a subject, this page
+ * answers a narrower question: how do I teach this, and who can help.
+ * They cross-link; neither replaces the other.
+ *
+ * Section order is the argument the page makes:
+ *   §1 Hero — the teacher's situation, plus the statutory reason it is on
+ *      their desk this year.
+ *   §2 What pupils ask — real handed-in questions, resolved from Notion.
+ *      This is the page's thesis and the one thing no other RSE provider
+ *      can show: the topic framed by the pupils rather than by us. It sits
+ *      above our own writing deliberately.
+ *   §3 The teaching content (MDX body).
+ *   §4 The resource, when one exists. Omitted entirely when it doesn't,
+ *      rather than advertising a download that isn't there.
+ *   §5 Further reading, with each post's own intro.
+ *   §6 Enquiry CTA [A13].
+ *   §7 Cross-links down to the topic pages.
+ *
+ * Carries no legal or statutory claim of its own: `statutoryNote` names
+ * the guidance in general terms and the linked posts hold the citations.
+ * Same discipline as /for-schools/ itself.
+ */
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
+import { getQuestions, getBlogPosts, getLandingPages } from '../../lib/content';
+import { serviceCta } from '../../lib/enquiry-services.js';
+import { breadcrumbJsonLd } from '../../lib/site';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const clusters = (await getCollection('clusters')).filter(
+    (c) => c.data.status === 'Published',
+  );
+  const [questions, posts, landingPages] = await Promise.all([
+    getQuestions(),
+    getBlogPosts(),
+    getLandingPages(),
+  ]);
+
+  return clusters.map((cluster) => {
+    // Resolve by slug. A slug that no longer resolves is dropped rather
+    // than rendered as a dead link, and warns at build — silence here
+    // would mean a section quietly shrinking with nobody noticing.
+    const pick = (slugs, pool, kind) =>
+      slugs
+        .map((slug) => {
+          const hit = pool.find((item) => item.slug === slug);
+          if (!hit) console.warn(`[cluster:${cluster.id}] ${kind} not found: ${slug}`);
+          return hit;
+        })
+        .filter(Boolean);
+
+    return {
+      params: { slug: cluster.id },
+      props: {
+        cluster,
+        questions: pick(cluster.data.questionSlugs, questions, 'question'),
+        posts: pick(cluster.data.postSlugs, posts, 'post'),
+        topics: pick(cluster.data.topicSlugs, landingPages, 'topic'),
+      },
+    };
+  });
+}
+
+const { cluster, questions, posts, topics } = Astro.props;
+const { data } = cluster;
+const { Content } = await render(cluster);
+
+const canonicalPath = `/for-schools/${cluster.id}/`;
+const cta = serviceCta(data.serviceCtaTarget);
+
+const jsonLd = breadcrumbJsonLd([
+  { name: 'For schools', path: '/for-schools/' },
+  { name: data.title, path: canonicalPath },
+]);
+---
+
+<BaseLayout
+  title={data.metaTitle || `${data.title} | Tailor RSE`}
+  description={data.metaDescription}
+  canonicalPath={canonicalPath}
+  jsonLd={jsonLd}
+>
+  <article class="cluster" data-pagefind-body>
+
+    <!-- §1 Hero -->
+    <header class="cluster-hero">
+      <div class="cluster-hero__inner">
+        <Breadcrumb
+          trail={[
+            { name: 'For schools', path: '/for-schools/' },
+            { name: data.title, path: canonicalPath },
+          ]}
+        />
+        <div class="cluster-hero__text">
+          <h1 class="cluster-hero__title" data-pagefind-meta="title">{data.title}</h1>
+          {data.lede && <p class="cluster-hero__lede">{data.lede}</p>}
+          {data.statutoryNote && (
+            <p class="cluster-hero__statutory">{data.statutoryNote}</p>
+          )}
+        </div>
+      </div>
+    </header>
+
+    <!-- §2 What pupils ask -->
+    {questions.length > 0 && (
+      <section class="cluster-asks" aria-labelledby="cluster-asks-heading">
+        <div class="cluster-asks__inner">
+          <div class="cluster-asks__head">
+            <h2 id="cluster-asks-heading" class="cluster-asks__title">
+              What pupils ask about this
+            </h2>
+            <p class="cluster-asks__note">
+              Handed in anonymously, on paper, in schools. Printed here as
+              they were written. Every one is answered in full on Okay to Ask.
+            </p>
+          </div>
+          <ul class="cluster-asks__list" role="list">
+            {questions.map((q) => (
+              <li class="cluster-asks__item">
+                <a class="cluster-asks__link" href={`/anonymous_question/${q.slug}/`}>
+                  <span class="cluster-asks__q">{q.question}</span>
+                  <span class="cluster-asks__cue" aria-hidden="true">Read the answer</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
+
+    <!-- §3 Teaching content -->
+    <section class="cluster-body">
+      <div class="cluster-body__inner">
+        <Content />
+      </div>
+    </section>
+
+    <!-- §4 Resource (only when one exists) -->
+    {data.resource && (
+      <section class="cluster-resource" aria-labelledby="cluster-resource-heading">
+        <div class="cluster-resource__inner">
+          <div class="cluster-resource__card">
+            <p class="cluster-resource__eyebrow">Free to use in your classroom</p>
+            <h2 id="cluster-resource-heading" class="cluster-resource__title">
+              {data.resource.title}
+            </h2>
+            <p class="cluster-resource__text">{data.resource.description}</p>
+            <a
+              class="btn btn--std btn--tint has-icon-hover"
+              href={data.resource.href}
+              data-analytics-event="cta_click"
+              data-analytics-cta-type="cluster_resource"
+              data-analytics-target={data.resource.href}
+            >
+              {data.resource.format
+                ? `Get the resource (${data.resource.format})`
+                : 'Get the resource'}
+            </a>
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- §5 Further reading -->
+    {posts.length > 0 && (
+      <section class="cluster-reading" aria-labelledby="cluster-reading-heading">
+        <div class="cluster-reading__inner">
+          <h2 id="cluster-reading-heading" class="cluster-reading__title">
+            Further reading
+          </h2>
+          <ul class="cluster-reading__list" role="list">
+            {posts.map((post) => (
+              <li class="cluster-reading__item">
+                <h3 class="cluster-reading__post-title">
+                  <a class="cluster-reading__post-link" href={`/blog/${post.slug}/`}>
+                    {post.title}
+                  </a>
+                </h3>
+                {post.metaDescription && (
+                  <p class="cluster-reading__post-intro">{post.metaDescription}</p>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
+
+    <!-- §6 Enquiry CTA -->
+    <CtaServiceEnquiry
+      serviceName={cta.label}
+      serviceParam={cta.param}
+      variant="tinted"
+    />
+
+    <!-- §7 Cross-links to the topic hubs -->
+    {topics.length > 0 && (
+      <section class="cluster-topics" aria-labelledby="cluster-topics-heading">
+        <div class="cluster-topics__inner">
+          <h2 id="cluster-topics-heading" class="cluster-topics__title">
+            Everything we hold on these topics
+          </h2>
+          <ul class="cluster-topics__list" role="list">
+            {topics.map((t) => (
+              <li>
+                <a class="cluster-topics__link" href={`/topics/${t.slug}/`}>{t.title}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
+
+  </article>
+</BaseLayout>
+
+<style>
+  /* ---------------------------------------------------------------
+     Drafted as a free design, then reconciled to the design system.
+     Values below are tokens except where noted with a FREE comment,
+     which marks something the system has no token for yet.
+     --------------------------------------------------------------- */
+
+  .cluster-hero__inner,
+  .cluster-asks__inner,
+  .cluster-body__inner,
+  .cluster-resource__inner,
+  .cluster-reading__inner,
+  .cluster-topics__inner {
+    max-width: var(--container-max-shell);
+    margin-inline: auto;
+    padding-inline: var(--space-global-gutter);
+  }
+
+  /* §1 Hero ---------------------------------------------------- */
+
+  .cluster-hero__inner {
+    padding-block: var(--space-struct-y-hero) var(--space-global-xl);
+  }
+
+  .cluster-hero__text {
+    max-width: var(--container-max-hero-text);
+  }
+
+  .cluster-hero__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h1);
+    font-weight: var(--heading-weight-h1);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
+    text-wrap: balance;
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .cluster-hero__lede {
+    font-size: var(--text-prose-size-lede);
+    line-height: var(--lh-prose);
+    color: var(--text-body);
+    margin: 0;
+  }
+
+  /* The statutory line is a marker, not a banner: a hairline and a size
+     step down keep it available without letting it lead the page. */
+  .cluster-hero__statutory {
+    margin: var(--space-global-lg) 0 0;
+    padding-top: var(--space-global-sm);
+    border-top: var(--border-width-xs) solid var(--border-subtle);
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+  }
+
+  /* §2 What pupils ask ----------------------------------------- */
+
+  .cluster-asks {
+    background: var(--bg-surface-alt);
+  }
+
+  .cluster-asks__inner {
+    padding-block: var(--space-struct-y-base);
+  }
+
+  .cluster-asks__head {
+    max-width: var(--container-max-hero-text);
+    margin-bottom: var(--space-global-xl);
+  }
+
+  .cluster-asks__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h2);
+    font-weight: var(--heading-weight-h2);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-xs);
+  }
+
+  .cluster-asks__note {
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+    margin: 0;
+  }
+
+  .cluster-asks__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .cluster-asks__item + .cluster-asks__item {
+    border-top: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  /* The questions are the largest type on the page after the H1. That is
+     the argument: on this topic the pupils' words carry more weight than
+     ours, and a teacher who reads four of them knows what they are
+     walking into better than any summary would tell them. */
+  .cluster-asks__link {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-global-xs) var(--space-global-lg);
+    padding-block: var(--space-global-lg);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .cluster-asks__q {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h3);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
+    text-wrap: balance;
+    /* Capped so a long question wraps inside its own column instead of
+       filling the row and pushing the cue onto a second line. Without
+       this the cue lands left-under on long questions and right-aligned
+       on short ones, which reads as a mistake rather than a rhythm. */
+    max-width: var(--container-max-hero-text);
+  }
+
+  .cluster-asks__cue {
+    flex-shrink: 0;
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    color: var(--brand-accent-text);
+  }
+
+  .cluster-asks__link:hover .cluster-asks__q {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .cluster-asks__link:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  /* §3 Teaching content ---------------------------------------- */
+
+  .cluster-body__inner {
+    max-width: var(--container-max-prose);
+    margin-inline: auto;
+    padding-block: var(--space-struct-y-base);
+  }
+
+  /* §4 Resource ------------------------------------------------ */
+
+  .cluster-resource__inner {
+    padding-block: 0 var(--space-struct-y-base);
+  }
+
+  .cluster-resource__card {
+    max-width: var(--container-max-hero-text);
+    margin-inline: auto;
+    padding: var(--space-global-xl) var(--space-global-lg);
+    background: var(--bg-tinted);
+    border-radius: var(--radius-lg);
+    text-align: center;
+  }
+
+  .cluster-resource__eyebrow {
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    color: var(--brand-accent-text);
+    margin: 0 0 var(--space-global-xs);
+  }
+
+  .cluster-resource__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h3);
+    font-weight: var(--heading-weight-h3);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .cluster-resource__text {
+    font-size: var(--text-prose-size-body);
+    color: var(--text-body-muted);
+    margin: 0 0 var(--space-global-lg);
+  }
+
+  /* §5 Further reading ----------------------------------------- */
+
+  .cluster-reading__inner {
+    padding-block: var(--space-struct-y-base);
+  }
+
+  .cluster-reading__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h2);
+    font-weight: var(--heading-weight-h2);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-lg);
+  }
+
+  /* Rows, not boxes. Four bordered cards would read as a component
+     library; the hub these pages hang off is prose-led, and the reading
+     list should feel like its continuation. */
+  .cluster-reading__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: var(--container-max-prose);
+  }
+
+  .cluster-reading__item {
+    padding-block: var(--space-global-lg);
+    border-top: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  .cluster-reading__item:last-child {
+    border-bottom: var(--border-width-xs) solid var(--border-subtle);
+  }
+
+  .cluster-reading__post-title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-card-size-h3);
+    font-weight: var(--heading-weight-h3);
+    line-height: var(--lh-heading);
+    margin: 0 0 var(--space-global-xs);
+  }
+
+  .cluster-reading__post-link {
+    color: var(--text-heading);
+    text-decoration: none;
+  }
+
+  .cluster-reading__post-link:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .cluster-reading__post-intro {
+    font-size: var(--text-prose-size-body);
+    line-height: var(--lh-prose);
+    color: var(--text-body-muted);
+    margin: 0;
+  }
+
+  /* §7 Topic cross-links --------------------------------------- */
+
+  .cluster-topics__inner {
+    padding-block: 0 var(--space-struct-y-base);
+  }
+
+  .cluster-topics__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-card-size-h4);
+    font-weight: var(--heading-weight-h4);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .cluster-topics__list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-global-xs) var(--space-global-lg);
+    margin: 0;
+    padding: 0;
+  }
+
+  @media (max-width: 640px) { /* below --bp-md, mobile */
+    .cluster-asks__cue {
+      /* The cue stops earning its place once it wraps to its own line. */
+      display: none;
+    }
+  }
+</style>
