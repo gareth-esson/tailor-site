@@ -5,6 +5,8 @@
  * States: empty, partially filled, validation errors, submitting, success.
  * School field: combobox against GIAS register; must pick from list or skip.
  */
+import { ENQUIRY_SERVICES } from '../lib/enquiry-services.js';
+
 interface Props {
   /** Pre-selected service from URL param */
   preSelectedService?: string;
@@ -12,13 +14,11 @@ interface Props {
 
 const { preSelectedService } = Astro.props;
 
+// Built from the shared vocabulary so the dropdown and every ?service=
+// deep link are guaranteed to agree. See src/lib/enquiry-services.js.
 const serviceOptions = [
   { value: '', label: 'Please select' },
-  { value: 'Direct RSE delivery', label: 'Direct RSE delivery' },
-  { value: 'RSE training', label: 'RSE training' },
-  { value: 'Drop day delivery', label: 'Drop day delivery' },
-  { value: 'RSE policy & curriculum planning', label: 'RSE policy & curriculum planning' },
-  { value: 'Other', label: 'Other' },
+  ...ENQUIRY_SERVICES.map((value) => ({ value, label: value })),
 ];
 
 // Turnstile site key. Use Cloudflare's "always passes" test key in dev so

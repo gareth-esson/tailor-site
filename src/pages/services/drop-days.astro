@@ -16,6 +16,9 @@ import { serviceJsonLd, breadcrumbJsonLd } from '../../lib/site';
 const slug = 'drop-days';
 const title = 'RSE drop days';
 const serviceParam = 'Drop day delivery';
+/** Value sent as ?service= — must be one of ENQUIRY_SERVICES (src/lib/enquiry-services.js).
+ *  Kept separate from serviceParam so the analytics label stays page-specific. */
+const enquiryService = 'Drop day delivery';
 const serviceName = 'drop days';
 
 const heroSubtitle =
@@ -75,6 +78,7 @@ const jsonLd = {
       name: title,
       description: metaDescription,
       canonicalPath,
+      enquiryValue: enquiryService,
       serviceType: 'RSE delivery (drop day)',
       audienceRoles: ['School leader', 'PSHE lead', 'Teacher', 'Student'],
     }),

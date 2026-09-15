@@ -23,6 +23,9 @@ const slug = 'rse-training';
 const title = 'RSE training';
 const pageHeading = 'RSE training for school staff';
 const serviceParam = 'RSE training';
+/** Value sent as ?service= — must be one of ENQUIRY_SERVICES (src/lib/enquiry-services.js).
+ *  Kept separate from serviceParam so the analytics label stays page-specific. */
+const enquiryService = 'RSE training';
 const serviceName = 'RSE training';
 
 const heroSubtitle =
@@ -208,6 +211,7 @@ const jsonLd = {
       name: 'RSE training for school staff',
       description: metaDescription,
       canonicalPath,
+      enquiryValue: enquiryService,
       serviceType: 'Teacher training',
       audienceRoles: ['School leader', 'PSHE lead', 'Teacher'],
       offer: { priceText: 'Twilight from £375; full programmes priced on enquiry' },

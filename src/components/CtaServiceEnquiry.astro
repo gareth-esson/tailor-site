@@ -7,14 +7,20 @@
 interface Props {
   /** The service name to display */
   serviceName: string;
-  /** URL parameter value for pre-filling the enquiry form */
+  /** Analytics label for this service. Stays stable across pages so the
+   *  four phase pages remain distinguishable in reporting — do not
+   *  collapse it onto enquiryValue. */
   serviceParam: string;
+  /** The value sent as ?service=. Must be one of ENQUIRY_SERVICES or the
+   *  form's dropdown silently stays on "Please select". Defaults to
+   *  serviceParam for the pages where the two genuinely coincide. */
+  enquiryValue?: string;
   /** Visual variant: 'tinted' for mid-page, 'alt' for bottom */
   variant?: 'tinted' | 'alt';
 }
 
-const { serviceName, serviceParam, variant = 'tinted' } = Astro.props;
-const enquiryUrl = `/contact/?service=${encodeURIComponent(serviceParam)}`;
+const { serviceName, serviceParam, enquiryValue, variant = 'tinted' } = Astro.props;
+const enquiryUrl = `/contact/?service=${encodeURIComponent(enquiryValue ?? serviceParam)}`;
 ---
 
 <section class:list={['cta-enquiry', variant === 'alt' && 'cta-enquiry--alt']}>

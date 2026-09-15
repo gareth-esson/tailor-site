@@ -269,6 +269,12 @@ export function serviceJsonLd(opts: {
    *  "Consulting". Surfaces in SERPs and helps Google route the page
    *  for service-intent queries. */
   serviceType: string;
+  /** Value used in the offer's ?service= deep link. Must be one of
+   *  ENQUIRY_SERVICES (src/lib/enquiry-services.js) — the enquiry form
+   *  matches exactly, so anything else lands on the form with nothing
+   *  pre-selected. Defaults to `name`, which is only correct where the
+   *  page title happens to be a form option. */
+  enquiryValue?: string;
   /** Educational role the service is sold to. Most Tailor services are
    *  bought by school leaders and delivered with teachers; for the
    *  delivery products, the audience also includes students. */
@@ -306,7 +312,7 @@ export function serviceJsonLd(opts: {
         ? { description: opts.offer.priceText }
         : { description: 'Contact for a quote' }),
       availability: 'https://schema.org/InStock',
-      url: `${site.url}/contact/?service=${encodeURIComponent(opts.name)}`,
+      url: `${site.url}/contact/?service=${encodeURIComponent(opts.enquiryValue ?? opts.name)}`,
     },
   };
 }

@@ -17,6 +17,9 @@ import { serviceJsonLd, breadcrumbJsonLd } from '../../lib/site';
 const slug = 'rse-for-send-and-ap';
 const title = 'RSE for SEND and AP (Circuits)';
 const serviceParam = 'RSE for SEND and AP';
+/** Value sent as ?service= — must be one of ENQUIRY_SERVICES (src/lib/enquiry-services.js).
+ *  Kept separate from serviceParam so the analytics label stays page-specific. */
+const enquiryService = 'Direct RSE delivery';
 const serviceName = 'Circuits';
 
 const heroSubtitle =
@@ -78,6 +81,7 @@ const jsonLd = {
       name: 'RSE for SEND and AP (Circuits)',
       description: metaDescription,
       canonicalPath,
+      enquiryValue: enquiryService,
       serviceType: 'RSE delivery (SEND & AP)',
       audienceRoles: ['SENCO', 'AP lead', 'Teacher', 'Student'],
     }),
@@ -108,7 +112,7 @@ const jsonLd = {
             <h1 class="service-hero__title">{title}</h1>
             <p class="service-hero__subtitle">{heroSubtitle}</p>
             <a
-              href={`/contact/?service=${encodeURIComponent(serviceParam)}`}
+              href={`/contact/?service=${encodeURIComponent(enquiryService)}`}
               class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto"
               data-analytics-event="cta_click"
               data-analytics-cta-type="hero_enquire"
@@ -166,7 +170,7 @@ const jsonLd = {
           )}
           <div class="service-proof-band__cta-wrap">
             <a
-              href={`/contact/?service=${encodeURIComponent(serviceParam)}`}
+              href={`/contact/?service=${encodeURIComponent(enquiryService)}`}
               class="btn btn--std btn--white-primary has-icon-hover w-full sm:w-auto"
               data-analytics-event="cta_click"
               data-analytics-cta-type="proof_band_enquire"
@@ -204,7 +208,7 @@ const jsonLd = {
 
     <ServiceTopicsStrip featuredSlugs={featuredTopicSlugs} />
 
-    <CtaServiceEnquiry serviceName={serviceName} serviceParam={serviceParam} variant="alt" />
+    <CtaServiceEnquiry serviceName={serviceName} serviceParam={serviceParam} enquiryValue={enquiryService} variant="alt" />
 
   </article>
 </BaseLayout>
