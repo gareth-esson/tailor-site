@@ -171,15 +171,43 @@ const clusters = defineCollection({
     serviceCtaTarget: z
       .enum(['delivery', 'training', 'drop-days', 'consultancy', 'rse-policy-curriculum-planning'])
       .default('delivery'),
-    /** The free download. Null until one exists — the template omits the
-     *  whole section rather than advertising something that isn't there. */
-    resource: z
+    /** A worked example of a sequence on this topic. It is a sample, not a
+     *  fixed product: schools take one lesson or all of them, a one-off or
+     *  a drop day, and everything adapts to age and prior knowledge. The
+     *  template says so plainly, because a scheme presented as fixed sells
+     *  to fewer schools than the same scheme presented as a starting point.
+     *
+     *  Downloads hang off individual lessons rather than the unit, so a
+     *  plan can be published the week it is written and sits in the
+     *  sequence that gives it meaning. `download: null` renders the lesson
+     *  without a link rather than promising a file that isn't there. */
+    unit: z
       .object({
         title: z.string(),
-        description: z.string(),
-        href: z.string(),
-        /** Shown on the button, e.g. "PDF, 6 pages". */
-        format: z.string().default(''),
+        /** e.g. "Year 9". Shown as a label, not a restriction. */
+        yearGroup: z.string().default(''),
+        lessonLength: z.string().default(''),
+        /** One paragraph: what the sequence is and what it is not. */
+        intro: z.string().default(''),
+        /** The intellectual arc, one step per lesson phase. Rendered as a
+         *  spine beside the lessons so a PSHE lead can see the progression
+         *  without reading all six rows. */
+        arc: z.array(z.string()).default([]),
+        lessons: z
+          .array(
+            z.object({
+              title: z.string(),
+              /** The lesson's central question, in pupil-facing words. */
+              question: z.string(),
+              /** What pupils should leave understanding. */
+              outcome: z.string(),
+              download: z
+                .object({ href: z.string(), format: z.string().default('') })
+                .nullable()
+                .default(null),
+            }),
+          )
+          .default([]),
       })
       .nullable()
       .default(null),

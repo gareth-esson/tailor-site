@@ -16,9 +16,16 @@ import type { LandingPage } from '../lib/types';
 interface Props {
   /** Curated slugs for this service, in order of relevance. */
   featuredSlugs: string[];
+  /** Section heading. Defaults to the service-page wording; cluster pages
+   *  [C6] frame the same strip commercially. Card treatment stays identical
+   *  either way, so topics read as one component across the site. */
+  heading?: string;
+  /** Optional line under the heading. Omitted entirely when not passed,
+   *  which is how every existing caller renders. */
+  intro?: string;
 }
 
-const { featuredSlugs } = Astro.props;
+const { featuredSlugs, heading = 'Related topics', intro } = Astro.props;
 
 const allLandingPages = await getLandingPages();
 const totalCount = allLandingPages.length;
@@ -45,11 +52,12 @@ const categoryTokenMap: Record<string, string> = {
 <section class="service-topics-strip">
   <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
     <div class="service-topics-strip__header">
-      <h2 class="service-topics-strip__label">Related topics</h2>
+      <h2 class="service-topics-strip__label">{heading}</h2>
       <a href="/topics/" class="link-action link-action--card">
         See all {totalCount} topic guides
       </a>
     </div>
+    {intro && <p class="service-topics-strip__intro">{intro}</p>}
     <div class="topic-card-grid">
       {topics.map((lp) => {
         const token = categoryTokenMap[lp.category || ''] || 'relationships';
@@ -71,6 +79,13 @@ const categoryTokenMap: Record<string, string> = {
 <style>
   .service-topics-strip {
     background: var(--bg-page);
+  }
+
+  .service-topics-strip__intro {
+    max-width: var(--container-max-hero-text);
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+    margin: 0 0 var(--space-global-lg);
   }
 
   .service-topics-strip__header {
