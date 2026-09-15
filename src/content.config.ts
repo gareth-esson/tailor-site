@@ -161,6 +161,24 @@ const clusters = defineCollection({
     /** Source for the statutory claim. The page makes no legal assertion of
      *  its own, so the claim carries a link to the guidance it rests on. */
     statutoryHref: z.string().default(''),
+    /** The teaching idea this cluster turns on, rendered as the page's one
+     *  branded visual moment rather than a bullet list. Each pair is a
+     *  legitimate need beside the harmful answer sold alongside it — the
+     *  form demonstrates the method. */
+    needAnswerPairs: z
+      .array(z.object({ theme: z.string(), need: z.string(), answer: z.string() }))
+      .default([]),
+    /** Safeguarding and classroom-management facts. For a school buyer this
+     *  is close to product information, so it gets a panel of its own rather
+     *  than reading as another explanatory section. */
+    safeguarding: z
+      .object({
+        title: z.string(),
+        intro: z.string().default(''),
+        points: z.array(z.string()).default([]),
+      })
+      .nullable()
+      .default(null),
     /** Testimonial service tag to pull proof from, e.g. "RSE delivery".
      *  Must be a ServiceTag (types.ts) — a different vocabulary from the
      *  enquiry form's. Empty means no proof band renders. */
@@ -225,6 +243,10 @@ const clusters = defineCollection({
           .array(
             z.object({
               title: z.string(),
+              /** Which step of the arc this lesson does. Printed beside the
+               *  number so the progression is visible on the lessons
+               *  themselves, not only in the arc row above them. */
+              phase: z.string().default(''),
               /** The lesson's central question, in pupil-facing words. */
               question: z.string(),
               /** What pupils should leave understanding. */

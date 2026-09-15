@@ -154,12 +154,11 @@ const jsonLd = [
           {data.lede && <p class="cluster-hero__lede">{data.lede}</p>}
           {data.statutoryNote && (
             <p class="cluster-hero__statutory">
-              {data.statutoryHref ? (
-                <a class="link-inline" href={data.statutoryHref} rel="noopener">
-                  {data.statutoryNote}
+              <span>{data.statutoryNote}</span>
+              {data.statutoryHref && (
+                <a class="link-action link-action--card" href={data.statutoryHref} rel="noopener">
+                  Read the guidance
                 </a>
-              ) : (
-                data.statutoryNote
               )}
             </p>
           )}
@@ -172,15 +171,18 @@ const jsonLd = [
          rather than prose: this answers "who are these people" in the two
          seconds before the offer, which is where the claim is made.
 
-         Every claim here must be verifiable. site.ts records
-         `foundingDate: null`, so there is no "since 20XX" to make — an
-         earlier draft of this strip invented one. -->
+         Every claim here must be verifiable against the site's own data or
+         Gareth's confirmation. Two drafts of this strip carried claims that
+         were not: "in UK schools since 2018" (site.ts records
+         `foundingDate: null`) and "QTS-qualified", which was lifted from an
+         illustrative example in tone-of-voice.md and is not true. A style
+         guide's sample sentences are not a record of fact. -->
     <section class="cluster-trust">
       <div class="cluster-trust__inner">
         <p class="cluster-trust__text">
-          Taught by QTS-qualified RSE specialists
+          Specialist RSE for UK schools
           <span class="cluster-trust__sep">·</span>
-          Delivered in UK schools
+          Tailor Learning CIC
           <span class="cluster-trust__sep">·</span>
           Built around the 2026 statutory guidance
           <span class="cluster-trust__sep">·</span>
@@ -210,14 +212,59 @@ const jsonLd = [
       </div>
     </section>
 
+    <!-- The page's one branded visual moment. Dark surface, used once, so
+         the idea the whole sequence turns on reads as a chapter break
+         rather than three bullets inside the essay. .surface--dark swaps
+         headings, body text and focus rings automatically. -->
+    {data.needAnswerPairs?.length > 0 && (
+      <section class="need-answer surface--dark" aria-labelledby="need-answer-heading">
+        <div class="need-answer__inner">
+          <h2 id="need-answer-heading" class="need-answer__title">
+            A legitimate need is not the same as a good answer to it
+          </h2>
+          <ol class="need-answer__list" role="list">
+            {data.needAnswerPairs.map((pair) => (
+              <li class="need-answer__pair">
+                <p class="need-answer__theme">{pair.theme}</p>
+                <p class="need-answer__need">{pair.need}</p>
+                <p class="need-answer__answer">{pair.answer}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+    )}
+
+    <!-- Safeguarding — close to product information for a school buyer, so
+         it gets a panel rather than reading as another prose section. -->
+    {data.safeguarding?.points?.length > 0 && (
+      <section class="safeguarding" aria-labelledby="safeguarding-heading">
+        <div class="safeguarding__inner">
+          <div class="safeguarding__panel">
+            <h2 id="safeguarding-heading" class="safeguarding__title">
+              {data.safeguarding.title}
+            </h2>
+            {data.safeguarding.intro && (
+              <p class="safeguarding__intro">{data.safeguarding.intro}</p>
+            )}
+            <ul class="safeguarding__list" role="list">
+              {data.safeguarding.points.map((point) => (
+                <li class="safeguarding__point">{point}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+    )}
+
     <!-- §4 The sample unit -->
-    {data.unit && data.unit.lessons.length > 0 && (
+    {data.unit?.lessons?.length > 0 && (
       <section class="cluster-unit" aria-labelledby="cluster-unit-heading">
         <div class="cluster-unit__inner">
           <div class="cluster-unit__head">
             <h2 id="cluster-unit-heading" class="cluster-unit__title">{data.unit.title}</h2>
             {data.unit.intro && <p class="cluster-unit__intro">{data.unit.intro}</p>}
-            {data.unit.arc.length > 0 && (
+            {data.unit.arc?.length > 0 && (
               <ol class="cluster-unit__arc" role="list">
                 {data.unit.arc.map((step) => (
                   <li class="cluster-unit__arc-step">{step}</li>
@@ -238,7 +285,14 @@ const jsonLd = [
           <ol class="cluster-unit__lessons">
             {data.unit.lessons.map((lesson, i) => (
               <li class="cluster-lesson">
-                <span class="cluster-lesson__n" aria-hidden="true">{i + 1}</span>
+                <div class="cluster-lesson__index">
+                  <span class="cluster-lesson__n" aria-hidden="true">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  {lesson.phase && (
+                    <span class="cluster-lesson__phase">{lesson.phase}</span>
+                  )}
+                </div>
                 <div class="cluster-lesson__body">
                   <h3 class="cluster-lesson__title">{lesson.title}</h3>
                   <p class="cluster-lesson__question">{lesson.question}</p>
@@ -261,7 +315,7 @@ const jsonLd = [
             ))}
           </ol>
 
-          {data.unit.sampleActivity && (
+          {data.unit.sampleActivity?.steps?.length > 0 && (
             <div class="cluster-activity">
               <p class="cluster-activity__kicker">
                 One activity from {data.unit.sampleActivity.fromLesson}
@@ -370,6 +424,132 @@ const jsonLd = [
 </BaseLayout>
 
 <style>
+  /* Need vs answer — the page's one dark chapter ---------------- */
+
+  .need-answer__inner {
+    max-width: var(--container-max-shell);
+    margin-inline: auto;
+    padding-inline: var(--space-global-gutter);
+    padding-block: var(--space-struct-y-base);
+  }
+
+  .need-answer__title {
+    max-width: var(--container-max-hero-text);
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h2);
+    font-weight: var(--heading-weight-h2);
+    line-height: var(--lh-heading);
+    text-wrap: balance;
+    margin: 0 0 var(--space-global-2xl);
+  }
+
+  .need-answer__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-global-xl);
+  }
+
+  /* The form is the teaching: the need, then a step down in weight to the
+     answer sold alongside it. A rule above each pair separates them so the
+     move is legible before the words are read. */
+  .need-answer__pair {
+    display: grid;
+    gap: var(--space-global-xs);
+    padding-top: var(--space-global-lg);
+    border-top: var(--border-width-xs) solid var(--border-subtle-on-dark);
+  }
+
+  .need-answer__theme {
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--section-eyebrow-ls);
+    text-transform: uppercase;
+    color: var(--on-dark-70);
+    margin: 0 0 var(--space-global-xs);
+  }
+
+  .need-answer__need {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h3);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-heading);
+    text-wrap: pretty;
+    margin: 0;
+  }
+
+  .need-answer__answer {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h3);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-heading);
+    text-wrap: pretty;
+    color: var(--on-dark-70);
+    margin: 0;
+  }
+
+  /* Safeguarding panel ------------------------------------------ */
+
+  .safeguarding__inner {
+    max-width: var(--container-max-shell);
+    margin-inline: auto;
+    padding-inline: var(--space-global-gutter);
+    padding-block: var(--space-struct-y-base);
+  }
+
+  /* Centred: a prose-width panel left-aligned in the shell reads as
+     stranded rather than deliberate, because nothing sits beside it. */
+  .safeguarding__panel {
+    max-width: var(--container-max-prose);
+    margin-inline: auto;
+    padding: var(--space-global-xl) var(--space-global-lg);
+    background: var(--bg-surface);
+    border: var(--border-width-xs) solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+  }
+
+  .safeguarding__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-card-size-h2);
+    font-weight: var(--heading-weight-h2);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  .safeguarding__intro {
+    font-size: var(--text-prose-size-body);
+    line-height: var(--lh-prose);
+    color: var(--text-body-muted);
+    margin: 0 0 var(--space-global-lg);
+  }
+
+  .safeguarding__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-global-sm);
+  }
+
+  .safeguarding__point {
+    position: relative;
+    padding-left: var(--space-global-lg);
+    font-size: var(--text-card-size-body);
+    line-height: var(--lh-prose);
+    color: var(--text-body);
+  }
+
+  .safeguarding__point::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: var(--space-global-sm);
+    height: var(--border-width-md);
+    background: var(--brand-accent);
+  }
+
   .cluster-hero__inner,
   .cluster-routes__inner,
   .cluster-body__inner,
@@ -389,6 +569,7 @@ const jsonLd = [
 
   .cluster-hero__text {
     max-width: var(--container-max-hero-text);
+    margin-top: var(--space-global-lg);
   }
 
   .cluster-hero__title {
@@ -411,6 +592,10 @@ const jsonLd = [
   /* A marker, not a banner: a hairline and a size step down keep the
      statutory line available without letting it lead the page. */
   .cluster-hero__statutory {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-global-xs) var(--space-global-md);
     margin: var(--space-global-lg) 0 0;
     padding-top: var(--space-global-sm);
     border-top: var(--border-width-xs) solid var(--border-subtle);
@@ -431,12 +616,13 @@ const jsonLd = [
     padding-block: var(--space-global-lg);
   }
 
+  /* Left-aligned, unlike the /topics/ original: everything else in this
+     hero sits on the left margin and a centred strip broke that line. */
   .cluster-trust__text {
     font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-prose-size-body);
+    font-size: var(--text-card-size-body);
     font-weight: var(--font-weight-medium);
     color: var(--text-body-muted);
-    text-align: center;
     margin: 0;
   }
 
@@ -610,13 +796,40 @@ const jsonLd = [
     border-radius: var(--radius-lg);
   }
 
-  .cluster-lesson__n {
+  /* Oversized numbering with the arc step beneath it, so the progression
+     is legible on the lessons themselves rather than only in the row above. */
+  /* align-content: start keeps the number and its arc step together at the
+     top. Without it the grid stretches to the card height and the phase
+     label drifts to the bottom, reading as unrelated to the number. */
+  .cluster-lesson__index {
     flex-shrink: 0;
+    display: grid;
+    align-content: start;
+    gap: var(--space-global-xs);
+    /* Fixed, not min-width: the longest arc step ("INTERROGATE") is wider
+       than a min-width column and was pushing that lesson's title right,
+       so the six titles no longer shared a left edge. */
+    width: 7rem;
+  }
+
+  .cluster-lesson__n {
     font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-display-size-h3);
-    font-weight: var(--heading-weight-h3);
+    font-size: var(--text-display-size-h2);
+    font-weight: var(--heading-weight-h2);
     line-height: 1;
-    color: var(--brand-accent);
+    /* --brand-accent is documented as not-for-text on light grounds (v2
+       notes, "accent-text vs accent vs button bg"): it lands at 3.05:1
+       here. --brand-accent-text is the clamped sibling meant for this. */
+    color: var(--brand-accent-text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cluster-lesson__phase {
+    font-size: var(--text-util-micro-size);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--section-eyebrow-ls);
+    text-transform: uppercase;
+    color: var(--text-body-muted);
   }
 
   .cluster-lesson__body {
@@ -724,6 +937,24 @@ const jsonLd = [
     font-size: var(--text-card-size-body);
     color: var(--text-body-muted);
     margin: 0 0 var(--space-global-lg);
+  }
+
+  /* Below --bp-md the fixed index column leaves the body about 140px on a
+     375px screen, which wraps the lesson question to three words a line.
+     Stack instead: number and arc step sit side by side above the text. */
+  @media (max-width: 639px) { /* below --bp-md */
+    .cluster-lesson {
+      flex-direction: column;
+      gap: var(--space-global-sm);
+    }
+
+    .cluster-lesson__index {
+      width: auto;
+      grid-auto-flow: column;
+      justify-content: start;
+      align-items: baseline;
+      gap: var(--space-global-sm);
+    }
   }
 
   @media (min-width: 640px) { /* --bp-md */
