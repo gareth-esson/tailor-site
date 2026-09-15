@@ -167,16 +167,16 @@ const jsonLd = [
       </div>
     </header>
 
-    <!-- Trust strip — same dot-separated treatment as /topics/. Scannable
-         rather than prose: this answers "who are these people" in the two
-         seconds before the offer, which is where the claim is made.
+    {/* Trust strip — same dot-separated treatment as /topics/. Scannable
+        rather than prose: this answers "who are these people" in the two
+        seconds before the offer, which is where the claim is made.
 
-         Every claim here must be verifiable against the site's own data or
-         Gareth's confirmation. Two drafts of this strip carried claims that
-         were not: "in UK schools since 2018" (site.ts records
-         `foundingDate: null`) and "QTS-qualified", which was lifted from an
-         illustrative example in tone-of-voice.md and is not true. A style
-         guide's sample sentences are not a record of fact. -->
+        Every claim here must be verifiable against the site's own data or
+        Gareth's confirmation. Two drafts carried claims that were not: a
+        founding year (site.ts records `foundingDate: null`) and a teaching
+        qualification lifted from an illustrative example in
+        tone-of-voice.md. A style guide's sample sentences are not a record
+        of fact. JSX comment, not HTML — this must not ship in page source. */}
     <section class="cluster-trust">
       <div class="cluster-trust__inner">
         <p class="cluster-trust__text">
@@ -205,11 +205,20 @@ const jsonLd = [
       )}
     </div>
 
-    <!-- §3 Our approach -->
+    <!-- §3 Our approach. The .prose wrapper is the same hook the blog
+         template uses, so MDX output is typeset identically wherever it
+         appears rather than inheriting bare defaults. -->
     <section class="cluster-body">
       <div class="cluster-body__inner">
-        <Content />
+        <div class="prose cluster-body__prose">
+          <Content />
+        </div>
       </div>
+      {data.pullQuote && (
+        <figure class="cluster-pullquote">
+          <blockquote class="cluster-pullquote__text">{data.pullQuote}</blockquote>
+        </figure>
+      )}
     </section>
 
     <!-- The page's one branded visual moment. Dark surface, used once, so
@@ -673,8 +682,12 @@ const jsonLd = [
     margin: 0;
   }
 
+  /* align-content: start — the step is a grid item stretched to the tallest
+     column, and without this its label and detail rows spread to fill that
+     height, so a one-line prompt sits lower than a two-line one beside it. */
   .cluster-activity__step {
     display: grid;
+    align-content: start;
     gap: var(--space-global-xs);
   }
 
@@ -725,7 +738,70 @@ const jsonLd = [
   .cluster-body__inner {
     max-width: var(--container-max-prose);
     margin-inline: auto;
-    padding-block: var(--space-struct-y-base);
+    padding-inline: var(--space-global-gutter);
+    padding-block: var(--space-struct-y-base) var(--space-global-xl);
+  }
+
+  /* Same :global(.prose) hooks the blog template uses. Headings here are
+     the argument's structure, so they take more room above than below —
+     the gap belongs between sections, not between a heading and its text. */
+  .cluster-body__prose :global(h2) {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-prose-size-h2);
+    font-weight: var(--heading-weight-h2);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
+    text-wrap: balance;
+    margin: var(--space-global-2xl) 0 var(--space-global-sm);
+  }
+
+  .cluster-body__prose :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .cluster-body__prose :global(p) {
+    font-size: var(--text-prose-size-body);
+    line-height: var(--lh-prose);
+    color: var(--text-body);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .cluster-body__prose :global(ul) {
+    margin: 0 0 var(--space-global-md);
+    padding-left: var(--space-global-lg);
+  }
+
+  .cluster-body__prose :global(li) {
+    font-size: var(--text-prose-size-body);
+    line-height: var(--lh-prose);
+    color: var(--text-body);
+    margin-bottom: var(--space-global-xs);
+  }
+
+  .cluster-body__prose :global(a) {
+    color: var(--brand-accent-text);
+    text-underline-offset: 2px;
+  }
+
+  /* The pull quote breaks the prose column deliberately — it is the one
+     moment in the argument that should stop a scanning reader. Wider than
+     the measure, larger than the body, no quotation marks. */
+  .cluster-pullquote {
+    max-width: var(--container-max-hero-text);
+    margin: 0 auto;
+    padding: 0 var(--space-global-gutter) var(--space-struct-y-base);
+  }
+
+  .cluster-pullquote__text {
+    margin: 0;
+    padding-top: var(--space-global-lg);
+    border-top: var(--border-width-md) solid var(--brand-accent);
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h3);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
+    text-wrap: pretty;
   }
 
   /* §4 The sample unit ----------------------------------------- */

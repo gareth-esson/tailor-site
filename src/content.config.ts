@@ -161,6 +161,10 @@ const clusters = defineCollection({
     /** Source for the statutory claim. The page makes no legal assertion of
      *  its own, so the claim carries a link to the guidance it rests on. */
     statutoryHref: z.string().default(''),
+    /** One line from the body worth elevating. Rendered breaking the prose
+     *  column so the argument has a visual peak, rather than every sentence
+     *  carrying equal weight down a single measure. */
+    pullQuote: z.string().default(''),
     /** The teaching idea this cluster turns on, rendered as the page's one
      *  branded visual moment rather than a bullet list. Each pair is a
      *  legitimate need beside the harmful answer sold alongside it — the
