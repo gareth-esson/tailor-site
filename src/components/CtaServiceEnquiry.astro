@@ -14,7 +14,7 @@ interface Props {
 }
 
 const { serviceName, serviceParam, variant = 'tinted' } = Astro.props;
-const enquiryUrl = `/contact?service=${encodeURIComponent(serviceParam)}`;
+const enquiryUrl = `/contact/?service=${encodeURIComponent(serviceParam)}`;
 ---
 
 <section class:list={['cta-enquiry', variant === 'alt' && 'cta-enquiry--alt']}>
@@ -43,7 +43,7 @@ const enquiryUrl = `/contact?service=${encodeURIComponent(serviceParam)}`;
             Adds internal-link equity to /our-approach from every
             service page. */}
         <a
-          href="/our-approach"
+          href="/our-approach/"
           class="link-action link-action--muted cta-enquiry__secondary"
           data-analytics-event="link_click"
           data-analytics-link-type="service_to_approach"

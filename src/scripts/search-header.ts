@@ -149,7 +149,7 @@ export function initSearchHeader(): void {
   function setSeeAllVisible(visible: boolean, query: string): void {
     if (!seeAllLink) return;
     if (visible) {
-      seeAllLink.href = '/search?q=' + encodeURIComponent(query);
+      seeAllLink.href = '/search/?q=' + encodeURIComponent(query);
       seeAllLink.style.display = '';
     } else {
       seeAllLink.style.display = 'none';
@@ -384,7 +384,7 @@ export function initSearchHeader(): void {
       }
       if (e.key === 'Enter' && input.value.trim()) {
         invalidate();
-        window.location.href = '/search?q=' + encodeURIComponent(input.value.trim());
+        window.location.href = '/search/?q=' + encodeURIComponent(input.value.trim());
       }
     });
   }

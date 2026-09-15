@@ -306,7 +306,7 @@ export function serviceJsonLd(opts: {
         ? { description: opts.offer.priceText }
         : { description: 'Contact for a quote' }),
       availability: 'https://schema.org/InStock',
-      url: `${site.url}/contact?service=${encodeURIComponent(opts.name)}`,
+      url: `${site.url}/contact/?service=${encodeURIComponent(opts.name)}`,
     },
   };
 }

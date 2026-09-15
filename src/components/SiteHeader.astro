@@ -13,11 +13,11 @@
 import SearchBar from './SearchBar.astro';
 
 const rseDeliveryLinks = [
-  { title: 'RSE for Primary Schools', href: '/services/rse-for-primary-schools' },
-  { title: 'RSE for Secondary Schools', href: '/services/rse-for-secondary-schools' },
-  { title: 'RSE for SEND & AP (Circuits)', href: '/services/rse-for-send-and-ap' },
-  { title: 'RSE for Special Schools', href: '/services/rse-for-special-schools' },
-  { title: 'Drop Days', href: '/services/drop-days' },
+  { title: 'RSE for Primary Schools', href: '/services/rse-for-primary-schools/' },
+  { title: 'RSE for Secondary Schools', href: '/services/rse-for-secondary-schools/' },
+  { title: 'RSE for SEND & AP (Circuits)', href: '/services/rse-for-send-and-ap/' },
+  { title: 'RSE for Special Schools', href: '/services/rse-for-special-schools/' },
+  { title: 'Drop Days', href: '/services/drop-days/' },
 ];
 
 // "Guidance for schools" sits first: it's the teacher-content hub the other
@@ -26,8 +26,8 @@ const rseDeliveryLinks = [
 // accordion from one array.
 const rseTrainingLinks = [
   { title: 'Guidance for schools', href: '/for-schools/' },
-  { title: 'RSE Training', href: '/services/rse-training' },
-  { title: 'RSE Policy & Curriculum Planning', href: '/services/rse-policy-curriculum-planning' },
+  { title: 'RSE Training', href: '/services/rse-training/' },
+  { title: 'RSE Policy & Curriculum Planning', href: '/services/rse-policy-curriculum-planning/' },
 ];
 
 // Active-page detection for aria-current. Strip trailing slash so /blog and /blog/ both match.
@@ -124,10 +124,10 @@ const isContact = pathname === '/contact';
           <a href="/blog/" class="site-header__nav-link" aria-current={isBlog ? 'page' : undefined}>Blog</a>
         </li>
         <li class="site-header__nav-item">
-          <a href="/about" class="site-header__nav-link" aria-current={isAbout ? 'page' : undefined}>About</a>
+          <a href="/about/" class="site-header__nav-link" aria-current={isAbout ? 'page' : undefined}>About</a>
         </li>
         <li class="site-header__nav-item">
-          <a href="/contact" class="site-header__nav-link" aria-current={isContact ? 'page' : undefined}>Contact</a>
+          <a href="/contact/" class="site-header__nav-link" aria-current={isContact ? 'page' : undefined}>Contact</a>
         </li>
       </ul>
     </nav>
@@ -235,12 +235,12 @@ const isContact = pathname === '/contact';
           </a>
         </li>
         <li class="mobile-nav__item">
-          <a href="/about" class="mobile-nav__link" aria-current={isAbout ? 'page' : undefined}>
+          <a href="/about/" class="mobile-nav__link" aria-current={isAbout ? 'page' : undefined}>
             <span>About</span>
           </a>
         </li>
         <li class="mobile-nav__item">
-          <a href="/contact" class="mobile-nav__link" aria-current={isContact ? 'page' : undefined}>
+          <a href="/contact/" class="mobile-nav__link" aria-current={isContact ? 'page' : undefined}>
             <span>Contact</span>
           </a>
         </li>

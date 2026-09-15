@@ -344,7 +344,7 @@ const pagefindHeroImageAlt = post.featuredImage ? featuredImageAlt : '';
             <span class="blog-post__tags-label">Topics</span>
             {post.topics.map((t) => (
               <a
-                href={`/topics/${t.slug}`}
+                href={`/topics/${t.slug}/`}
                 class="blog-post__tag"
                 data-analytics-event="blog_to_topic_click"
                 data-analytics-blog-slug={post.slug}
@@ -355,7 +355,7 @@ const pagefindHeroImageAlt = post.featuredImage ? featuredImageAlt : '';
             ))}
             {post.secondaryTopics.map((t) => (
               <a
-                href={`/topics/${t.slug}`}
+                href={`/topics/${t.slug}/`}
                 class="blog-post__tag blog-post__tag--secondary"
                 data-analytics-event="blog_to_topic_click"
                 data-analytics-blog-slug={post.slug}
@@ -376,7 +376,7 @@ const pagefindHeroImageAlt = post.featuredImage ? featuredImageAlt : '';
           <h2 class="blog-post__section-title">Related articles</h2>
           <div class="blog-post__related-grid">
             {relatedPosts.map((rp) => (
-              <a href={`/blog/${rp.slug}`} class="card card--lift blog-related-card">
+              <a href={`/blog/${rp.slug}/`} class="card card--lift blog-related-card">
                 {rp.featuredImage && (
                   <div class="blog-related-card__img">
                     <img src={rp.featuredImage} alt={rp.title} loading="lazy" />

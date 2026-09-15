@@ -66,14 +66,14 @@ const testimonial = null as { quote: string; cite: string } | null;
           </p>
           {isOnSale ? (
             <a
-              href="/book/order"
+              href="/book/order/"
               class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto"
               aria-label={`Pre-order the Okay to Ask book, £${bookPrice}`}
             >
               Pre-order, £{bookPrice}
             </a>
           ) : (
-            <a href="/contact?service=Other" class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto">
+            <a href="/contact/?service=Other" class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto">
               Register your interest
             </a>
           )}
@@ -139,7 +139,7 @@ const testimonial = null as { quote: string; cite: string } | null;
         <Fragment>
           <p class="book-purchase__price">£{bookPrice}</p>
           <a
-            href="/book/order"
+            href="/book/order/"
             class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto"
             aria-label="Pre-order the Okay to Ask book"
           >
@@ -149,7 +149,7 @@ const testimonial = null as { quote: string; cite: string } | null;
       ) : (
         <Fragment>
           <p class="book-purchase__price-coming">Coming soon, £{bookPrice}</p>
-          <a href="/contact?service=Other" class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto">
+          <a href="/contact/?service=Other" class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto">
             Register your interest
           </a>
         </Fragment>
@@ -194,7 +194,7 @@ const testimonial = null as { quote: string; cite: string } | null;
           <p id="trust-heading" class="book-trust__statement">
             Written and produced by the Tailor team. All content aligned to DfE statutory guidance and the PSHE Association Programme of Study.
           </p>
-          <a href="/our-approach" class="link-action book-trust__link">About Tailor</a>
+          <a href="/our-approach/" class="link-action book-trust__link">About Tailor</a>
         </Fragment>
       )}
     </div>

@@ -22,7 +22,7 @@ interface Props {
   href?: string;
 }
 
-const { href = '/questions/search' } = Astro.props;
+const { href = '/questions/search/' } = Astro.props;
 ---
 
 <a class="ota-search-pill" href={href} aria-label="Search questions">

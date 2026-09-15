@@ -18,7 +18,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     <div class="book-order__outer">
 
       <div class="book-order__header">
-        <a href="/book" class="book-order__back link-action">← Back to book page</a>
+        <a href="/book/" class="book-order__back link-action">← Back to book page</a>
         <h1 id="order-heading" class="book-order__title">Pre-order your copy</h1>
         <p class="book-order__intro">
           Fill in your details below, then you'll be taken to our secure Stripe checkout to pay.
@@ -156,7 +156,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
           <div class="alert__content">
             <div class="alert__title">Something went wrong</div>
             <div class="alert__body">
-              <p id="book-order-error-msg">We couldn't process your order. Please try again, or <a href="/contact">contact us</a>.</p>
+              <p id="book-order-error-msg">We couldn't process your order. Please try again, or <a href="/contact/">contact us</a>.</p>
             </div>
           </div>
         </div>
@@ -339,7 +339,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       } catch (err) {
         errorEl.hidden = false;
         if (errorMsg && err instanceof Error && err.message !== 'Unknown error') {
-          errorMsg.innerHTML = `${err.message}, or <a href="/contact">contact us</a>.`;
+          errorMsg.innerHTML = `${err.message}, or <a href="/contact/">contact us</a>.`;
         }
         submitBtn.disabled = false;
         submitBtn.textContent = 'Continue to payment';

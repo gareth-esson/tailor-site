@@ -35,7 +35,7 @@ const philosophyBody = [
   'We work with schools because the gap between "RSE exists in the curriculum" and "RSE is being delivered well" is wider than most parents realise. Teachers are asked to cover topics they were never trained in, often with a few hours\' notice, and often without a clear framework for the hardest moments, disclosures, off-topic questions, the question a student asks specifically because they think it will make the adult flinch.',
   'Every service on this page is built around closing that gap. Some schools bring us in to deliver directly. Some bring us in to train their staff to deliver themselves. Some need help with the policy and curriculum that sits behind it all. The shape of the work changes, the belief underneath it does not.',
 ];
-const philosophyMoreHref = '/our-approach';
+const philosophyMoreHref = '/our-approach/';
 const philosophyMoreLabel = 'Read more about how we approach RSE delivery';
 
 // --- §3 Flagship services (4 cards, equal weight) --------------------
@@ -46,7 +46,7 @@ const flagshipServices = [
     title: 'RSE for Primary Schools',
     description:
       'Age-appropriate RSE for KS1 and KS2, delivered by a specialist educator who understands primary school settings.',
-    href: '/services/rse-for-primary-schools',
+    href: '/services/rse-for-primary-schools/',
     image: '/images/services/tailor-education-primary-rse-circle-time.webp',
     imageAlt: 'Primary pupils in a circle-time RSE session led by a Tailor educator',
   },
@@ -54,7 +54,7 @@ const flagshipServices = [
     title: 'RSE for Secondary Schools',
     description:
       'Expert-led RSE for KS3 and KS4, covering the topics students are actually thinking about, delivered with confidence.',
-    href: '/services/rse-for-secondary-schools',
+    href: '/services/rse-for-secondary-schools/',
     image: '/images/services/tailor-education-secondary-students-collaborative-learning.webp',
     imageAlt: 'Secondary students working collaboratively in a Tailor RSE session',
   },
@@ -62,7 +62,7 @@ const flagshipServices = [
     title: 'RSE for SEND & AP (Circuits)',
     description:
       'Workbook-based RSE designed for SEND and alternative provision. Self-paced, simplified keynotes, doodle and game space.',
-    href: '/services/rse-for-send-and-ap',
+    href: '/services/rse-for-send-and-ap/',
     image: '/images/services/tailor-education-primary-pupil-rse-worksheet.webp',
     imageAlt: 'A pupil working through a Circuits RSE workbook at their own pace',
   },
@@ -70,7 +70,7 @@ const flagshipServices = [
     title: 'RSE Training',
     description:
       'CPD-accredited training that gives your staff the confidence and skills to deliver RSE effectively.',
-    href: '/services/rse-training',
+    href: '/services/rse-training/',
     image: '/images/services/tailor-education-rse-cpd-workshop-facilitator.webp',
     imageAlt: 'A Tailor facilitator leading a CPD workshop for school staff on RSE',
   },
@@ -84,7 +84,7 @@ const secondaryServices = [
     title: 'Drop Days',
     description:
       'A full day of RSE delivery across multiple year groups, maximum impact, minimum disruption.',
-    href: '/services/drop-days',
+    href: '/services/drop-days/',
     image: '/images/services/tailor-education-rse-year-group-session-school-hall.webp',
     imageAlt: 'A whole year group gathered in the school hall for a Tailor drop day',
   },
@@ -92,7 +92,7 @@ const secondaryServices = [
     title: 'RSE Policy & Curriculum Planning',
     description:
       'Expert guidance to develop your RSE policy, plan your curriculum, and communicate your approach to parents.',
-    href: '/services/rse-policy-curriculum-planning',
+    href: '/services/rse-policy-curriculum-planning/',
     image: '/images/services/tailor-education-teachers-planning-rse-curriculum.webp',
     imageAlt: 'Teachers and a Tailor consultant planning an RSE curriculum around a table',
   },
@@ -232,7 +232,7 @@ const closingText =
       <div class="services-proof-band__inner mx-auto w-full max-w-[var(--container-max-hero-text)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
         <p class="services-proof-band__quote">{testimonialQuote}</p>
         <p class="services-proof-band__source">{testimonialSource}</p>
-        <a href="/testimonials" class="link-action link-action--muted link-action--card services-proof-band__more">
+        <a href="/testimonials/" class="link-action link-action--muted link-action--card services-proof-band__more">
           Read more from schools we've worked with
         </a>
       </div>
@@ -246,7 +246,7 @@ const closingText =
       <h2 class="services-closing-cta__title">{closingTitle}</h2>
       <p class="services-closing-cta__text">{closingText}</p>
       <a
-        href="/contact?service=planning-call"
+        href="/contact/?service=planning-call"
         class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto"
         data-analytics-event="cta_click"
         data-analytics-cta-type="hub_planning_call"
@@ -254,7 +254,7 @@ const closingText =
       >
         Book a planning call
       </a>
-      <a href="/contact" class="link-action link-action--card services-closing-cta__secondary">
+      <a href="/contact/" class="link-action link-action--card services-closing-cta__secondary">
         Or send us a message
       </a>
     </div>

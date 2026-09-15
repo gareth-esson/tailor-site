@@ -47,7 +47,7 @@ function slugify(text: string): string {
 ---
 
 <a
-  href={`/anonymous_question/${q.slug}`}
+  href={`/anonymous_question/${q.slug}/`}
   class="card card--lift qcard no-underline flex flex-col"
   data-analytics-event="question_card_click"
   data-analytics-target-slug={q.slug}
@@ -74,7 +74,7 @@ function slugify(text: string): string {
         {q.contentTags.map((tag, i) => (
           <>
             {i > 0 && <span class="qcard__tags-sep" aria-hidden="true"> &middot; </span>}
-            <span class="qcard__tag-link" data-tag-href={`/questions/tag/${slugify(tag)}`}>{tag}</span>
+            <span class="qcard__tag-link" data-tag-href={`/questions/tag/${slugify(tag)}/`}>{tag}</span>
           </>
         ))}
       </p>

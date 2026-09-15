@@ -55,7 +55,7 @@ const categoryTokenMap: Record<string, string> = {
         const token = categoryTokenMap[lp.category || ''] || 'relationships';
         const illustration = getTopicIllustrationPath(lp.slug);
         return (
-          <a href={`/topics/${lp.slug}`} class="topic-card" style={`--cat-color: var(--cat-${token})`}>
+          <a href={`/topics/${lp.slug}/`} class="topic-card" style={`--cat-color: var(--cat-${token})`}>
             <div class="topic-card__illus">
               {illustration && <img src={illustration} alt="" loading="lazy" />}
             </div>

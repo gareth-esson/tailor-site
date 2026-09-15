@@ -105,7 +105,7 @@ const jsonLd = {
             <h1 class="service-hero__title">{title}</h1>
             <p class="service-hero__subtitle">{heroSubtitle}</p>
             <a
-              href={`/contact?service=${encodeURIComponent(serviceParam)}`}
+              href={`/contact/?service=${encodeURIComponent(serviceParam)}`}
               class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto"
               data-analytics-event="cta_click"
               data-analytics-cta-type="hero_enquire"
@@ -163,13 +163,13 @@ const jsonLd = {
           )}
           <div class="service-proof-band__cta-wrap">
             <a
-              href={`/contact?service=${encodeURIComponent(serviceParam)}`}
+              href={`/contact/?service=${encodeURIComponent(serviceParam)}`}
               class="btn btn--std btn--white-primary has-icon-hover w-full sm:w-auto"
               data-analytics-event="cta_click"
               data-analytics-cta-type="proof_band_enquire"
               data-analytics-service-type={serviceParam}
             >Plan your secondary RSE</a>
-            <a href="/testimonials" class="link-action link-action--muted link-action--card">Read more testimonials</a>
+            <a href="/testimonials/" class="link-action link-action--muted link-action--card">Read more testimonials</a>
           </div>
         </div>
       </div>
@@ -181,7 +181,7 @@ const jsonLd = {
           <h2 class="service-section-title">Related articles</h2>
           <div class="service-blog__grid">
             {relatedPosts.map((bp) => (
-              <a href={`/blog/${bp.slug}`} class="card card--lift service-blog-card">
+              <a href={`/blog/${bp.slug}/`} class="card card--lift service-blog-card">
                 {bp.featuredImage && (
                   <div class="service-blog-card__img">
                     <img src={bp.featuredImage} alt="" loading="lazy" />

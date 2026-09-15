@@ -321,7 +321,7 @@ const aboutJsonLd = {
           out in curriculum, training, and classroom practice, we've written
           it up in full.
         </p>
-        <a href="/our-approach" class="btn btn--std btn--tint has-icon-hover about-approach__cta w-full sm:w-auto">
+        <a href="/our-approach/" class="btn btn--std btn--tint has-icon-hover about-approach__cta w-full sm:w-auto">
           Read about our approach
         </a>
       </div>
@@ -344,7 +344,7 @@ const aboutJsonLd = {
               const extraTopicCount = Math.max(0, post.topics.length - topics.length);
               return (
                 <li class="about-blog__item">
-                  <a href={`/blog/${post.slug}`} class="blog-index-card">
+                  <a href={`/blog/${post.slug}/`} class="blog-index-card">
                     <div class="blog-index-card__image">
                       {post.featuredImage ? (
                         <img
@@ -406,7 +406,7 @@ const aboutJsonLd = {
             Training, delivery, bespoke planning: drop us a note and we'll come
             back within a working day.
           </p>
-          <a href="/contact" class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto">
+          <a href="/contact/" class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto">
             Get in touch
           </a>
         </div>

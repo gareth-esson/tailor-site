@@ -102,7 +102,7 @@ const sortedPages = [...landingPages].sort((a, b) => {
             const illustrationSrc = getTopicIllustrationPath(lp.slug);
             return (
               <li data-category={lp.category}>
-                <a href={`/topics/${lp.slug}`} class="topic-hub-card" style={`--cat-color: var(--cat-${token})`}>
+                <a href={`/topics/${lp.slug}/`} class="topic-hub-card" style={`--cat-color: var(--cat-${token})`}>
                   <div class="topic-hub-card__illustration">
                     {illustrationSrc && (
                       <img src={illustrationSrc} alt="" loading="lazy" />
