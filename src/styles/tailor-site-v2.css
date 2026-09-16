@@ -4211,25 +4211,26 @@ textarea.form-input {
    font-size is body size) would make the band narrower, not wider. */
 .service-proof-band__quote {
     max-width: var(--container-max-quote);
-    margin-inline: auto;
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-display-size-h3);
     font-style: italic;
     font-weight: var(--font-weight-regular);
     color: var(--text-on-dark);
     line-height: var(--lh-heading);
-    margin: 0 0 var(--space-global-md);
+    /* The auto has to live in the shorthand. A separate margin-inline: auto
+       above this line is silently reset by the shorthand's 0 side value, which
+       left the quote flush to the band's left edge on every service page. */
+    margin: 0 auto var(--space-global-md);
 }
 .service-proof-band__source {
     display: block;
     max-width: var(--container-max-quote);
-    margin-inline: auto;
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-card-size-body);
     font-weight: var(--font-weight-medium);
     color: var(--text-on-dark);
     opacity: 0.8;
-    margin-bottom: var(--space-global-lg);
+    margin: 0 auto var(--space-global-lg);
 }
 .service-proof-band__cta-wrap {
     display: flex;
