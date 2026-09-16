@@ -118,7 +118,7 @@
 - **H2:** What we do
 - **Body:**
 
-  Good RSE is hard to get right, and most schools don't have the time to build it from scratch. That's why Tailor exists.
+  Good RSE is hard to get right, and building it from scratch takes time the timetable rarely allows. That's why Tailor exists.
 
   The lessons we publish are written by people who still teach the content in UK classrooms. They're mapped to the DfE statutory guidance and the PSHE Association Programme of Study, and they're written so a teacher who hasn't taught the topic before can pick one up, adapt it for the class in front of them, and use it the same week. The whole library sits in our Tailor Teach app.
 

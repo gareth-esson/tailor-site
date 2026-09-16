@@ -6,6 +6,7 @@
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TestimonialCard from '../components/TestimonialCard.astro';
+import CtaClosing from '../components/CtaClosing.astro';
 import { getTestimonials } from '../lib/content';
 import type { ServiceTag } from '../lib/types';
 import { site } from '../lib/site';
@@ -153,17 +154,15 @@ const jsonLd =
     )}
 
     <!-- §4.5 Work with us -->
-    <section class="testimonials-cta">
-      <div class="testimonials-cta__inner">
-        <div class="testimonials-cta__card">
-          <h2 class="testimonials-cta__title">Want to work with us?</h2>
-          <p class="testimonials-cta__text">
-            Tell us about your school and what you need, we'll come back within a couple of working days.
-          </p>
-          <a class="btn btn--std btn--primary has-icon-hover" href="/contact/">Get in touch</a>
-        </div>
-      </div>
-    </section>
+    <CtaClosing
+      title="Want to work with us?"
+      subtitle="Tell us about your school and what you need, we'll come back within a couple of working days."
+      primaryHref="/contact/"
+      primaryLabel="Get in touch"
+      secondaryHref="/services/"
+      secondaryLabel="Explore services"
+      ctaType="testimonials_closing"
+    />
 
   </div>
 </BaseLayout>
@@ -538,50 +537,5 @@ const jsonLd =
     margin: 0;
   }
 
-  /* -------------------------------------------------------------------- */
-  /* §4.5 CTA                                                             */
-  /* -------------------------------------------------------------------- */
-  .testimonials-cta {
-    width: 100%;
-    background: var(--bg-surface-alt);
-  }
-  .testimonials-cta__inner {
-    margin-inline: auto;
-    width: 100%;
-    max-width: var(--container-max-hero-text);
-    padding: var(--space-global-xl) var(--space-global-gutter);
-  }
-  .testimonials-cta__card {
-    background: var(--bg-tinted);
-    border: var(--border-width-xs) solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    padding: var(--space-global-lg);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-global-sm);
-    align-items: center;
-    text-align: center;
-  }
-  .testimonials-cta__title {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-prose-size-h2);
-    font-weight: var(--heading-weight-h2);
-    line-height: var(--lh-heading);
-    color: var(--text-heading);
-    margin: 0;
-  }
-  .testimonials-cta__text {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-prose-size-body);
-    color: var(--text-body-muted);
-    line-height: var(--lh-prose);
-    max-width: 32rem;
-    margin: 0;
-  }
 
-  @media (max-width: 639px) {
-    .testimonials-cta__card {
-      padding: var(--space-global-md);
-    }
-  }
 </style>

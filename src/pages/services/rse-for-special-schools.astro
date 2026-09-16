@@ -159,30 +159,30 @@ const jsonLd = {
       </div>
     </section>
 
-    <section class="service-proof-band on-dark">
-      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-        <div class="service-proof-band__inner">
-          {testimonialQuote && (
-            <>
+    {/* No testimonial for this service means no band at all — an
+        empty dark strip carrying only buttons is not proof. */}
+    {testimonialQuote && (
+      <section class="service-proof-band on-dark">
+        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+          <div class="service-proof-band__inner">
               <blockquote>
                 <p class="service-proof-band__quote">"{testimonialQuote}"</p>
               </blockquote>
               <span class="service-proof-band__source">{testimonialSource}</span>
-            </>
-          )}
-          <div class="service-proof-band__cta-wrap">
-            <a
-              href={`/contact/?service=${encodeURIComponent(enquiryService)}`}
-              class="btn btn--std btn--white-primary has-icon-hover w-full sm:w-auto"
-              data-analytics-event="cta_click"
-              data-analytics-cta-type="proof_band_enquire"
-              data-analytics-service-type={serviceParam}
-            >Start a conversation</a>
-            <a href="/testimonials/" class="link-action link-action--muted link-action--card">Read more testimonials</a>
+            <div class="service-proof-band__cta-wrap">
+              <a
+                href={`/contact/?service=${encodeURIComponent(enquiryService)}`}
+                class="btn btn--std btn--white-primary has-icon-hover w-full sm:w-auto"
+                data-analytics-event="cta_click"
+                data-analytics-cta-type="proof_band_enquire"
+                data-analytics-service-type={serviceParam}
+              >Start a conversation</a>
+              <a href="/testimonials/" class="link-action link-action--muted link-action--card">Read more testimonials</a>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    )}
 
     {relatedPosts.length > 0 && (
       <section class="service-blog">
