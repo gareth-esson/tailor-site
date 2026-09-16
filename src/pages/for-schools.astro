@@ -24,8 +24,19 @@
  * first-H1 rule, so the result title stays "For schools" regardless of how
  * the body regions are later rearranged.
  */
+import fs from 'node:fs';
+import path from 'node:path';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import CtaClosing from '../components/CtaClosing.astro';
 import { breadcrumbJsonLd } from '../lib/site';
+
+/* Split hero media. Drop a .webp at the path below and the hero becomes a
+   two-column split automatically — no code change needed. Until then the hero
+   renders text-only exactly as before, so the page is never broken by a
+   missing file. Landscape, roughly 4:3, 1600px wide or better. */
+const heroPhoto = ((src: string): string | null =>
+  fs.existsSync(path.join(process.cwd(), 'public', src.replace(/^\//, ''))) ? src : null
+)('/images/services/tailor-education-for-schools-hero.webp');
 
 const description =
   'Guidance for school staff reviewing RSE: curriculum and policy, teaching the hardest topics in the classroom, and the support available when your school wants help with either.';
@@ -50,7 +61,26 @@ const jsonLd = breadcrumbJsonLd([{ name: 'For schools', path: '/for-schools/' }]
           lead a difficult conversation in the classroom. The writing collected
           here is for school staff working on either half.
         </p>
+        <div class="schools-hub-hero__actions">
+          <a href="/contact/" class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto">
+            Talk to us about your RSE
+          </a>
+          <a href="/services/" class="btn btn--std btn--tint has-icon-hover w-full sm:w-auto">
+            See services
+          </a>
+        </div>
       </div>
+      {heroPhoto && (
+        <div class="schools-hub-hero__media hidden md:block">
+          <img
+            src={heroPhoto}
+            alt="A Tailor educator working with school staff on their RSE programme"
+            width="1600"
+            height="1200"
+            decoding="async"
+          />
+        </div>
+      )}
     </div>
   </header>
 
@@ -155,6 +185,16 @@ const jsonLd = breadcrumbJsonLd([{ name: 'For schools', path: '/for-schools/' }]
       </div>
     </section>
   </div>
+
+  <CtaClosing
+    title="Want to talk about RSE at your school?"
+    subtitle="Tell us where you're starting from, and we'll work out what Tailor can do."
+    primaryHref="/contact/"
+    primaryLabel="Get in touch"
+    secondaryHref="/services/"
+    secondaryLabel="Explore services"
+    ctaType="for_schools_closing"
+  />
 </BaseLayout>
 
 <style>
@@ -172,10 +212,42 @@ const jsonLd = breadcrumbJsonLd([{ name: 'For schools', path: '/for-schools/' }]
     margin-inline: auto;
     width: 100%;
     max-width: var(--container-max-shell);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-global-xl);
+    align-items: center;
+  }
+
+  /* Two columns only when the hero actually has media to put in the second
+     one. :has keeps the text-only case identical to what it was before. */
+  @media (min-width: 768px) { /* --bp-md */
+    .schools-hub-hero__inner:has(.schools-hub-hero__media) {
+      grid-template-columns: 3fr 2fr;
+    }
   }
 
   .schools-hub-hero__text {
     max-width: var(--container-max-hero-text);
+  }
+
+  .schools-hub-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-global-sm);
+    margin-top: var(--space-global-lg);
+  }
+
+  .schools-hub-hero__media {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+  }
+
+  .schools-hub-hero__media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .schools-hub-hero__title {

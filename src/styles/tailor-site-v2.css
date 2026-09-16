@@ -252,6 +252,21 @@
   --bg-subtle: var(--neutral-200);     /* cool neutral */
   --bg-tinted: var(--neutral-100);     /* cool off-white band surface */
   --bg-emphasis: var(--brand-secondary);
+  /* Third light band, added Sept 2026. The page/surface/surface-alt ramp only
+     varies lightness, so a third step would have had to go darker than
+     surface-alt. This one separates by HUE instead: the brand teal at very low
+     saturation and higher lightness than surface-alt, so it reads as a
+     different colour rather than a darker grey. Used for the CPD and Okay to
+     Ask bands on the homepage. */
+  --bg-surface-tint: hsl(var(--brand-primary-h), 30%, 96%);
+  /* Raised dark. Same hue and saturation as --bg-emphasis, five points
+     lighter, so a dark closing CTA sitting directly above the footer reads as
+     its own band instead of merging into it. */
+  --bg-emphasis-raised: hsl(
+    var(--brand-secondary-h),
+    var(--brand-secondary-s),
+    calc(var(--brand-secondary-l) + 5%)
+  );
   --border-subtle: var(--neutral-200); /* cool neutral */
   --border-strong: var(--neutral-400); /* warm neutral — leave for now */
   --border-subtle-on-dark: #383b42;    /* cool dark */
@@ -608,6 +623,12 @@
   --container-max-reading-wide: 56rem; /* 896px — post-it metadata band, end-of-answer panel, related questions */
   --container-max-text-col: 36rem; /* 576px — marketing text column: heading + body share this width in image/text split sections and centred hero/CTA copy */
   --container-max-hero-text: 48rem; /* 768px — hero copy column (H1 + subtitle share this width) across all page heroes */
+  /* Pull-quote / testimonial measure. Deliberately in em, not rem: the quote
+     is set at h3 size, so a rem cap gives it far fewer characters per line
+     than the same cap gives body copy — which is why the proof band read as
+     too narrow for its type. 34em tracks the quote's own font-size, holding
+     a ~60-character measure whatever size the quote is set at. */
+  --container-max-quote: 34em;
 
   /* ------------------------------
      SHELL STRUCTURAL TOKENS
@@ -774,12 +795,17 @@
   --toggle-mode-padding-x: 1em;
 }
 
-/* Shell container widens to 90vw (capped at 1600px) from lg upwards.
+/* Shell container widens to 90vw from lg upwards, capped at 81rem (1296px).
+   81rem is 90vw of a 1440px MacBook — the reference display — so the shell
+   is unchanged at or below 1440 and simply stops growing above it. Chosen
+   over the old 100rem (1600px) cap because content sections at 1600px swung
+   too far from the 44rem reading measure and back. Header, footer and heroes
+   keep this same token, so the alignment invariant is untouched.
    Below lg the 72rem default above is used so tablet/mobile layouts
    keep the existing fit-with-gutter behaviour. */
 @media (min-width: 1024px) {
   :root {
-    --container-max-shell: min(90vw, 100rem);
+    --container-max-shell: min(90vw, 81rem);
   }
 }
 
@@ -2648,6 +2674,12 @@ textarea.form-input {
     background: var(--bg-surface-alt);
     --surface-bg: var(--bg-surface-alt);
 }
+/* Third light band — separates by hue, not by going darker. See
+   --bg-surface-tint. */
+.surface--tint {
+    background: var(--bg-surface-tint);
+    --surface-bg: var(--bg-surface-tint);
+}
 .surface--dark {
     background: var(--bg-emphasis);
     --surface-bg: var(--bg-emphasis);
@@ -4173,7 +4205,13 @@ textarea.form-input {
 .service-proof-band__inner {
     text-align: center;
 }
+/* The measure is capped on the quote itself, not the band wrapper, because
+   --container-max-quote is in em: it has to resolve against the quote's own
+   h3 font-size to hold a ~60-character line. Capping the wrapper (whose
+   font-size is body size) would make the band narrower, not wider. */
 .service-proof-band__quote {
+    max-width: var(--container-max-quote);
+    margin-inline: auto;
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-display-size-h3);
     font-style: italic;
@@ -4184,6 +4222,8 @@ textarea.form-input {
 }
 .service-proof-band__source {
     display: block;
+    max-width: var(--container-max-quote);
+    margin-inline: auto;
     font-family: var(--font-tailor-body-stack);
     font-size: var(--text-card-size-body);
     font-weight: var(--font-weight-medium);

@@ -14,9 +14,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import CtaClosing from '../components/CtaClosing.astro';
 import { getBlogPosts } from '../lib/content';
 import type { BlogPost } from '../lib/types';
-import HeroImage from '../components/HeroImage.astro';
 import { site, founderJsonLd, breadcrumbJsonLd } from '../lib/site';
 
 // --- Leadership data ---
@@ -115,12 +115,6 @@ const displayPosts = featuredPosts.slice(0, 3);
 
 // --- Helpers ---
 
-function initials(name: string): string {
-  const parts = name.trim().split(/\s+/);
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
-
 function formatDate(iso: string | null): string | null {
   if (!iso) return null;
   const d = new Date(iso);
@@ -207,7 +201,7 @@ const aboutJsonLd = {
     <div class="about-hero__inner">
       <div class="about-hero__text">
         <span class="about-hero__eyebrow">About Tailor RSE</span>
-        <h1 class="about-hero__title">RSE built by teachers, trusted by schools.</h1>
+        <h1 class="about-hero__title">RSE built by the people who teach it.</h1>
         <p class="about-hero__lede">
           Tailor RSE is a community-interest company delivering expert
           relationships and sex education resources, training, and support to UK
@@ -222,6 +216,7 @@ const aboutJsonLd = {
     <!-- §2 Who we are -->
     <section class="about-intro">
       <div class="about-intro__inner">
+        <div class="about-intro__text">
         <h2 class="about-intro__title">Tailor RSE</h2>
         <p class="about-intro__para">
           Tailor RSE exists to make high-quality relationships and sex
@@ -246,6 +241,7 @@ const aboutJsonLd = {
           it. Every page we publish and every training session we run is
           measured against that belief.
         </p>
+        </div>
       </div>
     </section>
 
@@ -262,18 +258,8 @@ const aboutJsonLd = {
         </header>
 
         {team.map((person, index) => (
-          <article
-            class:list={[
-              'about-team__member',
-              'split-layout',
-              index % 2 === 0 && 'split-layout--image-left',
-            ]}
-            aria-labelledby={person.id}
-          >
-            {/* DOM order is text-first per .split-layout convention; the
-                --image-left modifier on even-indexed members visually flips
-                the figure to the left so the layout alternates. */}
-            <div class="about-team__body split-layout__text">
+          <article class="about-team__member" aria-labelledby={person.id}>
+            <div class="about-team__body">
               <span class="about-team__eyebrow">{person.eyebrow}</span>
               {person.linkedIn ? (
                 <h3 id={person.id} class="about-team__name">
@@ -290,21 +276,6 @@ const aboutJsonLd = {
                 <p class="about-team__para">{para}</p>
               ))}
             </div>
-            <figure class="about-team__portrait split-layout__media">
-              {person.portrait ? (
-                <HeroImage
-                  src={person.portrait}
-                  alt={person.portraitAlt || `Portrait of ${person.name}`}
-                  width={person.portraitWidth}
-                  height={person.portraitHeight}
-                  sizes="(min-width: 1024px) 24rem, (min-width: 768px) 18rem, 14rem"
-                />
-              ) : (
-                <div class="about-team__portrait-fallback" aria-hidden="true">
-                  {initials(person.name)}
-                </div>
-              )}
-            </figure>
           </article>
         ))}
       </div>
@@ -313,6 +284,7 @@ const aboutJsonLd = {
     <!-- §4 Our approach -->
     <section class="about-approach">
       <div class="about-approach__inner">
+        <div class="about-approach__text">
         <h2 class="about-intro__title">Our approach</h2>
         <p class="about-intro__para">
           Our content is written by practising educators, aligned to DfE, PSHE
@@ -324,6 +296,7 @@ const aboutJsonLd = {
         <a href="/our-approach/" class="btn btn--std btn--tint has-icon-hover about-approach__cta w-full sm:w-auto">
           Read about our approach
         </a>
+        </div>
       </div>
     </section>
 
@@ -398,20 +371,15 @@ const aboutJsonLd = {
     )}
 
     <!-- §6 Get in touch -->
-    <section class="about-cta">
-      <div class="about-cta__inner">
-        <div class="about-cta__card">
-          <h2 class="about-cta__title">Work with us</h2>
-          <p class="about-cta__body">
-            Training, delivery, bespoke planning: drop us a note and we'll come
-            back within a working day.
-          </p>
-          <a href="/contact/" class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto">
-            Get in touch
-          </a>
-        </div>
-      </div>
-    </section>
+    <CtaClosing
+      title="Work with us"
+      subtitle="Training, delivery, bespoke planning: drop us a note and we'll come back within a working day."
+      primaryHref="/contact/"
+      primaryLabel="Get in touch"
+      secondaryHref="/services/"
+      secondaryLabel="Explore services"
+      ctaType="about_closing"
+    />
   </div>
 </BaseLayout>
 
@@ -480,6 +448,13 @@ const aboutJsonLd = {
   .about-approach__inner {
     margin-inline: auto;
     width: 100%;
+    max-width: var(--container-max-shell);
+  }
+
+  /* The text column caps at prose and sits at the shell's left edge, so §2 and
+     §4 line up with the hero and "Our team" instead of floating centred. */
+  .about-intro__text,
+  .about-approach__text {
     max-width: var(--container-max-prose);
   }
 
@@ -552,33 +527,11 @@ const aboutJsonLd = {
   }
 
   /* Per-member portrait aspect (taller than the split-layout default 4/3) */
-  .about-team__member {
-    --split-media-aspect: 4 / 5;
-  }
-
-  .about-team__portrait {
-    background: var(--bg-surface-alt);
-  }
-
-  .about-team__portrait img {
-    object-position: center top;
-  }
-
-  .about-team__portrait-fallback {
-    width: 100%;
-    height: 100%;
-    background: var(--bg-tinted);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-tailor-heading-stack);
-    font-size: clamp(3rem, 6vw + 1rem, 5rem);
-    font-weight: var(--font-weight-bold);
-    color: var(--brand-accent-text);
-    letter-spacing: -0.02em;
-  }
-
+  /* Bios are a text column now — portraits were removed Sept 2026. The
+     person data still carries the portrait fields, so restoring them is a
+     markup change rather than a rewrite. */
   .about-team__body {
+    max-width: var(--container-max-prose);
     display: flex;
     flex-direction: column;
     gap: var(--space-global-sm);
@@ -833,45 +786,8 @@ const aboutJsonLd = {
 
   /* -------------------------------------------------------------------- */
   /* §6 Get in touch                                                      */
-  /* -------------------------------------------------------------------- */
-  .about-cta {
-    width: 100%;
-    padding: var(--space-struct-y-base) var(--space-global-gutter);
-  }
 
-  .about-cta__inner {
-    margin-inline: auto;
-    width: 100%;
-    max-width: var(--container-max-hero-text);
-  }
 
-  .about-cta__card {
-    background: var(--bg-tinted);
-    border: var(--border-width-xs) solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    padding: var(--space-struct-y-base) var(--space-global-lg);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-global-md);
-    text-align: left;
-  }
 
-  .about-cta__title {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-prose-size-h2);
-    font-weight: var(--heading-weight-h2);
-    line-height: var(--lh-heading);
-    color: var(--text-heading);
-    margin: 0;
-  }
 
-  .about-cta__body {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-prose-size-body);
-    font-weight: var(--font-weight-regular);
-    line-height: var(--lh-prose);
-    color: var(--text-body);
-    margin: 0;
-  }
 </style>

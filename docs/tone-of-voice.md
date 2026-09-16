@@ -96,6 +96,47 @@ These almost always read as the brand insisting on its own
 quality. The work itself becomes the proof when these words
 aren't doing it for us.
 
+## Banned: "most schools" (and the presumptive plural)
+
+**"most schools" is banned everywhere on this site.** No sentence
+begins with it, and it does not appear mid-sentence either. This is
+the one rule in this doc that **also applies to blog posts**, despite
+the blog exclusion at the top — it is a claim about the reader, not a
+question of register.
+
+The problem is not the statistic. It is the posture. A sentence that
+opens "Most schools…" tells the PSHE lead reading it what they are
+presumed to be doing, and presumes it is not enough. It reads as
+presumptive, condescending and patronising, and it puts Tailor on the
+opposite side of the table from the reader. We are on the same side as
+**all** schools, teachers and parents — the copy has to sound like it.
+
+This extends the good-faith rule in `Tailor_Blog_Writing_Rules.md`,
+which already bans attributing a shortcoming to schools themselves.
+"most schools" is the specific phrase that rule kept producing.
+
+### How to rewrite it
+
+| Banned | Rewrite | Why |
+| --- | --- | --- |
+| "Most schools arrive at this topic because of Andrew Tate." | "This topic usually arrives with Andrew Tate." | Make the topic the subject, not the schools. |
+| "Most schools find the same thing: the coverage map is the real job." | "The pattern is usually the same: the coverage map is the real job." | Name the pattern without counting schools. |
+| "…the part most schools struggle to show." | "…the part a policy on its own cannot evidence." | Describe the standard, not the failure. |
+| "The biggest barrier in most schools isn't policy, it's teacher confidence." | "The biggest barrier is rarely policy, it's teacher confidence." | The general claim survives; the audit of schools goes. |
+| "Most schools booking training this year are doing it to…" | "Training booked this year is mostly aimed at…" | A fact about our own order book, not about schools. |
+| "…for most schools, the public sector equality duty applies." | "…for state-funded schools, the public sector equality duty applies." | Where it is genuinely a legal fact, name the actual category — it is more precise anyway. |
+
+Four moves cover nearly every case: **make something other than
+schools the grammatical subject**; **describe the standard rather than
+the shortfall**; **state the claim generally**, without the sector
+audit; or, where the distinction is real and legal, **name the precise
+category** ("state-funded", "maintained", "academies").
+
+The same test applies to the whole family — "most teachers", "most
+PSHE leads", "schools often fail to", "few schools actually". If the
+sentence tells the reader what their peers are getting wrong, rewrite
+it.
+
 ## When "we" and quality descriptors are fine
 
 The rule is about a specific sentence pattern, not about the
