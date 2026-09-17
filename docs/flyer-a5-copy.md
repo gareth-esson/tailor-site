@@ -157,8 +157,8 @@ tight.
 > Tailor is a community-interest company. Any surplus we generate is
 > committed, by statute, to the work.
 >
-> Founded by Gareth Esson — QTS, Enhanced DBS, practising RSE
-> specialist.
+> Founded by Gareth Esson, a practising RSE specialist with an
+> Enhanced DBS.
 
 ### Book mention (one-line footnote)
 
