@@ -1,10 +1,8 @@
 # Talking to Boys About Masculinity, Misogyny and Online Influencers
 
-Snapshot of the working draft, 17 September 2026, 23:51. Uncommitted; nothing is live.
-The published version is still the 876-word original.
-
-Front half cleared paragraph by paragraph. Second half NOT cleared: the
-restructuring is done but the prose has not been read through.
+Snapshot, 17 September 2026, 23:54. Uncommitted to main; nothing is live.
+Front half cleared paragraph by paragraph. Second half restructured but the
+prose has not been read through.
 
 ---
 
@@ -36,6 +34,9 @@ Recognition is not endorsement. More than twice as many boys that age had a bad 
 The statutory RSHE guidance applying from September 2026 puts this in the secondary curriculum. Pupils should be equipped to recognise [misogyny](/topics/masculinity-and-misogyny/), and should have an opportunity to discuss the possible influence of particular sub-cultures on sexual ethics, with incels and online influencers named ([guidance page 14](https://assets.publishing.service.gov.uk/media/6970e7e67e827090d02d42e0/Relationships_education_relationships_and_sex_education__RSE__and_health_education__for_intro_1_September_2026_.pdf#page=15)).
 
 
+Schools have to teach it. The harder part is doing it without making boys themselves the problem.
+
+
 ## What doesn't work
 
 
@@ -50,10 +51,6 @@ Framing the conversation as "boys need to be better." Boys who are already decen
 
 ## Teaching it well
 
-
-Giving boys space to talk honestly, over time, with someone they trust. Build in chances to revisit an idea, ask a question privately or use an anonymous question box. Keep familiar staff involved so a conversation has somewhere to continue after the planned lesson.
-
-
 Being careful what you call the problem. In one session, a boy said to me, "But what if I want to be hench and sleep with lots of women? Is that bad? Am I wrong?" My instinct was to correct or reframe, and that instinct is the one to watch. Wanting to be strong, and wanting to be wanted, are ordinary things to want at thirteen. A boy who is told those wants are the problem hears that he is the problem.
 
 
@@ -67,6 +64,9 @@ Using prepared examples to examine the ideas. The guidance asks teachers to avoi
 
 
 Giving them something to be, not only something to avoid. The same paragraph expects opportunities to develop positive conceptions of masculinity and femininity, including learning from positive male role models, and says plainly that most boys and young men are respectful to girls and each other. Boys hear plenty about the sort of man not to be, and much less about the sort they could be.
+
+
+Giving boys space to talk honestly, over time, with someone they trust. Build in chances to revisit an idea, ask a question privately or use an anonymous question box. Keep familiar staff involved so a conversation has somewhere to continue after the planned lesson.
 
 
 Setting homework that makes them try it. Call a male friend just to see how he is. Next time you are down, ask a parent to talk. Notice a boy having a bad day and ask him about it. Go back to something you dropped because of how it would look. In a one-off session this is close to rhetorical, and it still does something, because naming the task shows a room what the alternative looks like in practice. In a sequence where you see them the following week, you can ask how it went, and that is when it stops being rhetorical.
