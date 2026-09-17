@@ -32,6 +32,20 @@
  * offers the article instead. That is a complete answer rather than a
  * dead end: the article holds every figure this quiz asks about.
  *
+ * ── On-site search ───────────────────────────────────────────────────
+ *
+ * The wrapper carries `data-pagefind-body`, so this page appears in the
+ * site's own search. That is Pagefind, not Google, and it does not
+ * reopen the decision above: what gets indexed is the hero, the schools
+ * CTA and the explainer, about three hundred words. The rounds and
+ * answers stay out of the index because they are the player's JSON
+ * payload rather than body text, so no article content is duplicated
+ * here. Without the attribute Pagefind drops a page entirely, which is
+ * why /for-schools/ was once missing from the index.
+ *
+ * The result title is set explicitly. Left to the first-H1 rule this
+ * page and the article would both surface as near-identical rows.
+ *
  * ── The constraints the player enforces ───────────────────────────────
  *
  * 1. Exposure is not endorsement, and a pair cannot be split. One
@@ -158,7 +172,11 @@ const jsonLd = {
   ogImageAlt="Masculinity and misogyny: what do boys actually think? A guess-the-number quiz for teachers and parents."
   jsonLd={jsonLd}
 >
-  <div class="quiz">
+  <div
+    class="quiz"
+    data-pagefind-body
+    data-pagefind-meta="title:Quiz: What do boys actually think?"
+  >
     <section class="quiz-hero">
       <div class="quiz-hero__inner">
         <div class="quiz-hero__text">
