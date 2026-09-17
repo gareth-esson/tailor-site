@@ -1,0 +1,694 @@
+---
+/**
+ * The quiz: what do boys actually think?
+ * /resources/what-do-boys-actually-think/
+ *
+ * A full-viewport guess-then-reveal quiz on 16 survey findings about
+ * boys aged 10 to 17. Free and ungated, the same posture as
+ * /resources/rse-policy-audit-sheet/.
+ *
+ * ── This page is the experience, not the evidence ─────────────────────
+ *
+ * The argument and all 16 figures live in the article at
+ * /blog/what-do-boys-actually-think/, which is the front door and owns
+ * the head terms for this topic. This page is deliberately thin: what
+ * the quiz is, who the figures come from, and the player.
+ *
+ * An earlier version of this page carried the whole article below the
+ * fold so the quiz would be indexable without JavaScript. Once the
+ * article existed as a post that was two pages competing for the same
+ * queries, with the better content on the weaker URL. Do not reinstate
+ * it here. If you are tempted to add the rounds and answers back, the
+ * thing to do instead is link the article harder.
+ *
+ * The figures still reach this page in full, but as the player's JSON
+ * payload rather than as body text: one source of data, no indexable
+ * duplication of the article, and the two surfaces cannot drift because
+ * both read `src/data/what-do-boys-actually-think.ts`.
+ *
+ * ── Without JavaScript ────────────────────────────────────────────────
+ *
+ * The player cannot run, so the launch button stays hidden and the page
+ * offers the article instead. That is a complete answer rather than a
+ * dead end: the article holds every figure this quiz asks about.
+ *
+ * ── The constraints the player enforces ───────────────────────────────
+ *
+ * 1. Exposure is not endorsement, and a pair cannot be split. One
+ *    question per screen would separate them, so a question carrying
+ *    `pairWith` restates its partner's figure on its reveal screen.
+ * 2. No minority figure reads as a norm. `counter` binds the majority
+ *    finding to the figure in one flex row; `breakdown` draws the whole
+ *    distribution; `guard` states in words that a figure is a minority
+ *    view. The OG card carries no figure at all.
+ * 3. Populations and bases differ, between surveys and within one
+ *    survey. Every figure renders its own base beneath it.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/quiz-tool.css';
+import {
+  ROUNDS,
+  QUESTIONS,
+  TRAIT_TABLE,
+  type Source,
+} from '../../data/what-do-boys-actually-think';
+import { breadcrumbJsonLd, site } from '../../lib/site';
+
+const canonicalPath = '/resources/what-do-boys-actually-think/';
+const articlePath = '/blog/what-do-boys-actually-think/';
+
+/* Deliberately narrower than the article's title. The article owns
+   "masculinity and misogyny" and the factual queries; this page is for
+   people looking for the activity itself. */
+const title = 'Quiz: What Do Boys Actually Think?';
+const description =
+  'A free 10-minute quiz for teachers and parents. Guess the number, then see the real one, on 16 survey findings about what boys aged 10 to 17 are exposed to and what they believe.';
+
+/** The distinct surveys behind the figures, named on the page. */
+const sources: Source[] = (() => {
+  const seen = new Map<string, Source>();
+  for (const q of QUESTIONS) if (!seen.has(q.source.survey)) seen.set(q.source.survey, q.source);
+  if (!seen.has(TRAIT_TABLE.source.survey)) seen.set(TRAIT_TABLE.source.survey, TRAIT_TABLE.source);
+  return [...seen.values()];
+})();
+
+const totalQuestions = QUESTIONS.length;
+
+const steps = ROUNDS.flatMap((round) =>
+  round.questions.map((q, i) => {
+    const partner = q.pairWith
+      ? QUESTIONS.find((o) => o.id === q.pairWith)
+      : undefined;
+    const last = i === round.questions.length - 1;
+    return {
+      id: q.id,
+      prompt: q.prompt,
+      answer: q.answer,
+      answerLabel: q.answerLabel,
+      lead: q.lead,
+      counter: q.counter ?? null,
+      breakdown: q.breakdown ?? null,
+      takeaway: q.takeaway,
+      source: {
+        publisher: q.source.publisher,
+        survey: q.source.survey,
+        population: q.source.population,
+        sample: q.source.sample,
+        fieldwork: q.source.fieldwork ?? null,
+        href: q.source.href ?? null,
+      },
+      paired: partner
+        ? { prompt: partner.prompt, answerLabel: partner.answerLabel }
+        : null,
+      round: { n: round.n, title: round.title, of: ROUNDS.length },
+      guard: last ? (round.guard ?? null) : null,
+      close: last ? round.close : null,
+      traitTable: round.n === 6 && last,
+      populationSwitch: last ? (round.populationSwitch ?? null) : null,
+    };
+  }),
+);
+
+const playerData = {
+  total: totalQuestions,
+  steps,
+  traitTable: {
+    caption: TRAIT_TABLE.caption,
+    rows: TRAIT_TABLE.rows,
+    source: {
+      publisher: TRAIT_TABLE.source.publisher,
+      survey: TRAIT_TABLE.source.survey,
+      population: TRAIT_TABLE.source.population,
+      sample: TRAIT_TABLE.source.sample,
+      fieldwork: TRAIT_TABLE.source.fieldwork ?? null,
+      href: TRAIT_TABLE.source.href ?? null,
+    },
+  },
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebPage',
+      '@id': `${site.url}${canonicalPath}#webpage`,
+      name: title,
+      description,
+      url: `${site.url}${canonicalPath}`,
+      inLanguage: 'en-GB',
+      publisher: { '@id': `${site.url}/#organisation` },
+      // The article is the substantive document; this page points at it
+      // rather than restating it.
+      significantLink: `${site.url}${articlePath}`,
+    },
+    breadcrumbJsonLd([
+      { name: 'Quiz: what do boys actually think?', path: canonicalPath },
+    ]),
+  ],
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonicalPath={canonicalPath}
+  ogImage="/assets/og-what-do-boys-actually-think.png"
+  ogImageWidth={1200}
+  ogImageHeight={630}
+  ogImageAlt="Masculinity and misogyny: what do boys actually think? A guess-the-number quiz for teachers and parents."
+  jsonLd={jsonLd}
+>
+  <div class="quiz">
+    <section class="quiz-hero">
+      <div class="quiz-hero__inner">
+        <div class="quiz-hero__text">
+          <span class="preheader">Masculinity and misogyny</span>
+          <h1 class="quiz-hero__title">What do boys actually think?</h1>
+          <p class="quiz-hero__lede lede">
+            16 questions about what boys aged 10 to 17 are exposed to and what
+            they believe. Every answer is a number from a named survey, and you
+            commit to a guess before you see it.
+          </p>
+          <div class="quiz-hero__actions">
+            {/* Unhidden by the script. Without JavaScript the player
+                cannot run, so the article link below is the whole
+                offer rather than a button that does nothing. */}
+            <button
+              type="button"
+              class="btn btn--std btn--primary has-icon-hover"
+              data-quiz-open
+              hidden
+            >
+              Start the quiz
+            </button>
+            <a class="link-action" href={articlePath}>Read the evidence instead</a>
+          </div>
+          <p class="quiz-hero__note microtext">
+            {totalQuestions} questions, about 10 minutes. Free, no sign-up.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="quiz-section" aria-labelledby="quiz-about">
+      <div class="quiz-section__inner">
+        <div class="quiz-prose">
+          <h2 id="quiz-about" class="quiz-section__title">What it asks</h2>
+          <p>
+            Six rounds, on what boys encounter, what they accept, how they think
+            girls should be treated, and the difference between the traits they
+            call masculine and the traits they call good. Each question asks for
+            a number between 0 and 100. You commit to it, and then the real
+            figure appears next to your guess with its survey, its population
+            and its base.
+          </p>
+          <p>
+            It started as a classroom activity and it works at least as well with
+            adults. The figures come from five surveys:
+          </p>
+          <ul class="quiz-sources-list">
+            {sources.map((s) => (
+              <li>
+                {s.href ? (
+                  <a class="link-inline" href={s.href} rel="noopener">
+                    {s.publisher}, {s.survey}
+                  </a>
+                ) : (
+                  <span>{s.publisher}, {s.survey}</span>
+                )}
+              </li>
+            ))}
+          </ul>
+          <p>
+            Every figure is set out in full, with the argument it supports, in
+            <a class="link-inline" href={articlePath}>the article on what the evidence says about boys</a>.
+            Reading that first will give you the answers.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="quiz-section quiz-section--band quiz-cta" aria-labelledby="quiz-cta-title">
+      <div class="quiz-section__inner">
+        <div class="quiz-cta__text">
+          <h2 id="quiz-cta-title" class="quiz-section__title">Running this with a class or a staff team?</h2>
+          <p class="quiz-section__intro">
+            The same activity runs in a classroom with mini whiteboards, and in a
+            staffroom with teachers. It sits inside a Year 9 sequence on
+            masculinity, misogyny and online influence, available as a single
+            lesson, the whole unit, or a drop day.
+          </p>
+          <div class="quiz-cta__actions">
+            <a
+              class="btn btn--std btn--tint has-icon-hover"
+              href="/for-schools/teaching-about-misogyny-and-masculinity/"
+            >
+              See the teaching sequence
+            </a>
+            <a class="link-action" href="/topics/masculinity-and-misogyny/">
+              Browse the topic
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  {/* ── The player ──────────────────────────────────────────────────────
+      Full-viewport takeover, one question per screen. Empty in the
+      source: the script fills each screen from the JSON payload below,
+      and moves this element to be a direct child of <body> so everything
+      else on the page can be made inert while it is open. It carries no
+      indexable content of its own: the article above is the document. */}
+  <div
+    class="quiz-player"
+    data-quiz-player
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="quiz-player-prompt"
+    hidden
+  >
+    <div class="quiz-player__bar">
+      <div class="quiz-player__bar-inner">
+        <p class="quiz-player__count">
+          <span data-player-position>1</span> of {totalQuestions}
+        </p>
+        <div
+          class="progress progress--sm quiz-player__progress"
+          role="progressbar"
+          aria-label="Questions answered"
+          aria-valuemin="0"
+          aria-valuemax={totalQuestions}
+          aria-valuenow="0"
+          data-player-progress
+        >
+          <div class="progress__bar" data-player-progress-bar></div>
+        </div>
+        <button type="button" class="quiz-player__close" data-quiz-close>
+          <span class="sr-only">Close the quiz</span>
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+            <path d="M6 6l12 12M18 6L6 18" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="quiz-player__scroll" data-player-scroll>
+      <div class="quiz-player__stage">
+        <span class="quiz-player__round" data-player-round></span>
+        <h2 id="quiz-player-prompt" class="quiz-player__prompt" data-player-prompt tabindex="-1"></h2>
+
+        <p class="quiz-player__switch" data-player-switch hidden></p>
+
+        <div class="quiz-player__guess" data-player-guess>
+          <label class="quiz-player__guess-label" for="quiz-player-range">Your guess</label>
+          <output class="quiz-player__guess-value" for="quiz-player-range" data-player-output>
+            <span class="quiz-player__guess-hint">Move the slider to commit to a number</span>
+          </output>
+          <input
+            class="form-range"
+            type="range"
+            id="quiz-player-range"
+            min="0"
+            max="100"
+            step="1"
+            value="50"
+            aria-describedby="quiz-player-range-help"
+            data-player-range
+          />
+          <div class="quiz-player__scale" aria-hidden="true">
+            <span>0%</span><span>50%</span><span>100%</span>
+          </div>
+          <p id="quiz-player-range-help" class="quiz-player__help microtext">
+            Out of every 100. Drag it, or use the arrow keys.
+          </p>
+          <button type="button" class="btn btn--std btn--primary btn--disabled" data-player-reveal disabled>
+            Reveal the answer
+          </button>
+        </div>
+
+        <div class="quiz-player__answer" data-player-answer hidden></div>
+
+        <div class="quiz-player__actions" data-player-actions hidden>
+          <button type="button" class="btn btn--std btn--primary has-icon-hover" data-player-next>
+            Next question
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="application/json" id="quiz-data" set:html={JSON.stringify(playerData)} is:inline /></BaseLayout>
+
+<script>
+  /**
+   * The quiz player: a full-viewport takeover, one question per screen.
+   *
+   * It is additive. The article is server-rendered and stays exactly as
+   * it is; this opens on top of it and closes again. Nothing the article
+   * shows depends on this script running, which is why the page still
+   * ranks and still reads with JS off.
+   *
+   * Content comes from the JSON payload the page emits, so the player
+   * and the article cannot drift apart.
+   *
+   * Two states per screen:
+   *   asking   → round label, prompt, slider, disabled Reveal
+   *   revealed → figure + counterweight, the paired figure where there
+   *              is one, how far the guess was out, the context
+   *              sentence, the full distribution, the source with its
+   *              base, and the takeaway. Then Next.
+   *
+   * The takeaway is the point of the screen. A reveal that stops at the
+   * number has handed the reader a statistic.
+   */
+  type Seg = { label: string; value: number; highlight?: boolean };
+  type Src = {
+    publisher: string;
+    survey: string;
+    population: string;
+    sample: string;
+    fieldwork: string | null;
+    href: string | null;
+  };
+  type Step = {
+    id: string;
+    prompt: string;
+    answer: number;
+    answerLabel: string;
+    lead: string;
+    counter: string | null;
+    breakdown: Seg[] | null;
+    takeaway: string;
+    source: Src;
+    paired: { prompt: string; answerLabel: string } | null;
+    round: { n: number; title: string; of: number };
+    guard: string | null;
+    close: string | null;
+    traitTable: boolean;
+    populationSwitch: string | null;
+  };
+  type TraitRow = { trait: string; masculine: number; positive: number };
+  type Payload = {
+    total: number;
+    steps: Step[];
+    traitTable: { caption: string; rows: TraitRow[]; source: Src };
+  };
+
+  function initPlayer() {
+    const dataEl = document.getElementById('quiz-data');
+    const player = document.querySelector<HTMLElement>('[data-quiz-player]');
+    const openBtn = document.querySelector<HTMLButtonElement>('[data-quiz-open]');
+    if (!dataEl || !player || !openBtn) return;
+
+    const data: Payload = JSON.parse(dataEl.textContent || '{}');
+    if (!data.steps?.length) return;
+
+    // Move the player to the top level so every other child of <body>,
+    // header and footer included, can be made inert while it is open.
+    // Inside <main> that isn't possible.
+    document.body.appendChild(player);
+
+    const position = player.querySelector<HTMLElement>('[data-player-position]')!;
+    const progress = player.querySelector<HTMLElement>('[data-player-progress]')!;
+    const progressBar = player.querySelector<HTMLElement>('[data-player-progress-bar]')!;
+    const roundEl = player.querySelector<HTMLElement>('[data-player-round]')!;
+    const promptEl = player.querySelector<HTMLElement>('[data-player-prompt]')!;
+    const switchEl = player.querySelector<HTMLElement>('[data-player-switch]')!;
+    const guessEl = player.querySelector<HTMLElement>('[data-player-guess]')!;
+    const range = player.querySelector<HTMLInputElement>('[data-player-range]')!;
+    const output = player.querySelector<HTMLElement>('[data-player-output]')!;
+    const reveal = player.querySelector<HTMLButtonElement>('[data-player-reveal]')!;
+    const answerEl = player.querySelector<HTMLElement>('[data-player-answer]')!;
+    const actions = player.querySelector<HTMLElement>('[data-player-actions]')!;
+    const next = player.querySelector<HTMLButtonElement>('[data-player-next]')!;
+    const scroll = player.querySelector<HTMLElement>('[data-player-scroll]')!;
+
+    const motionOK = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let index = 0;
+    let guess: number | null = null;
+    let revealed = false;
+    let lastFocus: HTMLElement | null = null;
+
+    const esc = (s: string) =>
+      s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    function sourceHtml(s: Src) {
+      const base = [s.population, s.sample, s.fieldwork && `fieldwork ${s.fieldwork}`]
+        .filter(Boolean)
+        .join(' · ');
+      const survey = s.href
+        ? `<a class="link-inline" href="${esc(s.href)}" rel="noopener">${esc(s.survey)}</a>`
+        : esc(s.survey);
+      return `<div class="quiz-a__source"><span class="quiz-a__source-survey">${esc(
+        s.publisher,
+      )}, ${survey}</span><span class="quiz-a__source-base">${esc(base)}</span></div>`;
+    }
+
+    function barsHtml(segs: Seg[]) {
+      const items = segs
+        .map(
+          (seg) => `<li class="quiz-bars__item${seg.highlight ? ' is-highlight' : ''}">
+            <span class="quiz-bars__label">${esc(seg.label)}</span>
+            <span class="quiz-bars__track"><span class="quiz-bars__fill" style="--quiz-bar-value:${seg.value}"></span></span>
+            <span class="quiz-bars__value">${seg.value}%</span>
+          </li>`,
+        )
+        .join('');
+      return `<div class="quiz-bars"><p class="quiz-bars__caption">Everyone who was asked:</p><ul class="quiz-bars__list">${items}</ul></div>`;
+    }
+
+    function traitTableHtml() {
+      const t = data.traitTable;
+      const rows = t.rows
+        .map(
+          (r) =>
+            `<tr><th scope="row">${esc(r.trait)}</th><td>${r.masculine}%</td><td>${r.positive}%</td></tr>`,
+        )
+        .join('');
+      return `<div class="quiz-table">
+        <h3 class="quiz-table__title">${esc(t.caption)}</h3>
+        <div class="quiz-table__scroll"><table class="table table--compact">
+          <thead><tr><th scope="col">Trait</th><th scope="col">Seen as masculine</th><th scope="col">Seen as a positive trait</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table></div>
+        ${sourceHtml(t.source)}
+      </div>`;
+    }
+
+    /** How far out the guess was, stated rather than left to subtract. */
+    function gapText(step: Step) {
+      if (guess === null) return '';
+      const diff = guess - step.answer;
+      const size = Math.abs(diff);
+      if (size === 0) return `You guessed ${guess}%. Exactly right.`;
+      return `You guessed ${guess}%, which is ${size} point${
+        size === 1 ? '' : 's'
+      } too ${diff > 0 ? 'high' : 'low'}.`;
+    }
+
+    function renderAsking() {
+      const step = data.steps[index];
+      revealed = false;
+      guess = null;
+
+      roundEl.textContent = `Round ${step.round.n} of ${step.round.of} · ${step.round.title}`;
+      promptEl.textContent = step.prompt;
+
+      switchEl.hidden = !step.populationSwitch;
+      switchEl.innerHTML = step.populationSwitch
+        ? `<strong>A different population.</strong> ${esc(step.populationSwitch)}`
+        : '';
+
+      // Reset the control. The track is painted to match where the thumb
+      // actually sits; commitment is signalled by the readout and the
+      // button, not by an empty track under a centred thumb.
+      range.value = '50';
+      range.style.setProperty('--form-range-value', '50');
+      output.innerHTML =
+        '<span class="quiz-player__guess-hint">Move the slider to commit to a number</span>';
+      reveal.disabled = true;
+      reveal.classList.add('btn--disabled');
+
+      guessEl.hidden = false;
+      answerEl.hidden = true;
+      answerEl.innerHTML = '';
+      actions.hidden = true;
+
+      position.textContent = String(index + 1);
+      progress.setAttribute('aria-valuenow', String(index));
+      progressBar.style.width = `${(index / data.total) * 100}%`;
+
+      scroll.scrollTo({ top: 0, behavior: 'auto' });
+      promptEl.focus({ preventScroll: true });
+    }
+
+    function renderRevealed() {
+      const step = data.steps[index];
+      revealed = true;
+
+      const paired = step.paired
+        ? `<div class="quiz-player__paired">
+             <p class="quiz-player__paired-label">And the question before it</p>
+             <p class="quiz-player__paired-text">${esc(step.paired.prompt)} <strong>${esc(
+               step.paired.answerLabel,
+             )}</strong></p>
+           </div>`
+        : '';
+
+      const takeaway = step.takeaway
+        .split('\n\n')
+        .map((p) => `<p class="quiz-takeaway__text">${esc(p)}</p>`)
+        .join('');
+
+      answerEl.innerHTML = `
+        <div class="quiz-a">
+          <p class="quiz-a__headline">
+            <span class="quiz-a__figure">${esc(step.answerLabel)}</span>
+            ${step.counter ? `<span class="quiz-a__counter">${esc(step.counter)}</span>` : ''}
+          </p>
+          <p class="quiz-a__gap">${esc(gapText(step))}</p>
+          <p class="quiz-a__lead">${esc(step.lead)}</p>
+          ${step.breakdown ? barsHtml(step.breakdown) : ''}
+          ${sourceHtml(step.source)}
+        </div>
+        ${paired}
+        <div class="quiz-takeaway">
+          <p class="quiz-takeaway__label">What this tells us</p>
+          ${takeaway}
+        </div>
+        ${
+          step.guard
+            ? `<div class="alert alert--info quiz-round__guard"><div class="alert__content">
+                 <div class="alert__title">A minority, not a norm</div>
+                 <div class="alert__body"><p>${esc(step.guard)}</p></div>
+               </div></div>`
+            : ''
+        }
+        ${step.traitTable ? traitTableHtml() : ''}
+        ${step.close ? `<p class="quiz-player__close-note">${esc(step.close)}</p>` : ''}
+      `;
+
+      guessEl.hidden = true;
+      answerEl.hidden = false;
+      actions.hidden = false;
+
+      const done = index + 1;
+      progress.setAttribute('aria-valuenow', String(done));
+      progressBar.style.width = `${(done / data.total) * 100}%`;
+
+      next.textContent = index === data.steps.length - 1 ? 'Finish' : 'Next question';
+
+      scroll.scrollTo({ top: 0, behavior: 'auto' });
+      // Focus the figure, not the Next button: a screen reader should
+      // hear the answer and the takeaway, not "Next question".
+      answerEl.querySelector<HTMLElement>('.quiz-a__figure')?.focus({ preventScroll: true });
+    }
+
+    function renderEnd() {
+      roundEl.textContent = 'Done';
+      promptEl.textContent = 'Which one were you most wrong about?';
+      switchEl.hidden = true;
+      guessEl.hidden = true;
+      actions.hidden = true;
+      answerEl.hidden = false;
+      answerEl.innerHTML = `
+        <div class="quiz-takeaway quiz-takeaway--end">
+          <p class="quiz-takeaway__text">Which way you were wrong is more informative than how far. A guess of 60% for Tate's approval against a real figure of 23% points at where the picture came from: coverage of the minority who repeat this material, rather than surveys of boys in general.</p>
+          <p class="quiz-takeaway__text">The two halves of the evidence pull in opposite directions. A lot of boys report the pressure, and very few endorse the propositions. Both come from the same surveys.</p>
+        </div>
+        <div class="quiz-player__end-actions">
+          <a class="btn btn--std btn--primary has-icon-hover" href="/for-schools/teaching-about-misogyny-and-masculinity/">See the teaching sequence</a>
+          <button type="button" class="btn btn--std btn--tint" data-quiz-close>Read all the answers</button>
+        </div>`;
+      position.textContent = String(data.total);
+      progress.setAttribute('aria-valuenow', String(data.total));
+      progressBar.style.width = '100%';
+      answerEl
+        .querySelectorAll<HTMLButtonElement>('[data-quiz-close]')
+        .forEach((b) => b.addEventListener('click', () => close()));
+      scroll.scrollTo({ top: 0, behavior: 'auto' });
+      promptEl.focus({ preventScroll: true });
+    }
+
+    // ── Open / close ───────────────────────────────────────────────────
+    const siblings = () =>
+      Array.from(document.body.children).filter((c) => c !== player) as HTMLElement[];
+
+    function open() {
+      lastFocus = document.activeElement as HTMLElement;
+      player.hidden = false;
+      document.documentElement.classList.add('quiz-player-open');
+      // Keeps focus and assistive tech inside the player without a
+      // hand-rolled tab trap.
+      siblings().forEach((c) => c.setAttribute('inert', ''));
+      index = 0;
+      renderAsking();
+    }
+
+    function close() {
+      player.hidden = true;
+      document.documentElement.classList.remove('quiz-player-open');
+      siblings().forEach((c) => c.removeAttribute('inert'));
+      (lastFocus ?? openBtn).focus({ preventScroll: true });
+    }
+
+    openBtn.addEventListener('click', open);
+    player
+      .querySelectorAll<HTMLButtonElement>('[data-quiz-close]')
+      .forEach((b) => b.addEventListener('click', () => close()));
+
+    player.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        close();
+      }
+    });
+
+    // ── The guess ──────────────────────────────────────────────────────
+    const commit = () => {
+      const v = Number(range.value);
+      guess = v;
+      range.style.setProperty('--form-range-value', String(v));
+      output.textContent = `${v}%`;
+      reveal.disabled = false;
+      reveal.classList.remove('btn--disabled');
+    };
+    range.addEventListener('input', commit);
+    // Clicking the track where the thumb already sits changes nothing and
+    // so fires no `input`. Without this the Reveal button would never
+    // enable for anyone who clicks at 50, with no way to find out why.
+    range.addEventListener('pointerup', commit);
+
+    reveal.addEventListener('click', () => {
+      if (revealed || guess === null) return;
+      renderRevealed();
+    });
+
+    next.addEventListener('click', () => {
+      if (index >= data.steps.length - 1) {
+        renderEnd();
+        return;
+      }
+      index += 1;
+      renderAsking();
+    });
+
+    // The article needs no JS, so the launcher only appears once there is
+    // a player behind it.
+    openBtn.hidden = false;
+  }
+
+  try {
+    initPlayer();
+  } catch (err) {
+    // The article stands on its own; a broken player must not take it
+    // down, and must never leave the rest of the page inert.
+    document.querySelector('[data-quiz-player]')?.setAttribute('hidden', '');
+    document.documentElement.classList.remove('quiz-player-open');
+    Array.from(document.body.children).forEach((c) => c.removeAttribute('inert'));
+    console.error('[quiz] player failed to start; the article is unaffected', err);
+  }
+</script>

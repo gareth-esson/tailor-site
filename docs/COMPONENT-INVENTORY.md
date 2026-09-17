@@ -56,6 +56,7 @@ copying a bespoke card wholesale.
 | **ServiceFaq** | Accordion FAQ for service pages, feeds FAQPage JSON-LD. | services/rse-training |
 | **TestimonialCard** | Quote + attribution. `variant="card"` (grid) or `"band"` (service proof band). Pair with `getTestimonialsByService(tag)`. | testimonials |
 | **GlossaryTermCard** | Term + definition card. | glossary/[...slug] |
+| **QuizSource** | One survey figure's provenance block: "Publisher, Survey title" (linked when `source.href` exists) above "population · base · fieldwork". Renders as `div` beside a figure or `span` in a table cell. **The base must stay visible next to the number it belongs to**, which is the whole reason this is not a page footnote. Three figures on the quiz page come from one survey on three different bases. | what-do-boys-actually-think |
 | **GlossaryTooltips** | `[A7]` Tooltip runtime for glossary terms in body copy. | anonymous_question, glossary, questions/index |
 | **RelatedQuestions** | `[A15]` Question grid for C1 — wraps QuestionCard. | anonymous_question/[...slug] |
 | **SignpostingBlock** | `[A8]` Safeguarding signposting. **Never add a dismiss button.** | anonymous_question, glossary, questions/search |

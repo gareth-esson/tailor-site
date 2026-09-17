@@ -1,0 +1,50 @@
+---
+/**
+ * One figure's provenance block, for /what-do-boys-actually-think/.
+ *
+ * Two lines, because a checkable citation does not fit on one:
+ *
+ *   DfE, Parent, Pupil and Learner Voice: December 2025      ← linked
+ *   Male pupils in key stage 3, England · n=418 · fieldwork 2–9 Dec 2025
+ *
+ * The survey title carries the link, because that is the thing a reader
+ * checking the number needs to open. The base stays plain text on its
+ * own line and is never abbreviated away: three of this page's figures
+ * come from ONE survey on THREE different bases, so "DfE survey" would
+ * be actively misleading where "n=418, male KS3 pupils" is not.
+ *
+ * `href` is optional and degrades to an unlinked but still complete
+ * attribution, because the page must never show a figure with no provenance at
+ * all, even if a URL is missing.
+ *
+ * Same-tab, `rel="noopener"`: the pattern the cluster template uses for
+ * the statutory guidance link it rests a claim on.
+ */
+import type { Source } from '../data/what-do-boys-actually-think';
+
+interface Props {
+  source: Source;
+  /** Element to render as. `div` beside a figure, `span` in a table cell. */
+  as?: 'div' | 'span';
+  class?: string;
+}
+
+const { source, as: Tag = 'div', class: className = 'quiz-a__source' } = Astro.props;
+
+const base = [source.population, source.sample, source.fieldwork && `fieldwork ${source.fieldwork}`]
+  .filter(Boolean)
+  .join(' · ');
+---
+
+<Tag class={className}>
+  <span class="quiz-a__source-survey"
+    >{source.publisher}, {
+      source.href ? (
+        <a class="link-inline" href={source.href} rel="noopener">{source.survey}</a>
+      ) : (
+        source.survey
+      )
+    }</span
+  >
+  <span class="quiz-a__source-base">{base}</span>
+</Tag>
