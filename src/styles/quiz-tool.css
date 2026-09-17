@@ -1,0 +1,793 @@
+/* ====================================================================
+   What do boys actually think?, guess-then-reveal quiz
+   --------------------------------------------------------------------
+   Project-specific components for /what-do-boys-actually-think/.
+   Tailor layer. Every value references a token from tailor-site-v2.css
+   (see CLAUDE-CODE-OPERATING-RULES.md §7, project-specific components
+   live in project CSS, same naming and token rules).
+
+   The generic parts are NOT here: the slider is `.form-range` and the
+   progress indicator is `.progress`, both ported into
+   tailor-site-v2.css from the GDH master in the same change.
+
+   Two surfaces, in this order in the file:
+
+   THE ARTICLE: always fully visible, never collapsed.
+     .quiz / .quiz-hero / .quiz-section        page shell
+     .quiz-prose                               reading column
+     .quiz-round                               one round
+     .quiz-q / .quiz-a                         question, answer
+     .quiz-bars                                distribution bars
+     .quiz-takeaway                            what we learn from it
+     .quiz-table / .quiz-sources               trait table, sources table
+     .quiz-cta                                 closing offer
+
+   THE PLAYER: a full-viewport takeover, launched on demand.
+     .quiz-player                              the overlay and its bar
+     .quiz-player__stage                       one question per screen
+     .quiz-player__guess                       the slider
+     .quiz-player__paired                      the restated pair
+
+   ── The progressive-enhancement contract ───────────────────────────
+   The article needs no JavaScript and no class from the player to
+   render completely: every round, question, answer, source and
+   takeaway is visible in reading order in the server-rendered HTML.
+   The player is additive, a fixed layer over the top, so a crawler,
+   Reader Mode, or a reader with JS off gets the whole document and
+   nothing the article shows is contingent on a script.
+
+   An earlier build inverted this, collapsing the article in place with
+   an `.is-interactive` class. Do not reintroduce that: it made the
+   indexable content depend on the JS state, and it was not the
+   full-screen experience the page is meant to give.
+   ==================================================================== */
+
+:root {
+  /* The answer figure is the page's largest single element. It is the
+     payoff, so it is display-scale even though it sits in a card. */
+  --quiz-figure-size: var(--text-display-size-h1);
+  --quiz-bar-height: 0.75rem;
+  /* Grid and flex track sizes. No scale token covers layout tracks, so
+     they live here as named component values rather than as magic
+     numbers in the rules, same convention as stages-tool.css. */
+  --quiz-bar-track-min: 4rem;
+  --quiz-bar-track-max: 8rem;
+  --quiz-bar-value-min: 3ch;
+  --quiz-counter-basis: 12rem;
+  --quiz-sources-finding-min: 18rem;
+  --quiz-bar-bg: var(--neutral-200);
+  --quiz-bar-fill: var(--brand-accent-soft);
+  --quiz-bar-fill-highlight: var(--brand-accent);
+  --quiz-q-gap: var(--space-global-xl);
+  --quiz-card-bg: var(--bg-surface);
+  --quiz-card-radius: var(--radius-lg);
+  --quiz-card-padding: var(--space-global-lg);
+  --quiz-answer-bg: var(--bg-tinted);
+  /* Shared by the round label, the takeaway label and the paired label,
+     which are all small uppercase signposts inside the answer flow. */
+  --quiz-label-tracking: 0.08em;
+  --quiz-player-close-size: 2.5rem;
+  --quiz-bullet-size: 0.375rem;
+}
+
+/* ── Page shell ─────────────────────────────────────────────────────── */
+
+.quiz-hero {
+  width: 100%;
+  padding: var(--space-struct-y-hero) var(--space-global-gutter)
+    var(--space-global-xl);
+}
+.quiz-hero__inner {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--container-max-shell);
+}
+.quiz-hero__text {
+  max-width: var(--container-max-hero-text);
+}
+.quiz-hero__title {
+  font-family: var(--font-tailor-heading-stack);
+  font-size: var(--text-display-size-h1);
+  font-weight: var(--heading-weight-h1);
+  line-height: var(--lh-display);
+  color: var(--text-heading);
+  margin: 0 0 var(--space-global-md);
+}
+.quiz-hero__lede {
+  color: var(--text-body);
+  margin: 0 0 var(--space-global-lg);
+}
+.quiz-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-global-sm);
+  margin-bottom: var(--space-global-md);
+}
+.quiz-hero__note {
+  color: var(--text-body-muted);
+  margin: 0;
+}
+
+.quiz-section {
+  width: 100%;
+  padding: var(--space-struct-y-base) var(--space-global-gutter);
+}
+.quiz-section--band {
+  background: var(--bg-surface-alt);
+}
+.quiz-section__inner {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--container-max-shell);
+}
+.quiz-section__title {
+  font-family: var(--font-tailor-heading-stack);
+  font-size: var(--text-display-size-h2);
+  font-weight: var(--heading-weight-h2);
+  line-height: var(--lh-heading);
+  color: var(--text-heading);
+  margin: 0 0 var(--space-global-md);
+}
+.quiz-section__intro {
+  font-size: var(--text-prose-size-body);
+  line-height: var(--lh-body);
+  color: var(--text-body);
+  max-width: var(--container-max-prose);
+  margin: 0 0 var(--space-global-lg);
+}
+
+/* Long-form reading column. Capped at the wrapper, per the container
+   rules, so the heading and the body share one right edge. */
+.quiz-prose {
+  max-width: var(--container-max-prose);
+}
+.quiz-prose p:not(.signpost):not(.preheader) {
+  font-size: var(--text-prose-size-body);
+  line-height: var(--lh-prose);
+  margin: 0 0 var(--space-global-md);
+}
+.quiz-prose p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Rounds and questions, as a document ────────────────────────────── */
+
+.quiz-round {
+  width: 100%;
+  padding: var(--space-struct-y-base) var(--space-global-gutter);
+}
+/* Alternating bands so six rounds read as six things, not one wall. */
+.quiz-round:nth-of-type(even) {
+  background: var(--bg-surface-alt);
+}
+.quiz-round__inner {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--container-max-reading-wide);
+}
+.quiz-round__head {
+  max-width: var(--container-max-prose);
+  margin-bottom: var(--quiz-q-gap);
+}
+.quiz-round__title {
+  font-family: var(--font-tailor-heading-stack);
+  font-size: var(--text-display-size-h2);
+  font-weight: var(--heading-weight-h2);
+  line-height: var(--lh-heading);
+  color: var(--text-heading);
+  margin: 0 0 var(--space-global-sm);
+}
+.quiz-round__kicker {
+  font-size: var(--text-prose-size-body);
+  line-height: var(--lh-body);
+  color: var(--text-body-muted);
+  margin: 0;
+}
+
+.quiz-q {
+  margin-bottom: var(--quiz-q-gap);
+}
+.quiz-q__prompt {
+  font-family: var(--font-tailor-heading-stack);
+  font-size: var(--text-display-size-h4);
+  font-weight: var(--heading-weight-h3);
+  line-height: var(--lh-heading-sub);
+  color: var(--text-heading);
+  max-width: var(--container-max-prose);
+  margin: 0 0 var(--space-global-md);
+}
+/* The prompt takes focus when the run advances, so it needs a ring. */
+.quiz-q__prompt:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-sm);
+}
+
+/* The population change in round 5. Said before the question, not after. */
+.quiz-q__switch {
+  font-size: var(--text-card-size-h5);
+  line-height: var(--lh-ui);
+  color: var(--text-body);
+  background: var(--bg-tinted);
+  border-radius: var(--radius-md);
+  padding: var(--space-global-sm);
+  max-width: var(--container-max-prose);
+  margin: 0 0 var(--space-global-md);
+}
+
+/* ── The answer block ───────────────────────────────────────────────── */
+
+.quiz-a {
+  background: var(--quiz-answer-bg);
+  border-radius: var(--quiz-card-radius);
+  padding: var(--quiz-card-padding);
+  max-width: var(--container-max-prose);
+}
+/* The figure and its counterweight are one row, deliberately. The
+   counterweight exists so a minority figure cannot be cropped away from
+   the majority finding that qualifies it, binding them in a single
+   flex line is what makes that structural rather than editorial. Do not
+   separate them, and do not let the counter wrap to its own block on
+   wide viewports. */
+.quiz-a__headline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-global-sm);
+  margin: 0;
+}
+.quiz-a__figure {
+  font-family: var(--font-tailor-heading-stack);
+  font-size: var(--quiz-figure-size);
+  font-weight: var(--heading-weight-h1);
+  line-height: var(--lh-display);
+  color: var(--brand-accent-text);
+}
+.quiz-a__counter {
+  font-size: var(--text-prose-size-body);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--lh-body);
+  color: var(--text-heading);
+  /* Keeps the counter beside the figure rather than under it whenever
+     there is room, so the two read as one statement. */
+  flex: 1 1 var(--quiz-counter-basis);
+}
+.quiz-a__gap {
+  font-size: var(--text-card-size-h5);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--lh-ui);
+  color: var(--text-body-muted);
+  margin: var(--space-global-xs) 0 0;
+}
+.quiz-a__lead {
+  font-size: var(--text-prose-size-body);
+  line-height: var(--lh-body);
+  color: var(--text-body);
+  margin: var(--space-global-sm) 0 0;
+}
+/* The source travels with the figure. A crop tight enough to take the
+   number takes the base too, which is the whole point of putting it
+   here rather than in a page footer.
+
+   Two lines: the linked survey title, then the base. The base is on its
+   own line because three of this page's figures come from one survey on
+   three different bases, so it has to be readable, not squeezed into a
+   tail of small print. */
+.quiz-a__source {
+  display: block;
+  font-size: var(--text-card-size-h6);
+  line-height: var(--lh-ui);
+  color: var(--text-body-muted);
+  margin: var(--space-global-md) 0 0;
+}
+.quiz-a__source-survey {
+  display: block;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-body);
+}
+.quiz-a__source-base {
+  display: block;
+}
+/* In the sources table the two lines stack inside the cell. */
+.quiz-sources__source {
+  display: block;
+  font-size: var(--text-card-size-h6);
+  line-height: var(--lh-ui);
+  color: var(--text-body-muted);
+}
+.quiz-sources__source .quiz-a__source-survey {
+  color: var(--text-body);
+}
+
+/* ── Distribution bars ──────────────────────────────────────────────────
+   Wherever a single figure would mislead, the whole distribution is
+   drawn. The highlighted segment is the one the question asked about;
+   it is emphasised by colour, never by being shown alone. On the 80/20
+   round this is what makes the 18% visibly smaller than the 45% that
+   rejected the claim, so the picture contradicts a misleading crop. */
+
+.quiz-bars {
+  margin: var(--space-global-lg) 0 0;
+}
+.quiz-bars__caption {
+  font-size: var(--text-card-size-h6);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--lh-ui);
+  color: var(--text-body-muted);
+  margin: 0 0 var(--space-global-xs);
+}
+.quiz-bars__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-global-xs);
+}
+.quiz-bars__item {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(var(--quiz-bar-track-min), var(--quiz-bar-track-max))
+    auto;
+  align-items: center;
+  gap: var(--space-global-sm);
+  font-size: var(--text-card-size-h5);
+  line-height: var(--lh-ui);
+  color: var(--text-body);
+}
+.quiz-bars__item.is-highlight {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-heading);
+}
+.quiz-bars__track {
+  height: var(--quiz-bar-height);
+  border-radius: var(--radius-pill);
+  background: var(--quiz-bar-bg);
+  overflow: hidden;
+}
+.quiz-bars__fill {
+  display: block;
+  height: 100%;
+  width: calc(var(--quiz-bar-value) * 1%);
+  border-radius: inherit;
+  background: var(--quiz-bar-fill);
+}
+.is-highlight .quiz-bars__fill {
+  background: var(--quiz-bar-fill-highlight);
+}
+.quiz-bars__value {
+  font-variant-numeric: tabular-nums;
+  min-width: var(--quiz-bar-value-min);
+  text-align: right;
+}
+
+@media (max-width: 640px) { /* below --bp-md, mobile */
+  .quiz-bars__item {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  /* The track drops to its own row so the label keeps its measure. */
+  .quiz-bars__track {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+
+/* ── Round foot: the guard, the close, the table ─────────────────────── */
+
+.quiz-round__foot {
+  max-width: var(--container-max-prose);
+  margin-top: var(--quiz-q-gap);
+}
+.quiz-round__guard {
+  margin-bottom: var(--space-global-lg);
+}
+.quiz-round__close {
+  font-size: var(--text-prose-size-body);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--lh-prose);
+  color: var(--text-heading);
+  margin: 0;
+}
+.quiz-round__next {
+  margin-top: var(--space-global-lg);
+}
+
+.quiz-table {
+  margin-top: var(--space-global-xl);
+}
+.quiz-table__title {
+  font-family: var(--font-tailor-heading-stack);
+  font-size: var(--text-display-size-h4);
+  font-weight: var(--heading-weight-h3);
+  line-height: var(--lh-heading-sub);
+  color: var(--text-heading);
+  margin: 0 0 var(--space-global-xs);
+}
+.quiz-table__intro {
+  font-size: var(--text-prose-size-body);
+  line-height: var(--lh-body);
+  color: var(--text-body);
+  margin: 0 0 var(--space-global-md);
+}
+/* Tables are the one thing allowed to be wider than the measure, and
+   only inside their own scroller. The page body must never scroll
+   sideways. */
+.quiz-table__scroll {
+  overflow-x: auto;
+}
+/* `.table thead th` is left-aligned in the design system, but there is
+   no `tbody th` rule, so a `<th scope="row">` falls through to the
+   browser default of centred, which reads as a bug beside left-aligned
+   data cells. Scoped here rather than fixed in tailor-site-v2.css:
+   these are the site's first row-header tables, and changing the shared
+   component is the user's call (operating rules §9). */
+.quiz-table th[scope='row'],
+.quiz-sources th[scope='row'] {
+  text-align: left;
+}
+.quiz-sources__figure {
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+}
+.quiz-sources th[scope='row'] {
+  font-weight: var(--font-weight-regular);
+  min-width: var(--quiz-sources-finding-min);
+}
+
+/* The named surveys on the quiz page. A list rather than prose because
+   the reader is scanning for whether they recognise the publishers, not
+   reading a sentence. */
+.quiz-sources-list {
+  list-style: none;
+  margin: 0 0 var(--space-global-md);
+  padding: 0;
+  display: grid;
+  gap: var(--space-global-xs);
+}
+.quiz-sources-list li {
+  font-size: var(--text-prose-size-body);
+  line-height: var(--lh-body);
+  color: var(--text-body);
+  padding-left: var(--space-global-md);
+  position: relative;
+}
+.quiz-sources-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: var(--quiz-bullet-size);
+  height: var(--quiz-bullet-size);
+  border-radius: var(--radius-circle);
+  background: var(--brand-accent-soft);
+}
+
+
+/* ── Closing CTA ────────────────────────────────────────────────────── */
+
+.quiz-cta__text {
+  max-width: var(--container-max-hero-text);
+}
+.quiz-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-global-md);
+}
+
+/* ── The takeaway ───────────────────────────────────────────────────────
+   What we learn from the figure. On both surfaces, and required on every
+   question: a reveal that stops at the number has handed the reader a
+   statistic rather than taught them anything. Styled as an aside rather
+   than a panel. It is the conclusion of the answer, not a separate
+   feature competing with it. */
+
+.quiz-takeaway {
+  max-width: var(--container-max-prose);
+  margin: var(--space-global-md) 0 0;
+  padding-left: var(--space-global-md);
+  border-left: var(--border-width-sm) solid var(--brand-accent-soft);
+}
+.quiz-takeaway__label {
+  font-size: var(--text-card-size-h6);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--lh-ui);
+  letter-spacing: var(--quiz-label-tracking);
+  text-transform: uppercase;
+  color: var(--brand-accent-text);
+  margin: 0 0 var(--space-global-xs);
+}
+.quiz-takeaway__text {
+  font-size: var(--text-prose-size-body);
+  line-height: var(--lh-prose);
+  color: var(--text-body);
+  margin: 0 0 var(--space-global-sm);
+}
+.quiz-takeaway__text:last-child {
+  margin-bottom: 0;
+}
+.quiz-takeaway--end {
+  border-left: none;
+  padding-left: 0;
+}
+
+
+/* ====================================================================
+   THE PLAYER
+   --------------------------------------------------------------------
+   Full-viewport takeover, one question per screen. Launched from the
+   hero; closes back to the article, which is never modified.
+
+   Not built on `.modal`: that component isn't in the Tailor fork, and
+   porting it to then override nearly all of it for a full-bleed
+   single-purpose player would add markup wrappers and an equal amount
+   of override CSS for no hygiene gain (the v2 notes' "specialised
+   designs" rule). It behaves modally where that matters, `role
+   ="dialog"`, `aria-modal`, escape to close, and the rest of the page
+   set `inert` while it is open.
+
+   `--z-modal` is the right layer: this must cover the sticky site
+   header, which sits at `--z-header`.
+   ==================================================================== */
+
+.quiz-player {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-page);
+}
+
+/* Stop the article behind the player from scrolling under it. */
+.quiz-player-open,
+.quiz-player-open body {
+  overflow: hidden;
+}
+
+/* ── The bar: progress and the way out ── */
+
+.quiz-player__bar {
+  flex: 0 0 auto;
+  border-bottom: var(--border-width-xs) solid var(--border-subtle);
+  padding: var(--space-global-sm) var(--space-global-gutter);
+}
+.quiz-player__bar-inner {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--container-max-reading-wide);
+  display: flex;
+  align-items: center;
+  gap: var(--space-global-md);
+}
+.quiz-player__count {
+  font-size: var(--text-card-size-h6);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--lh-ui);
+  color: var(--text-body-muted);
+  white-space: nowrap;
+  margin: 0;
+}
+.quiz-player__progress {
+  flex: 1 1 auto;
+}
+.quiz-player__close {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--quiz-player-close-size);
+  height: var(--quiz-player-close-size);
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-circle);
+  background: transparent;
+  color: var(--text-body-muted);
+  cursor: pointer;
+  transition: background var(--transition-duration) var(--transition-easing),
+    color var(--transition-duration) var(--transition-easing);
+}
+.quiz-player__close:hover {
+  background: var(--bg-surface-alt);
+  color: var(--text-heading);
+}
+.quiz-player__close:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* ── The stage: one question, centred ──
+   The scroller takes the remaining height so a long reveal scrolls
+   inside the player rather than moving the page behind it. */
+
+.quiz-player__scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--space-global-xl) var(--space-global-gutter);
+  /* Room to breathe under the last element on a short screen. */
+  padding-bottom: var(--space-global-2xl);
+}
+.quiz-player__stage {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--container-max-prose);
+}
+
+.quiz-player__round {
+  display: block;
+  font-size: var(--text-card-size-h6);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--lh-ui);
+  letter-spacing: var(--quiz-label-tracking);
+  text-transform: uppercase;
+  color: var(--brand-accent-text);
+  margin-bottom: var(--space-global-sm);
+}
+
+/* The question is the largest thing on an asking screen. It is the one
+   thing the reader has to do. Display scale, not card scale. */
+.quiz-player__prompt {
+  font-family: var(--font-tailor-heading-stack);
+  font-size: var(--text-display-size-h2);
+  font-weight: var(--heading-weight-h2);
+  line-height: var(--lh-heading);
+  color: var(--text-heading);
+  margin: 0 0 var(--space-global-lg);
+}
+.quiz-player__prompt:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-sm);
+}
+
+.quiz-player__switch {
+  font-size: var(--text-card-size-h5);
+  line-height: var(--lh-ui);
+  color: var(--text-body);
+  background: var(--bg-tinted);
+  border-radius: var(--radius-md);
+  padding: var(--space-global-sm);
+  margin: 0 0 var(--space-global-lg);
+}
+
+/* ── The guess control ── */
+
+.quiz-player__guess {
+  background: var(--quiz-card-bg);
+  border-radius: var(--quiz-card-radius);
+  padding: var(--quiz-card-padding);
+}
+.quiz-player__guess-label {
+  display: block;
+  font-size: var(--form-label-size);
+  font-weight: var(--form-label-weight);
+  color: var(--text-body-muted);
+  margin-bottom: var(--space-global-xs);
+}
+.quiz-player__guess-value {
+  display: block;
+  font-family: var(--font-tailor-heading-stack);
+  font-size: var(--text-display-size-h1);
+  font-weight: var(--heading-weight-h1);
+  line-height: var(--lh-display);
+  color: var(--text-heading);
+  font-variant-numeric: tabular-nums;
+}
+/* The hint occupies the figure's slot until the reader commits, so the
+   control doesn't jump when the first number appears. */
+.quiz-player__guess-hint {
+  display: block;
+  font-size: var(--text-card-size-h5);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--lh-display);
+  color: var(--text-body-muted);
+}
+.quiz-player__scale {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-card-size-h6);
+  color: var(--text-body-muted);
+  margin-top: calc(-1 * var(--space-global-xs));
+}
+.quiz-player__help {
+  color: var(--text-body-muted);
+  margin: var(--space-global-xs) 0 var(--space-global-md);
+}
+
+/* ── The reveal ── */
+
+.quiz-player__answer .quiz-a {
+  max-width: none;
+}
+.quiz-player__answer .quiz-takeaway {
+  max-width: none;
+}
+/* The figure takes focus on reveal so a screen reader reads the answer
+   and its takeaway rather than the Next button. */
+.quiz-player__answer .quiz-a__figure:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-sm);
+}
+
+/* The paired figure, restated. One question per screen would otherwise
+   separate exposure from endorsement, this is what stops it. */
+.quiz-player__paired {
+  margin-top: var(--space-global-md);
+  padding: var(--space-global-sm) var(--space-global-md);
+  background: var(--bg-surface-alt);
+  border-radius: var(--radius-md);
+}
+.quiz-player__paired-label {
+  font-size: var(--text-card-size-h6);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--lh-ui);
+  letter-spacing: var(--quiz-label-tracking);
+  text-transform: uppercase;
+  color: var(--text-body-muted);
+  margin: 0 0 var(--space-global-xs);
+}
+.quiz-player__paired-text {
+  font-size: var(--text-card-size-h5);
+  line-height: var(--lh-ui);
+  color: var(--text-body);
+  margin: 0;
+}
+
+.quiz-player__close-note {
+  font-size: var(--text-prose-size-body);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--lh-prose);
+  color: var(--text-heading);
+  margin: var(--space-global-lg) 0 0;
+}
+
+.quiz-player__actions {
+  margin-top: var(--space-global-xl);
+}
+.quiz-player__end-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-global-sm);
+  margin-top: var(--space-global-xl);
+}
+
+/* ── Motion ──
+   Each screen fades up as it arrives. Small and downward; the reveal is
+   the event, not the transition. */
+
+.quiz-player__stage > *,
+.quiz-player__answer {
+  animation: quiz-screen-in var(--transition-duration) var(--transition-easing) both;
+}
+
+@keyframes quiz-screen-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--space-global-xs));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quiz-player__stage > *,
+  .quiz-player__answer {
+    animation: none;
+  }
+  .quiz-player__close {
+    transition: none;
+  }
+}
+
+@media (max-width: 640px) { /* below --bp-md, mobile */
+  .quiz-player__scroll {
+    padding-top: var(--space-global-lg);
+  }
+}
