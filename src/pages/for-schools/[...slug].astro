@@ -666,10 +666,15 @@ const jsonLd = [
     font-weight: var(--font-weight-regular);
   }
 
+  /* Capped and left-aligned, the same way /topics/ caps .topic-hub-grid and
+     for the same reason: a single-column horizontal card at full shell width
+     leaves a slab of dead space to the right of its text, because the body
+     sizes to its content rather than filling the row. */
   .cluster-unit__lessons {
     list-style: none;
     margin: var(--space-global-lg) 0 0;
     padding: 0;
+    max-width: var(--container-max-reading-wide);
     display: grid;
     gap: var(--space-global-md);
   }
