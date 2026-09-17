@@ -1,30 +1,13 @@
+# Talking to Boys About Masculinity, Misogyny and Online Influencers
+
+Snapshot of the working draft, 17 September 2026, 23:51. Uncommitted; nothing is live.
+The published version is still the 876-word original.
+
+Front half cleared paragraph by paragraph. Second half NOT cleared: the
+restructuring is done but the prose has not been read through.
+
 ---
-title: "Talking to Boys About Masculinity, Misogyny and Online Influencers"
-status: "Published"
-publishedDate: "2026-02-25"
-dateModified: "2026-09-17"
-guidanceSensitive: true
-reviewBy: "2027-03-22"
-author: "Gareth Esson"
-category: "RSE in Practice"
-targetAudience: "Teachers"
-contentTags:
-  - "masculinity"
-  - "misogyny"
-  - "online influencers"
-  - "classroom practice"
-topicIds:
-  - "337ca549-febc-810a-81a1-fe173ce93ff8"
-secondaryTopicIds:
-  - "337ca549-febc-81ef-b977-e3b7fefe7dba"
-serviceLink: "delivery"
-metaTitle: "Teaching Boys About Masculinity, Misogyny and Online Influencers"
-metaDescription: "Talking to boys about masculinity, misogyny and online influencers under the 2026 RSHE guidance, including whether to name Andrew Tate in a lesson."
-featuredImage: "./featured.webp"
-imageCredit: null
-imageCreditUrl: null
-featuredImageAlt: "An empty school corridor with classroom doors and noticeboards."
----
+
 
 Most boys are doing fine. They're not radicalised, and they don't hate women. They still have crushes, still love their mums, and are still working out who they are. A lot of the conversation around masculinity in schools starts from the assumption that something has gone badly wrong with boys; I don't believe it has. I think young people have a lot to contend with, but most are still kids who need support.
 
