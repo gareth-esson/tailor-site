@@ -48,6 +48,22 @@ system catalogue. Reference it when the operating rules or v2 notes
 point to a specific section; it doesn't need to be read up-front every
 session.
 
+## Printable documents (mandatory before any PDF or print work)
+
+Printable resources do **not** use the screen design system's type or spacing
+— every screen type size is a `clamp()` with a `vw` term, which is meaningless
+on paper. They use `--paper-*` tokens in `src/styles/paper.css`.
+
+Read **`docs/PAPER-SYSTEM.md`** before building or editing anything that gets
+printed or downloaded. Documents live at `src/pages/render/*`, render through
+`src/layouts/PaperLayout.astro`, and the PDF is generated locally with
+`npm run pdf:<name>` and committed to `public/downloads/`.
+
+**If you edit a document, regenerate its PDF.** `npm test` fails when a
+committed PDF no longer matches the sources it was generated from — the
+generator records them in `scripts/pdf-manifest.json` and
+`tests/pdf-freshness.test.mjs` checks them.
+
 ## Tone of voice (mandatory before writing any marketing copy)
 
 Before editing any prose on a service page, the homepage, a CTA

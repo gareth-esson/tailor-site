@@ -9,7 +9,8 @@
     "build:search-titles": "node scripts/build-search-titles.mjs",
     "preview": "astro preview",
     "test": "node --test \"tests/**/*.test.mjs\"",
-    "astro": "astro"
+    "astro": "astro",
+    "pdf:audit-sheet": "node scripts/render-pdf.mjs /render/rse-policy-audit-sheet/ public/downloads/rse-policy-audit-sheet.pdf"
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.6",
@@ -36,6 +37,7 @@
     "path-to-regexp": "^6.3.0"
   },
   "devDependencies": {
-    "@types/sortablejs": "^1.15.9"
+    "@types/sortablejs": "^1.15.9",
+    "playwright": "^1.50.0"
   }
 }

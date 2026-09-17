@@ -1,0 +1,54 @@
+---
+/**
+ * PaperLayout — the render surface for a printable document.
+ *
+ * Deliberately not BaseLayout. A PDF source page must contain the sheet
+ * and nothing else: no header, no footer, no cookie banner, no analytics.
+ * Those are hidden at print time in BaseLayout, but hiding chrome is not
+ * the same as never emitting it — a banner that mounts and then hides can
+ * still shift layout during the render, which is how a PDF ends up with a
+ * displaced first page.
+ *
+ * These pages are noindex. The public, indexable page is the resource page
+ * that links to the generated PDF — this route exists only so the PDF
+ * generator has something to load. See scripts/render-pdf.mjs.
+ *
+ * Lexend is self-hosted through @fontsource, so a render never depends on
+ * fonts.googleapis.com being reachable. If it did, a network blip would
+ * silently produce a PDF set in the fallback stack.
+ */
+import '../styles/tailor-site-v2.css';
+import '../styles/paper.css';
+import '@fontsource/lexend/300.css';
+import '@fontsource/lexend/400.css';
+import '@fontsource/lexend/600.css';
+import '@fontsource/lexend/700.css';
+
+interface Props {
+  /** Document title — browser tab and PDF metadata title. */
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{title}</title>
+  </head>
+  <body class="paper-preview">
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  /* The preview ground is the only thing this layout styles. Everything
+     else comes from paper.css. */
+  body.paper-preview {
+    margin: 0;
+  }
+</style>

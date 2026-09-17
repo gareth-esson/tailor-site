@@ -588,6 +588,22 @@ Surface violations as you find them, but don't auto-rewrite the whole codebase i
 - **Search (A4, A5, B10)** — needs its own component design.
 - **Mega menu (D8)** — needs its own component design.
 
+### Paper — printed and downloadable documents
+
+The screen system does not cover paper, and reusing it on a page goes wrong
+in a specific way: every type size here is a `clamp()` with a `vw` term, which
+is meaningless on a sheet that has no viewport. Printable documents use a
+separate token family (`--paper-*`) in `src/styles/paper.css`, with fixed
+point type and millimetre geometry.
+
+Read **`docs/PAPER-SYSTEM.md`** before building anything that prints or is
+downloaded as a PDF. It covers the three-piece structure (system CSS, the bare
+`PaperLayout`, a `/render/*` route), how to generate the file, and how to check
+a document actually fits its sides.
+
+The paper system is an upstream candidate for the GDH master — see the last
+section of that document.
+
 ### Master components NOT currently in the Tailor fork
 
 `SYSTEM-RULES.md` describes the full Guess Design House component library. This fork only includes what the site actually uses. The following master components are **documented but not ported** — their classes and tokens don't exist in `tailor-site-v2.css`. If a feature needs one, add it following the extension rules in `CLAUDE-CODE-OPERATING-RULES.md` §7 (define the token family in `:root` first, follow the BEM-like class pattern, include all states, handle reduced motion).

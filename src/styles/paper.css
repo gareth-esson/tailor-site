@@ -1,0 +1,495 @@
+/* =====================================================================
+   PAPER SYSTEM — fixed-geometry documents for print and PDF
+   =====================================================================
+
+   The screen system in tailor-site-v2.css is responsive by design: every
+   type size is a clamp() with a vw term, and every rhythm value is rem.
+   That is correct for a viewport and wrong for a sheet of paper, where
+   there is no viewport to be relative to — a heading set in vw resizes
+   according to whatever window the PDF renderer happened to open.
+
+   So paper gets its own token family. Geometry and rhythm are in mm
+   because the output is a physical page; type is in pt because that is
+   the unit type is specified in for print. These are the one sanctioned
+   exception to the "every value is a token" rule, and they are tokens —
+   the raw units live here in :root and nowhere else.
+
+   Colour is NOT redefined. Ink tokens alias the screen system's text and
+   neutral tokens so a printed document and the site cannot drift apart.
+
+   UPSTREAM CANDIDATE — a paper system is not Tailor-specific. Any project
+   that produces a worksheet, invoice, certificate or report needs the same
+   primitives. This should be reviewed for promotion into the GDH master
+   (~/Sites/gdh-master-css), at which point this file becomes a fork of it
+   rather than the original. See docs/PAPER-SYSTEM.md.
+
+   Load order: after tailor-site-v2.css, which owns the tokens aliased below.
+   ===================================================================== */
+
+:root {
+  /* ── Page geometry ────────────────────────────────────────────────
+     Millimetres: this is a physical page, not a viewport. --paper-safe
+     is the edge most consumer printers cannot reach — nothing that must
+     survive printing may sit inside it. */
+  --paper-w:          210mm;   /* A4 portrait width  */
+  --paper-h:          297mm;   /* A4 portrait height */
+  --paper-margin-x:   12mm;
+  --paper-margin-y:   11mm;
+  --paper-safe:        5mm;
+  --paper-content-w:  calc(var(--paper-w) - (var(--paper-margin-x) * 2));
+  --paper-content-h:  calc(var(--paper-h) - (var(--paper-margin-y) * 2));
+
+  /* ── Rhythm ───────────────────────────────────────────────────────
+     A separate scale from --space-global-*, which is tuned for screen
+     density at rem sizes. Paper is denser and measured in mm. */
+  --paper-space-2xs:  1mm;
+  --paper-space-xs:   2mm;
+  --paper-space-sm:   3.5mm;
+  --paper-space-md:   6mm;
+  --paper-space-lg:   9mm;
+  --paper-space-xl:  14mm;
+
+  /* ── Type ─────────────────────────────────────────────────────────
+     Fixed points. Never clamp(), never vw — see the file header. */
+  --paper-text-h1:      15pt;
+  --paper-text-h2:    10.5pt;
+  --paper-text-h3:       9pt;
+  --paper-text-body:   8.6pt;
+  --paper-text-small:  7.6pt;
+  --paper-text-micro:  6.6pt;
+
+  --paper-leading-tight: 1.2;
+  --paper-leading-base:  1.3;
+  --paper-tracking-label: 0.08em;
+
+  --paper-font-stack: var(--font-tailor-body-stack);
+
+  /* ── Ink ──────────────────────────────────────────────────────────
+     Aliased from the screen system so the two cannot drift. Rules step
+     one shade darker than the screen's --border-subtle: #e3e6e8 is
+     legible on a backlit display and disappears on paper. */
+  --paper-ink:         var(--text-heading);
+  --paper-ink-body:    var(--text-body);
+  --paper-ink-muted:   var(--text-body-muted);
+  --paper-accent:      var(--brand-primary);
+  --paper-rule:        var(--neutral-300);
+  --paper-rule-strong: var(--neutral-400);
+  --paper-ground:      #ffffff;
+  --paper-ground-alt:  var(--neutral-100);
+
+  /* ── Document furniture ───────────────────────────────────────── */
+  --paper-rule-w:      0.25mm;
+  --paper-rule-w-firm: 0.4mm;
+  --paper-field-gap:   7mm;    /* height of a writing line */
+  --paper-tick-size:   3.8mm;
+
+  /* Table density is its own concern, not block rhythm. A checklist row
+     wants a fraction of the padding a paragraph does, and reusing the
+     rhythm scale here is what pushed this document onto four sides. */
+  --paper-table-pad-y: 0.6mm;
+  --paper-table-pad-x: 1.6mm;
+
+  /* Table type size, separate from --paper-text-body. A dense statutory
+     checklist is a genuinely denser document than a lesson plan, so a
+     document may set this tighter without dragging its prose down with
+     it. Override on the table, not in :root. */
+  --paper-table-font:  var(--paper-text-body);
+
+  /* Number of columns in a .paper-fields row. */
+  --paper-fields-cols: 2;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   THE SHEET
+   One .paper element is one printed side. Siblings become sequential
+   pages. Height is a minimum, not a fixed value: content that outgrows
+   a side spills to a visible extra page rather than being silently
+   clipped, which is the failure you cannot see until it is printed.
+   ───────────────────────────────────────────────────────────────── */
+
+.paper {
+  box-sizing: border-box;
+  width: var(--paper-w);
+  min-height: var(--paper-h);
+  padding: var(--paper-margin-y) var(--paper-margin-x);
+  background: var(--paper-ground);
+  color: var(--paper-ink-body);
+  font-family: var(--paper-font-stack);
+  font-size: var(--paper-text-body);
+  line-height: var(--paper-leading-base);
+  display: flex;
+  flex-direction: column;
+}
+
+.paper--landscape {
+  width: var(--paper-h);
+  min-height: var(--paper-w);
+}
+
+.paper * {
+  box-sizing: border-box;
+}
+
+/* ── Running head ───────────────────────────────────────────────── */
+
+.paper__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--paper-space-md);
+  padding-bottom: var(--paper-space-xs);
+  margin-bottom: var(--paper-space-sm);
+  border-bottom: var(--paper-rule-w-firm) solid var(--paper-accent);
+}
+
+.paper__title {
+  margin: 0;
+  font-size: var(--paper-text-h1);
+  line-height: var(--paper-leading-tight);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--paper-ink);
+  text-wrap: balance;
+}
+
+.paper__title span {
+  font-weight: 300;
+  color: var(--paper-ink-muted);
+}
+
+.paper__standfirst {
+  margin: var(--paper-space-xs) 0 0;
+  font-size: var(--paper-text-small);
+  line-height: var(--paper-leading-base);
+  color: var(--paper-ink-muted);
+  max-width: 62ch;
+  text-wrap: pretty;
+}
+
+.paper__brand {
+  flex: none;
+  text-align: right;
+}
+
+.paper__logo {
+  display: block;
+  width: 26mm;
+  margin-left: auto;
+}
+
+.paper__url {
+  margin-top: var(--paper-space-2xs);
+  font-size: var(--paper-text-micro);
+  letter-spacing: var(--paper-tracking-label);
+  text-transform: uppercase;
+  color: var(--paper-ink-muted);
+}
+
+/* ── Body ───────────────────────────────────────────────────────── */
+
+.paper__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--paper-space-sm);
+}
+
+/* Pushes the foot to the bottom edge when content is short, so the
+   footer rule sits at the same height on every side of a document. */
+.paper__spacer {
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── Foot ───────────────────────────────────────────────────────── */
+
+.paper__foot {
+  margin-top: auto;
+  padding-top: var(--paper-space-xs);
+  border-top: var(--paper-rule-w) solid var(--paper-rule);
+}
+
+.paper__foot p {
+  margin: 0 0 var(--paper-space-2xs);
+  font-size: var(--paper-text-micro);
+  line-height: var(--paper-leading-base);
+  color: var(--paper-ink-muted);
+}
+
+.paper__foot p:last-child {
+  margin-bottom: 0;
+}
+
+.paper__foot a {
+  color: inherit;
+}
+
+.paper__pagenum {
+  float: right;
+  margin-left: var(--paper-space-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--paper-ink-muted);
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   SECTIONS
+   ───────────────────────────────────────────────────────────────── */
+
+.paper-section {
+  break-inside: avoid;
+}
+
+/* The rule under the heading is what separates one section from the next.
+   That is why --paper-space-sm is enough gap between them: whitespace is
+   not doing the work here, the rule is. */
+.paper-section__heading {
+  margin: 0 0 var(--paper-space-2xs);
+  padding-bottom: var(--paper-space-2xs);
+  border-bottom: var(--paper-rule-w) solid var(--paper-accent);
+  font-size: var(--paper-text-h3);
+  line-height: var(--paper-leading-tight);
+  font-weight: 600;
+  letter-spacing: var(--paper-tracking-label);
+  text-transform: uppercase;
+  color: var(--paper-accent);
+}
+
+.paper-section__num {
+  display: inline-block;
+  min-width: 4mm;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   WRITING LINES
+   A labelled rule someone completes by hand. --paper-field-gap sets the
+   writing height; the rule is firm enough to survive a photocopier.
+   ───────────────────────────────────────────────────────────────── */
+
+.paper-fields {
+  display: grid;
+  gap: var(--paper-space-2xs) var(--paper-space-md);
+  grid-template-columns: repeat(var(--paper-fields-cols), 1fr);
+}
+
+.paper-field {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--paper-space-xs);
+  min-height: var(--paper-field-gap);
+}
+
+.paper-field__label {
+  flex: none;
+  font-size: var(--paper-text-micro);
+  letter-spacing: var(--paper-tracking-label);
+  text-transform: uppercase;
+  color: var(--paper-ink-muted);
+  padding-bottom: var(--paper-space-2xs);
+}
+
+.paper-field__rule {
+  flex: 1;
+  border-bottom: var(--paper-rule-w) solid var(--paper-rule-strong);
+}
+
+/* Blank ruled space for open-ended answers. */
+.paper-rules {
+  display: flex;
+  flex-direction: column;
+  gap: var(--paper-field-gap);
+  padding-top: var(--paper-space-sm);
+}
+
+.paper-rules > span {
+  display: block;
+  border-bottom: var(--paper-rule-w) solid var(--paper-rule-strong);
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   TICK BOX
+   ───────────────────────────────────────────────────────────────── */
+
+.paper-tick {
+  display: inline-block;
+  width: var(--paper-tick-size);
+  height: var(--paper-tick-size);
+  border: var(--paper-rule-w-firm) solid var(--paper-rule-strong);
+  border-radius: var(--radius-xs);
+  vertical-align: middle;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   TABLE
+   A print table: hairline rules, tight leading, repeating header when a
+   table breaks across sides.
+   ───────────────────────────────────────────────────────────────── */
+
+.paper-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: var(--paper-table-font);
+}
+
+.paper-table thead {
+  display: table-header-group;
+}
+
+.paper-table th {
+  text-align: left;
+  font-size: var(--paper-text-micro);
+  font-weight: 600;
+  letter-spacing: var(--paper-tracking-label);
+  text-transform: uppercase;
+  color: var(--paper-ink-muted);
+  padding: 0 var(--paper-table-pad-x) var(--paper-space-2xs);
+  border-bottom: var(--paper-rule-w-firm) solid var(--paper-rule-strong);
+}
+
+.paper-table td {
+  padding: var(--paper-table-pad-y) var(--paper-table-pad-x);
+  border-bottom: var(--paper-rule-w) solid var(--paper-rule);
+  vertical-align: top;
+  line-height: var(--paper-leading-base);
+}
+
+.paper-table tr {
+  break-inside: avoid;
+}
+
+.paper-table .is-centred {
+  text-align: center;
+}
+
+/* Secondary detail under a table cell's main line. */
+.paper-detail {
+  display: block;
+  margin-top: var(--paper-space-2xs);
+  font-size: var(--paper-text-micro);
+  line-height: var(--paper-leading-base);
+  color: var(--paper-ink-muted);
+}
+
+.paper-ref {
+  font-variant-numeric: tabular-nums;
+  color: var(--paper-ink-muted);
+  font-size: var(--paper-text-small);
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   PANEL — a tinted block that sits inside the flow
+   ───────────────────────────────────────────────────────────────── */
+
+.paper-panel {
+  background: var(--paper-ground-alt);
+  padding: var(--paper-space-sm) var(--paper-space-md);
+  border-radius: var(--radius-sm);
+  break-inside: avoid;
+}
+
+.paper-panel__title {
+  margin: 0 0 var(--paper-space-xs);
+  font-size: var(--paper-text-h3);
+  font-weight: 600;
+  color: var(--paper-ink);
+}
+
+.paper-panel ol,
+.paper-panel ul {
+  margin: 0;
+  padding-left: var(--paper-space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--paper-space-2xs);
+}
+
+.paper-panel li {
+  font-size: var(--paper-text-small);
+  line-height: var(--paper-leading-base);
+  break-inside: avoid;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   FLAG — an inline "must" marker
+   ───────────────────────────────────────────────────────────────── */
+
+.paper-flag {
+  display: inline-block;
+  margin-left: var(--paper-space-xs);
+  padding: 0 var(--paper-space-2xs);
+  background: var(--paper-accent);
+  color: var(--paper-ground);
+  border-radius: var(--radius-xs);
+  font-size: var(--paper-text-micro);
+  font-weight: 600;
+  letter-spacing: var(--paper-tracking-label);
+  text-transform: uppercase;
+  vertical-align: 0.4mm;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   BREAK CONTROL
+   ───────────────────────────────────────────────────────────────── */
+
+.paper-keep      { break-inside: avoid; }
+.paper-break-after  { break-after: page; }
+.paper-break-before { break-before: page; }
+
+/* ─────────────────────────────────────────────────────────────────────
+   SCREEN PREVIEW
+   The render route is viewable in a browser so the sheet can be checked
+   without generating a PDF. None of this reaches the printed page.
+   ───────────────────────────────────────────────────────────────── */
+
+@media screen {
+  .paper-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--paper-space-md);
+    padding: var(--paper-space-md);
+    background: var(--neutral-200);
+    min-height: 100vh;
+  }
+
+  .paper-preview .paper {
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.12), 0 8px 24px rgb(0 0 0 / 0.1);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   PRINT / PDF
+   margin: 0 on @page because .paper owns its own margins — that is what
+   makes the PDF identical whatever the printer's defaults are. The
+   renderer is told preferCSSPageSize so this rule, not its own paper
+   setting, decides the page size.
+   ───────────────────────────────────────────────────────────────── */
+
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
+@media print {
+  .paper-preview {
+    display: block;
+    padding: 0;
+    background: none;
+  }
+
+  .paper {
+    margin: 0;
+    box-shadow: none;
+    break-after: page;
+  }
+
+  .paper:last-of-type {
+    break-after: auto;
+  }
+
+  /* Anything that is screen-only chrome around a document. */
+  .paper-screen-only {
+    display: none;
+  }
+}

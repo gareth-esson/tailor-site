@@ -43,6 +43,8 @@ export default defineConfig({
           '/questions/tag/',     // tag archives — noIndex'd
           '/tools/',             // facilitator tools — unlisted, noIndex'd
           '/studio',             // post editor — authenticated, noIndex'd
+          '/render/',            // PDF source pages — noIndex'd, exist only
+                                 // so scripts/render-pdf.mjs has a URL to load
         ];
         return !exclusions.some((p) => page.includes(p));
       },

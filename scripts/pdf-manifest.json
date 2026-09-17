@@ -1,0 +1,14 @@
+{
+  "public/downloads/rse-policy-audit-sheet.pdf": {
+    "route": "/render/rse-policy-audit-sheet/",
+    "generated": "2026-09-17T11:06:53.213Z",
+    "sources": {
+      "src/pages/render/rse-policy-audit-sheet.astro": "0ee285cf16e57ee946d73b32e7933df8b029b9576f65f61d807618993148e5c7",
+      "src/styles/paper.css": "c01f49e06ef95bd4328b58966294c4be8633f69cbe26468f8c49c2d38ffda77d",
+      "src/layouts/PaperLayout.astro": "894068764a9005a9171902a5050f42ed9ce86e5cd211441628e46c7d92e0dce9"
+    },
+    "output": {
+      "sha256": "13ca11011a78c670ecac49929d0067eb5aa3bca3af9a605dade2409bcf54ce14"
+    }
+  }
+}

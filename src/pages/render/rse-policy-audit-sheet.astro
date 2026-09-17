@@ -1,0 +1,296 @@
+---
+/**
+ * PDF source — RSE policy audit sheet.
+ *
+ * Not a page anyone is meant to land on. It exists so
+ * `npm run pdf:audit-sheet` has a URL to render, and it is noindex and
+ * excluded from the sitemap (see astro.config.mjs).
+ *
+ * The public page is /resources/rse-policy-audit-sheet/, which describes
+ * the sheet and links to the generated file.
+ *
+ * Everything structural comes from paper.css. What lives here is what is
+ * specific to *this* document: the column proportions of the check table,
+ * and the content itself.
+ */
+import PaperLayout from '../../layouts/PaperLayout.astro';
+---
+
+<PaperLayout title="RSE policy audit sheet">
+
+  <!-- ── Side 1 ─────────────────────────────────────────────────── -->
+  <section class="paper">
+
+    <header class="paper__head">
+      <div>
+        <h1 class="paper__title">RSE policy audit sheet</h1>
+        <p class="paper__standfirst">
+          Check your policy, curriculum plan and teaching against the RSHE
+          statutory guidance that has applied in England since 1 September
+          2026. Work through it with the policy open and one term's planning
+          beside it, and answer each line with a document rather than a
+          recollection.
+        </p>
+      </div>
+      <div class="paper__brand">
+        <img class="paper__logo" src="/assets/tailor-logo-lockup-dark.svg" alt="Tailor" />
+        <div class="paper__url">tailor-rse.org.uk</div>
+      </div>
+    </header>
+
+    <div class="paper__body">
+
+      <div class="paper-fields id-fields">
+        <div class="paper-field"><span class="paper-field__label">School</span><div class="paper-field__rule"></div></div>
+        <div class="paper-field"><span class="paper-field__label">Completed by</span><div class="paper-field__rule"></div></div>
+        <div class="paper-field"><span class="paper-field__label">Date</span><div class="paper-field__rule"></div></div>
+        <div class="paper-field"><span class="paper-field__label">Next review</span><div class="paper-field__rule"></div></div>
+      </div>
+
+      <div class="paper-panel">
+        <h2 class="paper-panel__title">If you only do four things</h2>
+        <ol>
+          <li><strong>Read your provider contracts.</strong> Clauses stopping you showing parents material are void (57–58).</li>
+          <li><strong>Make the policy match a timetable.</strong> Content, timing and who teaches it (14).</li>
+          <li><strong>Check sequencing, not just coverage.</strong> Sensitive content has to land before pupils meet it (15d).</li>
+          <li><strong>Train before you teach suicide prevention.</strong> The training is a precondition, not a follow-up (44).</li>
+        </ol>
+      </div>
+
+      <section class="paper-section">
+        <h2 class="paper-section__heading"><span class="paper-section__num">1</span> The policy document</h2>
+        <table class="paper-table check-table">
+          <colgroup><col class="c-check" /><col class="c-ref" /><col class="c-box" /><col class="c-box" /><col class="c-notes" /></colgroup>
+          <thead><tr>
+            <th>Check</th><th>Ref</th><th class="is-centred">In&nbsp;place</th><th class="is-centred">Action</th><th>Evidence / notes</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td>An up-to-date written policy exists for relationships education, or for RSE where sex education is taught<span class="paper-flag">must</span></td>
+              <td class="paper-ref">12</td><td class="is-centred"><span class="paper-tick"></span></td><td class="is-centred"><span class="paper-tick"></span></td><td></td>
+            </tr>
+            <tr>
+              <td>It is published on the school website, and a free copy goes to anyone who asks<span class="paper-flag">must</span></td>
+              <td class="paper-ref">12</td><td class="is-centred"><span class="paper-tick"></span></td><td class="is-centred"><span class="paper-tick"></span></td><td></td>
+            </tr>
+            <tr>
+              <td>The published version is the version staff actually teach from</td>
+              <td class="paper-ref">&mdash;</td><td class="is-centred"><span class="paper-tick"></span></td><td class="is-centred"><span class="paper-tick"></span></td><td></td>
+            </tr>
+            <tr>
+              <td>It contains all eight things paragraph 14 asks for
+                <span class="paper-detail">Content, timing and staffing · the relationships / sex education split · the right to withdraw · SEND accessibility · monitoring · how parents view materials · unanswered questions · approval and review</span></td>
+              <td class="paper-ref">14</td><td class="is-centred"><span class="paper-tick"></span></td><td class="is-centred"><span class="paper-tick"></span></td><td></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="paper-section">
+        <h2 class="paper-section__heading"><span class="paper-section__num">2</span> Parents</h2>
+        <table class="paper-table check-table">
+          <colgroup><col class="c-check" /><col class="c-ref" /><col class="c-box" /><col class="c-box" /><col class="c-notes" /></colgroup>
+          <thead><tr>
+            <th>Check</th><th>Ref</th><th class="is-centred">In&nbsp;place</th><th class="is-centred">Action</th><th>Evidence / notes</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td>Parents were consulted on the policy, with a dated record of what they raised and what changed<span class="paper-flag">must</span></td>
+              <td class="paper-ref">12</td><td class="is-centred"><span class="paper-tick"></span></td><td class="is-centred"><span class="paper-tick"></span></td><td></td>
+            </tr>
+            <tr>
+              <td>A parent asking today could be shown a representative sample of resources, and all materials on request</td>
+              <td class="paper-ref">56</td><td class="is-centred"><span class="paper-tick"></span></td><td class="is-centred"><span class="paper-tick"></span></td><td></td>
+            </tr>
+            <tr>
+              <td>Every external provider contract has been read for clauses restricting what you may show parents
+                <span class="paper-detail">Clauses preventing a school sharing any material at all with parents are void and unenforceable</span></td>
+              <td class="paper-ref">57–58</td><td class="is-centred"><span class="paper-tick"></span></td><td class="is-centred"><span class="paper-tick"></span></td><td></td>
+            </tr>
+            <tr>
+              <td><em>Primary:</em> parents were consulted on sex education content specifically, and offered help talking to their children about it</td>
+              <td class="paper-ref">31</td><td class="is-centred"><span class="paper-tick"></span></td><td class="is-centred"><span class="paper-tick"></span></td><td></td>
+            </tr>
+            <tr>
+              <td>Withdrawal is handled as the guidance describes
+                <span class="paper-detail">Discussion with parents recorded · purposeful work for withdrawn pupils · pupils know they can opt back in from three terms before 16 · primary must be granted, secondary refused only in exceptional circumstances</span></td>
+              <td class="paper-ref">17–20</td><td class="is-centred"><span class="paper-tick"></span></td><td class="is-centred"><span class="paper-tick"></span></td><td></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="paper-section">
+        <h2 class="paper-section__heading">Other findings</h2>
+        <div class="paper-rules"><span></span><span></span><span></span></div>
+      </section>
+
+      <div class="paper__spacer"></div>
+    </div>
+
+    <footer class="paper__foot">
+      <p>Paragraph numbers refer to <em>Relationships Education, Relationships and Sex Education (RSE) and Health
+        Education</em>, Department for Education, July 2025.<span class="paper__pagenum">Side 1 of 2</span></p>
+    </footer>
+
+  </section>
+
+  <!-- ── Side 2 ─────────────────────────────────────────────────── -->
+  <section class="paper">
+
+    <header class="paper__head">
+      <div>
+        <h1 class="paper__title">RSE policy audit sheet <span>&mdash; continued</span></h1>
+        <p class="paper__standfirst">Sides one and two make one record.</p>
+      </div>
+      <div class="paper__brand">
+        <img class="paper__logo" src="/assets/tailor-logo-lockup-dark.svg" alt="Tailor" />
+        <div class="paper__url">tailor-rse.org.uk</div>
+      </div>
+    </header>
+
+    <div class="paper__body">
+
+      <section class="paper-section">
+        <h2 class="paper-section__heading"><span class="paper-section__num">3</span> The curriculum</h2>
+        <table class="paper-table check-table">
+          <colgroup><col class="c-check" /><col class="c-ref" /><col class="c-box" /><col class="c-box" /><col class="c-notes" /></colgroup>
+          <thead><tr>
+            <th>Check</th><th>Ref</th><th class="is-centred">In&nbsp;place</th><th class="is-centred">Action</th><th>Evidence / notes</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td>A coverage map runs the guidance's content tables against your scheme of work, showing where each item is taught and by whom
+                <span class="paper-detail">If you build one thing this year, build this</span></td>
+              <td class="paper-ref">&mdash;</td><td class="is-centred"><span class="paper-tick"></span></td><td class="is-centred"><span class="paper-tick"></span></td><td></td>
+            </tr>
+            <tr>
+              <td>The map shows <em>when</em> each item is taught, and sensitive content lands before pupils are likely to meet it
+                <span class="paper-detail">The guidance notes periods can start at eight, against an average onset of twelve</span></td>
+              <td class="paper-ref">15d, 40</td><td class="is-centred"><span class="paper-tick"></span></td><td class="is-centred"><span class="paper-tick"></span></td><td></td>
+            </tr>
+            <tr>
+              <td>RSHE has been checked against science, citizenship, computing and PE so the subjects complement rather than duplicate</td>
+              <td class="paper-ref">51</td><td class="is-centred"><span class="paper-tick"></span></td><td class="is-centred"><span class="paper-tick"></span></td><td></td>
+            </tr>
+            <tr>
+              <td>Newer content is present: deepfakes · sextortion · strangulation and suffocation as criminal offences ·
+                incels and online influencers · gambling-like content in gaming · vaping named separately · fertility,
+                menopause, miscarriage and pregnancy loss</td>
+              <td class="paper-ref">&mdash;</td><td class="is-centred"><span class="paper-tick"></span></td><td class="is-centred"><span class="paper-tick"></span></td><td></td>
+            </tr>
+            <tr>
+              <td>Pupils get chances to practise skills, not only acquire knowledge
+                <span class="paper-detail">Assertiveness, expressing needs and boundaries, respectful communication</span></td>
+              <td class="paper-ref">50</td><td class="is-centred"><span class="paper-tick"></span></td><td class="is-centred"><span class="paper-tick"></span></td><td></td>
+            </tr>
+            <tr>
+              <td>There is some evidence of what pupils took away from a unit</td>
+              <td class="paper-ref">50</td><td class="is-centred"><span class="paper-tick"></span></td><td class="is-centred"><span class="paper-tick"></span></td><td></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="paper-section">
+        <h2 class="paper-section__heading"><span class="paper-section__num">4</span> The people teaching it</h2>
+        <table class="paper-table check-table">
+          <colgroup><col class="c-check" /><col class="c-ref" /><col class="c-box" /><col class="c-box" /><col class="c-notes" /></colgroup>
+          <thead><tr>
+            <th>Check</th><th>Ref</th><th class="is-centred">In&nbsp;place</th><th class="is-centred">Action</th><th>Evidence / notes</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td>Staff teaching RSHE this year have had training matching what they teach, including safeguarding, given the increased possibility of disclosures</td>
+              <td class="paper-ref">15f</td><td class="is-centred"><span class="paper-tick"></span></td><td class="is-centred"><span class="paper-tick"></span></td><td></td>
+            </tr>
+            <tr>
+              <td>Anyone teaching suicide prevention, self-harm or eating disorders has the specific preparation the guidance asks for
+                <span class="paper-detail">Mental health professionals consulted and evidence-based staff training in place <em>before</em> the topic is taught directly</span></td>
+              <td class="paper-ref">42–46</td><td class="is-centred"><span class="paper-tick"></span></td><td class="is-centred"><span class="paper-tick"></span></td><td></td>
+            </tr>
+            <tr>
+              <td>For every visitor booked this year: credentials checked, lesson plan seen in advance, and the handling of a disclosure agreed in writing beforehand<span class="paper-flag">must</span></td>
+              <td class="paper-ref">52, 84</td><td class="is-centred"><span class="paper-tick"></span></td><td class="is-centred"><span class="paper-tick"></span></td><td></td>
+            </tr>
+            <tr>
+              <td>Teachers know what to say to a question the scheme does not cover, and it matches what the policy claims they will say</td>
+              <td class="paper-ref">87</td><td class="is-centred"><span class="paper-tick"></span></td><td class="is-centred"><span class="paper-tick"></span></td><td></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="paper-section">
+        <h2 class="paper-section__heading"><span class="paper-section__num">5</span> Equality and governance</h2>
+        <table class="paper-table check-table">
+          <colgroup><col class="c-check" /><col class="c-ref" /><col class="c-box" /><col class="c-box" /><col class="c-notes" /></colgroup>
+          <thead><tr>
+            <th>Check</th><th>Ref</th><th class="is-centred">In&nbsp;place</th><th class="is-centred">Action</th><th>Evidence / notes</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td>Teaching complies with the Equality Act 2010 and does not discriminate or amount to harassment
+                <span class="paper-detail">The public sector equality duty applies to state-funded schools; independent schools that are not academies are not subject to it</span></td>
+              <td class="paper-ref">64–65</td><td class="is-centred"><span class="paper-tick"></span></td><td class="is-centred"><span class="paper-tick"></span></td><td></td>
+            </tr>
+            <tr>
+              <td>Staff teaching the content on sexual orientation, biological sex and gender reassignment have read paragraphs 67 to 72 rather than a summary of them</td>
+              <td class="paper-ref">67–72</td><td class="is-centred"><span class="paper-tick"></span></td><td class="is-centred"><span class="paper-tick"></span></td><td></td>
+            </tr>
+            <tr>
+              <td>Governors or trustees can answer the four things asked of them
+                <span class="paper-detail">Pupil progress · accessibility for pupils with SEND · content and materials aligned with the guidance · clear information for parents</span></td>
+              <td class="paper-ref">61</td><td class="is-centred"><span class="paper-tick"></span></td><td class="is-centred"><span class="paper-tick"></span></td><td></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div class="paper__spacer"></div>
+    </div>
+
+    <footer class="paper__foot">
+      <div class="paper-fields signoff">
+        <div class="paper-field"><span class="paper-field__label">Reviewed with / reported to</span><div class="paper-field__rule"></div></div>
+        <div class="paper-field"><span class="paper-field__label">Signed</span><div class="paper-field__rule"></div></div>
+      </div>
+      <p>Paragraph numbers refer to <em>Relationships Education, Relationships and Sex Education (RSE) and Health
+        Education</em>, Department for Education, July 2025, at
+        <a href="https://www.gov.uk/government/publications/relationships-education-relationships-and-sex-education-rse-and-health-education">gov.uk</a>.
+        Read alongside <em>Keeping children safe in education</em>.</p>
+      <p>A completed sheet records what you found on a particular date against the paragraphs named here. It is not
+        legal certification, and a specific situation may need your own legal advice.<span class="paper__pagenum">Side 2 of 2</span></p>
+    </footer>
+
+  </section>
+
+</PaperLayout>
+
+<style is:global>
+  /* Specific to this document: the proportions of the check table. The
+     table primitive in paper.css is generic; these column widths are a
+     property of *this* sheet's content, so they live with it. */
+  .check-table {
+    /* This sheet is a dense statutory checklist — 22 rows of legal checks
+       across two sides. It sets a tighter table size than the paper
+       system's default so the record stays two sides, which is what the
+       "Side 1 of 2" footers promise. */
+    --paper-table-font: 7.8pt;
+  }
+
+  .check-table .c-check { width: 46%; }
+  .check-table .c-ref   { width:  7%; }
+  .check-table .c-box   { width:  9%; }
+  .check-table .c-notes { width: 29%; }
+
+  /* Four identification fields read as one band across the top. */
+  .id-fields {
+    --paper-fields-cols: 4;
+  }
+
+  /* The sign-off block sits above the footnotes with a little air. */
+  .signoff {
+    margin-bottom: var(--paper-space-xs);
+  }
+</style>
