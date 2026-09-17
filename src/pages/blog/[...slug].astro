@@ -735,6 +735,60 @@ document.addEventListener('DOMContentLoaded', initShare);
     color: var(--text-body-muted);
   }
 
+  /* Markdown tables. A post cannot put a class on a table it writes as
+     markdown, so the bare element consumes the design system's
+     --table-* family here rather than falling through to browser
+     defaults. Without this the cells have no padding at all and a long
+     first-column value butts straight into the next column. */
+  .blog-post__body :global(.prose table) {
+    width: 100%;
+    margin: var(--space-global-lg) 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: var(--table-font-size);
+    line-height: var(--lh-ui);
+    color: var(--text-body);
+  }
+
+  .blog-post__body :global(.prose thead th) {
+    text-align: left;
+    font-size: var(--table-header-size);
+    font-weight: var(--table-header-weight);
+    letter-spacing: var(--table-header-tracking);
+    text-transform: uppercase;
+    color: var(--table-header-color);
+    background: var(--table-header-bg);
+    padding: var(--table-cell-padding-y) var(--table-cell-padding-x);
+    border-bottom: var(--border-width-xs) solid var(--table-border-color-strong);
+  }
+
+  .blog-post__body :global(.prose tbody td),
+  .blog-post__body :global(.prose tbody th) {
+    text-align: left;
+    font-weight: var(--font-weight-regular);
+    vertical-align: top;
+    padding: var(--table-cell-padding-y) var(--table-cell-padding-x);
+    border-bottom: var(--border-width-xs) solid var(--table-border-color);
+  }
+
+  /* A figure column reads as a column when the digits line up. */
+  .blog-post__body :global(.prose tbody td:not(:first-child)) {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  /* Wide tables scroll in their own right rather than pushing the page
+     sideways. Markdown gives no wrapper, so the table itself scrolls. */
+  @media (max-width: 640px) { /* below --bp-md, mobile */
+    .blog-post__body :global(.prose table) {
+      display: block;
+      overflow-x: auto;
+    }
+    .blog-post__body :global(.prose tbody td:not(:first-child)) {
+      white-space: normal;
+    }
+  }
+
   /* --- §4 Topic tags --- */
   .blog-post__tags-section {
     border-top: var(--border-width-xs) solid var(--border-subtle);

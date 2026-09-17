@@ -1736,6 +1736,195 @@ textarea.form-input {
     opacity: 0.5;
 }
 
+/* ── Range slider ──
+   Ported from the GDH master (SYSTEM-RULES.md §19, "Range Slider").
+   Track height and thumb size are component primitives with no scale
+   token to consume, so they are declared in the token family below and
+   referenced everywhere, per the extension rules.
+
+   Webkit has no ::-moz-range-progress equivalent, so the filled part of
+   the track is painted as a hard-stop gradient driven by
+   --form-range-value (0–100). Set that custom property from JS on input;
+   without it the track renders unfilled, which is the correct resting
+   state for a slider that has not been touched. */
+:root {
+    --form-range-height: 4px;
+    --form-range-radius: var(--radius-sm);
+    --form-range-bg: var(--neutral-300);
+    --form-range-fill-bg: var(--brand-accent);
+    --form-range-thumb-size: 20px;
+    --form-range-thumb-size-hover: 24px;
+    --form-range-thumb-bg: #ffffff;
+    --form-range-thumb-border: var(--border-width-sm) solid var(--brand-accent);
+    --form-range-thumb-shadow: var(--shadow-md);
+    /* Position of the fill edge, 0–100. JS updates this on input. */
+    --form-range-value: 0;
+}
+
+.form-range {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    background: transparent;
+    cursor: pointer;
+    /* Room for the thumb to overhang the track without clipping. */
+    padding-block: calc(var(--form-range-thumb-size-hover) / 2);
+    margin: 0;
+}
+
+/* Track: Webkit */
+.form-range::-webkit-slider-runnable-track {
+    height: var(--form-range-height);
+    border-radius: var(--form-range-radius);
+    background: linear-gradient(
+        to right,
+        var(--form-range-fill-bg) 0 calc(var(--form-range-value) * 1%),
+        var(--form-range-bg) calc(var(--form-range-value) * 1%) 100%
+    );
+}
+
+/* Track: Firefox */
+.form-range::-moz-range-track {
+    height: var(--form-range-height);
+    border-radius: var(--form-range-radius);
+    background: var(--form-range-bg);
+}
+
+.form-range::-moz-range-progress {
+    height: var(--form-range-height);
+    border-radius: var(--form-range-radius);
+    background: var(--form-range-fill-bg);
+}
+
+/* Thumb: Webkit */
+.form-range::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: var(--form-range-thumb-size);
+    height: var(--form-range-thumb-size);
+    border-radius: var(--radius-circle);
+    background: var(--form-range-thumb-bg);
+    border: var(--form-range-thumb-border);
+    box-shadow: var(--form-range-thumb-shadow);
+    /* Centre the thumb on the track. */
+    margin-top: calc((var(--form-range-height) - var(--form-range-thumb-size)) / 2);
+    transition: width var(--transition-duration) var(--transition-easing),
+        height var(--transition-duration) var(--transition-easing),
+        margin-top var(--transition-duration) var(--transition-easing);
+}
+
+/* Thumb: Firefox */
+.form-range::-moz-range-thumb {
+    width: var(--form-range-thumb-size);
+    height: var(--form-range-thumb-size);
+    box-sizing: border-box;
+    border-radius: var(--radius-circle);
+    background: var(--form-range-thumb-bg);
+    border: var(--form-range-thumb-border);
+    box-shadow: var(--form-range-thumb-shadow);
+    transition: width var(--transition-duration) var(--transition-easing),
+        height var(--transition-duration) var(--transition-easing);
+}
+
+/* Thumb scales up on hover and while dragging. */
+.form-range:hover::-webkit-slider-thumb,
+.form-range:active::-webkit-slider-thumb {
+    width: var(--form-range-thumb-size-hover);
+    height: var(--form-range-thumb-size-hover);
+    margin-top: calc(
+        (var(--form-range-height) - var(--form-range-thumb-size-hover)) / 2
+    );
+}
+.form-range:hover::-moz-range-thumb,
+.form-range:active::-moz-range-thumb {
+    width: var(--form-range-thumb-size-hover);
+    height: var(--form-range-thumb-size-hover);
+}
+
+/* Keyboard focus ring sits around the thumb, not the full-width input. */
+.form-range:focus {
+    outline: none;
+}
+.form-range:focus-visible::-webkit-slider-thumb {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+}
+.form-range:focus-visible::-moz-range-thumb {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
+}
+
+.form-range:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.surface--dark .form-range:focus-visible::-webkit-slider-thumb,
+.on-dark .form-range:focus-visible::-webkit-slider-thumb {
+    outline-color: var(--focus-ring-on-dark);
+}
+.surface--dark .form-range:focus-visible::-moz-range-thumb,
+.on-dark .form-range:focus-visible::-moz-range-thumb {
+    outline-color: var(--focus-ring-on-dark);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .form-range::-webkit-slider-thumb,
+    .form-range::-moz-range-thumb {
+        transition: none;
+    }
+}
+
+
+/* =========================================
+   PROGRESS
+   -----------------------------------------
+   Ported from the GDH master (SYSTEM-RULES.md
+   §26). Horizontal indicator for multi-step
+   processes. Width is set on .progress__bar
+   from JS or an inline style; put the ARIA
+   attributes on the .progress container.
+   ========================================= */
+
+:root {
+    --progress-height: 8px;
+    --progress-height-sm: 4px;
+    --progress-radius: var(--radius-pill);
+    --progress-bg: var(--neutral-200);
+    --progress-bar-bg: var(--brand-accent);
+}
+
+.progress {
+    width: 100%;
+    height: var(--progress-height);
+    border-radius: var(--progress-radius);
+    background: var(--progress-bg);
+    overflow: hidden;
+}
+
+.progress--sm {
+    height: var(--progress-height-sm);
+}
+
+.progress__bar {
+    height: 100%;
+    width: 0;
+    border-radius: inherit;
+    background: var(--progress-bar-bg);
+    transition: width var(--transition-duration) var(--transition-easing);
+}
+
+.surface--dark .progress,
+.on-dark .progress {
+    background: var(--border-subtle-on-dark);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .progress__bar {
+        transition: none;
+    }
+}
+
 
 /* =========================================
    BADGES / TAGS
