@@ -695,6 +695,18 @@ test('pillar hubs are their own type, not "other"', () => {
   assert.equal(isSearchableType('pillar'), false, 'site search still cannot');
 });
 
+test('free resources are their own type, not "other"', () => {
+  // Same fault the pillar hubs had. Marking the two /resources/ pages with
+  // data-pagefind-body put them in the Pagefind index, but the planner drops
+  // any reference whose type is out of scope, and /resources/ fell through to
+  // 'other', which neither scope admits: indexed and still unreachable.
+  assert.equal(getContentType('/resources/what-do-boys-actually-think/'), 'resources');
+  assert.equal(getContentType('/resources/rse-policy-audit-sheet/'), 'resources');
+  assert.equal(isSearchableType('resources'), true, 'site search can reach a resource');
+  assert.equal(isOtaSearchableType('resources'), false, 'OtA search cannot');
+  assert.ok(typeOrder.includes('resources'), 'resources must have a defined position');
+});
+
 test('the two search scopes are disjoint', () => {
   // The guarantee both surfaces rely on: a reader is looking either for a
   // service (chrome / B10) or for an answer (OtA). If a type ever appeared in
@@ -707,6 +719,7 @@ test('the two search scopes are disjoint', () => {
     'topics',
     'blog',
     'services',
+    'resources',
     'other',
   ];
   for (const type of everyType) {

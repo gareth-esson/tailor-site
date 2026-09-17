@@ -18,6 +18,7 @@ export type ContentType =
   | 'topics'
   | 'blog'
   | 'services'
+  | 'resources'
   | 'other';
 
 /**
@@ -31,15 +32,22 @@ export const typeLabels: Record<ContentType, string> = {
   topics: 'Topics',
   blog: 'Blog',
   services: 'Services',
+  resources: 'Free resources',
   other: 'Other',
 };
 
 /**
  * Display order for grouped results. Service-first ordering: a buyer
  * lands here looking to commission, not to browse — services lead.
+ *
+ * Free resources sit second: the quiz and the audit sheet are the things a
+ * PSHE lead can take away without talking to anyone, so they convert a
+ * browser into a return visit more readily than a post does. Position is a
+ * judgement call, not a constraint — move it if the analytics disagree.
  */
 export const typeOrder: ContentType[] = [
   'services',
+  'resources',
   'blog',
   'topics',
   'anonymous_question',
@@ -58,6 +66,7 @@ export function getContentType(url: string): ContentType {
   if (url.includes('/services/') || url.includes('/training')) {
     return 'services';
   }
+  if (url.includes('/resources/')) return 'resources';
   return 'other';
 }
 
@@ -72,6 +81,7 @@ export function getContentType(url: string): ContentType {
  */
 const SEARCHABLE_TYPES: ReadonlySet<ContentType> = new Set([
   'services',
+  'resources',
   'blog',
   'topics',
 ]);
