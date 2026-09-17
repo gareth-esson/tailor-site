@@ -310,7 +310,7 @@ The September 2026 update isn't a rewrite — it's a clarification…
 ---
 title: "The RSE guidance everyone's misreading"   # archive page title
 subject: "What everyone got wrong this week"      # email subject line — different from title
-preheader: "The DfE update isn't what most schools think it is."  # preview text in inbox
+preheader: "The DfE update isn't what it first appears."  # preview text in inbox
 sendDate: 2026-05-15
 sentAt: null  # populated when broadcast fires
 linkedBlogPost: "2026-rse-guidance-plain-english-summary"

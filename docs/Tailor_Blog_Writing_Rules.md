@@ -26,6 +26,9 @@ For use by Claude Code when drafting blog posts for tailoreducation.org.uk. Thes
 - Direct without being blunt; don't perform expertise; don't condescend.
 - Serious topics get weight, never dramatic effect. Never open on someone else's trauma.
 - **Assume good faith in schools and with parents.** A statement about the whole sector is fine when it describes something acting on schools from the outside — funding, workload, a guidance change landing mid-year. It isn't fine when it attributes the shortcoming to schools themselves. "Most schools are chronically under-funded" doesn't implicate the reader. "The consultation most schools run is a comment box" does. Where the gap is something schools are doing, describe the better version rather than the common one.
+  **The phrase "most schools" is banned outright** — in blog posts as well as
+  marketing copy, and mid-sentence as well as sentence-initial. See
+  `tone-of-voice.md` → "Banned: 'most schools'" for the four rewrite moves.
 - **Don't characterise the absent party as failing.** Parents who don't reply to a survey, schools that haven't updated a scheme, families who don't come to events: describe what happened, not what it says about them. "The parents who were never going to read a policy" writes off the people the post exists to serve.
 
 ## Things to avoid (the AI-tells list)

@@ -180,10 +180,6 @@ const jsonLd = [
     <section class="cluster-trust">
       <div class="cluster-trust__inner">
         <p class="cluster-trust__text">
-          Specialist RSE for UK schools
-          <span class="cluster-trust__sep">·</span>
-          Tailor Learning CIC
-          <span class="cluster-trust__sep">·</span>
           Built around the 2026 statutory guidance
           <span class="cluster-trust__sep">·</span>
           Direct teaching and staff CPD
@@ -191,19 +187,18 @@ const jsonLd = [
       </div>
     </section>
 
-    <!-- §2 How we can help -->
-    <div class="cluster-offer">
-      <ClusterOfferRoutes
-        headingId="cluster-routes-heading"
-        heading="Two ways to get this taught"
-        note="One lesson, a full sequence or a drop day. Everything is adapted to the year group, the prior knowledge in the room and what has already happened in your school."
-      />
-      {proofTestimonial && (
-        <div class="cluster-offer__proof">
-          <TestimonialCard testimonial={proofTestimonial} variant="band" />
+    {/* §2 Proof. The conversion routes now sit once, at §5, where intent is
+        highest. The testimonial uses the service pages' dark centred proof
+        band so it reads the same way across the site. */}
+    {proofTestimonial && (
+      <section class="service-proof-band on-dark">
+        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+          <div class="service-proof-band__inner">
+            <TestimonialCard testimonial={proofTestimonial} variant="band" />
+          </div>
         </div>
-      )}
-    </div>
+      </section>
+    )}
 
     <!-- §3 Our approach. The .prose wrapper is the same hook the blog
          template uses, so MDX output is typeset identically wherever it
@@ -221,50 +216,7 @@ const jsonLd = [
       )}
     </section>
 
-    <!-- The page's one branded visual moment. Dark surface, used once, so
-         the idea the whole sequence turns on reads as a chapter break
-         rather than three bullets inside the essay. .surface--dark swaps
-         headings, body text and focus rings automatically. -->
-    {data.needAnswerPairs?.length > 0 && (
-      <section class="need-answer surface--dark" aria-labelledby="need-answer-heading">
-        <div class="need-answer__inner">
-          <h2 id="need-answer-heading" class="need-answer__title">
-            A legitimate need is not the same as a good answer to it
-          </h2>
-          <ol class="need-answer__list" role="list">
-            {data.needAnswerPairs.map((pair) => (
-              <li class="need-answer__pair">
-                <p class="need-answer__theme">{pair.theme}</p>
-                <p class="need-answer__need">{pair.need}</p>
-                <p class="need-answer__answer">{pair.answer}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-    )}
 
-    <!-- Safeguarding — close to product information for a school buyer, so
-         it gets a panel rather than reading as another prose section. -->
-    {data.safeguarding?.points?.length > 0 && (
-      <section class="safeguarding" aria-labelledby="safeguarding-heading">
-        <div class="safeguarding__inner">
-          <div class="safeguarding__panel">
-            <h2 id="safeguarding-heading" class="safeguarding__title">
-              {data.safeguarding.title}
-            </h2>
-            {data.safeguarding.intro && (
-              <p class="safeguarding__intro">{data.safeguarding.intro}</p>
-            )}
-            <ul class="safeguarding__list" role="list">
-              {data.safeguarding.points.map((point) => (
-                <li class="safeguarding__point">{point}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-    )}
 
     <!-- §4 The sample unit -->
     {data.unit?.lessons?.length > 0 && (
@@ -433,132 +385,6 @@ const jsonLd = [
 </BaseLayout>
 
 <style>
-  /* Need vs answer — the page's one dark chapter ---------------- */
-
-  .need-answer__inner {
-    max-width: var(--container-max-shell);
-    margin-inline: auto;
-    padding-inline: var(--space-global-gutter);
-    padding-block: var(--space-struct-y-base);
-  }
-
-  .need-answer__title {
-    max-width: var(--container-max-hero-text);
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-display-size-h2);
-    font-weight: var(--heading-weight-h2);
-    line-height: var(--lh-heading);
-    text-wrap: balance;
-    margin: 0 0 var(--space-global-2xl);
-  }
-
-  .need-answer__list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: var(--space-global-xl);
-  }
-
-  /* The form is the teaching: the need, then a step down in weight to the
-     answer sold alongside it. A rule above each pair separates them so the
-     move is legible before the words are read. */
-  .need-answer__pair {
-    display: grid;
-    gap: var(--space-global-xs);
-    padding-top: var(--space-global-lg);
-    border-top: var(--border-width-xs) solid var(--border-subtle-on-dark);
-  }
-
-  .need-answer__theme {
-    font-size: var(--text-card-size-body);
-    font-weight: var(--font-weight-semibold);
-    letter-spacing: var(--section-eyebrow-ls);
-    text-transform: uppercase;
-    color: var(--on-dark-70);
-    margin: 0 0 var(--space-global-xs);
-  }
-
-  .need-answer__need {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-display-size-h3);
-    font-weight: var(--font-weight-regular);
-    line-height: var(--lh-heading);
-    text-wrap: pretty;
-    margin: 0;
-  }
-
-  .need-answer__answer {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-display-size-h3);
-    font-weight: var(--font-weight-regular);
-    line-height: var(--lh-heading);
-    text-wrap: pretty;
-    color: var(--on-dark-70);
-    margin: 0;
-  }
-
-  /* Safeguarding panel ------------------------------------------ */
-
-  .safeguarding__inner {
-    max-width: var(--container-max-shell);
-    margin-inline: auto;
-    padding-inline: var(--space-global-gutter);
-    padding-block: var(--space-struct-y-base);
-  }
-
-  /* Centred: a prose-width panel left-aligned in the shell reads as
-     stranded rather than deliberate, because nothing sits beside it. */
-  .safeguarding__panel {
-    max-width: var(--container-max-prose);
-    margin-inline: auto;
-    padding: var(--space-global-xl) var(--space-global-lg);
-    background: var(--bg-surface);
-    border: var(--border-width-xs) solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-  }
-
-  .safeguarding__title {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-card-size-h2);
-    font-weight: var(--heading-weight-h2);
-    color: var(--text-heading);
-    margin: 0 0 var(--space-global-sm);
-  }
-
-  .safeguarding__intro {
-    font-size: var(--text-prose-size-body);
-    line-height: var(--lh-prose);
-    color: var(--text-body-muted);
-    margin: 0 0 var(--space-global-lg);
-  }
-
-  .safeguarding__list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: var(--space-global-sm);
-  }
-
-  .safeguarding__point {
-    position: relative;
-    padding-left: var(--space-global-lg);
-    font-size: var(--text-card-size-body);
-    line-height: var(--lh-prose);
-    color: var(--text-body);
-  }
-
-  .safeguarding__point::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0.6em;
-    width: var(--space-global-sm);
-    height: var(--border-width-md);
-    background: var(--brand-accent);
-  }
-
   .cluster-hero__inner,
   .cluster-routes__inner,
   .cluster-body__inner,
@@ -716,21 +542,6 @@ const jsonLd = [
     font-size: var(--text-prose-size-body);
     line-height: var(--lh-prose);
     color: var(--text-heading);
-  }
-
-  /* §2 Offer ------------------------------------------------- */
-
-  .cluster-offer {
-    background: var(--bg-surface-alt);
-  }
-
-  /* The proof sits inside the offer band, directly under the two routes,
-     so the claim and the evidence for it are read together. */
-  .cluster-offer__proof {
-    max-width: var(--container-max-shell);
-    margin-inline: auto;
-    padding-inline: var(--space-global-gutter);
-    padding-bottom: var(--space-struct-y-base);
   }
 
   /* §3 Approach ------------------------------------------------ */

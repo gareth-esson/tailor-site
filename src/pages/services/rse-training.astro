@@ -40,7 +40,7 @@ const heroImageHeight = 872;
 const descriptionHeading = 'About RSE Training';
 
 const descriptionLead =
-  'The biggest barrier to good RSE in most schools isn\'t policy or curriculum, it\'s teacher confidence. Staff are asked to deliver topics they were never trained in, sometimes with a few hours\' notice, often with no clear framework for what to say when a student asks the question they were dreading.';
+  'The biggest barrier to good RSE is rarely policy or curriculum, it\'s teacher confidence. Staff are asked to deliver topics they were never trained in, sometimes with a few hours\' notice, often with no clear framework for what to say when a student asks the question they were dreading.';
 
 const descriptionBody = [
   'Our training is built around that reality. Rather than walking staff through a generic RSE overview, we focus on the specific moments teachers find hardest: managing disclosures, handling unexpected questions, pitching content age-appropriately, navigating parent concerns, and building the personal confidence to hold the room.',
@@ -269,8 +269,8 @@ const jsonLd = {
         <p class="service-callout__eyebrow">September 2026</p>
         <p class="service-callout__body">
           The DfE's revised RSE statutory guidance becomes mandatory from
-          September 2026. Most schools booking training this year are doing
-          it to land a curriculum revision before the deadline, especially
+          September 2026. Training booked this year is mostly aimed at landing
+          a curriculum revision before the deadline, especially
           the new content on online safety, AI literacy, and misogyny.
           {' '}<a href="/blog/2026-rse-guidance-plain-english-summary/">How to review your RSE against the 2026 guidance →</a>
         </p>
@@ -305,30 +305,30 @@ const jsonLd = {
       </div>
     </section>
 
-    <section class="service-proof-band on-dark">
-      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-        <div class="service-proof-band__inner">
-          {testimonialQuote && (
-            <>
+    {/* No testimonial for this service means no band at all — an
+        empty dark strip carrying only buttons is not proof. */}
+    {testimonialQuote && (
+      <section class="service-proof-band on-dark">
+        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+          <div class="service-proof-band__inner">
               <blockquote>
                 <p class="service-proof-band__quote">"{testimonialQuote}"</p>
               </blockquote>
               <span class="service-proof-band__source">{testimonialSource}</span>
-            </>
-          )}
-          <div class="service-proof-band__cta-wrap">
-            <a
-              href={`/contact/?service=${encodeURIComponent(serviceParam)}`}
-              class="btn btn--std btn--white-primary has-icon-hover w-full sm:w-auto"
-              data-analytics-event="cta_click"
-              data-analytics-cta-type="proof_band_enquire"
-              data-analytics-service-type={serviceParam}
-            >Equip your team</a>
-            <a href="/testimonials/" class="link-action link-action--muted link-action--card">Read more testimonials</a>
+            <div class="service-proof-band__cta-wrap">
+              <a
+                href={`/contact/?service=${encodeURIComponent(serviceParam)}`}
+                class="btn btn--std btn--white-primary has-icon-hover w-full sm:w-auto"
+                data-analytics-event="cta_click"
+                data-analytics-cta-type="proof_band_enquire"
+                data-analytics-service-type={serviceParam}
+              >Equip your team</a>
+              <a href="/testimonials/" class="link-action link-action--muted link-action--card">Read more testimonials</a>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    )}
 
     <ServiceFaq items={faqItems} heading="Questions schools ask before booking" />
 

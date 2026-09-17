@@ -6,6 +6,7 @@
  * shared with C3.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
+import CtaClosing from '../components/CtaClosing.astro';
 import { site } from '../lib/site';
 
 // --- Framework reference data ---
@@ -340,23 +341,15 @@ const aboutPageJsonLd = {
     </section>
 
     <!-- §4.6 Get in touch -->
-    <section class="approach-cta">
-      <div class="approach-cta__inner">
-        <div class="approach-cta__card">
-          <h2 class="approach-cta__title">Want to talk to us?</h2>
-          <p class="approach-cta__text">
-            If you have questions about how we work, what we teach, or
-            how we might help your school, we're happy to hear from you.
-          </p>
-          <a
-            class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto"
-            href="/contact/"
-          >
-            Get in touch
-          </a>
-        </div>
-      </div>
-    </section>
+    <CtaClosing
+      title="Want to talk to us?"
+      subtitle="If you have questions about how we work, what we teach, or how we might help your school, we're happy to hear from you."
+      primaryHref="/contact/"
+      primaryLabel="Get in touch"
+      secondaryHref="/services/"
+      secondaryLabel="Explore services"
+      ctaType="approach_closing"
+    />
   </div>
 </BaseLayout>
 
@@ -638,53 +631,9 @@ const aboutPageJsonLd = {
 
   /* -------------------------------------------------------------------- */
   /* §4.6 Get in touch                                                    */
-  /* -------------------------------------------------------------------- */
-  .approach-cta {
-    width: 100%;
-    background: var(--bg-page);
-  }
 
-  .approach-cta__inner {
-    margin-inline: auto;
-    width: 100%;
-    max-width: var(--container-max-hero-text);
-    padding: var(--space-global-xl) var(--space-global-gutter);
-  }
 
-  .approach-cta__card {
-    background: var(--bg-tinted);
-    border: var(--border-width-xs) solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    padding: var(--space-global-lg);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-global-sm);
-    text-align: center;
-  }
 
-  .approach-cta__title {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-prose-size-h2);
-    font-weight: var(--heading-weight-h2);
-    line-height: var(--lh-heading);
-    color: var(--text-heading);
-    margin: 0;
-  }
 
-  .approach-cta__text {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-prose-size-body);
-    font-weight: var(--font-weight-regular);
-    line-height: var(--lh-prose);
-    color: var(--text-body-muted);
-    margin: 0;
-    max-width: 32rem;
-  }
 
-  @media (max-width: 639px) {
-    .approach-cta__card {
-      padding: var(--space-global-md);
-    }
-  }
 </style>

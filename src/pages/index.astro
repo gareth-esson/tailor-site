@@ -7,6 +7,7 @@
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HeroImage from '../components/HeroImage.astro';
+import CtaClosing from '../components/CtaClosing.astro';
 import { heroPreload } from '../lib/hero-image';
 import { getLandingPages, getTestimonials } from '../lib/content';
 import { getTopicIllustrationPath } from '../lib/topic-illustrations';
@@ -133,7 +134,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   </section>
 
   <!-- ═══ §3 TRAINING & SUPPORT (was §4) ═══ -->
-  <section class="home-training surface--alt" aria-labelledby="training-heading">
+  <section class="home-training surface--tint" aria-labelledby="training-heading">
     <div class="home-training__inner split-layout">
       <div class="home-training__text split-layout__text">
         <h2 id="training-heading" class="home-training__title">Help your team teach this with confidence</h2>
@@ -248,7 +249,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   </section>
 
   <!-- ═══ §6 OKAY TO ASK BOOK ═══ -->
-  <section class="home-book" aria-labelledby="book-heading">
+  <section class="home-book surface--tint" aria-labelledby="book-heading">
     <div class="home-book__inner split-layout split-layout--image-left">
       <div class="home-book__text split-layout__text">
         <h2 id="book-heading" class="home-book__title">The questions pupils want answered, in book form</h2>
@@ -317,22 +318,16 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   </section>
 
   <!-- ═══ §8 CLOSING CTA ═══ -->
-  <section class="home-cta surface--dark" aria-labelledby="cta-heading">
-    <div class="home-cta__inner">
-      <h2 id="cta-heading" class="home-cta__title">Want to talk about RSE at your school?</h2>
-      <p class="home-cta__subtitle">
-        Tell us where you're starting from, and we'll work out what Tailor can do.
-      </p>
-      <div class="home-cta__actions">
-        <a href="/contact/" class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto">
-          Get in touch
-        </a>
-        <a href="/services/" class="btn btn--std btn--tint has-icon-hover w-full sm:w-auto">
-          Explore services
-        </a>
-      </div>
-    </div>
-  </section>
+  <CtaClosing
+    headingId="cta-heading"
+    title="Want to talk about RSE at your school?"
+    subtitle="Tell us where you're starting from, and we'll work out what Tailor can do."
+    primaryHref="/contact/"
+    primaryLabel="Get in touch"
+    secondaryHref="/services/"
+    secondaryLabel="Explore services"
+    ctaType="home_closing"
+  />
 </BaseLayout>
 
 <style>
@@ -497,13 +492,14 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   }
 
   .home-delivery__inner {
+    /* Portrait media. The default 4/3 left the image shorter than the text
+       column in every split section; 4/5 makes it the taller element, so the
+       row reads as a full-bleed image beside copy rather than a stub. Set
+       per-instance via the split-layout token, not by overriding the class. */
+    --split-media-aspect: 4 / 5;
     max-width: var(--container-max-shell);
     margin: 0 auto;
     width: 100%;
-  }
-
-  .home-delivery__text {
-    max-width: var(--container-max-prose);
   }
 
   .home-delivery__photo {
@@ -539,18 +535,19 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
 
   /* --- §4 Training & support --- */
   .home-training {
-    background: var(--bg-page);
+    /* Background comes from .surface--tint on the section. */
     padding: var(--space-struct-y-base) var(--space-global-gutter);
   }
 
   .home-training__inner {
+    /* Portrait media. The default 4/3 left the image shorter than the text
+       column in every split section; 4/5 makes it the taller element, so the
+       row reads as a full-bleed image beside copy rather than a stub. Set
+       per-instance via the split-layout token, not by overriding the class. */
+    --split-media-aspect: 4 / 5;
     max-width: var(--container-max-shell);
     margin: 0 auto;
     width: 100%;
-  }
-
-  .home-training__text {
-    max-width: var(--container-max-prose);
   }
 
   .home-training__preheader {
@@ -575,7 +572,7 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   }
 
   .home-training__detail {
-    font-size: var(--text-card-size-body);
+    font-size: var(--text-prose-size-body);
     color: var(--text-body-muted);
     line-height: var(--lh-body);
     margin: 0 0 var(--space-global-lg);
@@ -774,6 +771,11 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   }
 
   .home-book__inner {
+    /* Portrait media. The default 4/3 left the image shorter than the text
+       column in every split section; 4/5 makes it the taller element, so the
+       row reads as a full-bleed image beside copy rather than a stub. Set
+       per-instance via the split-layout token, not by overriding the class. */
+    --split-media-aspect: 4 / 5;
     max-width: var(--container-max-shell);
     margin: 0 auto;
     width: 100%;
@@ -790,10 +792,6 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     height: auto;
     border-radius: var(--radius-sm);
     filter: drop-shadow(var(--book-cover-shadow-1)) drop-shadow(var(--book-cover-shadow-2));
-  }
-
-  .home-book__text {
-    max-width: var(--container-max-prose);
   }
 
   .home-book__title {
@@ -987,42 +985,6 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
   }
 
   /* --- §8 Closing CTA --- */
-  .home-cta {
-    background-color: var(--hero-tailor-bg);
-    padding: var(--space-global-2xl) var(--space-global-gutter);
-  }
-
-  .home-cta__inner {
-    max-width: var(--container-max-hero-text);
-    margin: 0 auto;
-    width: 100%;
-    text-align: center;
-  }
-
-  .home-cta__title {
-    font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-display-size-h2);
-    font-weight: var(--heading-weight-h2);
-    line-height: var(--lh-heading);
-    color: var(--text-heading-on-dark);
-    margin: 0 0 var(--space-global-md);
-  }
-
-  .home-cta__subtitle {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-util-hero-subhead-size);
-    font-weight: var(--font-weight-regular);
-    line-height: var(--lh-heading-sub);
-    color: var(--text-on-dark-strapline);
-    margin: 0 auto var(--space-global-lg);
-  }
-
-  .home-cta__actions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--space-global-sm);
-  }
 
   /* --- Responsive --- */
   @media (min-width: 768px) {
@@ -1049,13 +1011,8 @@ const trainingPhoto = '/images/services/tailor-education-teachers-reviewing-rse-
     }
 
     .hero-teacher__actions .btn,
-    .home-training__actions .btn,
-    .home-cta__actions .btn {
+    .home-training__actions .btn {
       width: 100%;
-    }
-
-    .home-cta {
-      padding: var(--space-global-xl) var(--space-global-gutter);
     }
 
     .home-trust__badges {

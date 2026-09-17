@@ -1,0 +1,108 @@
+---
+/**
+ * Closing CTA — the full-bleed dark band used at the foot of a page.
+ *
+ * Extracted from the homepage's `.home-cta` in Sept 2026 and rolled out to the
+ * other marketing pages, which were each carrying their own lighter card-style
+ * closing block. One pattern, one set of tokens.
+ *
+ * Sits on --bg-emphasis-raised rather than --bg-emphasis so the band still
+ * reads as its own surface directly above the footer, which is --bg-emphasis.
+ */
+interface Props {
+  title: string;
+  /** Optional supporting line under the title. */
+  subtitle?: string | null;
+  primaryHref: string;
+  primaryLabel: string;
+  /** Second, lower-emphasis route. Omit for a single-action CTA. */
+  secondaryHref?: string | null;
+  secondaryLabel?: string | null;
+  /** Passed through to the primary button for analytics. */
+  ctaType?: string | null;
+  serviceType?: string | null;
+  /** Heading id, so the calling page can point aria-labelledby at it. */
+  headingId?: string;
+}
+
+const {
+  title,
+  subtitle = null,
+  primaryHref,
+  primaryLabel,
+  secondaryHref = null,
+  secondaryLabel = null,
+  ctaType = null,
+  serviceType = null,
+  headingId = 'cta-closing-heading',
+} = Astro.props;
+---
+
+<section class="cta-closing surface--dark" aria-labelledby={headingId}>
+  <div class="cta-closing__inner">
+    <h2 id={headingId} class="cta-closing__title">{title}</h2>
+    {subtitle && <p class="cta-closing__subtitle">{subtitle}</p>}
+    <div class="cta-closing__actions">
+      <a
+        href={primaryHref}
+        class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto"
+        data-analytics-event="cta_click"
+        data-analytics-cta-type={ctaType}
+        data-analytics-service-type={serviceType}
+      >{primaryLabel}</a>
+      {secondaryHref && secondaryLabel && (
+        <a
+          href={secondaryHref}
+          class="btn btn--std btn--tint has-icon-hover w-full sm:w-auto"
+        >{secondaryLabel}</a>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-closing {
+    background-color: var(--bg-emphasis-raised);
+    padding: var(--space-global-2xl) var(--space-global-gutter);
+  }
+
+  /* Centred CTA with nothing flanking it → hero-text measure, per the
+     container-width decision tree. */
+  .cta-closing__inner {
+    max-width: var(--container-max-hero-text);
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+  }
+
+  .cta-closing__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h2);
+    font-weight: var(--heading-weight-h2);
+    line-height: var(--lh-heading);
+    color: var(--text-heading-on-dark);
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .cta-closing__subtitle {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-util-hero-subhead-size);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--lh-heading-sub);
+    color: var(--text-on-dark-strapline);
+    margin: 0 auto var(--space-global-lg);
+  }
+
+  .cta-closing__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-global-sm);
+  }
+
+  @media (max-width: 639px) { /* --bp-sm */
+    .cta-closing {
+      padding: var(--space-global-xl) var(--space-global-gutter);
+    }
+  }
+</style>
