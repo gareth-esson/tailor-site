@@ -690,6 +690,15 @@ document.addEventListener('DOMContentLoaded', initShare);
     line-height: var(--lh-prose);
   }
 
+  /* An in-page link lands the heading at the top of the viewport, which is
+     exactly where the sticky header sits, so the heading is hidden behind it
+     and the reader arrives at the first line of the paragraph below. Clear
+     the header plus a gap. */
+  .blog-post__body :global(.prose h2[id]),
+  .blog-post__body :global(.prose h3[id]) {
+    scroll-margin-top: calc(var(--header-height) + var(--space-global-md));
+  }
+
   .blog-post__body :global(.prose h2) {
     font-family: var(--font-tailor-heading-stack);
     font-size: var(--text-prose-size-h2);
