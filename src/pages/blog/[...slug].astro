@@ -708,6 +708,15 @@ document.addEventListener('DOMContentLoaded', initShare);
     margin-bottom: var(--space-global-xs);
   }
 
+  /* Skip link authored at the top of a post body. Small and muted, matching
+     .blog-post__meta, so it reads as navigation rather than as the opening
+     sentence. Only posts long enough to need one carry it. */
+  .blog-post__body :global(.prose .blog-post__skip) {
+    margin: 0 0 var(--space-global-md);
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+  }
+
   .blog-post__body :global(.prose p) {
     margin-bottom: var(--space-global-sm);
   }
