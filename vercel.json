@@ -168,6 +168,8 @@
     { "source": "/category/:slug", "destination": "/topics/", "permanent": true },
     { "source": "/project_category/:slug", "destination": "/topics/", "permanent": true },
 
+    { "source": "/anonymous_question/when-do-your-balls-drop-2/", "destination": "/anonymous_question/when-do-your-balls-drop/", "permanent": true },
+
     { "source": "/about-us", "destination": "/about/", "permanent": true },
     { "source": "/contact-us", "destination": "/contact/", "permanent": true },
     { "source": "/our-services", "destination": "/services/", "permanent": true },
