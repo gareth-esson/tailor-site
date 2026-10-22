@@ -1,6 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
+import { enquirySourceLabel } from '../../lib/enquiry-sources.js';
 
 /**
  * Enquiry form endpoint.
@@ -202,6 +203,13 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     };
     const roleLabel = roleLabels[role] ?? role;
 
+    // "How did you hear about us?" is optional, so an unknown value is
+    // dropped rather than rejected: losing the answer beats losing the
+    // enquiry.
+    const heardAbout = typeof body.heard_about === 'string'
+      ? enquirySourceLabel(body.heard_about)
+      : null;
+
     const schoolLine = school
       ? (schoolUrn ? `School: ${school} (URN: ${schoolUrn})` : `School: ${school}`)
       : null;
@@ -217,6 +225,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       orgLine,
       `Service: ${service}`,
       keystage ? `Key stage / year group: ${keystage}` : null,
+      `Heard about us: ${heardAbout ?? 'Not given'}`,
       message ? `\nMessage:\n${message}` : null,
     ]
       .filter(Boolean)

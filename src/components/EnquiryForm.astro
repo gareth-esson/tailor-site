@@ -6,6 +6,7 @@
  * School field: combobox against GIAS register; must pick from list or skip.
  */
 import { ENQUIRY_SERVICES } from '../lib/enquiry-services.js';
+import { ENQUIRY_SOURCES } from '../lib/enquiry-sources.js';
 
 interface Props {
   /** Pre-selected service from URL param */
@@ -203,6 +204,20 @@ const roleOptions = [
       id="enquiry-keystage"
       name="keystage"
     />
+  </div>
+
+  <div class="form-group" data-field="heard-about">
+    <label class="form-label" for="enquiry-heard-about">How did you hear about us?</label>
+    <select
+      class="form-select"
+      id="enquiry-heard-about"
+      name="heard_about"
+    >
+      <option value="">Please select</option>
+      {ENQUIRY_SOURCES.map((opt) => (
+        <option value={opt.value}>{opt.label}</option>
+      ))}
+    </select>
   </div>
 
   <div class="form-group" data-field="message">
@@ -584,6 +599,7 @@ const roleOptions = [
             service: data.get('service'),
             keystage: showsKs ? (data.get('keystage') || null) : null,
             message: data.get('message'),
+            heard_about: data.get('heard_about') || null,
             website: data.get('website'),                      // honeypot
             cf_turnstile_response: data.get('cf-turnstile-response'),
           }),
@@ -598,6 +614,7 @@ const roleOptions = [
             window.trackEvent('service_enquiry_submitted', {
               service_type: data.get('service') as string,
               source_page: window.location.pathname,
+              heard_about: (data.get('heard_about') as string) || 'not_given',
             });
           }
         } else {
