@@ -1,0 +1,456 @@
+---
+/**
+ * Training session page [C7] — /services/rse-training/{slug}
+ *
+ * One named staff-training session from the catalogue. A school can book
+ * it as it stands: the price, the lengths and what each length covers are
+ * all on the page, so a PSHE lead can take it to SLT without writing to
+ * ask. The hub at /services/rse-training/ lists every session.
+ *
+ * Built from the parts the service and cluster pages already use, so a
+ * session reads as part of the same site: ServiceMetaStrip for the facts,
+ * feature cards for what's covered and for the three lengths, QuestionCard
+ * for the handed-in questions, ServiceFaq, ServiceTopicsStrip and the
+ * shared enquiry CTA.
+ *
+ * Section order:
+ *   §1 Hero, with the booking button
+ *   §2 At a glance (lengths, prices, audience, group size)
+ *   §3 Why this training (MDX body) and what staff will be able to do
+ *   §4 What it covers
+ *   §5 Choose a length, with what each one covers
+ *   §6 Real questions it prepares staff for
+ *   §7 Proof, when a testimonial exists
+ *   §8 Questions about this session
+ *   §9 Further reading and resources
+ *   §10 Related topics
+ *   §11 Enquiry CTA
+ *
+ * Title and prices come from src/lib/training.js, not the MDX, so the
+ * form, the email and every page name and price a session the same way.
+ */
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../../components/Breadcrumb.astro';
+import QuestionCard from '../../../components/QuestionCard.astro';
+import ServiceMetaStrip from '../../../components/ServiceMetaStrip.astro';
+import ServiceFaq from '../../../components/ServiceFaq.astro';
+import ServiceTopicsStrip from '../../../components/ServiceTopicsStrip.astro';
+import CtaServiceEnquiry from '../../../components/CtaServiceEnquiry.astro';
+import TestimonialCard from '../../../components/TestimonialCard.astro';
+import { getQuestions, getBlogPosts, getTestimonialsByService } from '../../../lib/content';
+import { breadcrumbJsonLd, faqJsonLd, serviceJsonLd, site } from '../../../lib/site';
+import {
+  TRAINING_FORMATS,
+  formatPrice,
+  rateCardLine,
+  trainingSessionTitle,
+} from '../../../lib/training.js';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  // Drafts and sessions in review build under `astro dev` only, so a page
+  // can be read on the local site before it goes live.
+  const sessions = (await getCollection('training')).filter(
+    (s) => s.data.status === 'Published' || import.meta.env.DEV,
+  );
+  const [questions, posts] = await Promise.all([getQuestions(), getBlogPosts()]);
+
+  return sessions.map((session) => {
+    // Resolve by slug; anything that no longer resolves is dropped and
+    // warned rather than rendered dead.
+    const pick = (slugs: string[], pool: any[], kind: string) =>
+      slugs
+        .map((slug) => {
+          const hit = pool.find((item) => item.slug === slug);
+          if (!hit) console.warn(`[training:${session.id}] ${kind} not found: ${slug}`);
+          return hit;
+        })
+        .filter(Boolean);
+
+    return {
+      params: { slug: session.id },
+      props: {
+        session,
+        questions: pick(session.data.questionSlugs, questions, 'question'),
+        posts: pick(session.data.postSlugs, posts, 'post'),
+      },
+    };
+  });
+}
+
+const { session, questions, posts } = Astro.props;
+const { data } = session;
+const { Content } = await render(session);
+
+const title = trainingSessionTitle(session.id);
+if (!title) {
+  // tests/training-catalogue.test.mjs catches this first; this is the
+  // build-time backstop so a page can't ship under a name the form lacks.
+  throw new Error(`[training] ${session.id} is not in TRAINING_SESSIONS (src/lib/training.js)`);
+}
+
+const canonicalPath = `/services/rse-training/${session.id}/`;
+const hubPath = '/services/rse-training/';
+/** Value sent as ?service= — must be one of ENQUIRY_SERVICES (src/lib/enquiry-services.js). */
+const enquiryService = 'RSE training';
+const enquiryHref = `/contact/?service=${encodeURIComponent(enquiryService)}&session=${encodeURIComponent(session.id)}`;
+
+const metaStripItems = [
+  ...TRAINING_FORMATS.map((f) => ({ label: f.label, value: `${f.length}, ${formatPrice(f.price)}` })),
+  { label: 'For', value: data.audience },
+  { label: 'Group size', value: 'Up to 20 per facilitator' },
+  { label: 'Travel', value: 'At cost' },
+];
+
+const formatCards = TRAINING_FORMATS.map((f) => ({
+  title: `${f.label}, ${f.length}, ${formatPrice(f.price)}`,
+  description: data.formats[f.key as keyof typeof data.formats],
+}));
+
+const [proofTestimonial] = data.testimonialTag
+  ? await getTestimonialsByService(data.testimonialTag as any)
+  : [];
+
+const metaDescription = data.metaDescription || data.promise;
+
+const courseNode = {
+  '@type': 'Course',
+  '@id': `${site.url}${canonicalPath}#course`,
+  name: title,
+  description: metaDescription,
+  provider: { '@id': `${site.url}/#organization` },
+  educationalCredentialAwarded: 'Certificate of completion',
+  about: 'Relationships and Sex Education',
+  inLanguage: site.schemaLocale,
+  audience: [
+    { '@type': 'EducationalAudience', educationalRole: 'Teacher' },
+    { '@type': 'EducationalAudience', educationalRole: 'PSHE lead' },
+  ],
+  courseMode: 'Onsite',
+  hasCourseInstance: TRAINING_FORMATS.map((f) => ({
+    '@type': 'CourseInstance',
+    name: `${f.label} session`,
+    courseMode: 'Onsite',
+    courseWorkload: f.workload,
+    location: { '@type': 'Place', name: 'Client school site, UK' },
+    offers: {
+      '@type': 'Offer',
+      price: f.price,
+      priceCurrency: 'GBP',
+      description: `${formatPrice(f.price)}, plus travel at cost`,
+      url: `${site.url}${enquiryHref}`,
+    },
+  })),
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    serviceJsonLd({
+      name: title,
+      description: metaDescription,
+      canonicalPath,
+      enquiryValue: enquiryService,
+      serviceType: 'Teacher training',
+      audienceRoles: ['School leader', 'PSHE lead', 'Teacher'],
+      offer: { priceText: rateCardLine() },
+    }),
+    courseNode,
+    ...(data.faqs.length > 0 ? [faqJsonLd(data.faqs)] : []),
+    breadcrumbJsonLd([
+      { name: 'Services', path: '/services/' },
+      { name: 'RSE training', path: hubPath },
+      { name: title, path: canonicalPath },
+    ]),
+  ],
+};
+---
+
+<BaseLayout
+  title={data.metaTitle || `${title}: RSE training for school staff | Tailor RSE`}
+  description={metaDescription}
+  canonicalPath={canonicalPath}
+  jsonLd={jsonLd}
+>
+  <article class="training-session" data-pagefind-body>
+
+    <!-- §1 Hero -->
+    <header class="training-hero">
+      <div class="training-hero__inner">
+        <Breadcrumb
+          trail={[
+            { name: 'Services', path: '/services/' },
+            { name: 'RSE training', path: hubPath },
+            { name: title, path: canonicalPath },
+          ]}
+        />
+        <div class="training-hero__text">
+          <span class="service-hero__eyebrow">RSE training</span>
+          <h1 class="training-hero__title" data-pagefind-meta="title">{title}</h1>
+          <p class="training-hero__lede">{data.promise}</p>
+          <a
+            href={enquiryHref}
+            class="btn btn--std btn--primary has-icon-hover w-full sm:w-auto"
+            data-analytics-event="cta_click"
+            data-analytics-cta-type="training_session_book"
+            data-analytics-service-type={enquiryService}
+            data-analytics-session={session.id}
+          >Book this training</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- §2 At a glance -->
+    <ServiceMetaStrip items={metaStripItems} ariaLabel={`${title} at a glance`} />
+
+    <!-- §3 Why this training, and what staff will be able to do -->
+    <section class="service-description">
+      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <h2 class="service-section-title">Why this training</h2>
+        <div class="training-body">
+          <Content />
+        </div>
+        {data.outcomes.length > 0 && (
+          <>
+            <h2 class="service-description__sub-title">What staff will be able to do</h2>
+            <ul class="training-outcomes">
+              {data.outcomes.map((outcome) => <li>{outcome}</li>)}
+            </ul>
+          </>
+        )}
+      </div>
+    </section>
+
+    <!-- §4 What it covers -->
+    {data.covers.length > 0 && (
+      <section class="service-features">
+        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+          <h2 class="service-section-title">What it covers</h2>
+          <div class="service-features__grid">
+            {data.covers.map((card) => (
+              <div class="feature-card">
+                <h3 class="feature-card__title">{card.title}</h3>
+                <p class="feature-card__text">{card.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- §5 Choose a length. Every session is sold at the same three
+         lengths; what changes is how much each one covers. -->
+    <section class="training-formats">
+      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+        <h2 class="service-section-title">Choose a length</h2>
+        <p class="training-formats__note">
+          Prices are per session, for one school, with up to 20 staff per
+          facilitator, plus travel at cost. Every member of staff receives a
+          certificate of completion and keeps the resources from the day.
+        </p>
+        <div class="service-features__grid">
+          {formatCards.map((card) => (
+            <div class="feature-card">
+              <h3 class="feature-card__title">{card.title}</h3>
+              <p class="feature-card__text">{card.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- §6 Real questions. The same QuestionCard the topic and cluster
+         pages use, so a handed-in note looks the same everywhere. -->
+    {questions.length > 0 && (
+      <section class="training-asks" aria-labelledby="training-asks-heading">
+        <div class="training-asks__inner">
+          <h2 id="training-asks-heading" class="service-section-title">
+            Questions this training prepares staff for
+          </h2>
+          <p class="training-asks__note">
+            Questions pupils handed us anonymously, on paper, in schools we
+            have worked in. Printed as they were written. Every one is
+            answered in full on Okay to Ask.
+          </p>
+          <ul class="training-asks__grid" role="list">
+            {questions.map((q: any) => (
+              <li>
+                <QuestionCard question={q} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
+
+    <!-- §7 Proof -->
+    {proofTestimonial && (
+      <section class="service-proof-band on-dark">
+        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+          <div class="service-proof-band__inner">
+            <TestimonialCard testimonial={proofTestimonial} variant="band" />
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- §8 Questions about this session -->
+    {data.faqs.length > 0 && (
+      <ServiceFaq items={data.faqs} heading="Questions about this session" />
+    )}
+
+    <!-- §9 Further reading and resources. Blog posts and on-site
+         resources share the service pages' card treatment. -->
+    {(posts.length > 0 || data.resources.length > 0) && (
+      <section class="service-blog">
+        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+          <h2 class="service-section-title">Further reading and resources</h2>
+          <div class="service-blog__grid">
+            {data.resources.map((r) => (
+              <a href={r.href} class="card card--lift service-blog-card">
+                <div class="card__body">
+                  <div class="card__eyebrow">Resource</div>
+                  <h3 class="card__title">{r.title}</h3>
+                  {r.description && <p class="card__text">{r.description}</p>}
+                </div>
+              </a>
+            ))}
+            {posts.map((bp: any) => (
+              <a href={`/blog/${bp.slug}/`} class="card card--lift service-blog-card">
+                {bp.featuredImage && (
+                  <div class="service-blog-card__img">
+                    <img src={bp.featuredImage} alt="" loading="lazy" />
+                  </div>
+                )}
+                <div class="card__body">
+                  {bp.targetAudience && <div class="card__eyebrow">{bp.targetAudience}</div>}
+                  <h3 class="card__title">{bp.title}</h3>
+                  {bp.author && <div class="service-blog-card__author">By {bp.author}</div>}
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- §10 Related topics -->
+    {data.topicSlugs.length > 0 && <ServiceTopicsStrip featuredSlugs={data.topicSlugs} />}
+
+    <!-- §11 Enquiry -->
+    <CtaServiceEnquiry
+      serviceName={title}
+      serviceParam={enquiryService}
+      session={session.id}
+      variant="alt"
+    />
+
+  </article>
+</BaseLayout>
+
+<style>
+  .training-hero__inner,
+  .training-asks__inner {
+    max-width: var(--container-max-shell);
+    margin-inline: auto;
+    padding-inline: var(--space-global-gutter);
+  }
+
+  /* §1 Hero: text-only, matching the cluster pages' hero. */
+  .training-hero__inner {
+    padding-block: var(--space-struct-y-hero) var(--space-global-xl);
+  }
+
+  .training-hero__text {
+    max-width: var(--container-max-hero-text);
+    margin-top: var(--space-global-lg);
+  }
+
+  .training-hero__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-display-size-h1);
+    font-weight: var(--heading-weight-h1);
+    line-height: var(--lh-heading);
+    color: var(--text-heading);
+    text-wrap: balance;
+    margin: 0 0 var(--space-global-md);
+  }
+
+  .training-hero__lede {
+    font-size: var(--text-prose-size-lede);
+    line-height: var(--lh-prose);
+    color: var(--text-body);
+    margin: 0 0 var(--space-global-lg);
+  }
+
+  /* §3 The MDX body inherits .service-description p; links inside it
+     need the system's inline-link treatment. */
+  .training-body :global(a) {
+    color: var(--link-default);
+    text-decoration: underline;
+    text-decoration-color: var(--link-underline-rest);
+    text-underline-offset: 0.15em;
+  }
+
+  .training-body :global(a:hover) {
+    color: var(--link-hover);
+    text-decoration-color: var(--link-underline-hover);
+  }
+
+  .training-outcomes {
+    margin: 0;
+    padding-left: var(--space-global-md);
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-prose-size-body);
+    line-height: var(--lh-prose);
+    color: var(--text-body);
+  }
+
+  .training-outcomes li + li {
+    margin-top: var(--space-global-xs);
+  }
+
+  /* §5 Lengths */
+  .training-formats__note {
+    max-width: var(--container-max-hero-text);
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+    margin: 0 0 var(--space-global-lg);
+  }
+
+  /* §6 Questions: the cluster pages' grid. */
+  .training-asks__inner {
+    padding-block: var(--space-struct-y-base);
+  }
+
+  .training-asks__note {
+    max-width: var(--container-max-hero-text);
+    font-size: var(--text-card-size-body);
+    color: var(--text-body-muted);
+    margin: 0 0 var(--space-global-lg);
+  }
+
+  .training-asks__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-global-md);
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  @media (min-width: 640px) { /* --bp-md */
+    .training-asks__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) { /* --bp-lg */
+    .training-asks__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

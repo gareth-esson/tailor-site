@@ -12,8 +12,10 @@ import CtaServiceEnquiry from '../../components/CtaServiceEnquiry.astro';
 import ServiceFaq from '../../components/ServiceFaq.astro';
 import ServiceMetaStrip from '../../components/ServiceMetaStrip.astro';
 import ServiceTopicsStrip from '../../components/ServiceTopicsStrip.astro';
+import { getCollection } from 'astro:content';
 import { getBlogPosts, getTestimonialsByService } from '../../lib/content';
 import { serviceJsonLd, breadcrumbJsonLd, faqJsonLd, site } from '../../lib/site';
+import { rateCardLine, trainingSessionTitle } from '../../lib/training.js';
 
 // --- Data ----------------------------------------------------------
 const slug = 'rse-training';
@@ -40,18 +42,33 @@ const heroImageHeight = 872;
 const descriptionHeading = 'About RSE Training';
 
 const descriptionLead =
-  'The biggest barrier to good RSE is rarely policy or curriculum, it\'s teacher confidence. Staff are asked to deliver topics they were never trained in, sometimes with a few hours\' notice, often with no clear framework for what to say when a student asks the question they were dreading.';
+  'This training builds the confidence to teach RSE well: a shared framework for pitching any topic, and practised wording for difficult questions and disclosures.';
 
 const descriptionBody = [
-  'Our training is built around that reality. Rather than walking staff through a generic RSE overview, we focus on the specific moments teachers find hardest: managing disclosures, handling unexpected questions, pitching content age-appropriately, navigating parent concerns, and building the personal confidence to hold the room.',
+  'It focuses on the parts of RSE that need more than subject knowledge: managing disclosures, answering unexpected questions, pitching content for each age group, and responding to parents\' concerns.',
   'Every session is led by a specialist who has delivered RSE directly to students in hundreds of schools. That matters. The training isn\'t theoretical, it\'s shaped by what actually happens in the classroom, and what actually works.',
   'We don\'t run a catalogue of separate sessions. Every engagement starts from a shared core and is shaped to what your staff are actually being asked to teach, in your school, this year.',
   'We offer half-day, full-day, and multi-session programmes, delivered in person at your school. Programmes are aligned to DfE statutory guidance, KCSIE, and the PSHE Association framework.',
 ];
 
 // One pricing line, shared by the meta strip and both schema offers so
-// the page and the structured data can't quote different prices.
-const pricingText = 'Twilight from £450, half day from £650, full day from £950, plus travel at cost';
+// the page and the structured data can't quote different prices. Built
+// from the rate card in src/lib/training.js, which the session pages use.
+const pricingText = rateCardLine({ from: true });
+
+// The catalogue: one card per named session, plus bespoke. Sessions in
+// Draft or In Review appear under `astro dev` only, matching the session
+// pages, so the section stays hidden in production until one is published.
+const catalogue = (await getCollection('training'))
+  .filter((s) => s.data.status === 'Published' || import.meta.env.DEV)
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((s) => ({
+    href: `/services/rse-training/${s.id}/`,
+    title: trainingSessionTitle(s.id) ?? s.id,
+    audience: s.data.audience,
+    promise: s.data.promise,
+  }));
+const bespokeHref = `/contact/?service=${encodeURIComponent(enquiryService)}&session=bespoke`;
 
 // Operational specifics for the meta strip — shown between hero and
 // description. Edit values here, not in the markup.
@@ -81,7 +98,7 @@ const faqItems = [
   {
     question: 'Do you cover the hard topics — FGM, pornography, consent, masculinity?',
     answer:
-      'Yes. These are usually the reason schools call us. We cover them with the same framework we use for the easier topics: what to say when you\'re asked the question, how to pitch it for the year group in front of you, and what to do when the conversation moves somewhere unexpected. Avoiding the hard topics in training doesn\'t make them easier in the classroom.',
+      'Yes. They\'re covered with the same framework as every other topic: what to say when a pupil asks about them, how to pitch them for the year group, and what to do when a discussion moves somewhere unexpected.',
   },
   {
     question: 'Is the training appropriate for staff who\'ve never taught RSE before?',
@@ -91,7 +108,7 @@ const faqItems = [
   {
     question: 'How is your training different from a generic RSE walkthrough?',
     answer:
-      'It\'s led by someone who teaches the same content directly to students, in dozens of schools every term. That means the examples are real, the scripts have been tested in front of Year 9, and the difficult moments come from the classroom rather than the textbook. We focus on what to do when something goes off-plan, because that\'s the part teachers find hardest.',
+      'It\'s led by someone who teaches the same content directly to students, in dozens of schools every term, so the examples and scripts have been tested with pupils. The training gives particular time to what to do when a lesson goes off-plan.',
   },
   {
     question: 'Can the training be tailored to our school, year group, or curriculum?',
@@ -116,7 +133,7 @@ const faqItems = [
   {
     question: 'What do staff leave with?',
     answer:
-      'Confidence with the topics they were dreading, and a shared framework the whole team can use. Staff get concrete scripts for the hardest moments, including disclosures, off-topic questions and parent conversations. Everything used in the session is theirs to keep using in school, and each member of staff receives a certificate of completion. If it would help, we can also talk about subscription access to our growing library of lesson plans and resources.',
+      'A shared framework the whole team can use, and concrete scripts for the hardest moments, including disclosures, off-topic questions and parent conversations. Everything used in the session is theirs to keep using in school, and each member of staff receives a certificate of completion. If it would help, we can also talk about subscription access to our growing library of lesson plans and resources.',
   },
   {
     question: 'How much does RSE training cost?',
@@ -290,6 +307,36 @@ const jsonLd = {
         </p>
       </div>
     </aside>
+
+    {catalogue.length > 0 && (
+      <section class="service-blog" aria-labelledby="training-catalogue-heading">
+        <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
+          <h2 id="training-catalogue-heading" class="service-section-title">Training sessions</h2>
+          {/* The service pages' two-column card grid, reused for the
+              catalogue. One action per card, as everywhere on the site. */}
+          <div class="service-blog__grid">
+            {catalogue.map((s) => (
+              <a href={s.href} class="card card--lift service-blog-card">
+                <div class="card__body">
+                  <div class="card__eyebrow">{s.audience}</div>
+                  <h3 class="card__title">{s.title}</h3>
+                  <p class="card__text">{s.promise}</p>
+                  <span class="card__link">See the session</span>
+                </div>
+              </a>
+            ))}
+            <a href={bespokeHref} class="card card--lift service-blog-card">
+              <div class="card__body">
+                <div class="card__eyebrow">Any setting</div>
+                <h3 class="card__title">Bespoke training</h3>
+                <p class="card__text">Training built around your curriculum, staff, pupils and setting, quoted once we know what you need.</p>
+                <span class="card__link">Tell us what you need</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+    )}
 
     <section class="service-description">
       <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">

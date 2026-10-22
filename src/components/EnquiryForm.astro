@@ -7,6 +7,16 @@
  */
 import { ENQUIRY_SERVICES } from '../lib/enquiry-services.js';
 import { ENQUIRY_SOURCES } from '../lib/enquiry-sources.js';
+import { ENQUIRY_DETAILS } from '../lib/enquiry-details.js';
+
+// Follow-up questions per service, revealed when that service is chosen.
+// `key` is only for element ids; the service string itself (with its
+// spaces and '&') is matched through data-details-for.
+const detailSections = Object.entries(ENQUIRY_DETAILS).map(([service, fields], i) => ({
+  service,
+  key: `svc${i}`,
+  fields,
+}));
 
 interface Props {
   /** Pre-selected service from URL param */
@@ -195,6 +205,48 @@ const roleOptions = [
     </select>
     <p class="form-error" id="enquiry-service-error" role="alert" hidden>Please select a service</p>
   </div>
+
+  {/* Per-service questions (src/lib/enquiry-details.js). Only the block
+      matching the chosen service is shown, and only its answers are sent.
+      Field names carry a d_ prefix so they can't collide with the form's
+      own fields; the same question can appear under several services. */}
+  {detailSections.map((section) => (
+    <div class="enquiry-details" data-details-for={section.service} hidden>
+      {section.fields.map((field) => {
+        const id = `enquiry-${section.key}-${field.name}`;
+        const errorId = `${id}-error`;
+        return field.type === 'select' ? (
+          <div class="form-group" data-detail={field.name} data-required={field.required ? 'true' : undefined}>
+            <label class="form-label" for={id}>
+              {field.label}
+              {field.required && <span class="form-label__req" aria-hidden="true"> *</span>}
+            </label>
+            <select class="form-select" id={id} name={`d_${field.name}`} aria-describedby={field.required ? errorId : undefined}>
+              <option value="">Please select</option>
+              {field.options.map((opt) => <option value={opt.value}>{opt.label}</option>)}
+            </select>
+            {field.required && <p class="form-error" id={errorId} role="alert" hidden>Please choose an answer</p>}
+          </div>
+        ) : (
+          <fieldset class="form-group enquiry-fieldset" data-detail={field.name} data-required={field.required ? 'true' : undefined} aria-describedby={field.required ? errorId : undefined}>
+            <legend class="form-label">
+              {field.label}
+              {field.required && <span class="form-label__req" aria-hidden="true"> *</span>}
+            </legend>
+            <div class="enquiry-checks">
+              {field.options.map((opt) => (
+                <label class="form-check">
+                  <input type="checkbox" name={`d_${field.name}`} value={opt.value} />
+                  {opt.label}
+                </label>
+              ))}
+            </div>
+            {field.required && <p class="form-error" id={errorId} role="alert" hidden>Please tick at least one</p>}
+          </fieldset>
+        );
+      })}
+    </div>
+  ))}
 
   <div class="form-group" data-field="keystage" data-show-for="teacher senior_leader governor" hidden>
     <label class="form-label" for="enquiry-keystage">Key stage or year group</label>
@@ -465,6 +517,15 @@ const roleOptions = [
       }
     }
 
+    // Training links carry &session=<slug>; answer "Which session?" with it.
+    const sessionParam = params.get('session');
+    if (sessionParam) {
+      const sessionSelect = form.querySelector('select[name="d_training_session"]') as HTMLSelectElement | null;
+      if (sessionSelect && Array.from(sessionSelect.options).some((o) => o.value === sessionParam)) {
+        sessionSelect.value = sessionParam;
+      }
+    }
+
     // Role-driven conditional fields
     const roleSelect   = form.querySelector('#enquiry-role') as HTMLSelectElement | null;
     const orgLabel     = document.getElementById('enquiry-organisation-label-text');
@@ -490,8 +551,38 @@ const roleOptions = [
       if (schoolRequired) schoolRequired.hidden = role === 'parent';
     }
 
-    roleSelect?.addEventListener('change', applyRoleVisibility);
-    applyRoleVisibility();
+    // Service-driven follow-up questions. Runs after the role rules
+    // because it can hide the general key stage box that a role shows:
+    // when the chosen service asks its own key-stage question, asking
+    // twice would be noise.
+    const serviceSelect = form.querySelector('#enquiry-service') as HTMLSelectElement | null;
+    const keystageGroup = form.querySelector('[data-field="keystage"]') as HTMLElement | null;
+
+    function visibleDetails(): HTMLElement | null {
+      return form!.querySelector<HTMLElement>('.enquiry-details:not([hidden])');
+    }
+
+    function applyServiceVisibility() {
+      const service = serviceSelect?.value || '';
+      form!.querySelectorAll<HTMLElement>('.enquiry-details').forEach((section) => {
+        section.hidden = section.dataset.detailsFor !== service;
+      });
+      if (keystageGroup && visibleDetails()?.querySelector('[data-detail="key_stages"]')) {
+        keystageGroup.hidden = true;
+      }
+    }
+
+    function applyVisibility() {
+      applyRoleVisibility();
+      applyServiceVisibility();
+    }
+
+    // Both run the role rules first: the service rule only ever hides the
+    // key stage box, so a service change alone would leave it hidden after
+    // switching to a service that doesn't ask about key stages.
+    roleSelect?.addEventListener('change', applyVisibility);
+    serviceSelect?.addEventListener('change', applyVisibility);
+    applyVisibility();
 
     // Track form focus (enquiry started)
     let startedTracked = false;
@@ -563,6 +654,20 @@ const roleOptions = [
         }
       }
 
+      // Required follow-up questions, in the visible service block only.
+      const detailsSection = visibleDetails();
+      detailsSection?.querySelectorAll<HTMLElement>('[data-required="true"]').forEach((group) => {
+        const answered = group.querySelector('select')
+          ? !!(group.querySelector('select') as HTMLSelectElement).value
+          : !!group.querySelector('input:checked');
+        if (!answered) {
+          group.classList.add('form-group--error');
+          const err = group.querySelector('.form-error') as HTMLElement | null;
+          if (err) err.hidden = false;
+          valid = false;
+        }
+      });
+
       // Email format check
       const email = (data.get('email') as string || '').trim();
       if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -583,7 +688,22 @@ const roleOptions = [
       const schoolUrn = (data.get('school_urn') as string || '').trim();
       const showsSchool = schoolRequiredRoles.has(role) || role === 'parent';
       const showsOrg    = orgRequiredRoles.has(role) || role === 'researcher';
-      const showsKs     = schoolRequiredRoles.has(role);
+      const showsKs     = schoolRequiredRoles.has(role) && !keystageGroup?.hidden;
+
+      // Answers from the visible service block only, keyed by question
+      // name without the d_ prefix: one string per select, an array per
+      // set of checkboxes. Blank answers are left out.
+      const details: Record<string, string | string[]> = {};
+      detailsSection?.querySelectorAll<HTMLElement>('[data-detail]').forEach((group) => {
+        const name = group.dataset.detail!;
+        const select = group.querySelector('select') as HTMLSelectElement | null;
+        if (select) {
+          if (select.value) details[name] = select.value;
+        } else {
+          const ticked = Array.from(group.querySelectorAll<HTMLInputElement>('input:checked')).map((i) => i.value);
+          if (ticked.length > 0) details[name] = ticked;
+        }
+      });
 
       try {
         const response = await fetch('/api/enquiry', {
@@ -600,6 +720,7 @@ const roleOptions = [
             keystage: showsKs ? (data.get('keystage') || null) : null,
             message: data.get('message'),
             heard_about: data.get('heard_about') || null,
+            details,
             website: data.get('website'),                      // honeypot
             cf_turnstile_response: data.get('cf-turnstile-response'),
           }),
@@ -615,6 +736,10 @@ const roleOptions = [
               service_type: data.get('service') as string,
               source_page: window.location.pathname,
               heard_about: (data.get('heard_about') as string) || 'not_given',
+              // Training only: which session and length, so GA4 can show
+              // which catalogue entries turn into enquiries. No personal data.
+              ...(typeof details.training_session === 'string' && { training_session: details.training_session }),
+              ...(typeof details.training_format === 'string' && { training_format: details.training_format }),
             });
           }
         } else {
@@ -700,6 +825,48 @@ const roleOptions = [
 
   .form-group--error .school-combobox__input {
     border-color: var(--state-error);
+  }
+
+  /* ── Per-service follow-up questions ─────────────────────────────────────── */
+
+  /* Same vertical rhythm as the form itself, so a revealed block reads as
+     more of the form rather than a panel inside it. */
+  .enquiry-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-global-md);
+  }
+
+  /* A fieldset groups each set of checkboxes for screen readers; strip the
+     browser's box so it looks like any other form group. */
+  .enquiry-fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+  }
+
+  .enquiry-fieldset legend {
+    padding: 0;
+    margin-bottom: var(--space-global-xs);
+  }
+
+  .enquiry-checks {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-global-xs) var(--space-global-md);
+  }
+
+  @media (min-width: 640px) { /* --bp-md */
+    .enquiry-checks {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* .form-check in the system CSS has no focus style of its own. */
+  .form-check input:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
   }
 
   .form-error {

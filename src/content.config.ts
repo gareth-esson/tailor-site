@@ -268,4 +268,64 @@ const clusters = defineCollection({
   }),
 });
 
-export const collections = { blog, pillars, clusters };
+/**
+ * training: named staff-training sessions under /services/rse-training/<slug>/.
+ *
+ * One folder per session; the folder name is the URL slug and must also
+ * appear in TRAINING_SESSIONS (src/lib/training.js), which holds the
+ * session's title and is what the enquiry form and handler read. The
+ * title deliberately isn't repeated here, so the page and the form can't
+ * name a session differently. tests/training-catalogue.test.mjs guards it.
+ *
+ * Prices and lengths aren't here either: every session is sold at the
+ * same three formats (TRAINING_FORMATS). What differs per session is what
+ * each length covers, which `formats` describes.
+ *
+ * The MDX body is the case for the training: why staff need it. Everything
+ * else is structured so the template can compose the page from the same
+ * components the service and cluster pages use.
+ */
+const training = defineCollection({
+  loader: glob({ pattern: '**/index.{md,mdx}', base: './src/content/training' }),
+  schema: z.object({
+    /** One sentence under the H1 and on the hub card, from the staff side. */
+    promise: z.string(),
+    /** Draft and In Review render in `astro dev` only, so a session can be
+     *  read on the local site before it's published. */
+    status: z.enum(['Draft', 'In Review', 'Published']).default('Draft'),
+    /** Position on the hub, lowest first. */
+    order: z.number().default(100),
+    /** Who it's for, as one short line for the meta strip. */
+    audience: z.string(),
+    /** What staff will be able to do afterwards. Three to five. */
+    outcomes: z.array(z.string()).default([]),
+    /** What the session covers, rendered as feature cards. */
+    covers: z.array(z.object({ title: z.string(), description: z.string() })).default([]),
+    /** What each length covers. Keys match TRAINING_FORMATS. */
+    formats: z.object({
+      twilight: z.string(),
+      half_day: z.string(),
+      full_day: z.string(),
+    }),
+    /** Real handed-in pupil questions this training prepares staff for,
+     *  by question slug. Resolved against Notion at build; a slug that no
+     *  longer exists is dropped and the build warns. */
+    questionSlugs: z.array(z.string()).default([]),
+    /** Further reading, by blog slug, in order. */
+    postSlugs: z.array(z.string()).default([]),
+    /** Teaching resources on this site, e.g. a cluster page or quiz. */
+    resources: z
+      .array(z.object({ title: z.string(), href: z.string(), description: z.string().default('') }))
+      .default([]),
+    /** Topic pages to cross-link to, by landing-page slug. */
+    topicSlugs: z.array(z.string()).default([]),
+    /** Session-specific questions. Rendered and fed to FAQPage JSON-LD. */
+    faqs: z.array(z.object({ question: z.string(), answer: z.string() })).default([]),
+    /** Testimonial service tag (ServiceTag in types.ts). Empty = no band. */
+    testimonialTag: z.string().default(''),
+    metaTitle: z.string().default(''),
+    metaDescription: z.string().default(''),
+  }),
+});
+
+export const collections = { blog, pillars, clusters, training };

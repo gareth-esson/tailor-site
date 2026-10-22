@@ -2,6 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { enquirySourceLabel } from '../../lib/enquiry-sources.js';
+import { describeEnquiryDetails } from '../../lib/enquiry-details.js';
 
 /**
  * Enquiry form endpoint.
@@ -210,6 +211,13 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       ? enquirySourceLabel(body.heard_about)
       : null;
 
+    // Per-service follow-up answers. Same rule as above: anything that
+    // isn't a known question and a known option for this service is
+    // dropped, never rejected. Only known labels reach the email, so
+    // nothing the browser sends here is printed verbatim.
+    const detailLines = describeEnquiryDetails(service, body.details)
+      .map(({ label, value }) => `${label}: ${value}`);
+
     const schoolLine = school
       ? (schoolUrn ? `School: ${school} (URN: ${schoolUrn})` : `School: ${school}`)
       : null;
@@ -224,6 +232,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       schoolLine,
       orgLine,
       `Service: ${service}`,
+      ...detailLines,
       keystage ? `Key stage / year group: ${keystage}` : null,
       `Heard about us: ${heardAbout ?? 'Not given'}`,
       message ? `\nMessage:\n${message}` : null,

@@ -17,10 +17,14 @@ interface Props {
   enquiryValue?: string;
   /** Visual variant: 'tinted' for mid-page, 'alt' for bottom */
   variant?: 'tinted' | 'alt';
+  /** A training session slug (TRAINING_SESSIONS), sent as &session= so
+   *  the form's "Which session?" question arrives already answered. */
+  session?: string;
 }
 
-const { serviceName, serviceParam, enquiryValue, variant = 'tinted' } = Astro.props;
-const enquiryUrl = `/contact/?service=${encodeURIComponent(enquiryValue ?? serviceParam)}`;
+const { serviceName, serviceParam, enquiryValue, variant = 'tinted', session } = Astro.props;
+const enquiryUrl = `/contact/?service=${encodeURIComponent(enquiryValue ?? serviceParam)}`
+  + (session ? `&session=${encodeURIComponent(session)}` : '');
 ---
 
 <section class:list={['cta-enquiry', variant === 'alt' && 'cta-enquiry--alt']}>
