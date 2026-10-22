@@ -49,13 +49,17 @@ const descriptionBody = [
   'We offer half-day, full-day, and multi-session programmes, delivered in person at your school. Programmes are aligned to DfE statutory guidance, KCSIE, and the PSHE Association framework.',
 ];
 
+// One pricing line, shared by the meta strip and both schema offers so
+// the page and the structured data can't quote different prices.
+const pricingText = 'Twilight from £450, half day from £650, full day from £950, plus travel at cost';
+
 // Operational specifics for the meta strip — shown between hero and
 // description. Edit values here, not in the markup.
 const metaStripItems = [
-  { label: 'Formats', value: 'Twilight (3 hours), half-day, full-day, multi-session' },
+  { label: 'Formats', value: 'Twilight (90 minutes), half day (3 hours), full day (5.5 hours), multi-session' },
   { label: 'Delivery', value: 'In person, UK-wide' },
   { label: 'Group size', value: 'Up to 20 per facilitator' },
-  { label: 'Pricing', value: 'Twilight from £375; full programmes priced on enquiry' },
+  { label: 'Pricing', value: pricingText },
   { label: 'Alignment', value: 'DfE statutory guidance, KCSIE, PSHE Association framework' },
 ];
 
@@ -67,7 +71,7 @@ const faqItems = [
   {
     question: 'How long is RSE staff training?',
     answer:
-      'It depends on what you need. A twilight session is three hours and works well for an introduction or a single high-pressure topic. A half-day is the most common booking — enough time to cover the framework, work through scenarios, and answer the questions staff actually have. Full-day or multi-session programmes are for departments going deeper, or schools rolling out a curriculum revision.',
+      'It depends on what you need. A twilight session is 90 minutes after school and works well for an introduction or a single high-pressure topic. A half day, three hours in a morning or afternoon, is the most common booking, with enough time to cover the framework, work through scenarios, and answer the questions staff actually have. A full day runs 5.5 hours including breaks. Full-day or multi-session programmes are for departments going deeper, or schools rolling out a curriculum revision.',
   },
   {
     question: 'Who is the training for?',
@@ -100,6 +104,11 @@ const faqItems = [
       'Yes. Primary RSE has its own demands: correct terminology for body parts, personal safety, and the foundations of consent and respectful relationships, all pitched for younger children. A primary team is trained around those topics and the questions younger pupils really ask, rather than a secondary session handed down. Where a school runs both phases, staff can train together on the shared core and split for the parts that differ.',
   },
   {
+    question: 'Is the training suitable for special schools, AP and SEMH settings?',
+    answer:
+      'Yes. We teach RSE directly to young people with a wide range of needs, and we\'ve trained staff, written policy and run workshops in special schools and alternative provision, including settings for pupils with SEMH needs. Training for those teams builds in individualised, trauma-informed approaches and resources, planned around the pupils your staff teach.',
+  },
+  {
     question: 'Is the training Ofsted-ready?',
     answer:
       'Ofsted looks at whether RSE is planned and sequenced, taught by staff who are confident with the material, and underpinned by safeguarding. The day is built around those things: a framework you can point to, disclosure handling aligned with KCSIE, and content mapped to the 2026 statutory guidance. Staff leave able to show how the school meets the standard, not just say that it does.',
@@ -107,23 +116,28 @@ const faqItems = [
   {
     question: 'What do staff leave with?',
     answer:
-      'Confidence to teach the topics they were dreading. A shared framework the whole team can use. Concrete scripts for the hardest moments — disclosures, off-topic questions, parent conversations. And a written resource pack staff can return to after the training.',
+      'Confidence with the topics they were dreading, and a shared framework the whole team can use. Staff get concrete scripts for the hardest moments, including disclosures, off-topic questions and parent conversations. Everything used in the session is theirs to keep using in school, and each member of staff receives a certificate of completion. If it would help, we can also talk about subscription access to our growing library of lesson plans and resources.',
+  },
+  {
+    question: 'How much does RSE training cost?',
+    answer:
+      'A twilight session starts at £450, a half day at £650 and a full day at £950. Travel is charged at cost, which is usually a train fare, and booking further ahead keeps that fare down. Multi-session programmes are quoted once we know what you need. Prices depend on tailoring and group size, and are charged per session rather than per member of staff.',
   },
   {
     question: 'How far in advance do schools usually book?',
     answer:
-      'Anything from two weeks to a term ahead. We hold a small number of urgent slots each half-term for schools who need training before a planned delivery; if you\'re trying to get something into the calendar before September, get in touch sooner rather than later.',
+      'Anything from two weeks to a term ahead. We hold a small number of urgent slots each half-term for schools who need training before a planned delivery. If you already have a date in mind, the earlier you get in touch the better.',
   },
 ];
 
 const whatSchoolsGet =
-  'Staff who feel genuinely prepared, not just compliant. A shared vocabulary and framework that the whole RSE team is working from. Concrete scripts for the hardest moments, disclosures, off-topic questions, parent conversations. And a written resource pack staff can return to after the training.';
+  'Staff who feel prepared to teach RSE, working from a shared vocabulary and framework. Concrete scripts for the hardest moments, including disclosures, off-topic questions and parent conversations. Everything used in the session stays with your school afterwards, and each member of staff receives a certificate of completion.';
 
 const featureCards = [
   { title: 'Managing disclosures', description: 'How to respond when a student discloses. What to say in the moment. What to do afterwards. Fully KCSIE-aligned.' },
   { title: 'Handling difficult questions', description: 'The questions students ask that staff most fear. Practical scripts and a framework for any question you haven\'t heard yet.' },
   { title: 'Age-appropriate pitching', description: 'Matching content to year groups, what to include, what to hold back, how to read a room that isn\'t ready.' },
-  { title: 'Resource pack', description: 'All attendees receive a written resource pack to reference after the training.' },
+  { title: 'Materials to keep', description: 'Everything used in the session is yours to use in school afterwards, with a certificate of completion for each member of staff.' },
 ];
 
 const [proofTestimonial] = await getTestimonialsByService('RSE training');
@@ -177,28 +191,28 @@ const courseNode = {
       '@type': 'CourseInstance',
       name: 'Twilight session',
       courseMode: 'Onsite',
-      courseWorkload: 'PT3H',
+      courseWorkload: 'PT1H30M',
       location: { '@type': 'Place', name: 'Client school site, UK' },
     },
     {
       '@type': 'CourseInstance',
       name: 'Half-day session',
       courseMode: 'Onsite',
-      courseWorkload: 'PT3H30M',
+      courseWorkload: 'PT3H',
       location: { '@type': 'Place', name: 'Client school site, UK' },
     },
     {
       '@type': 'CourseInstance',
       name: 'Full-day session',
       courseMode: 'Onsite',
-      courseWorkload: 'PT6H',
+      courseWorkload: 'PT5H30M',
       location: { '@type': 'Place', name: 'Client school site, UK' },
     },
   ],
   offers: {
     '@type': 'Offer',
     priceCurrency: 'GBP',
-    description: 'Twilight from £375; full programmes priced on enquiry',
+    description: pricingText,
     availability: 'https://schema.org/InStock',
     url: `${site.url}/contact/?service=${encodeURIComponent(serviceParam)}`,
   },
@@ -214,7 +228,7 @@ const jsonLd = {
       enquiryValue: enquiryService,
       serviceType: 'Teacher training',
       audienceRoles: ['School leader', 'PSHE lead', 'Teacher'],
-      offer: { priceText: 'Twilight from £375; full programmes priced on enquiry' },
+      offer: { priceText: pricingText },
     }),
     courseNode,
     faqJsonLd(faqItems),
