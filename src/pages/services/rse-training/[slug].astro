@@ -104,8 +104,12 @@ const metaStripItems = [
   { label: 'Travel', value: 'At cost' },
 ];
 
+// "Typical": what each length covers is an outline, not a fixed syllabus.
+// Every session is planned with the school, and the note above the cards
+// says so, which leaves room to change the content without the page
+// having promised it.
 const formatCards = TRAINING_FORMATS.map((f) => ({
-  title: `${f.label}, ${f.length}, ${formatPrice(f.price)}`,
+  title: `Typical ${f.label.toLowerCase()}, ${f.length}, ${formatPrice(f.price)}`,
   description: data.formats[f.key as keyof typeof data.formats],
 }));
 
@@ -246,7 +250,9 @@ const jsonLd = {
       <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
         <h2 class="service-section-title">Choose a length</h2>
         <p class="training-formats__note">
-          Prices are per session, for one school, with up to 20 staff per
+          What each length covers below is a typical outline. Every session
+          is planned with you, so the content is adjusted to fit your staff
+          and your school. Prices are per session, for one school, with up to 20 staff per
           facilitator, plus travel at cost. Every member of staff receives a
           certificate of completion and keeps the resources from the day.
         </p>
