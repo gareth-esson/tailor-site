@@ -39,16 +39,15 @@ const heroImageWidth = 1600;
 const heroImageHeight = 872;
 
 // §3 description heading — edit per-page for a tailored intro.
-const descriptionHeading = 'About RSE Training';
+const descriptionHeading = 'How the training works';
 
 const descriptionLead =
   'This training builds the confidence to teach RSE well: a shared framework for pitching any topic, and practised wording for difficult questions and disclosures.';
 
 const descriptionBody = [
   'It focuses on the parts of RSE that need more than subject knowledge: managing disclosures, answering unexpected questions, pitching content for each age group, and responding to parents\' concerns.',
-  'Every session is led by a specialist who has delivered RSE directly to students in hundreds of schools. That matters. The training isn\'t theoretical, it\'s shaped by what actually happens in the classroom, and what actually works.',
-  'We don\'t run a catalogue of separate sessions. Every engagement starts from a shared core and is shaped to what your staff are actually being asked to teach, in your school, this year.',
-  'We offer half-day, full-day, and multi-session programmes, delivered in person at your school. Programmes are aligned to DfE statutory guidance, KCSIE, and the PSHE Association framework.',
+  'Every session starts from the same core and is adapted to your school: the year groups your staff teach, your curriculum and your pupils. If none of the sessions fits, bespoke training is built around what you need.',
+  'Sessions are led by a specialist who has delivered RSE directly to students in hundreds of schools, and are aligned to the DfE statutory guidance, KCSIE and the PSHE Association framework.',
 ];
 
 // One pricing line, shared by the meta strip and both schema offers so
@@ -71,9 +70,12 @@ const catalogue = (await getCollection('training'))
     color: s.data.category ? `var(--cat-${s.data.category})` : 'var(--brand-accent)',
   }));
 const bespokeHref = `/contact/?service=${encodeURIComponent(enquiryService)}&session=bespoke`;
-// The cheapest way in, shown on every card so price is visible before
-// anyone clicks.
-const fromPrice = `From ${formatPrice(Math.min(...TRAINING_FORMATS.map((f) => f.price)))}, plus travel`;
+// The cheapest way in, set large at the foot of every card. The cards
+// carry no separate action cue: the whole card is the link, and a screen
+// reader announces its full text as the link name, so seven identical
+// "See the session" lines added nothing. A deliberate exception to the
+// one-cue-per-card convention in docs/COMPONENT-INVENTORY.md.
+const fromPrice = `From ${formatPrice(Math.min(...TRAINING_FORMATS.map((f) => f.price)))}`;
 
 // Operational specifics for the meta strip — shown between hero and
 // description. Edit values here, not in the markup.
@@ -118,7 +120,7 @@ const faqItems = [
   {
     question: 'Can the training be tailored to our school, year group, or curriculum?',
     answer:
-      'Always. Every engagement starts with a conversation about what your staff are actually being asked to teach, the year groups in scope, and the parts of the curriculum you most want covered. We don\'t run a fixed catalogue. The shared core is the same; how we shape it for your school changes every time.',
+      'Yes. Every session is adapted to the year groups your staff teach, your curriculum and the parts you most want covered. If none of the sessions fits, bespoke training is built around your school.',
   },
   {
     question: 'Can it be adapted for primary staff?',
@@ -155,12 +157,6 @@ const faqItems = [
 const whatSchoolsGet =
   'Staff who feel prepared to teach RSE, working from a shared vocabulary and framework. Concrete scripts for the hardest moments, including disclosures, off-topic questions and parent conversations. Everything used in the session stays with your school afterwards, and each member of staff receives a certificate of completion.';
 
-const featureCards = [
-  { title: 'Managing disclosures', description: 'How to respond when a student discloses. What to say in the moment. What to do afterwards. Fully KCSIE-aligned.' },
-  { title: 'Handling difficult questions', description: 'The questions students ask that staff most fear. Practical scripts and a framework for any question you haven\'t heard yet.' },
-  { title: 'Age-appropriate pitching', description: 'Matching content to year groups, what to include, what to hold back, how to read a room that isn\'t ready.' },
-  { title: 'Materials to keep', description: 'Everything used in the session is yours to use in school afterwards, with a certificate of completion for each member of staff.' },
-];
 
 const [proofTestimonial] = await getTestimonialsByService('RSE training');
 const testimonialQuote = proofTestimonial?.quote ?? null;
@@ -300,21 +296,8 @@ const jsonLd = {
 
     <ServiceMetaStrip items={metaStripItems} ariaLabel="RSE training at a glance" />
 
-    <aside class="service-callout" aria-label="September 2026 statutory revision">
-      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
-        <p class="service-callout__eyebrow">In force now</p>
-        <p class="service-callout__body">
-          The DfE's revised RSE statutory guidance has applied in England since
-          1 September 2026. Training booked now tends to focus on teaching the
-          newer content with confidence, especially online safety, AI literacy
-          and misogyny.
-          {' '}<a href="/blog/2026-rse-guidance-plain-english-summary/">How to review your RSE against the 2026 guidance →</a>
-        </p>
-      </div>
-    </aside>
-
     {catalogue.length > 0 && (
-      <section class="service-blog" aria-labelledby="training-catalogue-heading">
+      <section class="service-blog training-catalogue" aria-labelledby="training-catalogue-heading">
         <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
           <h2 id="training-catalogue-heading" class="service-section-title">Training sessions</h2>
           {/* Product cards. Built on .service-card, the services index's
@@ -331,18 +314,17 @@ const jsonLd = {
                 </div>
                 <div class="service-card__body">
                   <p class="service-card__text">{s.promise}</p>
-                  <p class="training-card__price">{fromPrice}</p>
-                  <span class="service-card__link">See the session</span>
+                  <span class="link-action link-action--no-arrow training-card__price">{fromPrice}</span>
                 </div>
               </a>
             ))}
             <a href={bespokeHref} class="service-card training-card training-card--bespoke">
               <div class="training-card__band">
-                <h3 class="training-card__title">Bespoke training</h3>
+                <h3 class="training-card__title">Bespoke training for your setting</h3>
               </div>
               <div class="service-card__body">
                 <p class="service-card__text">Training built around your curriculum, staff, pupils and setting, quoted once we know what you need.</p>
-                <span class="service-card__link">Tell us what you need</span>
+                <span class="link-action link-action--no-arrow training-card__price">Tell us what you need</span>
               </div>
             </a>
           </div>
@@ -361,20 +343,6 @@ const jsonLd = {
             <p>{whatSchoolsGet}</p>
           </>
         )}
-      </div>
-    </section>
-
-    <section class="service-features">
-      <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
-        <h2 class="service-section-title">What's included</h2>
-        <div class="service-features__grid">
-          {featureCards.map((card) => (
-            <div class="feature-card">
-              <h3 class="feature-card__title">{card.title}</h3>
-              <p class="feature-card__text">{card.description}</p>
-            </div>
-          ))}
-        </div>
       </div>
     </section>
 
@@ -404,6 +372,21 @@ const jsonLd = {
     )}
 
     <ServiceFaq items={faqItems} heading="Questions schools ask before booking" />
+
+    {/* The 2026 guidance, as context after the FAQ rather than ahead of
+        the catalogue: a buyer here has already decided training matters. */}
+    <aside class="service-callout" aria-label="September 2026 statutory revision">
+      <div class="mx-auto w-full max-w-[var(--container-max-prose)] px-[var(--space-global-gutter)] py-[var(--space-global-lg)]">
+        <p class="service-callout__eyebrow">In force now</p>
+        <p class="service-callout__body">
+          The DfE's revised RSE statutory guidance has applied in England since
+          1 September 2026. Training booked now tends to focus on teaching the
+          newer content with confidence, especially online safety, AI literacy
+          and misogyny.
+          {' '}<a href="/blog/2026-rse-guidance-plain-english-summary/">How to review your RSE against the 2026 guidance →</a>
+        </p>
+      </div>
+    </aside>
 
     {relatedPosts.length > 0 && (
       <section class="service-blog">
@@ -441,13 +424,24 @@ const jsonLd = {
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--space-global-md);
-    /* Space between cards only: the two rows each card spans are its band
-       and its body, which must touch. */
+    /* Space between cards comes from the cards' own margin: the two grid
+       rows each card spans are its band and its body, which must touch. */
     row-gap: 0;
   }
 
   .training-catalogue__grid > .training-card {
     margin-bottom: var(--space-global-md);
+  }
+
+  /* Each card spans two rows of the parent grid and shares its tracks, so
+     the bands in a row match the longest title in that row and the white
+     bodies start level. With normal padding and the title at the top, a
+     shorter title gains at most a line or two of colour beneath it. */
+  .training-card {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 2;
+    row-gap: 0;
   }
 
   @media (min-width: 768px) { /* --bp-md */
@@ -462,6 +456,19 @@ const jsonLd = {
     }
   }
 
+  /* A tinted band with the cards on the lightest surface, so the cards
+     stand forward from the section. .service-card's own grey surface and
+     resting border are for its use on a plain page; here the contrast
+     with the section does that job, and the border only shows on hover. */
+  .training-catalogue {
+    background: var(--bg-surface-alt);
+  }
+
+  .training-card {
+    background: var(--bg-page);
+    border-color: transparent;
+  }
+
   /* The band is the card's colour; the hover border picks it up too, so
      each card reads as one coloured object. */
   .training-card:hover {
@@ -469,30 +476,24 @@ const jsonLd = {
     box-shadow: var(--shadow-md);
   }
 
-  /* Each card spans two rows of the parent grid and shares its tracks,
-     so every band in a row is as tall as the longest title in that row
-     and the white bodies start level. */
-  .training-card {
-    display: grid;
-    grid-template-rows: subgrid;
-    grid-row: span 2;
-    row-gap: 0;
-  }
-
+  /* As tall as the title plus padding. A fixed aspect-ratio was tried and
+     dropped: it scales with card width, so a single-column card on a
+     tablet got a band hundreds of pixels deep. */
   .training-card__band {
     background: var(--card-color, var(--brand-accent));
-    padding: var(--space-global-2xl) var(--space-global-lg) var(--space-global-lg);
-    display: flex;
-    align-items: flex-end;
+    padding: var(--space-global-md);
   }
 
   .training-card--bespoke .training-card__band {
     background: var(--brand-secondary);
   }
 
+  /* Card heading scale. At weight 700 this is "large text" for WCAG at
+     every size the clamp produces (20px and up), so white clears 3:1 on
+     every --cat-* colour. */
   .training-card__title {
     font-family: var(--font-tailor-heading-stack);
-    font-size: var(--text-card-size-h1);
+    font-size: var(--text-card-size-h2);
     font-weight: var(--heading-weight-h2);
     line-height: var(--lh-heading-sub);
     color: var(--text-heading-on-dark);
@@ -500,12 +501,33 @@ const jsonLd = {
     margin: 0;
   }
 
-  .training-card__price {
-    font-family: var(--font-tailor-body-stack);
-    font-size: var(--text-card-size-body);
-    font-weight: var(--font-weight-semibold);
-    color: var(--text-heading);
-    margin: 0 0 var(--space-global-sm);
+  /* The system's action link (.link-action--no-arrow: the whole card is
+     the link), set at heading size so the price closes the card a step
+     below the title. Hovering anywhere on the card darkens it to the
+     link's hover colour. The link's hover letter-spacing is held at rest:
+     at this size the wider tracking visibly shifted the card. */
+  .training-card__price,
+  .training-card__price:hover,
+  .training-card:hover .training-card__price {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-card-size-h3);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--lh-heading-sub);
+    letter-spacing: var(--link-action-tracking-rest);
+  }
+
+  .training-card:hover .training-card__price {
+    color: var(--link-action-color-hover);
+  }
+
+  /* Tighter than .service-card's default, which is sized for the larger
+     cards on the services index. */
+  .training-card .service-card__body {
+    padding: var(--space-global-md);
+  }
+
+  .training-card .service-card__text {
+    margin-bottom: var(--space-global-md);
   }
 
   @media (prefers-reduced-motion: reduce) {

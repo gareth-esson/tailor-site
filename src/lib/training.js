@@ -25,8 +25,8 @@ export const TRAINING_SESSIONS = [
   { slug: 'teaching-the-hard-topics', title: 'Teaching the hard topics' },
   { slug: 'masculinity-misogyny-and-online-influence', title: 'Masculinity, misogyny and online influence' },
   { slug: 'consent-pressure-and-power', title: 'Consent, pressure and power' },
-  { slug: 'sex-in-a-digital-world', title: 'Sex in a digital world' },
-  { slug: 'primary-rse', title: 'Primary RSE' },
+  { slug: 'sex-in-a-digital-world', title: 'Porn, nudes, sextortion and deepfakes' },
+  { slug: 'primary-rse', title: 'Primary RSE: bodies, puberty and boundaries' },
   { slug: 'rse-in-special-schools-and-ap', title: 'RSE in special schools, AP and SEMH settings' },
 ];
 
