@@ -15,7 +15,7 @@ import ServiceTopicsStrip from '../../components/ServiceTopicsStrip.astro';
 import { getCollection } from 'astro:content';
 import { getBlogPosts, getTestimonialsByService } from '../../lib/content';
 import { serviceJsonLd, breadcrumbJsonLd, faqJsonLd, site } from '../../lib/site';
-import { rateCardLine, trainingSessionTitle } from '../../lib/training.js';
+import { TRAINING_FORMATS, formatPrice, rateCardLine, trainingSessionTitle } from '../../lib/training.js';
 
 // --- Data ----------------------------------------------------------
 const slug = 'rse-training';
@@ -65,10 +65,15 @@ const catalogue = (await getCollection('training'))
   .map((s) => ({
     href: `/services/rse-training/${s.id}/`,
     title: trainingSessionTitle(s.id) ?? s.id,
-    audience: s.data.audience,
     promise: s.data.promise,
+    // Each card takes its session's RSHE category colour; brand teal
+    // when a session has none.
+    color: s.data.category ? `var(--cat-${s.data.category})` : 'var(--brand-accent)',
   }));
 const bespokeHref = `/contact/?service=${encodeURIComponent(enquiryService)}&session=bespoke`;
+// The cheapest way in, shown on every card so price is visible before
+// anyone clicks.
+const fromPrice = `From ${formatPrice(Math.min(...TRAINING_FORMATS.map((f) => f.price)))}, plus travel`;
 
 // Operational specifics for the meta strip — shown between hero and
 // description. Edit values here, not in the markup.
@@ -312,25 +317,32 @@ const jsonLd = {
       <section class="service-blog" aria-labelledby="training-catalogue-heading">
         <div class="mx-auto w-full max-w-[var(--container-max-shell)] px-[var(--space-global-gutter)] py-[var(--space-struct-y-base)]">
           <h2 id="training-catalogue-heading" class="service-section-title">Training sessions</h2>
-          {/* The service pages' two-column card grid, reused for the
-              catalogue. One action per card, as everywhere on the site. */}
-          <div class="service-blog__grid">
+          {/* Product cards. Built on .service-card, the services index's
+              product card (border, radius, hover, focus ring), with a
+              solid colour band carrying the title. White text on every
+              --cat-* colour clears WCAG AA for large text, which the
+              band's title is; the smaller body copy sits on white below.
+              One action per card, as everywhere on the site. */}
+          <div class="training-catalogue__grid">
             {catalogue.map((s) => (
-              <a href={s.href} class="card card--lift service-blog-card">
-                <div class="card__body">
-                  <div class="card__eyebrow">{s.audience}</div>
-                  <h3 class="card__title">{s.title}</h3>
-                  <p class="card__text">{s.promise}</p>
-                  <span class="card__link">See the session</span>
+              <a href={s.href} class="service-card training-card" style={`--card-color: ${s.color}`}>
+                <div class="training-card__band">
+                  <h3 class="training-card__title">{s.title}</h3>
+                </div>
+                <div class="service-card__body">
+                  <p class="service-card__text">{s.promise}</p>
+                  <p class="training-card__price">{fromPrice}</p>
+                  <span class="service-card__link">See the session</span>
                 </div>
               </a>
             ))}
-            <a href={bespokeHref} class="card card--lift service-blog-card">
-              <div class="card__body">
-                <div class="card__eyebrow">Any setting</div>
-                <h3 class="card__title">Bespoke training</h3>
-                <p class="card__text">Training built around your curriculum, staff, pupils and setting, quoted once we know what you need.</p>
-                <span class="card__link">Tell us what you need</span>
+            <a href={bespokeHref} class="service-card training-card training-card--bespoke">
+              <div class="training-card__band">
+                <h3 class="training-card__title">Bespoke training</h3>
+              </div>
+              <div class="service-card__body">
+                <p class="service-card__text">Training built around your curriculum, staff, pupils and setting, quoted once we know what you need.</p>
+                <span class="service-card__link">Tell us what you need</span>
               </div>
             </a>
           </div>
@@ -423,3 +435,84 @@ const jsonLd = {
 
   </article>
 </BaseLayout>
+
+<style>
+  .training-catalogue__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-global-md);
+    /* Space between cards only: the two rows each card spans are its band
+       and its body, which must touch. */
+    row-gap: 0;
+  }
+
+  .training-catalogue__grid > .training-card {
+    margin-bottom: var(--space-global-md);
+  }
+
+  @media (min-width: 768px) { /* --bp-md */
+    .training-catalogue__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1280px) { /* --bp-xl */
+    .training-catalogue__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  /* The band is the card's colour; the hover border picks it up too, so
+     each card reads as one coloured object. */
+  .training-card:hover {
+    border-color: var(--card-color, var(--brand-accent));
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Each card spans two rows of the parent grid and shares its tracks,
+     so every band in a row is as tall as the longest title in that row
+     and the white bodies start level. */
+  .training-card {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 2;
+    row-gap: 0;
+  }
+
+  .training-card__band {
+    background: var(--card-color, var(--brand-accent));
+    padding: var(--space-global-2xl) var(--space-global-lg) var(--space-global-lg);
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .training-card--bespoke .training-card__band {
+    background: var(--brand-secondary);
+  }
+
+  .training-card__title {
+    font-family: var(--font-tailor-heading-stack);
+    font-size: var(--text-card-size-h1);
+    font-weight: var(--heading-weight-h2);
+    line-height: var(--lh-heading-sub);
+    color: var(--text-heading-on-dark);
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  .training-card__price {
+    font-family: var(--font-tailor-body-stack);
+    font-size: var(--text-card-size-body);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-heading);
+    margin: 0 0 var(--space-global-sm);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .training-card,
+    .training-card:hover {
+      transform: none;
+      transition: none;
+    }
+  }
+</style>

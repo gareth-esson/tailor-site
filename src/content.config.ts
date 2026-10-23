@@ -295,6 +295,14 @@ const training = defineCollection({
     status: z.enum(['Draft', 'In Review', 'Published']).default('Draft'),
     /** Position on the hub, lowest first. */
     order: z.number().default(100),
+    /** The RSHE category the session sits in, as a --cat-* token name. It
+     *  colours the session's hub card. Chosen per session rather than
+     *  derived from its first topic, which would give three sessions the
+     *  same colour. Null falls back to the brand teal. */
+    category: z
+      .enum(['relationships', 'safety', 'identity', 'sexual-health', 'wellbeing', 'online-safety', 'puberty'])
+      .nullable()
+      .default(null),
     /** Who it's for, as one short line for the meta strip. */
     audience: z.string(),
     /** What staff will be able to do afterwards. Three to five. */
