@@ -25,6 +25,8 @@ import { errorResponse, json, readJson, storageUnavailable } from './_shared';
  *
  * Actions:
  *   setHideExplicit { hideExplicit }
+ *   setShowNames { showNames }  names on the presenter screen, or "Person 1"
+ *   showAverage { shown }      put the Stage 1 average on the presenter screen
  *   openStage1                 start Stage 1 (clears earlier submissions)
  *   revealStage1               show everyone's timelines
  *   setTimeline { timeline }   agree the group timeline → columns for 2 & 3
@@ -48,7 +50,7 @@ function isPlacementStage(v: unknown): v is PlacementStage {
 }
 
 function publicSession(s: Session) {
-  const { hostToken: _hostToken, ...rest } = s;
+  const { hostToken: _hostToken, screenToken: _screenToken, ...rest } = s;
   return rest;
 }
 
@@ -73,6 +75,17 @@ export const POST: APIRoute = async ({ request }) => {
     switch (action) {
       case 'setHideExplicit': {
         session.hideExplicit = body.hideExplicit === true;
+        break;
+      }
+
+      case 'setShowNames': {
+        session.showNames = body.showNames === true;
+        break;
+      }
+
+      case 'showAverage': {
+        if (!session.stage1.revealed) return json({ error: 'Reveal the timelines first' }, 409);
+        session.stage1.averageShown = body.shown === true;
         break;
       }
 

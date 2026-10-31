@@ -4,12 +4,14 @@ import type { APIRoute } from 'astro';
 import {
   NEVER_COLUMN_ID,
   createSession,
+  ensureScreenToken,
   isValidPid,
   isValidToken,
   loadParticipants,
   loadSession,
   normaliseCode,
   pingStorage,
+  saveSession,
   touchParticipant,
   type Participant,
   type PlacementStage,
@@ -22,8 +24,9 @@ import { errorResponse, json, readJson, storageUnavailable } from './_shared';
  *   body: { hideExplicit?: boolean }
  *   → { code, hostToken }
  *
- * GET  /api/stages/session?code=ABC123&host=<token>  → full host view
- * GET  /api/stages/session?code=ABC123&pid=<pid>     → participant view
+ * GET  /api/stages/session?code=ABC123&host=<token>    → full host view
+ * GET  /api/stages/session?code=ABC123&screen=<token>  → presenter screen
+ * GET  /api/stages/session?code=ABC123&pid=<pid>       → participant view
  *
  * Both views are polled every couple of seconds, so they carry
  * everything the client needs in one round trip.
@@ -31,7 +34,7 @@ import { errorResponse, json, readJson, storageUnavailable } from './_shared';
 
 /** Session fields safe to send to anyone in the session. */
 function publicSession(s: Session) {
-  const { hostToken: _hostToken, ...rest } = s;
+  const { hostToken: _hostToken, screenToken: _screenToken, ...rest } = s;
   return rest;
 }
 
@@ -201,6 +204,7 @@ async function getView(url: URL): Promise<Response> {
   if (!session) return json({ error: 'Session not found' }, 404);
 
   const host = url.searchParams.get('host');
+  const screen = url.searchParams.get('screen');
   const pid = url.searchParams.get('pid');
 
   // ── Host view ──
@@ -208,10 +212,12 @@ async function getView(url: URL): Promise<Response> {
     if (!isValidToken(host) || host !== session.hostToken) {
       return json({ error: 'Not authorised' }, 403);
     }
+    if (ensureScreenToken(session)) await saveSession(session);
     const participants = await loadParticipants(code);
     const now = Date.now();
     return json({
       session: publicSession(session),
+      screenToken: session.screenToken,
       participants: participants.map((p) => ({
         id: p.id,
         name: p.name,
@@ -231,6 +237,47 @@ async function getView(url: URL): Promise<Response> {
       board: boardSoFar(session, participants),
       summary: buildSummary(session, participants),
       neverColumnId: NEVER_COLUMN_ID,
+    });
+  }
+
+  // ── Presenter screen ──
+  // What the whole group looks at, so it follows the same reveal rules
+  // as the phones: nothing about open cards until the host reveals, and
+  // no average until the host shows it. Names only when the host allows.
+  if (screen !== null) {
+    if (!isValidToken(screen) || !session.screenToken || screen !== session.screenToken) {
+      return json({ error: 'Not authorised' }, 403);
+    }
+    const participants = await loadParticipants(code);
+    const showNames = session.showNames !== false;
+    const now = Date.now();
+    const anon = participants.map((p, i) => (showNames ? p : { ...p, name: `Person ${i + 1}` }));
+    const stageTally = (stage: PlacementStage) => {
+      const round = session[stage];
+      return tally(anon, stage, round.revealed ? [...round.done, ...round.open] : round.done, showNames);
+    };
+    return json({
+      session: publicSession(session),
+      showNames,
+      participants: participants.map((p) => ({
+        name: showNames ? p.name : null,
+        online: now - p.lastSeen < 30_000,
+        stage1Submitted: Boolean(p.stage1?.submitted),
+        stage2Placed: session.stage2.open.filter((c) => p.stage2[c]).length,
+        stage3Placed: session.stage3.open.filter((c) => p.stage3[c]).length,
+      })),
+      stage1: session.stage1.revealed
+        ? {
+            submissions: anon
+              .filter((p) => p.stage1?.submitted)
+              .map((p) => ({ name: p.name, order: p.stage1!.order, out: p.stage1!.out })),
+            consensus: session.stage1.averageShown ? consensusTimeline(participants) : null,
+          }
+        : null,
+      stage2: stageTally('stage2'),
+      stage3: stageTally('stage3'),
+      board: boardSoFar(session, participants),
+      summary: session.step === 'end' ? buildSummary(session, participants) : null,
     });
   }
 

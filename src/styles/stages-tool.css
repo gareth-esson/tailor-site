@@ -1489,3 +1489,191 @@
   }
   .stages-slide__point-body { grid-column: 1 / -1; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   Presenter window — /tools/stages-in-relationships/screen/
+   ----------------------------------------------------------------------
+   The view the whole group watches during a live session, shared on a
+   video call or a projector. Display type scale, nothing to click, and
+   the board fits the window: columns shrink instead of scrolling,
+   because nobody watching a shared screen can scroll it.
+   ══════════════════════════════════════════════════════════════════════ */
+.stages-screen {
+  min-height: 100vh;
+  padding: var(--space-global-lg) var(--space-global-gutter);
+}
+.stages-screen__inner {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--container-max-shell);
+}
+
+.stages-screen__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-global-xs) var(--space-global-md);
+  padding-bottom: var(--space-global-xs);
+  border-bottom: var(--border-width-xs) solid var(--border-subtle);
+  font-size: var(--text-card-size-h6);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--section-eyebrow-ls);
+  text-transform: uppercase;
+  color: var(--text-body-muted);
+}
+.stages-screen__join strong {
+  font-family: var(--font-tailor-heading-stack);
+  font-size: var(--text-display-size-h5);
+  letter-spacing: var(--stages-code-ls);
+  color: var(--brand-accent-text);
+}
+
+.stages-screen__heading {
+  max-width: var(--container-max-reading-wide);
+}
+.stages-screen__title {
+  font-family: var(--font-tailor-heading-stack);
+  font-size: var(--text-display-size-h2);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--lh-display);
+  color: var(--text-heading);
+  margin: 0 0 var(--space-global-xs);
+}
+.stages-screen__lede {
+  font-size: var(--text-display-size-body);
+  line-height: var(--lh-body);
+  color: var(--text-body);
+  margin: 0;
+}
+.stages-screen__count {
+  font-family: var(--font-tailor-heading-stack);
+  font-size: var(--text-display-size-h4);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--lh-heading-sub);
+  color: var(--text-heading);
+  margin: 0 0 var(--space-global-sm);
+}
+.stages-screen .stages-participant {
+  font-size: var(--text-display-size-h6);
+}
+
+/* Stage 1: everyone's rows, read from across a room */
+.stages-screen__reveal .stages-reveal__name {
+  font-size: var(--text-display-size-h6);
+}
+.stages-screen__reveal .stages-mini {
+  font-size: var(--text-card-size-body);
+}
+
+/* Stage 1: the average, as cards in a line */
+.stages-screen__timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-global-sm);
+}
+.stages-screen__timeline li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-global-sm);
+}
+.stages-screen__timeline li + li::before {
+  content: "→";
+  color: var(--text-body-muted);
+  font-size: var(--text-display-size-h5);
+}
+.stages-screen__timeline .stages-card {
+  font-size: var(--text-display-size-h6);
+  cursor: default;
+}
+.stages-screen__left-off {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-global-xs);
+  font-size: var(--text-display-size-h6);
+  color: var(--text-body-muted);
+  margin: 0;
+}
+
+/* Stages 2 and 3: the card in play, tinted with its deck */
+.stages-screen__play {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-global-sm);
+  padding: var(--space-global-lg);
+  border-radius: var(--radius-xl);
+  background: var(--stages-deck-activities-soft);
+  color: var(--stages-deck-activities-soft-text);
+}
+.stages-screen__play--fluids {
+  background: var(--stages-deck-fluids-soft);
+  color: var(--stages-deck-fluids-soft-text);
+}
+.stages-screen__play-label {
+  font-size: var(--text-card-size-h6);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--section-eyebrow-ls);
+  text-transform: uppercase;
+  padding: 0.45em 1em;
+  border-radius: var(--radius-pill);
+  background: var(--stages-deck-activities-bg);
+  color: var(--stages-deck-activities-text);
+  margin: 0;
+}
+.stages-screen__play--fluids .stages-screen__play-label {
+  background: var(--stages-deck-fluids-bg);
+  color: var(--stages-deck-fluids-text);
+}
+.stages-screen__play-cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-global-xs);
+  font-family: var(--font-tailor-heading-stack);
+  font-size: var(--text-display-size-h2);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--lh-display);
+  color: var(--text-heading);
+}
+.stages-screen__play .stages-screen__count {
+  margin: 0;
+}
+.stages-screen__who .stages-note {
+  font-size: var(--text-display-size-h6);
+  margin: 0;
+}
+
+/* The board fits the window */
+.stages-screen .stages-board {
+  overflow-x: visible;
+}
+.stages-screen .stages-board__columns {
+  min-width: 0;
+}
+.stages-screen .stages-column {
+  min-width: 0;
+  flex: 1 1 0;
+}
+.stages-screen .stages-card {
+  cursor: default;
+}
+
+.stages-screen__status {
+  position: fixed;
+  right: var(--space-global-sm);
+  bottom: var(--space-global-sm);
+  margin: 0;
+  font-size: var(--text-card-size-h6);
+  color: var(--text-body-muted);
+}
+.stages-screen__status:empty {
+  display: none;
+}

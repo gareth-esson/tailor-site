@@ -32,16 +32,16 @@ import {
   closingMessagesEl,
   getRecap,
   isRecapId,
+  placementBoard,
   recapSlide,
+  screenUrl,
   removeLocal,
   roundupEl,
   type RecapId,
   type Summary,
-  renderColumns,
   saveLocal,
   shuffle,
   timelineColumns,
-  updateColumnCounts,
   type PublicSession,
   type Step,
 } from './shared';
@@ -74,6 +74,7 @@ interface Submission {
 
 interface HostView {
   session: PublicSession;
+  screenToken: string;
   participants: HostParticipant[];
   stage1: { submissions: Submission[]; consensus: { order: string[]; out: string[]; submittedCount: number } };
   stage2: Tally;
@@ -375,7 +376,27 @@ export function initHostPage(): void {
           status.textContent = ok ? 'Join link copied.' : joinUrl(s.code);
         }, { small: true }),
       );
-      toolbar.append(stepper, code, el('div', { class: 'stages-toolbar__spacer' }), status);
+      toolbar.append(stepper, code, presenterControls(), el('div', { class: 'stages-toolbar__spacer' }), status);
+    }
+
+    // ── Presenter screen: the clean view the group watches ──
+    function presenterControls(): HTMLElement {
+      const s = view!.session;
+      const url = screenUrl(s.code, view!.screenToken);
+      const names = el('input', { type: 'checkbox', checked: s.showNames !== false }) as HTMLInputElement;
+      names.addEventListener('change', () => void act('setShowNames', { showNames: names.checked }));
+      return el('div', { class: 'stages-toolbar__group' },
+        el('span', { class: 'stages-note' }, 'Presenter screen '),
+        btn('Open', 'tint', () => {
+          // A window of its own, so a video call can share just that.
+          window.open(url, `stages-screen-${s.code}`, 'popup,width=1280,height=800');
+        }, { small: true }),
+        btn('Copy link', 'text', async () => {
+          const ok = await copyText(url);
+          status.textContent = ok ? 'Presenter link copied. Anyone with it can see the screen, so keep it to facilitators.' : 'Copy failed.';
+        }, { small: true }),
+        el('label', { class: 'form-check stages-note' }, names, ' Show names'),
+      );
     }
 
     // ── Shared bits ──
@@ -555,11 +576,21 @@ export function initHostPage(): void {
           ),
         );
       }
+      const averageShown = s.stage1.averageShown === true;
       wrap.append(
         el('div', { class: 'stages-panel' },
           el('h2', { class: 'stages-panel__title' }, `Stage 1: ${v.stage1.submissions.length} timeline${v.stage1.submissions.length === 1 ? '' : 's'}`),
           el('p', { class: 'stages-panel__text' }, 'Each row is one person’s order. Dashed cards are ones they left off the timeline.'),
           rows,
+          el('p', { class: 'stages-note' },
+            averageShown
+              ? 'The presenter screen is showing the average.'
+              : 'The presenter screen shows everyone’s timelines. Compare them first, then show the average.'),
+          el('div', { class: 'stages-actions' },
+            averageShown
+              ? btn('Back to everyone’s timelines', 'tint', () => void act('showAverage', { shown: false }))
+              : btn('Show the average on the presenter screen', 'tint', () => void act('showAverage', { shown: true }), { disabled: cons.submittedCount === 0 }),
+          ),
         ),
       );
 
@@ -680,66 +711,14 @@ export function initHostPage(): void {
         ),
       );
 
-      // Board
-      const board = el('div', { class: 'stages-board' });
-      const bodies = renderColumns(board, columns, { fill: true });
-      const unplaced: string[] = [];
-      for (const id of round.done) {
-        const t = tally[id];
-        const card = getCard(id);
-        if (!card) continue;
-        const m = t ? majority(t.counts) : { columns: [], max: 0, total: 0 };
-        const body = m.columns[0] ? bodies.get(m.columns[0]) : undefined;
-        if (!body) {
-          unplaced.push(id);
-          continue;
-        }
-        body.append(cardEl(card, {
-          static: true,
-          count: m.max,
-          extraClass: `stages-card--done${m.columns.length > 1 ? ' stages-card--split' : ''}`,
-          onRemove: () => void act('undoDone', { stage, cardId: id }),
-          removeTitle: `Take “${card.label}” off the board`,
-        }));
-      }
-      // Stage 3 keeps the activities on the board so the fluids cards can
-      // be read against them ("you'd kiss here but not meet the parents
-      // until here").
-      if (stage === 'stage3') {
-        for (const [id, col] of Object.entries(v.board.stage2)) {
-          const body = bodies.get(col);
-          const card = getCard(id);
-          if (body && card) body.append(cardEl(card, { static: true, extraClass: 'stages-card--done stages-card--context' }));
-        }
-      }
-      if (round.revealed) {
-        for (const id of round.open) {
-          const t = tally[id];
-          const card = getCard(id);
-          if (!card || !t) continue;
-          const m = majority(t.counts);
-          for (const [col, n] of Object.entries(t.counts)) {
-            const body = bodies.get(col);
-            if (!body || !n) continue;
-            const isMaj = m.columns.includes(col);
-            body.append(cardEl(card, {
-              static: true,
-              count: n,
-              extraClass: `${isMaj ? 'stages-card--majority' : 'stages-card--minority'}${isMaj && m.columns.length > 1 ? ' stages-card--split' : ''}`,
-            }));
-          }
-        }
-      }
-      updateColumnCounts(board);
-      wrap.append(board);
-      wrap.append(el('p', { class: 'stages-key' },
-        el('span', { class: 'stages-key__item' }, el('span', { class: 'stages-key__swatch', 'aria-hidden': 'true' }), 'Activities'),
-        stage === 'stage3' ? el('span', { class: 'stages-key__item' }, el('span', { class: 'stages-key__swatch stages-key__swatch--fluids', 'aria-hidden': 'true' }), 'Sharing fluids') : null,
-        el('span', { class: 'stages-key__item' }, 'Solid = where most people put it · pale = other answers · dashed = a tie'),
-      ));
-      if (unplaced.length) {
-        wrap.append(el('p', { class: 'stages-note' }, `Nobody placed: ${unplaced.map(cardLabel).join(', ')}.`));
-      }
+      wrap.append(...placementBoard({
+        stage,
+        timeline: s.timeline,
+        round,
+        tally,
+        stage2Board: v.board.stage2,
+        onRemove: (cardId) => void act('undoDone', { stage, cardId }),
+      }));
 
       // Round panel
       const total = v.participants.length;

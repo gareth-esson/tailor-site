@@ -1,0 +1,29 @@
+---
+/**
+ * Stages in Relationships — presenter screen for a live session.
+ * /tools/stages-in-relationships/screen/?code=ABC123#k=<screen key>
+ *
+ * The one view the whole group watches when participants are on their
+ * own devices: shared over a video call or shown on a projector. No
+ * controls; it follows the facilitator's control desk (/host/).
+ * Logic: src/scripts/stages/screen.ts
+ */
+import ScreenLayout from '../../../layouts/ScreenLayout.astro';
+import '../../../styles/stages-tool.css';
+---
+
+<ScreenLayout title="Stages in Relationships">
+  <div class="stages-page stages-screen" id="stages-screen">
+    <div class="stages-screen__inner stages-stack" id="stages-screen-main">
+      <noscript>
+        <p class="stages-note">The presenter screen needs JavaScript.</p>
+      </noscript>
+    </div>
+    <p class="stages-screen__status" id="stages-screen-status" aria-live="polite"></p>
+  </div>
+</ScreenLayout>
+
+<script>
+  import { initScreenPage } from '../../../scripts/stages/screen';
+  initScreenPage();
+</script>

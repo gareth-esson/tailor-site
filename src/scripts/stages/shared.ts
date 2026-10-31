@@ -26,7 +26,7 @@ export { CLOSING_MESSAGES, getRecap, isRecapId };
 export type { Recap, RecapId };
 export type { Card, DeckId, Participant, RoundState, Session, Step };
 
-export type PublicSession = Omit<Session, 'hostToken'>;
+export type PublicSession = Omit<Session, 'hostToken' | 'screenToken'>;
 
 export const BASE_PATH = '/tools/stages-in-relationships';
 export const POLL_MS = 2500;
@@ -193,6 +193,88 @@ export function renderColumns(
   return bodies;
 }
 
+/** Placement counts per card: { [cardId]: { counts: { [columnId]: n } } },
+ *  plus who chose each column when names are allowed. */
+export interface CardTally {
+  [cardId: string]: { counts: Record<string, number>; names?: Record<string, string[]> };
+}
+
+/**
+ * The Stage 2 / 3 board, drawn the same on the control desk and the
+ * presenter screen. Kept cards sit in the column most people chose;
+ * Stage 3 also shows the Stage 2 cards, so the fluids can be read
+ * against them; once revealed, every answer for the cards in play is
+ * shown. `tally` must cover the kept cards and, when revealed, the open
+ * ones. `onRemove` adds the control desk's "take off the board" button.
+ */
+export function placementBoard(opts: {
+  stage: 'stage2' | 'stage3';
+  timeline: string[];
+  round: { open: string[]; revealed: boolean; done: string[] };
+  tally: CardTally;
+  stage2Board: Record<string, string>;
+  onRemove?: (cardId: string) => void;
+}): HTMLElement[] {
+  const { stage, round, tally } = opts;
+  const board = el('div', { class: 'stages-board' });
+  const bodies = renderColumns(board, timelineColumns(opts.timeline), { fill: true });
+  const unplaced: string[] = [];
+  for (const id of round.done) {
+    const t = tally[id];
+    const card = getCard(id);
+    if (!card) continue;
+    const m = t ? majority(t.counts) : { columns: [], max: 0, total: 0 };
+    const body = m.columns[0] ? bodies.get(m.columns[0]) : undefined;
+    if (!body) {
+      unplaced.push(id);
+      continue;
+    }
+    body.append(cardEl(card, {
+      static: true,
+      count: m.max,
+      extraClass: `stages-card--done${m.columns.length > 1 ? ' stages-card--split' : ''}`,
+      onRemove: opts.onRemove ? () => opts.onRemove!(id) : undefined,
+      removeTitle: `Take “${card.label}” off the board`,
+    }));
+  }
+  if (stage === 'stage3') {
+    for (const [id, col] of Object.entries(opts.stage2Board)) {
+      const body = bodies.get(col);
+      const card = getCard(id);
+      if (body && card) body.append(cardEl(card, { static: true, extraClass: 'stages-card--done stages-card--context' }));
+    }
+  }
+  if (round.revealed) {
+    for (const id of round.open) {
+      const t = tally[id];
+      const card = getCard(id);
+      if (!card || !t) continue;
+      const m = majority(t.counts);
+      for (const [col, n] of Object.entries(t.counts)) {
+        const body = bodies.get(col);
+        if (!body || !n) continue;
+        const isMaj = m.columns.includes(col);
+        body.append(cardEl(card, {
+          static: true,
+          count: n,
+          extraClass: `${isMaj ? 'stages-card--majority' : 'stages-card--minority'}${isMaj && m.columns.length > 1 ? ' stages-card--split' : ''}`,
+        }));
+      }
+    }
+  }
+  updateColumnCounts(board);
+  const out: HTMLElement[] = [
+    board,
+    el('p', { class: 'stages-key' },
+      el('span', { class: 'stages-key__item' }, el('span', { class: 'stages-key__swatch', 'aria-hidden': 'true' }), 'Activities'),
+      stage === 'stage3' ? el('span', { class: 'stages-key__item' }, el('span', { class: 'stages-key__swatch stages-key__swatch--fluids', 'aria-hidden': 'true' }), 'Sharing fluids') : null,
+      el('span', { class: 'stages-key__item' }, 'Solid = where most people put it · pale = other answers · dashed = a tie'),
+    ),
+  ];
+  if (unplaced.length) out.push(el('p', { class: 'stages-note' }, `Nobody placed: ${unplaced.map(cardLabel).join(', ')}.`));
+  return out;
+}
+
 export function updateColumnCounts(board: HTMLElement): void {
   for (const counter of $$('[data-column-count]', board)) {
     const id = counter.dataset.columnCount!;
@@ -318,6 +400,12 @@ export function stepLabel(step: Step): string {
 
 export function joinUrl(code: string): string {
   return `${location.origin}${BASE_PATH}/join/?code=${code}`;
+}
+
+/** The presenter screen's link. The key rides in the fragment, so it is
+ *  never sent with the page request; the screen passes it to the API. */
+export function screenUrl(code: string, screenToken: string): string {
+  return `${location.origin}${BASE_PATH}/screen/?code=${code}#k=${screenToken}`;
 }
 
 export async function copyText(text: string): Promise<boolean> {

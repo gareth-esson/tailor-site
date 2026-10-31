@@ -52,9 +52,17 @@ export interface Session {
   updatedAt: number;
   /** Bumped on every host write; clients use it to detect change. */
   version: number;
+  /** Read-only key for the presenter screen. Absent on sessions created
+   *  before the presenter screen existed; the host view adds it. */
+  screenToken?: string;
+  /** Whether the presenter screen shows participants' names. Absent
+   *  means yes. */
+  showNames?: boolean;
   hideExplicit: boolean;
   step: Step;
-  stage1: { open: boolean; revealed: boolean };
+  /** `averageShown`: the host has put the average timeline on the
+   *  presenter screen, after the group has compared everyone's. */
+  stage1: { open: boolean; revealed: boolean; averageShown?: boolean };
   /** Agreed timeline after Stage 1 — stage-card ids in order. These
    *  become the columns for Stages 2 and 3. */
   timeline: string[];
@@ -298,6 +306,16 @@ export function isValidPid(raw: unknown): raw is string {
 
 // ─── Session lifecycle ──────────────────────────────────────────────
 
+const TOKEN_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+/** Give a session its presenter-screen key if it has none. Returns
+ *  whether the session changed and needs saving. */
+export function ensureScreenToken(session: Session): boolean {
+  if (session.screenToken) return false;
+  session.screenToken = randomFrom(TOKEN_ALPHABET, 32);
+  return true;
+}
+
 export async function createSession(hideExplicit: boolean): Promise<Session> {
   const store = getStore();
   // Retry on the (astronomically unlikely) code collision.
@@ -307,10 +325,12 @@ export async function createSession(hideExplicit: boolean): Promise<Session> {
     const now = Date.now();
     const session: Session = {
       code,
-      hostToken: randomFrom('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789', 32),
+      hostToken: randomFrom(TOKEN_ALPHABET, 32),
       createdAt: now,
       updatedAt: now,
       version: 1,
+      screenToken: randomFrom(TOKEN_ALPHABET, 32),
+      showNames: true,
       hideExplicit,
       step: 'lobby',
       stage1: { open: false, revealed: false },
