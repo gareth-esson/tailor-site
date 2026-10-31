@@ -304,11 +304,14 @@ async function getView(url: URL): Promise<Response> {
   response.board = boardSoFar(session, participants);
 
   // Reveal data only after the host reveals.
+  // `mine` marks the viewer's own row, so the phone can pin it while
+  // they scroll the others. (Names aren't unique, and pids are never
+  // sent to other people.)
   if (session.stage1.revealed) {
     response.stage1Reveal = {
       submissions: participants
         .filter((p) => p.stage1?.submitted)
-        .map((p) => ({ name: p.name, order: p.stage1!.order, out: p.stage1!.out })),
+        .map((p) => ({ name: p.name, order: p.stage1!.order, out: p.stage1!.out, mine: p.id === me.id })),
     };
   }
   for (const stage of ['stage2', 'stage3'] as const) {

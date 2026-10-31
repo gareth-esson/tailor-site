@@ -1677,3 +1677,17 @@
 .stages-screen__status:empty {
   display: none;
 }
+
+/* Phone, Stage 1 reveal: your own timeline stays in view below the site
+   header while you scroll everyone else's. */
+.stages-reveal--pinned {
+  position: sticky;
+  top: var(--header-height);
+  z-index: var(--z-sticky);
+  padding: var(--space-global-xs) 0;
+  background: var(--bg-page);
+}
+.stages-reveal--pinned .stages-reveal__row {
+  background: var(--bg-tinted);
+  box-shadow: var(--shadow-sm);
+}

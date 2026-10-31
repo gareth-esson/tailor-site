@@ -60,7 +60,7 @@ interface ParticipantView {
   session: PublicSession;
   me: Me;
   board: { stage2: Record<string, string>; stage3: Record<string, string> };
-  stage1Reveal?: { submissions: { name: string; order: string[]; out: string[] }[] };
+  stage1Reveal?: { submissions: { name: string; order: string[]; out: string[]; mine?: boolean }[] };
   stage2Reveal?: RevealTally;
   stage3Reveal?: RevealTally;
   summary?: Summary;
@@ -385,21 +385,30 @@ export function initJoinPage(): void {
       const v = view!;
       const wrap = el('div', { class: 'stages-stack' });
       wrap.append(header('Stage 1: everyone’s timelines', 'Look at the shared screen for the full picture. Here’s what each person sent.'));
-      const rows = el('div', { class: 'stages-reveal' });
-      for (const sub of v.stage1Reveal?.submissions ?? []) {
-        rows.append(
-          el('div', { class: 'stages-reveal__row' },
-            el('span', { class: 'stages-reveal__name' }, sub.name === auth.name ? `${sub.name} (you)` : sub.name),
-            el('div', { class: 'stages-reveal__cards' },
-              ...sub.order.flatMap((id, i) => [
-                i > 0 ? el('span', { class: 'stages-reveal__arrow', 'aria-hidden': 'true' }, '→') : null,
-                el('span', { class: 'stages-mini' }, cardLabel(id)),
-              ]),
-              ...sub.out.map((id) => el('span', { class: 'stages-mini stages-mini--out' }, cardLabel(id))),
-            ),
+      const row = (sub: { name: string; order: string[]; out: string[] }, name: string, pinned = false) =>
+        el('div', { class: 'stages-reveal__row' },
+          el('span', { class: 'stages-reveal__name' }, name),
+          el('div', { class: 'stages-reveal__cards' },
+            ...sub.order.flatMap((id, i) => [
+              i > 0 ? el('span', { class: 'stages-reveal__arrow', 'aria-hidden': 'true' }, '→') : null,
+              el('span', { class: 'stages-mini' }, cardLabel(id)),
+            ]),
+            // The pinned copy keeps to the order, so it doesn't fill the
+            // phone screen; the left-off cards are just counted.
+            ...(pinned
+              ? [sub.out.length ? el('span', { class: 'stages-note' }, `${sub.out.length} left off`) : null]
+              : sub.out.map((id) => el('span', { class: 'stages-mini stages-mini--out' }, cardLabel(id)))),
           ),
         );
+      const subs = v.stage1Reveal?.submissions ?? [];
+      // Your own timeline stays pinned while you scroll the others, so
+      // you can compare without having to remember what you put.
+      const mine = subs.find((s) => s.mine);
+      if (mine) {
+        wrap.append(el('div', { class: 'stages-reveal stages-reveal--pinned' }, row(mine, 'You', true)));
       }
+      const rows = el('div', { class: 'stages-reveal' });
+      for (const sub of subs) if (!sub.mine) rows.append(row(sub, sub.name));
       wrap.append(rows);
       return wrap;
     }
