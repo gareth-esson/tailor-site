@@ -7,9 +7,9 @@
  *   1. `stages`     — the relationship stages the group orders into a
  *                     timeline (Stage 1 of the activity).
  *   2. `activities` — things people do together; placed onto the
- *                     timeline (Stage 2).
+ *                     timeline, or into a "Never" column (Stage 2).
  *   3. `fluids`     — sharing-fluids cards; placed onto the same
- *                     timeline plus a "Never" column (Stage 3).
+ *                     columns (Stage 3).
  *
  * Every card has a stable `id` (used in session state and URLs — never
  * renumber or reuse), a `label` as shown on the card, and optional
@@ -33,6 +33,13 @@
  *   - "Watch a DVD together" → "Watch a film together"; "Play computer
  *     games" → "Play video games together"; "Have their photo as
  *     wallpaper" → "Have their photo as your lock screen".
+ *
+ * After the first online run-through (October 2026):
+ *   - "Stranger" (`s-stranger`, an added card) removed: the group found
+ *     it pointless as a stage. Its id is retired, not reused.
+ *   - "Talking stage" added. "Talking to each other" was read both as
+ *     literally talking and as the flirting "talking stage"; the two
+ *     cards now separate those meanings.
  */
 
 export type DeckId = 'stages' | 'activities' | 'fluids';
@@ -63,8 +70,8 @@ export const STAGE_CARDS: Card[] = [
   { id: 's-ex-spouse',   label: 'Ex-husband or ex-wife' },
   { id: 's-ex-gf-bf',    label: 'Ex-girlfriend or ex-boyfriend', original: 'Ex-girlfriend or ex-boyfrined' },
   { id: 's-infatuation', label: 'Infatuation', original: 'Infactuation' },
-  { id: 's-stranger',    label: 'Stranger', added: true },
   { id: 's-talking',     label: 'Talking to each other', added: true },
+  { id: 's-talking-stage', label: 'Talking stage', added: true },
   { id: 's-situationship', label: 'Situationship', added: true },
 ];
 
@@ -205,7 +212,7 @@ export const DECKS: Record<DeckId, Card[]> = {
   fluids: FLUID_CARDS,
 };
 
-/** Column id for the "would never do this" column added in Stage 3. */
+/** Column id for the "would never do this" column in Stages 2 and 3. */
 export const NEVER_COLUMN_ID = 'never';
 
 /** Column id for cards a participant thinks don't belong on the

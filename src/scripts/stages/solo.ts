@@ -6,8 +6,9 @@
  *
  *   Stage 1: deal the stage cards, drag them into a timeline; cards that
  *            "don't belong" go in the out pile.
- *   Stage 2: the timeline becomes columns; drag activity cards onto it.
- *   Stage 3: same columns plus "Never"; drag the sharing-fluids cards.
+ *   Stage 2: the timeline becomes columns, plus "Never"; drag activity
+ *            cards onto it.
+ *   Stage 3: same columns; drag the sharing-fluids cards.
  */
 
 import {
@@ -265,9 +266,8 @@ export function initSoloPage(): void {
   // ─── Stage 2 / 3: place cards on the timeline ────────────────────
   function renderPlacement(step: 'stage2' | 'stage3') {
     const s = state[step];
-    const withNever = step === 'stage3';
     const deckId = step === 'stage2' ? 'activities' : 'fluids';
-    const columns = timelineColumns(state.stage1.order, withNever);
+    const columns = timelineColumns(state.stage1.order);
 
     const section = el('div', { class: 'stages-stack' });
     section.append(
@@ -276,8 +276,8 @@ export function initSoloPage(): void {
           step === 'stage2' ? 'Stage 2: when does each of these happen?' : 'Stage 3: sharing fluids'),
         el('p', { class: 'stages-section__intro' },
           step === 'stage2'
-            ? 'Drag each card onto the stage where the group thinks it belongs. Argue about it. Notice where people disagree.'
-            : 'Same timeline, one extra column. Some of these will end up in “Never”. Then look at where kissing and sex landed.'),
+            ? 'Drag each card onto the stage where the group thinks it belongs, or into “Never”. Argue about it. Notice where people disagree.'
+            : 'Same columns as Stage 2. Some of these will end up in “Never”. Then look at where kissing and sex landed.'),
       ),
     );
 

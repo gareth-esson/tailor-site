@@ -172,7 +172,10 @@ export function initHostPage(): void {
     // Local UI state that must survive re-renders.
     const picked: Record<PlacementStage, Set<string>> = { stage2: new Set(), stage3: new Set() };
     let editTimeline: { order: string[]; out: string[] } | null = null;
-    let showPicker = false;
+    // Whether the facilitator has chosen to take back the cards that are
+    // out. Until then the picker stays hidden: sending new cards replaces
+    // the open ones and clears everyone's answers to them.
+    const replacing: Record<PlacementStage, boolean> = { stage2: false, stage3: false };
     let sortables: Sortable[] = [];
 
     const status = el('p', { class: 'stages-toolbar__status', 'aria-live': 'polite' });
@@ -276,6 +279,13 @@ export function initHostPage(): void {
       errorLine.textContent = errorText;
       errorLine.hidden = !errorText;
       for (const b of toolbar.querySelectorAll<HTMLButtonElement>('button')) b.disabled = busy && !b.dataset.always;
+    }
+
+    /** Re-render after a change to local UI state, which the polling
+     *  change-detection key doesn't see. */
+    function rerender() {
+      lastKey = '';
+      render();
     }
 
     // ── Render root ──
@@ -417,9 +427,9 @@ export function initHostPage(): void {
       hide.addEventListener('change', () => void act('setHideExplicit', { hideExplicit: hide.checked }));
 
       const running = el('ol', { class: 'stages-running-order' },
-        el('li', {}, el('strong', {}, 'Put the stages in order'), ' — everyone builds their own timeline, then we compare.'),
-        el('li', {}, el('strong', {}, 'Decide when things happen'), ' — activity cards go onto the timeline we agree.'),
-        el('li', {}, el('strong', {}, 'Sharing fluids'), ' — the same timeline, plus a column for “never”.'),
+        el('li', {}, el('strong', {}, 'Put the stages in order.'), ' Everyone builds their own timeline, then we compare.'),
+        el('li', {}, el('strong', {}, 'Decide when things happen.'), ' Activity cards go onto the timeline we agree, or into “Never”.'),
+        el('li', {}, el('strong', {}, 'Sharing fluids.'), ' The same columns again.'),
       );
 
       return el('div', { class: 'stages-stack' },
@@ -653,9 +663,10 @@ export function initHostPage(): void {
       const v = view!;
       const s = v.session;
       const round = s[stage];
+      if (!round.open.length || round.revealed) replacing[stage] = false;
       const tally = v[stage];
       const deckId = stage === 'stage2' ? 'activities' : 'fluids';
-      const columns = timelineColumns(s.timeline, stage === 'stage3');
+      const columns = timelineColumns(s.timeline);
       const wrap = el('div', { class: 'stages-stack' });
 
       wrap.append(
@@ -665,7 +676,7 @@ export function initHostPage(): void {
           el('p', { class: 'stages-section__intro' },
             stage === 'stage2'
               ? 'Send a few cards at a time. Everyone places them on their own device, then you reveal where they landed.'
-              : 'Same columns, plus “Never”. Watch where the gum ends up compared with kissing.'),
+              : 'Same columns as Stage 2. Watch where the gum ends up compared with kissing.'),
         ),
       );
 
@@ -740,7 +751,9 @@ export function initHostPage(): void {
           el('p', { class: 'stages-panel__text' },
             round.revealed
               ? 'Solid cards show where most people put each one; lighter cards are the other answers. Talk it through, then keep them on the board.'
-              : `${doneAll} of ${total} have placed every card.`),
+              : doneAll === total && total > 0
+                ? 'Everyone has placed every card. Reveal when you’re ready.'
+                : `${doneAll} of ${total} have placed every card. Reveal when everyone’s done.`),
         );
         const list = el('div', { class: 'stages-reveal__cards' });
         for (const id of round.open) {
@@ -767,14 +780,27 @@ export function initHostPage(): void {
             btn('Reveal', 'primary', () => void act('reveal', { stage }), { disabled: total === 0 }),
             participantsList((p) => (stage === 'stage2' ? p.stage2Placed : p.stage3Placed) >= round.open.length),
           ));
-          panel.append(el('p', { class: 'stages-note' }, 'Changed your mind? Choosing different cards below replaces these and clears any answers so far.'));
-          showPicker = showPicker || false;
+          panel.append(replacing[stage]
+            ? el('div', { class: 'stages-actions' },
+                el('p', { class: 'stages-note' }, 'Choose different cards below. Sending them takes these back and clears everyone’s answers to them.'),
+                btn('Keep these cards', 'text', () => {
+                  replacing[stage] = false;
+                  rerender();
+                }),
+              )
+            : el('div', { class: 'stages-actions' },
+                btn('Take these cards back', 'text', () => {
+                  if (!window.confirm('Take these cards back? Any answers to them so far will be cleared.')) return;
+                  replacing[stage] = true;
+                  rerender();
+                }),
+              ));
         }
         wrap.append(panel);
       }
 
       // Picker
-      if (!round.open.length || !round.revealed) {
+      if (!round.open.length || replacing[stage]) {
         const used = new Set([...round.done, ...round.open]);
         const remaining = deckCards(deckId, s.hideExplicit).filter((c) => !used.has(c.id));
         const sel = picked[stage];
@@ -809,8 +835,14 @@ export function initHostPage(): void {
         }
         const send = async (ids: string[]) => {
           if (!ids.length) return;
-          const ok = await act('openCards', { stage, cardIds: ids });
-          if (ok) sel.clear();
+          const ok = await act('openCards', { stage, cardIds: ids, replace: replacing[stage] });
+          if (ok) {
+            sel.clear();
+            // act() has already re-rendered with the picker open, and the
+            // next poll sees no server change, so redraw now.
+            replacing[stage] = false;
+            rerender();
+          }
         };
         const sendBtn = btn('Send selected', 'primary', () => void send(Array.from(sel)));
         const header = el('div', { class: 'stages-picker__header' },
@@ -832,14 +864,15 @@ export function initHostPage(): void {
 
       // Navigation between stages
       const nav = el('div', { class: 'stages-actions' });
+      const navWeight = round.open.length ? 'tint' : 'primary';
       if (stage === 'stage2') {
         nav.append(
-          btn('Show the key points from Stage 2', 'primary', () => void act('setStep', { step: 'recap2' })),
+          btn('Show the key points from Stage 2', navWeight, () => void act('setStep', { step: 'recap2' })),
           btn('Skip to Stage 3', 'tint', () => void act('setStep', { step: 'stage3' })),
         );
       } else {
         nav.append(
-          btn('Show the key points from Stage 3', 'primary', () => void act('setStep', { step: 'recap3' })),
+          btn('Show the key points from Stage 3', navWeight, () => void act('setStep', { step: 'recap3' })),
           btn('Back to Stage 2', 'tint', () => void act('setStep', { step: 'stage2' })),
         );
       }

@@ -438,11 +438,10 @@ export function validateStage1(
   return { order: order as string[], out: out as string[] };
 }
 
-/** Which column ids a participant may place a card in for a stage. */
-export function allowedColumns(session: Session, stage: PlacementStage): Set<string> {
-  const cols = new Set(session.timeline);
-  if (stage === 'stage3') cols.add(NEVER_COLUMN_ID);
-  return cols;
+/** Which column ids a participant may place a card in: the agreed
+ *  timeline, plus "Never" (both Stage 2 and Stage 3). */
+export function allowedColumns(session: Session): Set<string> {
+  return new Set([...session.timeline, NEVER_COLUMN_ID]);
 }
 
 export function validatePlacement(
@@ -455,7 +454,7 @@ export function validatePlacement(
   const deck: DeckId = stage === 'stage2' ? 'activities' : 'fluids';
   if (!deckCards(deck, session.hideExplicit).some((c) => c.id === cardId)) return null;
   if (!session[stage].open.includes(cardId)) return null;
-  if (!allowedColumns(session, stage).has(columnId)) return null;
+  if (!allowedColumns(session).has(columnId)) return null;
   return { cardId, columnId };
 }
 

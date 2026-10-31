@@ -28,7 +28,8 @@ import { errorResponse, json, readJson, storageUnavailable } from './_shared';
  *   openStage1                 start Stage 1 (clears earlier submissions)
  *   revealStage1               show everyone's timelines
  *   setTimeline { timeline }   agree the group timeline → columns for 2 & 3
- *   openCards { stage, cardIds }  send cards for placement (replaces open set)
+ *   openCards { stage, cardIds, replace? }  send cards for placement;
+ *                                 replace: true is needed while cards are out
  *   reveal { stage }           show placements for the open cards
  *   closeRound { stage }       move open cards to "done"; board keeps them
  *   undoDone { stage, cardId } take a card back off the board
@@ -100,6 +101,11 @@ export const POST: APIRoute = async ({ request }) => {
         if (!isPlacementStage(stage)) return json({ error: 'Invalid stage' }, 400);
         if (session.timeline.length < 2) {
           return json({ error: 'Agree the timeline in Stage 1 before sending cards' }, 409);
+        }
+        // Sending while cards are out replaces them and clears the answers
+        // people have already given, so it has to be asked for explicitly.
+        if (session[stage].open.length && body.replace !== true) {
+          return json({ error: 'Cards are still out. Reveal them, or take them back first.' }, 409);
         }
         const raw = body.cardIds;
         if (!Array.isArray(raw) || raw.length === 0 || raw.length > 20) {

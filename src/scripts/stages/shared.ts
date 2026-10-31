@@ -160,9 +160,10 @@ export interface ColumnSpec {
   kind?: 'stage' | 'never' | 'out';
 }
 
-export function timelineColumns(timeline: string[], withNever: boolean): ColumnSpec[] {
+/** Columns for Stages 2 and 3: the agreed timeline, then "Never". */
+export function timelineColumns(timeline: string[]): ColumnSpec[] {
   const cols: ColumnSpec[] = timeline.map((id) => ({ id, label: columnLabel(id), kind: 'stage' }));
-  if (withNever) cols.push({ id: NEVER_COLUMN_ID, label: 'Never', kind: 'never' });
+  cols.push({ id: NEVER_COLUMN_ID, label: 'Never', kind: 'never' });
   return cols;
 }
 

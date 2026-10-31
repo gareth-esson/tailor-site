@@ -457,7 +457,7 @@ export function initJoinPage(): void {
       const v = view!;
       const s = v.session;
       const round = s[stage];
-      const columns = timelineColumns(s.timeline, stage === 'stage3');
+      const columns = timelineColumns(s.timeline);
       const title = stage === 'stage2' ? 'Stage 2: when does this happen?' : 'Stage 3: sharing fluids';
 
       if (!round.open.length) {
@@ -502,7 +502,7 @@ export function initJoinPage(): void {
 
       const wrap = el('div', { class: 'stages-place' });
       wrap.append(header(title, stage === 'stage2'
-        ? 'Tap the stage where you think this happens.'
+        ? 'Tap the stage where you think this happens, or “Never”.'
         : 'Tap the stage where you’d be happy to do this, or “Never”.'));
 
       const progress = el('p', { class: 'stages-place__progress' });
