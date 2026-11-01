@@ -1,0 +1,27 @@
+---
+/**
+ * Stages in Relationships — sets light or dark mode before first paint.
+ *
+ * Place as the first child of a .stages-page element. The inline script
+ * reads the remembered choice (or the device setting) and sets
+ * data-theme on its parent while the page is still parsing, so a dark
+ * page never flashes light. src/scripts/stages/theme.ts takes over from
+ * there: the toggle, and changes made in another window.
+ */
+---
+
+<script is:inline>
+  (function (page) {
+    var theme = null;
+    try { theme = localStorage.getItem('stages-theme'); } catch (e) {}
+    if (theme !== 'dark' && theme !== 'light') {
+      theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    page.dataset.theme = theme;
+  })(document.currentScript.parentElement);
+</script>
+
+<script>
+  import { initStagesTheme } from '../scripts/stages/theme';
+  initStagesTheme();
+</script>

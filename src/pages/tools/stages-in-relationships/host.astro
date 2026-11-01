@@ -5,6 +5,8 @@
  * Logic: src/scripts/stages/host.ts
  */
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import StagesThemeInit from '../../../components/StagesThemeInit.astro';
+import StagesThemeToggle from '../../../components/StagesThemeToggle.astro';
 import '../../../styles/stages-tool.css';
 
 const BASE = '/tools/stages-in-relationships';
@@ -17,6 +19,7 @@ const BASE = '/tools/stages-in-relationships';
   noIndex={true}
 >
   <div class="stages-page" id="stages-host">
+    <StagesThemeInit />
     <section class="stages-hero stages-hero--compact">
       <div class="stages-hero__inner">
         <div class="stages-hero__text">
@@ -25,6 +28,7 @@ const BASE = '/tools/stages-in-relationships';
             Your controls. Open the presenter screen and share that window, or share this page as it is. Everyone else joins on their own device.
             <a class="link-inline" href={`${BASE}/`}>About the activity</a>
           </p>
+          <StagesThemeToggle />
         </div>
       </div>
     </section>

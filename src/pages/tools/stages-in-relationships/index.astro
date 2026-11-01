@@ -7,6 +7,7 @@
  * (astro.config.mjs). Tailor layer. Operational copy, not marketing.
  */
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import StagesThemeInit from '../../../components/StagesThemeInit.astro';
 import '../../../styles/stages-tool.css';
 import {
   STAGE_CARDS,
@@ -31,6 +32,7 @@ const counts = {
   noIndex={true}
 >
   <div class="stages-page">
+    <StagesThemeInit />
     <section class="stages-hero">
       <div class="stages-hero__inner">
         <div class="stages-hero__text">

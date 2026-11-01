@@ -5,6 +5,8 @@
  * Logic: src/scripts/stages/join.ts
  */
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import StagesThemeInit from '../../../components/StagesThemeInit.astro';
+import StagesThemeToggle from '../../../components/StagesThemeToggle.astro';
 import '../../../styles/stages-tool.css';
 
 const BASE = '/tools/stages-in-relationships';
@@ -17,11 +19,13 @@ const BASE = '/tools/stages-in-relationships';
   noIndex={true}
 >
   <div class="stages-page" id="stages-join">
+    <StagesThemeInit />
     <section class="stages-hero stages-hero--compact">
       <div class="stages-hero__inner">
         <div class="stages-hero__text">
           <h1 class="stages-hero__title">Stages in Relationships</h1>
           <p class="stages-hero__lede">Your answers go to the facilitator’s screen. Nobody else sees them until the reveal.</p>
+          <StagesThemeToggle />
         </div>
       </div>
     </section>

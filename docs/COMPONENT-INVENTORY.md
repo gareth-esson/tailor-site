@@ -64,6 +64,8 @@ copying a bespoke card wholesale.
 | **AgeFlag** | `[D1]` Age-tier interstitial. | anonymous_question/[...slug] |
 | **EndOfAnswerPanel** | `[A17]` End-of-answer panel on question pages. | anonymous_question/[...slug] |
 | **SimpleModeToggle** | `[A6]` Standard/Simple reading toggle. | anonymous_question, explained, glossary |
+| **StagesThemeInit** | Light/dark mode for the Stages in Relationships tool. First child of a `.stages-page`: sets `data-theme` before first paint (remembered choice, else the device setting) and loads `scripts/stages/theme.ts`. Dark tokens live in `stages-tool.css`, scoped to the tool; the rest of the site has no dark mode. | tools/stages-in-relationships/* |
+| **StagesThemeToggle** | The "Dark mode / Light mode" switch for the Stages tool. Needs StagesThemeInit on the page. | tools/stages-in-relationships host, join, play |
 | **SearchBar** | `[A4/A5]` Header search with instant results. | SiteHeader |
 | **SiteHeader / SiteFooter / Analytics / CookieBanner / OtaSearchPill** | Shell. Mounted once in BaseLayout; never import directly. | BaseLayout |
 | **RelatedTerms** | `[A15]` Glossary variant of related items. **Currently unused.** | — |

@@ -28,6 +28,7 @@
   --stages-board-bg: var(--bg-surface-alt);
   --stages-column-bg: var(--bg-page);
   --stages-drop-bg: var(--bg-tinted);
+  --stages-error-base: var(--state-error);   /* captured here so dark mode can mix from it */
   --stages-never-title: var(--state-error-text);
   --stages-never-bg: var(--state-error-soft);
   --stages-out-title: var(--text-body-muted);
@@ -61,6 +62,12 @@
   --stages-never-soft: var(--ota-cat-law-soft);
   --stages-never-text: hsl(var(--ota-cat-law-h), var(--ota-cat-law-s), 24%);
   --stages-split-border: var(--ota-cat-law);
+  /* A selected "Never" answer: solid, with light text. */
+  --stages-never-solid: var(--stages-never-text);
+  --stages-never-solid-text: var(--text-on-dark);
+  /* The ×n badge on a card sits on a light chip in both themes, so the
+     deck colour stays readable on it. */
+  --stages-count-bg: var(--bg-surface);
 }
 
 /* ── Page shell ────────────────────────────────────────────────────── */
@@ -366,6 +373,9 @@
   border-bottom-color: var(--stages-never-accent);
   border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
+.stages-column--never .stages-column__count {
+  color: inherit;
+}
 .stages-column--out {
   border: var(--border-width-xs) dashed var(--border-strong);
   background: transparent;
@@ -512,13 +522,13 @@
   font-weight: var(--font-weight-bold);
   padding: 0 0.45em;
   border-radius: var(--radius-pill);
-  background: var(--bg-surface);
+  background: var(--stages-count-bg);
   color: var(--stages-card-count-text, var(--text-heading));
   line-height: var(--lh-ui);
 }
 .stages-card--minority .stages-card__count {
-  background: var(--bg-surface);
-  color: var(--stages-card-soft-text);
+  background: var(--stages-count-bg);
+  color: var(--stages-count-minority-text, var(--stages-card-soft-text));
 }
 .stages-card__remove { color: inherit; }
 .stages-card__remove {
@@ -872,9 +882,9 @@
   background: var(--stages-never-soft);
 }
 .stages-option--never.is-selected {
-  background: var(--stages-never-text);
-  border-color: var(--stages-never-text);
-  color: var(--text-on-dark);
+  background: var(--stages-never-solid);
+  border-color: var(--stages-never-solid);
+  color: var(--stages-never-solid-text);
 }
 
 /* ── Roundup (end of session) ───────────────────────────────────────── */
@@ -1688,6 +1698,90 @@
   background: var(--bg-page);
 }
 .stages-reveal--pinned .stages-reveal__row {
-  background: var(--bg-tinted);
+  background: var(--stages-deck-stages-soft);
   box-shadow: var(--shadow-sm);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   Dark mode
+   ----------------------------------------------------------------------
+   Asked for in the first run-through (bright white is hard going for
+   some dyslexic readers). The rest of the site has no dark mode, so this
+   re-points the tokens the tool uses, inside .stages-page only; the site
+   header and footer stay light. data-theme is set before first paint by
+   StagesThemeInit and kept current by scripts/stages/theme.ts.
+
+   Tokens built from other tokens are resolved on :root, so overriding
+   --brand-accent-text here would not reach --btn-tint-text: each token
+   the tool reads is re-pointed directly. Surfaces come from the system's
+   dark slate (--bg-emphasis and its raised step); tints mix each deck's
+   own colour into that slate.
+   ══════════════════════════════════════════════════════════════════════ */
+.stages-page[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Surfaces: page, a raised surface, and a sunken board */
+  --bg-page: var(--bg-emphasis);
+  --bg-surface: var(--bg-emphasis-raised);
+  --bg-surface-alt: color-mix(in srgb, var(--bg-emphasis) 82%, var(--neutral-900));
+  --bg-tinted: color-mix(in srgb, var(--bg-emphasis-raised) 70%, var(--bg-emphasis));
+  --bg-subtle: color-mix(in srgb, var(--text-on-dark) 12%, var(--bg-emphasis));
+  --border-subtle: var(--border-subtle-on-dark);
+  --border-strong: var(--on-dark-40);
+
+  /* Text */
+  --text-body: var(--text-on-dark);
+  --text-heading: var(--text-heading-on-dark);
+  --text-body-muted: var(--text-muted-on-dark);
+  --text-heading-muted: var(--on-dark-70);
+  --brand-accent-text: var(--brand-accent-soft);
+  --link-default: var(--brand-accent-soft);
+  --link-underline-rest: var(--on-dark-40);
+
+  /* Buttons and focus */
+  --btn-tint-bg: var(--btn-tint-bg-on-dark);
+  --btn-tint-bg-hover: var(--btn-tint-bg-on-dark-hover);
+  /* The system's on-dark tint text (--btn-tint-text-on-dark) reaches
+     only 4.3:1 on the raised surface; the lighter on-dark link teal
+     clears AA. */
+  --btn-tint-text: var(--link-action-color-on-dark);
+  --btn-text-color: var(--brand-accent-soft);
+  --btn-text-color-hover: var(--text-heading-on-dark);
+  --focus-ring: var(--focus-ring-on-dark);
+  --state-success-soft: color-mix(in srgb, var(--state-success) 30%, var(--bg-emphasis));
+  --state-success-text: color-mix(in srgb, var(--state-success) 35%, var(--text-heading-on-dark));
+  --state-error: color-mix(in srgb, var(--stages-error-base) 55%, var(--text-heading-on-dark));
+  --state-error-soft: color-mix(in srgb, var(--stages-error-base) 30%, var(--bg-emphasis));
+  --state-error-text: color-mix(in srgb, var(--stages-error-base) 30%, var(--text-heading-on-dark));
+
+  /* Deck tints. The solid card colours already work on dark. */
+  --stages-deck-stages-soft: var(--btn-tint-bg-on-dark);
+  --stages-deck-stages-soft-text: var(--brand-accent-soft);
+  --stages-deck-activities-soft: color-mix(in srgb, var(--ota-cat-relationships) 30%, var(--bg-emphasis));
+  --stages-deck-activities-soft-text: color-mix(in srgb, var(--ota-cat-relationships) 40%, var(--text-heading-on-dark));
+  --stages-deck-fluids-soft: color-mix(in srgb, var(--stages-deck-fluids-bg) 40%, var(--bg-emphasis));
+  --stages-deck-fluids-soft-text: color-mix(in srgb, var(--stages-deck-fluids-bg) 30%, var(--text-heading-on-dark));
+  --stages-never-soft: color-mix(in srgb, var(--ota-cat-law) 25%, var(--bg-emphasis));
+  --stages-never-text: color-mix(in srgb, var(--ota-cat-law) 45%, var(--text-heading-on-dark));
+  --stages-never-solid: var(--ota-cat-law);
+  --stages-never-solid-text: var(--brand-secondary);
+  --stages-drop-bg: var(--btn-tint-bg-on-dark);
+  --stages-board-bg: var(--bg-surface-alt);
+  --stages-column-bg: var(--bg-page);
+  --stages-card-bg: var(--bg-surface);
+
+  /* The count badge keeps its light chip */
+  --stages-count-bg: var(--text-on-dark);
+  --stages-count-minority-text: var(--brand-secondary);
+
+  background: var(--bg-page);
+  color: var(--text-body);
+}
+/* Heat strip: the third shade is pale teal, so its number stays dark. */
+.stages-page[data-theme="dark"] .stages-heat__cell[data-n="3"] {
+  color: var(--brand-secondary);
+}
+
+.stages-theme-toggle {
+  margin-top: var(--space-global-xs);
 }

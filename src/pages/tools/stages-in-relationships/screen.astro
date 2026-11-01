@@ -9,11 +9,13 @@
  * Logic: src/scripts/stages/screen.ts
  */
 import ScreenLayout from '../../../layouts/ScreenLayout.astro';
+import StagesThemeInit from '../../../components/StagesThemeInit.astro';
 import '../../../styles/stages-tool.css';
 ---
 
 <ScreenLayout title="Stages in Relationships">
   <div class="stages-page stages-screen" id="stages-screen">
+    <StagesThemeInit />
     <div class="stages-screen__inner stages-stack" id="stages-screen-main">
       <noscript>
         <p class="stages-note">The presenter screen needs JavaScript.</p>
