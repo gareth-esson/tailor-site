@@ -33,6 +33,7 @@ import {
   getRecap,
   isRecapId,
   placementBoard,
+  qrCode,
   recapSlide,
   screenUrl,
   removeLocal,
@@ -173,11 +174,39 @@ export function initHostPage(): void {
     // Local UI state that must survive re-renders.
     const picked: Record<PlacementStage, Set<string>> = { stage2: new Set(), stage3: new Set() };
     let editTimeline: { order: string[]; out: string[] } | null = null;
+    // Timeline edits go to the presenter screen as they happen, a beat
+    // after each drag. Saving waits for the last one to land, so a late
+    // draft can't overwrite the save.
+    let draftTimer: number | undefined;
+    let draftSending: Promise<unknown> = Promise.resolve();
+    const sendDraft = () => {
+      if (!editTimeline) return;
+      const { order, out } = editTimeline;
+      draftSending = draftSending.then(() =>
+        apiPost('host', { code: auth.code, hostToken: auth.hostToken, action: 'setDraftTimeline', order, out })
+          .catch(() => { /* the presenter misses one step; the next drag or the save catches it up */ }));
+    };
+    const queueDraft = () => {
+      window.clearTimeout(draftTimer);
+      draftTimer = window.setTimeout(sendDraft, 300);
+    };
+    const flushDraft = async () => {
+      if (draftTimer !== undefined) {
+        window.clearTimeout(draftTimer);
+        draftTimer = undefined;
+      }
+      await draftSending;
+    };
     // Whether the facilitator has chosen to take back the cards that are
-    // out. Until then the picker stays hidden: sending new cards replaces
-    // the open ones and clears everyone's answers to them.
+    // out. Until then the picker only lines up the next cards: sending new
+    // cards replaces the open ones and clears everyone's answers to them.
     const replacing: Record<PlacementStage, boolean> = { stage2: false, stage3: false };
+    // What's typed in each picker's search box.
+    const search: Record<PlacementStage, string> = { stage2: '', stage3: '' };
     let sortables: Sortable[] = [];
+    // A redraw mid-drag would drop the card being dragged; wait for the drop.
+    let dragging = false;
+    let redrawAfterDrag = false;
 
     const status = el('p', { class: 'stages-toolbar__status', 'aria-live': 'polite' });
     const errorLine = el('p', { class: 'stages-note', role: 'alert' });
@@ -296,18 +325,31 @@ export function initHostPage(): void {
       // Online/offline flips only matter visually in the lobby; elsewhere
       // they go through renderStatus() so buttons don't re-render under
       // the facilitator's cursor.
+      // The timeline draft is this desk's own edit echoed back, so it (and
+      // the version bump it causes) mustn't redraw the editor mid-drag.
+      const { version: _version, updatedAt: _updatedAt, ...session } = view.session;
+      const keyed = { ...view, session: { ...session, stage1: { ...session.stage1, draft: undefined } } };
       const key = JSON.stringify(
         view.session.step === 'lobby'
-          ? view
-          : { ...view, participants: view.participants.map(({ online: _online, ...p }) => p) },
+          ? keyed
+          : { ...keyed, participants: view.participants.map(({ online: _online, ...p }) => p) },
       );
       if (key === lastKey) {
         renderStatus();
         return;
       }
+      if (dragging) {
+        redrawAfterDrag = true;
+        return;
+      }
       lastKey = key;
       sortables.forEach((s) => s.destroy());
       sortables = [];
+      // Polling re-renders while the facilitator may be typing (the search
+      // box): put the cursor back where it was.
+      const focused = document.activeElement instanceof HTMLInputElement ? document.activeElement : null;
+      const keepFocus = focused?.dataset.keepFocus;
+      const caret = focused?.selectionStart ?? null;
 
       renderToolbar();
       clear(main);
@@ -334,6 +376,13 @@ export function initHostPage(): void {
       }
       main.append(errorLine);
       renderStatus();
+      if (keepFocus) {
+        const input = main.querySelector<HTMLInputElement>(`[data-keep-focus="${keepFocus}"]`);
+        if (input) {
+          input.focus({ preventScroll: true });
+          if (caret !== null) input.setSelectionRange(caret, caret);
+        }
+      }
     }
 
     // ── Toolbar: stepper + code + status ──
@@ -383,7 +432,7 @@ export function initHostPage(): void {
     function presenterControls(): HTMLElement {
       const s = view!.session;
       const url = screenUrl(s.code, view!.screenToken);
-      const names = el('input', { type: 'checkbox', checked: s.showNames !== false }) as HTMLInputElement;
+      const names = el('input', { type: 'checkbox', checked: s.showNames === true }) as HTMLInputElement;
       names.addEventListener('change', () => void act('setShowNames', { showNames: names.checked }));
       return el('div', { class: 'stages-toolbar__group' },
         el('span', { class: 'stages-note' }, 'Presenter screen '),
@@ -407,6 +456,7 @@ export function initHostPage(): void {
         el('p', { class: 'stages-code-panel__label' }, compact ? 'Join code' : 'Join with this code'),
         el('p', { class: 'stages-code' }, s.code),
         el('p', { class: 'stages-code-panel__url' }, url.replace(/^https?:\/\//, '')),
+        compact ? null : qrCode(url, 'QR code: scan to join'),
         el('div', { class: 'stages-code-panel__actions' },
           btn('Copy join link', 'tint', async () => {
             const ok = await copyText(url);
@@ -584,12 +634,14 @@ export function initHostPage(): void {
           rows,
           el('p', { class: 'stages-note' },
             averageShown
-              ? 'The presenter screen is showing the average.'
+              ? s.stage1.draft
+                ? 'The presenter screen is showing the group’s timeline, and follows your changes below.'
+                : 'The presenter screen is showing the average.'
               : 'The presenter screen shows everyone’s timelines. Compare them first, then show the average.'),
           el('div', { class: 'stages-actions' },
             averageShown
               ? btn('Back to everyone’s timelines', 'tint', () => void act('showAverage', { shown: false }))
-              : btn('Show the average on the presenter screen', 'tint', () => void act('showAverage', { shown: true }), { disabled: cons.submittedCount === 0 }),
+              : btn(s.stage1.draft ? 'Show the group’s timeline on the presenter screen' : 'Show the average on the presenter screen', 'tint', () => void act('showAverage', { shown: true }), { disabled: cons.submittedCount === 0 }),
           ),
         ),
       );
@@ -624,7 +676,11 @@ export function initHostPage(): void {
 
       // Timeline editor
       if (!editTimeline) {
-        if (s.timeline.length >= 2) {
+        const draft = s.stage1.draft;
+        if (draft && draft.order.length + draft.out.length > 0) {
+          const known = new Set([...draft.order, ...draft.out]);
+          editTimeline = { order: draft.order.filter((id) => visible.includes(id)), out: [...draft.out.filter((id) => visible.includes(id)), ...visible.filter((id) => !known.has(id))] };
+        } else if (s.timeline.length >= 2) {
           editTimeline = { order: s.timeline.slice(), out: visible.filter((id) => !s.timeline.includes(id)) };
         } else if (cons.submittedCount > 0) {
           editTimeline = { order: cons.order.slice(), out: [...cons.out, ...visible.filter((id) => !cons.order.includes(id) && !cons.out.includes(id))] };
@@ -642,6 +698,10 @@ export function initHostPage(): void {
           out: Array.from(outPile.querySelectorAll<HTMLElement>('[data-card-id]')).map((n) => n.dataset.cardId!),
         };
       };
+      const changed = () => {
+        sync();
+        queueDraft();
+      };
       for (const list of [timeline, outPile]) {
         sortables.push(new Sortable(list, {
           group: 'host-timeline',
@@ -653,15 +713,25 @@ export function initHostPage(): void {
           dragClass: 'sortable-drag',
           delay: 120,
           delayOnTouchOnly: true,
-          onSort: sync,
-          onAdd: sync,
-          onRemove: sync,
+          onStart: () => {
+            dragging = true;
+          },
+          onEnd: () => {
+            dragging = false;
+            if (redrawAfterDrag) {
+              redrawAfterDrag = false;
+              window.setTimeout(render, 0);
+            }
+          },
+          onSort: changed,
+          onAdd: changed,
+          onRemove: changed,
         }));
       }
       wrap.append(
         el('div', { class: 'stages-panel' },
           el('h2', { class: 'stages-panel__title' }, 'Agree the group’s timeline'),
-          el('p', { class: 'stages-panel__text' }, 'Starts from the average order. Drag to change it as the group discusses. These become the columns for Stages 2 and 3.'),
+          el('p', { class: 'stages-panel__text' }, 'Starts from the average order. Drag to change it as the group discusses; the presenter screen follows along. These become the columns for Stages 2 and 3.'),
           el('div', { class: 'stages-sort-group' },
             el('div', {}, el('h3', { class: 'stages-sort-group__label' }, 'Timeline'), timeline),
             el('div', {}, el('h3', { class: 'stages-sort-group__label' }, 'Left off'), outPile),
@@ -669,6 +739,7 @@ export function initHostPage(): void {
           el('div', { class: 'stages-actions' },
             btn('Save the timeline and continue', 'primary', async () => {
               sync();
+              await flushDraft();
               if (editTimeline!.order.length < 2) {
                 errorText = 'The timeline needs at least two cards.';
                 renderStatus();
@@ -680,7 +751,7 @@ export function initHostPage(): void {
             btn('Restart Stage 1', 'text', () => {
               if (window.confirm('Clear everyone’s timelines and start Stage 1 again?')) {
                 editTimeline = null;
-                void act('openStage1');
+                void flushDraft().then(() => act('openStage1'));
               }
             }),
           ),
@@ -711,14 +782,56 @@ export function initHostPage(): void {
         ),
       );
 
-      wrap.append(...placementBoard({
+      const placed = s.placed?.[stage] ?? {};
+      const boardEls = placementBoard({
         stage,
         timeline: s.timeline,
         round,
         tally,
         stage2Board: v.board.stage2,
+        placed,
         onRemove: (cardId) => void act('undoDone', { stage, cardId }),
-      }));
+        movable: true,
+      });
+      wrap.append(...boardEls);
+
+      // Drag a solid card to another column to put it there: a kept card
+      // at any time, a card in play once it is revealed.
+      const place = async (cardId: string, columnId: string | null) => {
+        if (!(await act('placeCard', { stage, cardId, columnId }))) rerender();
+      };
+      for (const body of boardEls[0].querySelectorAll<HTMLElement>('.stages-column__body')) {
+        sortables.push(new Sortable(body, {
+          group: `host-board-${stage}`,
+          draggable: '.stages-card--movable',
+          filter: '.stages-card__remove',
+          preventOnFilter: false,
+          sort: false,
+          animation: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 150,
+          forceFallback: true,
+          fallbackOnBody: true,
+          ghostClass: 'sortable-ghost',
+          chosenClass: 'sortable-chosen',
+          dragClass: 'sortable-drag',
+          delay: 120,
+          delayOnTouchOnly: true,
+          onStart: () => {
+            dragging = true;
+          },
+          onEnd: (evt) => {
+            dragging = false;
+            const cardId = evt.item.dataset.cardId;
+            const columnId = evt.to.dataset.columnId;
+            if (evt.to !== evt.from && cardId && columnId) {
+              redrawAfterDrag = false;
+              void place(cardId, columnId);
+            } else if (redrawAfterDrag) {
+              redrawAfterDrag = false;
+              window.setTimeout(render, 0);
+            }
+          },
+        }));
+      }
 
       // Round panel
       const total = v.participants.length;
@@ -729,17 +842,48 @@ export function initHostPage(): void {
           el('h3', { class: 'stages-panel__title' }, round.revealed ? 'Revealed' : 'Cards in play'),
           el('p', { class: 'stages-panel__text' },
             round.revealed
-              ? 'Solid cards show where most people put each one; lighter cards are the other answers. Talk it through, then keep them on the board.'
+              ? 'Solid cards show where most people put each one; lighter cards are the other answers. Talk it through, choose where each card goes, then keep them on the board. You can also drag a solid card to another column, now or later.'
               : doneAll === total && total > 0
                 ? 'Everyone has placed every card. Reveal when you’re ready.'
                 : `${doneAll} of ${total} have placed every card. Reveal when everyone’s done.`),
         );
-        const list = el('div', { class: 'stages-reveal__cards' });
-        for (const id of round.open) {
-          const n = tally[id] ? majority(tally[id].counts).total : 0;
-          list.append(el('span', { class: 'stages-mini' }, `${cardLabel(id)} · ${n}/${total}`));
+        if (round.revealed) {
+          // Where each card goes: the vote unless she picks a column.
+          const goesIn = el('div', { class: 'stages-goes-in' });
+          for (const id of round.open) {
+            const counts = tally[id]?.counts ?? {};
+            const m = majority(counts);
+            const chosen = placed[id] && columns.some((c) => c.id === placed[id]) ? placed[id] : '';
+            const voteLabel = m.columns.length === 1
+              ? `Most votes: ${columns.find((c) => c.id === m.columns[0])?.label ?? ''}`
+              : m.columns.length > 1 ? 'Tied: choose a column' : 'No votes: choose a column';
+            const selectId = `stages-goes-in-${stage}-${id}`;
+            const select = el('select', {
+              class: 'form-select',
+              id: selectId,
+              onChange: (e: Event) => {
+                const value = (e.target as HTMLSelectElement).value;
+                void place(id, value || null);
+              },
+            },
+              el('option', { value: '' }, voteLabel),
+              ...columns.map((c, i) => el('option', { value: c.id }, c.kind === 'stage' ? `${i + 1}. ${c.label}` : c.label)),
+            ) as HTMLSelectElement;
+            select.value = chosen;
+            goesIn.append(el('div', { class: 'stages-goes-in__row' },
+              el('label', { class: 'stages-goes-in__card', for: selectId }, `${cardLabel(id)} · ${m.total}/${total}`),
+              select,
+            ));
+          }
+          panel.append(goesIn);
+        } else {
+          const list = el('div', { class: 'stages-reveal__cards' });
+          for (const id of round.open) {
+            const n = tally[id] ? majority(tally[id].counts).total : 0;
+            list.append(el('span', { class: 'stages-mini' }, `${cardLabel(id)} · ${n}/${total}`));
+          }
+          panel.append(list);
         }
-        panel.append(list);
         if (round.revealed) {
           const who = el('div', { class: 'stages-stack' });
           for (const id of round.open) {
@@ -751,8 +895,18 @@ export function initHostPage(): void {
             if (lines.length) who.append(el('div', {}, el('p', { class: 'stages-summary__card' }, cardLabel(id)), ...lines));
           }
           panel.append(el('details', {}, el('summary', { class: 'stages-note' }, 'Who put what where'), who));
+          const lined = Array.from(picked[stage]).filter((id) => !round.open.includes(id) && !round.done.includes(id));
           panel.append(el('div', { class: 'stages-actions' },
-            btn('Keep these on the board and pick the next cards', 'primary', () => void act('closeRound', { stage })),
+            lined.length
+              ? btn(`Keep these and send the ${lined.length === 1 ? 'card' : `${lined.length} cards`} lined up`, 'primary', async () => {
+                  if (!(await act('closeRound', { stage }))) return;
+                  if (await act('openCards', { stage, cardIds: lined })) {
+                    picked[stage].clear();
+                    rerender();
+                  }
+                })
+              : btn('Keep these on the board and pick the next cards', 'primary', () => void act('closeRound', { stage })),
+            lined.length ? btn('Keep these, send nothing yet', 'text', () => void act('closeRound', { stage })) : null,
           ));
         } else {
           panel.append(el('div', { class: 'stages-actions' },
@@ -778,8 +932,10 @@ export function initHostPage(): void {
         wrap.append(panel);
       }
 
-      // Picker
-      if (!round.open.length || replacing[stage]) {
+      // Picker. While cards are out it stays open so the facilitator can
+      // line up what goes next; those go out when she keeps the round.
+      {
+        const liningUp = round.open.length > 0 && !replacing[stage];
         const used = new Set([...round.done, ...round.open]);
         const remaining = deckCards(deckId, s.hideExplicit).filter((c) => !used.has(c.id));
         const sel = picked[stage];
@@ -796,7 +952,47 @@ export function initHostPage(): void {
           sendBtn.textContent = sel.size ? `Send ${sel.size} selected` : 'Send selected';
           sendBtn.disabled = sel.size === 0 || sel.size > 20;
           sendBtn.classList.toggle('btn--disabled', sendBtn.disabled);
+          linedNote.textContent = sel.size
+            ? `${sel.size} lined up: ${Array.from(sel).map(cardLabel).join(', ')}.`
+            : 'Nothing lined up yet.';
+          filterChips();
         };
+        const normalise = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+        const matching = () => {
+          const q = normalise(search[stage]);
+          return remaining.filter((c) => !q || normalise(c.label).includes(q));
+        };
+        const noMatch = el('p', { class: 'stages-note' });
+        const filterChips = () => {
+          const hits = new Set(matching().map((c) => c.id));
+          for (const chip of chips) chip.hidden = !hits.has(chip.dataset.cardId!) && !sel.has(chip.dataset.cardId!);
+          noMatch.textContent = hits.size ? '' : `No cards match “${search[stage]}”.`;
+          noMatch.hidden = hits.size > 0;
+        };
+        const searchBox = el('input', {
+          type: 'search',
+          class: 'form-input stages-picker__search',
+          placeholder: 'Search the cards',
+          'aria-label': 'Search the cards',
+          autocomplete: 'off',
+          value: search[stage],
+          dataset: { keepFocus: `picker-search-${stage}` },
+        }) as HTMLInputElement;
+        searchBox.addEventListener('input', () => {
+          search[stage] = searchBox.value;
+          filterChips();
+        });
+        // Enter picks the card when the search has narrowed it to one.
+        searchBox.addEventListener('keydown', (e) => {
+          if (e.key !== 'Enter') return;
+          e.preventDefault();
+          const hits = matching();
+          if (hits.length !== 1) return;
+          sel.add(hits[0].id);
+          search[stage] = '';
+          searchBox.value = '';
+          refreshChips();
+        });
         for (const c of remaining) {
           const chip = el('button', {
             type: 'button',
@@ -824,21 +1020,29 @@ export function initHostPage(): void {
           }
         };
         const sendBtn = btn('Send selected', 'primary', () => void send(Array.from(sel)));
+        const linedNote = el('p', { class: 'stages-note', 'aria-live': 'polite' });
         const header = el('div', { class: 'stages-picker__header' },
-          el('h3', { class: 'stages-panel__title' }, round.open.length ? 'Choose different cards' : 'Choose the next cards'),
+          el('h3', { class: 'stages-panel__title' },
+            liningUp ? 'Line up the next cards' : round.open.length ? 'Choose different cards' : 'Choose the next cards'),
           el('span', { class: 'stages-deck__count' }, `${remaining.length} left`),
         );
-        const actions = el('div', { class: 'stages-actions' },
-          sendBtn,
-          btn('Send 1 at random', 'tint', () => void send(shuffle(remaining.map((c) => c.id)).slice(0, 1)), { disabled: !remaining.length }),
-          btn('Send 3 at random', 'tint', () => void send(shuffle(remaining.map((c) => c.id)).slice(0, 3)), { disabled: remaining.length < 1 }),
-          btn('Clear selection', 'text', () => {
-            sel.clear();
-            refreshChips();
-          }),
-        );
+        const clearBtn = btn('Clear selection', 'text', () => {
+          sel.clear();
+          refreshChips();
+        });
+        const actions = liningUp
+          ? el('div', { class: 'stages-stack' },
+              el('p', { class: 'stages-panel__text' }, 'Pick what goes out next. Nobody sees these until you keep the cards in play.'),
+              el('div', { class: 'stages-actions' }, linedNote, clearBtn),
+            )
+          : el('div', { class: 'stages-actions' },
+              sendBtn,
+              btn('Send 1 at random', 'tint', () => void send(shuffle(remaining.map((c) => c.id)).slice(0, 1)), { disabled: !remaining.length }),
+              btn('Send 3 at random', 'tint', () => void send(shuffle(remaining.map((c) => c.id)).slice(0, 3)), { disabled: remaining.length < 1 }),
+              clearBtn,
+            );
         refreshChips();
-        wrap.append(el('div', { class: 'stages-panel stages-picker' }, header, actions, listEl));
+        if (remaining.length || !liningUp) wrap.append(el('div', { class: 'stages-panel stages-picker' }, header, actions, searchBox, noMatch, listEl));
       }
 
       // Navigation between stages

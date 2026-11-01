@@ -40,6 +40,11 @@
  *   - "Talking stage" added. "Talking to each other" was read both as
  *     literally talking and as the flirting "talking stage"; the two
  *     cards now separate those meanings.
+ *
+ * After the second run-through (1 November 2026):
+ *   - "Exclusive" added as a stage: dating only each other, often before
+ *     calling it girlfriend or boyfriend. The group wanted it because one
+ *     person can assume it while the other doesn't.
  */
 
 export type DeckId = 'stages' | 'activities' | 'fluids';
@@ -73,6 +78,7 @@ export const STAGE_CARDS: Card[] = [
   { id: 's-talking',     label: 'Talking to each other', added: true },
   { id: 's-talking-stage', label: 'Talking stage', added: true },
   { id: 's-situationship', label: 'Situationship', added: true },
+  { id: 's-exclusive',   label: 'Exclusive', added: true },
 ];
 
 /** Stage 2: things people do together. */

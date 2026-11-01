@@ -114,6 +114,7 @@ export function initJoinPage(): void {
     const error = el('p', { class: 'stages-note', role: 'alert' }, message);
     const submit = el('button', { type: 'submit', class: 'btn btn--std btn--primary' }, 'Join') as HTMLButtonElement;
     const form = el('form', { class: 'stages-join-form stages-stack', novalidate: true },
+      el('p', { class: 'stages-note' }, 'Your answers go to the facilitator’s screen. Nobody else sees them until the reveal.'),
       el('div', { class: 'form-group' },
         el('label', { class: 'form-label', for: 'stages-join-code' }, 'Session code'),
         codeInput,
@@ -121,7 +122,7 @@ export function initJoinPage(): void {
       el('div', { class: 'form-group' },
         el('label', { class: 'form-label', for: 'stages-join-name' }, 'Your name'),
         nameInput,
-        el('span', { class: 'stages-note' }, 'Shown to the facilitator and the group next to your answers.'),
+        el('span', { class: 'stages-note' }, 'The facilitator sees it. The group sees “Person 1” and so on, unless the facilitator shows names.'),
       ),
       el('div', { class: 'stages-actions' }, submit),
       error,
@@ -168,7 +169,13 @@ export function initJoinPage(): void {
     let order: string[] = [];
     let out: string[] = [];
     let cursor = 0; // index into open cards
-    let optimistic: Record<string, string> = {};
+    // Answers sent but maybe not yet back from the server; null is a
+    // cleared answer. Starts afresh with each new set of cards.
+    let optimistic: Record<string, string | null> = {};
+    let optimisticFor = '';
+    // Taps are saved one after another, so a quick change of mind (or a
+    // second tap to clear) can't reach the server before the first tap.
+    let sending: Promise<unknown> = Promise.resolve();
 
     const banner = el('p', { class: 'stages-note', 'aria-live': 'polite' });
     const errorLine = el('p', { class: 'stages-note', role: 'alert' });
@@ -229,13 +236,7 @@ export function initJoinPage(): void {
       clear(main);
       errorLine.textContent = '';
 
-      main.append(
-        el('div', { class: 'stages-actions' },
-          el('span', { class: 'stages-note' }, `You’re in as ${auth.name} · session ${auth.code}`),
-          btn('Leave', 'text', leave, { small: true }),
-        ),
-        banner,
-      );
+      main.append(banner);
 
       switch (s.step) {
         case 'lobby':
@@ -259,7 +260,14 @@ export function initJoinPage(): void {
           main.append(renderEnd());
           break;
       }
-      main.append(errorLine);
+      // Who you are and the way out sit at the bottom, out of the way.
+      main.append(
+        errorLine,
+        el('div', { class: 'stages-actions stages-phone__foot' },
+          el('span', { class: 'stages-note' }, `You’re in as ${auth.name} · session ${auth.code}`),
+          btn('Leave', 'text', leave, { small: true }),
+        ),
+      );
     }
 
     function wait(title: string, text: string): HTMLElement {
@@ -502,7 +510,16 @@ export function initJoinPage(): void {
       }
 
       // Placing
-      const placed = { ...v.me[stage], ...optimistic };
+      const openKey = `${stage}:${round.open.join(',')}`;
+      if (openKey !== optimisticFor) {
+        optimistic = {};
+        optimisticFor = openKey;
+      }
+      const placed: Record<string, string> = { ...v.me[stage] };
+      for (const [cardId, col] of Object.entries(optimistic)) {
+        if (col) placed[cardId] = col;
+        else delete placed[cardId];
+      }
       const open = round.open;
       if (cursor >= open.length) cursor = 0;
       // Start on the first unplaced card.
@@ -527,7 +544,9 @@ export function initJoinPage(): void {
         const placedN = open.filter((x) => placed[x]).length;
         progress.textContent = `Card ${cursor + 1} of ${open.length} · ${placedN} placed`;
         cardBox.textContent = cardLabel(id);
-        question.textContent = placed[id] ? `You said: ${columns.find((c) => c.id === placed[id])?.label ?? placed[id]}` : 'Where does this belong?';
+        question.textContent = placed[id]
+          ? `You said: ${columns.find((c) => c.id === placed[id])?.label ?? placed[id]}. Tap it again to clear.`
+          : 'Where does this belong?';
         clear(options);
         // Cards already on the shared board, so people can see what
         // else sits at each stage. Stage 3 shows the activities too.
@@ -542,7 +561,8 @@ export function initJoinPage(): void {
             type: 'button',
             class: `stages-option${c.kind === 'never' ? ' stages-option--never' : ''}${placed[id] === c.id ? ' is-selected' : ''}`,
             'aria-pressed': placed[id] === c.id ? 'true' : 'false',
-            onClick: () => void choose(id, c.id),
+            // Tapping your answer again clears it.
+            onClick: () => void choose(id, placed[id] === c.id ? null : c.id),
           },
             c.kind === 'stage' ? el('span', { class: 'stages-option__pos', 'aria-hidden': 'true' }, String(i + 1)) : null,
             el('span', { class: 'stages-option__label' }, c.label),
@@ -568,27 +588,36 @@ export function initJoinPage(): void {
         }
       };
 
-      const choose = async (cardId: string, columnId: string) => {
-        placed[cardId] = columnId;
-        optimistic[cardId] = columnId;
+      const choose = async (cardId: string, columnId: string | null) => {
+        const before = placed[cardId];
+        const set = (col: string | null | undefined) => {
+          optimistic[cardId] = col ?? null;
+          if (col) placed[cardId] = col;
+          else delete placed[cardId];
+        };
+        set(columnId);
         paint();
         errorLine.textContent = '';
         try {
-          await apiPost('respond', { code: auth.code, pid: auth.pid, stage, cardId, columnId });
+          const request = sending.then(() => apiPost('respond', { code: auth.code, pid: auth.pid, stage, cardId, columnId }));
+          sending = request.catch(() => undefined);
+          await request;
+          // Clearing an answer stays on the card, so you can pick again.
+          if (!columnId) return;
           // Advance to the next unplaced card after a beat.
           const next = open.findIndex((id, i) => i > cursor && !placed[id]);
           const wrapNext = next >= 0 ? next : open.findIndex((id) => !placed[id]);
           if (wrapNext >= 0) {
             window.setTimeout(() => {
-              if (open[cursor] === cardId) {
+              // Not if the answer was cleared in the meantime.
+              if (open[cursor] === cardId && placed[cardId]) {
                 cursor = wrapNext;
                 paint();
               }
             }, 450);
           }
         } catch (err) {
-          delete optimistic[cardId];
-          delete placed[cardId];
+          set(before);
           paint();
           errorLine.textContent = err instanceof Error ? err.message : 'Could not save that, try again.';
         }

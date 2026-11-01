@@ -28,6 +28,7 @@
     "pagefind": "^1.4.0",
     "postgres": "^3.4.9",
     "probe-image-size": "^7.3.0",
+    "qrcode-generator": "^2.0.4",
     "redis": "^5.12.1",
     "sortablejs": "^1.15.6",
     "tailwindcss": "^4.2.2",

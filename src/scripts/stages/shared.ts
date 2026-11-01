@@ -8,6 +8,7 @@
  * are type-only imports, so nothing server-side is bundled.
  */
 
+import qrcode from 'qrcode-generator';
 import Sortable from 'sortablejs';
 import { CLOSING_MESSAGES, getRecap, isRecapId, type Recap, type RecapId } from '../../data/stages-recaps';
 import {
@@ -89,6 +90,39 @@ export function btn(
     onClick,
   }, label);
   return b;
+}
+
+/**
+ * A QR code for a link, as an inline SVG. Dark squares on a light tile
+ * in both themes: not every phone camera reads a light-on-dark code.
+ */
+export function qrCode(text: string, label: string): SVGSVGElement {
+  const qr = qrcode(0, 'M');
+  qr.addData(text);
+  qr.make();
+  const n = qr.getModuleCount();
+  const quiet = 4; // the blank border scanners need, in modules
+  const size = n + quiet * 2;
+  let d = '';
+  for (let r = 0; r < n; r++) {
+    for (let c = 0; c < n; c++) if (qr.isDark(r, c)) d += `M${c + quiet} ${r + quiet}h1v1h-1z`;
+  }
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+  svg.setAttribute('class', 'stages-qr');
+  svg.setAttribute('role', 'img');
+  svg.setAttribute('aria-label', label);
+  svg.setAttribute('shape-rendering', 'crispEdges');
+  const tile = document.createElementNS(ns, 'rect');
+  tile.setAttribute('class', 'stages-qr__tile');
+  tile.setAttribute('width', String(size));
+  tile.setAttribute('height', String(size));
+  const marks = document.createElementNS(ns, 'path');
+  marks.setAttribute('class', 'stages-qr__marks');
+  marks.setAttribute('d', d);
+  svg.append(tile, marks);
+  return svg;
 }
 
 // ─── Cards & columns ────────────────────────────────────────────────
@@ -201,11 +235,13 @@ export interface CardTally {
 
 /**
  * The Stage 2 / 3 board, drawn the same on the control desk and the
- * presenter screen. Kept cards sit in the column most people chose;
- * Stage 3 also shows the Stage 2 cards, so the fluids can be read
- * against them; once revealed, every answer for the cards in play is
- * shown. `tally` must cover the kept cards and, when revealed, the open
- * ones. `onRemove` adds the control desk's "take off the board" button.
+ * presenter screen. Kept cards sit in the column the facilitator put
+ * them in (`placed`), or else the one most people chose; Stage 3 also
+ * shows the Stage 2 cards, so the fluids can be read against them; once
+ * revealed, every answer for the cards in play is shown. `tally` must
+ * cover the kept cards and, when revealed, the open ones. `onRemove`
+ * adds the control desk's "take off the board" button; `movable` marks
+ * the cards the desk can drag to another column.
  */
 export function placementBoard(opts: {
   stage: 'stage2' | 'stage3';
@@ -213,26 +249,32 @@ export function placementBoard(opts: {
   round: { open: string[]; revealed: boolean; done: string[] };
   tally: CardTally;
   stage2Board: Record<string, string>;
+  placed?: Record<string, string>;
   onRemove?: (cardId: string) => void;
+  movable?: boolean;
 }): HTMLElement[] {
   const { stage, round, tally } = opts;
   const board = el('div', { class: 'stages-board' });
   const bodies = renderColumns(board, timelineColumns(opts.timeline), { fill: true });
+  const movable = opts.movable ? ' stages-card--movable' : '';
   const unplaced: string[] = [];
   for (const id of round.done) {
     const t = tally[id];
     const card = getCard(id);
     if (!card) continue;
     const m = t ? majority(t.counts) : { columns: [], max: 0, total: 0 };
-    const body = m.columns[0] ? bodies.get(m.columns[0]) : undefined;
+    const chosen = placedIn(opts.placed, id, bodies);
+    const col = chosen ?? m.columns[0];
+    const body = col ? bodies.get(col) : undefined;
     if (!body) {
       unplaced.push(id);
       continue;
     }
+    const n = t?.counts[col] ?? 0;
     body.append(cardEl(card, {
       static: true,
-      count: m.max,
-      extraClass: `stages-card--done${m.columns.length > 1 ? ' stages-card--split' : ''}`,
+      count: n || undefined,
+      extraClass: `stages-card--done${!chosen && m.columns.length > 1 ? ' stages-card--split' : ''}${movable}`,
       onRemove: opts.onRemove ? () => opts.onRemove!(id) : undefined,
       removeTitle: `Take “${card.label}” off the board`,
     }));
@@ -250,14 +292,20 @@ export function placementBoard(opts: {
       const card = getCard(id);
       if (!card || !t) continue;
       const m = majority(t.counts);
-      for (const [col, n] of Object.entries(t.counts)) {
+      // Once the facilitator has put the card somewhere, that copy is the
+      // solid one, even in a column nobody chose.
+      const chosen = placedIn(opts.placed, id, bodies);
+      const solid = chosen ? [chosen] : m.columns;
+      const split = !chosen && m.columns.length > 1;
+      const counts = chosen && !t.counts[chosen] ? { ...t.counts, [chosen]: 0 } : t.counts;
+      for (const [col, n] of Object.entries(counts)) {
         const body = bodies.get(col);
-        if (!body || !n) continue;
-        const isMaj = m.columns.includes(col);
+        if (!body || (!n && col !== chosen)) continue;
+        const isSolid = solid.includes(col);
         body.append(cardEl(card, {
           static: true,
-          count: n,
-          extraClass: `${isMaj ? 'stages-card--majority' : 'stages-card--minority'}${isMaj && m.columns.length > 1 ? ' stages-card--split' : ''}`,
+          count: n || undefined,
+          extraClass: `${isSolid ? `stages-card--majority${movable}` : 'stages-card--minority'}${isSolid && split ? ' stages-card--split' : ''}`,
         }));
       }
     }
@@ -268,11 +316,19 @@ export function placementBoard(opts: {
     el('p', { class: 'stages-key' },
       el('span', { class: 'stages-key__item' }, el('span', { class: 'stages-key__swatch', 'aria-hidden': 'true' }), 'Activities'),
       stage === 'stage3' ? el('span', { class: 'stages-key__item' }, el('span', { class: 'stages-key__swatch stages-key__swatch--fluids', 'aria-hidden': 'true' }), 'Sharing fluids') : null,
-      el('span', { class: 'stages-key__item' }, 'Solid = where most people put it · pale = other answers · dashed = a tie'),
+      el('span', { class: 'stages-key__item' }, opts.placed && Object.keys(opts.placed).length
+        ? 'Solid = where it goes · pale = other answers · dashed = a tie'
+        : 'Solid = where most people put it · pale = other answers · dashed = a tie'),
     ),
   ];
   if (unplaced.length) out.push(el('p', { class: 'stages-note' }, `Nobody placed: ${unplaced.map(cardLabel).join(', ')}.`));
   return out;
+}
+
+/** The facilitator's column for a card, if it is still on the board. */
+function placedIn(placed: Record<string, string> | undefined, cardId: string, bodies: Map<string, HTMLElement>): string | null {
+  const col = placed?.[cardId];
+  return col && bodies.has(col) ? col : null;
 }
 
 export function updateColumnCounts(board: HTMLElement): void {

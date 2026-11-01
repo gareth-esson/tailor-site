@@ -11,6 +11,7 @@ import {
   loadSession,
   normaliseCode,
   pingStorage,
+  placedColumn,
   saveSession,
   touchParticipant,
   type Participant,
@@ -90,12 +91,18 @@ function consensusTimeline(participants: Participant[]) {
   return { order, out, submittedCount: submitted.length };
 }
 
-/** Majority column per closed card — the "board so far" everyone sees. */
+/** Column per closed card, the "board so far" everyone sees: where the
+ *  host put it, or else where most people did. */
 function boardSoFar(session: Session, participants: Participant[]) {
   const out: Record<PlacementStage, Record<string, string>> = { stage2: {}, stage3: {} };
   for (const stage of ['stage2', 'stage3'] as const) {
     const t = tally(participants, stage, session[stage].done, false);
     for (const [cardId, { counts }] of Object.entries(t)) {
+      const placed = placedColumn(session, stage, cardId);
+      if (placed) {
+        out[stage][cardId] = placed;
+        continue;
+      }
       let best: string | null = null;
       let bestN = 0;
       for (const [col, n] of Object.entries(counts)) {
@@ -153,6 +160,13 @@ function buildSummary(session: Session, participants: Participant[]) {
           max = c;
           best = col;
         }
+      }
+      // Where the host put it, if she moved it: agreement is then how
+      // many people chose that column.
+      const placed = placedColumn(session, stage, cardId);
+      if (placed) {
+        best = placed;
+        max = counts[placed] ?? 0;
       }
       items.push({ cardId, columnId: best, max, total, agreement: total ? Math.round((max / total) * 100) : 0 });
     }
@@ -249,7 +263,7 @@ async function getView(url: URL): Promise<Response> {
       return json({ error: 'Not authorised' }, 403);
     }
     const participants = await loadParticipants(code);
-    const showNames = session.showNames !== false;
+    const showNames = session.showNames === true;
     const now = Date.now();
     const anon = participants.map((p, i) => (showNames ? p : { ...p, name: `Person ${i + 1}` }));
     const stageTally = (stage: PlacementStage) => {
@@ -272,6 +286,7 @@ async function getView(url: URL): Promise<Response> {
               .filter((p) => p.stage1?.submitted)
               .map((p) => ({ name: p.name, order: p.stage1!.order, out: p.stage1!.out })),
             consensus: session.stage1.averageShown ? consensusTimeline(participants) : null,
+            draft: session.stage1.averageShown ? session.stage1.draft ?? null : null,
           }
         : null,
       stage2: stageTally('stage2'),
@@ -307,11 +322,15 @@ async function getView(url: URL): Promise<Response> {
   // `mine` marks the viewer's own row, so the phone can pin it while
   // they scroll the others. (Names aren't unique, and pids are never
   // sent to other people.)
+  // With names off, other people are "Person n", numbered as on the
+  // presenter screen.
   if (session.stage1.revealed) {
+    const showNames = session.showNames === true;
     response.stage1Reveal = {
       submissions: participants
-        .filter((p) => p.stage1?.submitted)
-        .map((p) => ({ name: p.name, order: p.stage1!.order, out: p.stage1!.out, mine: p.id === me.id })),
+        .map((p, i) => ({ p, name: showNames ? p.name : `Person ${i + 1}` }))
+        .filter(({ p }) => p.stage1?.submitted)
+        .map(({ p, name }) => ({ name, order: p.stage1!.order, out: p.stage1!.out, mine: p.id === me.id })),
     };
   }
   for (const stage of ['stage2', 'stage3'] as const) {

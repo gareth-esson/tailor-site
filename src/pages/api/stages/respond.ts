@@ -1,6 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
+import { NEVER_COLUMN_ID } from '../../../data/stages-in-relationships';
 import {
   isValidPid,
   loadParticipant,
@@ -22,7 +23,8 @@ import { errorResponse, json, readJson, storageUnavailable } from './_shared';
  *   Stage 2/3: { code, pid, stage: 'stage2' | 'stage3', cardId, columnId }
  *             One placement per call; each is saved immediately so a
  *             dropped connection loses at most one tap. Can be changed
- *             until the host reveals that round.
+ *             until the host reveals that round. columnId null clears
+ *             the answer (tapping the chosen column again).
  *
  *   → { ok: true, version }
  */
@@ -55,9 +57,11 @@ export const POST: APIRoute = async ({ request }) => {
       me.stage1 = { ...valid, submitted: true };
     } else if (stage === 'stage2' || stage === 'stage3') {
       if (session[stage].revealed) return json({ error: 'This round has been revealed' }, 409);
-      const valid = validatePlacement(session, stage, body.cardId, body.columnId);
+      const clearing = body.columnId === null;
+      const valid = validatePlacement(session, stage, body.cardId, clearing ? NEVER_COLUMN_ID : body.columnId);
       if (!valid) return json({ error: 'Invalid placement' }, 400);
-      me[stage][valid.cardId] = valid.columnId;
+      if (clearing) delete me[stage][valid.cardId];
+      else me[stage][valid.cardId] = valid.columnId;
     } else {
       return json({ error: 'Invalid stage' }, 400);
     }

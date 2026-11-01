@@ -3,6 +3,8 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { deckCards } from '../../../data/stages-in-relationships';
 import {
+  allowedColumns,
+  clearPlaced,
   clearResponses,
   deleteSession,
   isValidPid,
@@ -11,6 +13,8 @@ import {
   normaliseCode,
   removeParticipant,
   saveSession,
+  draftFor,
+  validateDraft,
   validateTimeline,
   type PlacementStage,
   type Session,
@@ -25,14 +29,18 @@ import { errorResponse, json, readJson, storageUnavailable } from './_shared';
  *
  * Actions:
  *   setHideExplicit { hideExplicit }
- *   setShowNames { showNames }  names on the presenter screen, or "Person 1"
+ *   setShowNames { showNames }  names to the group (presenter screen and phones), or "Person 1"
  *   showAverage { shown }      put the Stage 1 average on the presenter screen
  *   openStage1                 start Stage 1 (clears earlier submissions)
  *   revealStage1               show everyone's timelines
  *   setTimeline { timeline }   agree the group timeline → columns for 2 & 3
+ *   setDraftTimeline { order, out }  the timeline mid-rearrange, shown
+ *                                 live on the presenter screen
  *   openCards { stage, cardIds, replace? }  send cards for placement;
  *                                 replace: true is needed while cards are out
  *   reveal { stage }           show placements for the open cards
+ *   placeCard { stage, cardId, columnId }  after the vote, put a card in a
+ *                                 column; columnId null goes back to the vote
  *   closeRound { stage }       move open cards to "done"; board keeps them
  *   undoDone { stage, cardId } take a card back off the board
  *   resetStage { stage }       wipe a stage's cards and responses
@@ -106,6 +114,18 @@ export const POST: APIRoute = async ({ request }) => {
         const timeline = validateTimeline(session, body.timeline);
         if (!timeline) return json({ error: 'Invalid timeline' }, 400);
         session.timeline = timeline;
+        session.stage1.draft = draftFor(session, timeline);
+        break;
+      }
+
+      case 'setDraftTimeline': {
+        if (!session.stage1.revealed) return json({ error: 'Reveal the timelines first' }, 409);
+        const draft = validateDraft(session, body.order, body.out);
+        if (!draft) return json({ error: 'Invalid timeline' }, 400);
+        session.stage1.draft = draft;
+        // Rearranging means the group is agreeing the timeline now, so the
+        // presenter screen moves on from everyone's rows to follow it.
+        session.stage1.averageShown = true;
         break;
       }
 
@@ -138,6 +158,7 @@ export const POST: APIRoute = async ({ request }) => {
         // their responses so a re-send starts clean.
         const dropped = session[stage].open.filter((id) => !cardIds.includes(id));
         if (dropped.length) await clearResponses(code, stage, dropped);
+        clearPlaced(session, stage, session[stage].open);
         session[stage].open = cardIds;
         session[stage].revealed = false;
         session.step = stage;
@@ -149,6 +170,27 @@ export const POST: APIRoute = async ({ request }) => {
         if (!isPlacementStage(stage)) return json({ error: 'Invalid stage' }, 400);
         if (!session[stage].open.length) return json({ error: 'No cards are open' }, 409);
         session[stage].revealed = true;
+        break;
+      }
+
+      case 'placeCard': {
+        const stage = body.stage;
+        if (!isPlacementStage(stage)) return json({ error: 'Invalid stage' }, 400);
+        const round = session[stage];
+        const cardId = typeof body.cardId === 'string' ? body.cardId : '';
+        const inPlay = round.revealed && round.open.includes(cardId);
+        if (!inPlay && !round.done.includes(cardId)) {
+          return json({ error: 'Reveal the card before placing it' }, 409);
+        }
+        if (body.columnId === null) {
+          clearPlaced(session, stage, [cardId]);
+          break;
+        }
+        if (typeof body.columnId !== 'string' || !allowedColumns(session).has(body.columnId)) {
+          return json({ error: 'Invalid column' }, 400);
+        }
+        session.placed ??= {};
+        (session.placed[stage] ??= {})[cardId] = body.columnId;
         break;
       }
 
@@ -170,6 +212,7 @@ export const POST: APIRoute = async ({ request }) => {
         }
         session[stage].done = session[stage].done.filter((id) => id !== cardId);
         await clearResponses(code, stage, [cardId]);
+        clearPlaced(session, stage, [cardId]);
         break;
       }
 
@@ -181,6 +224,7 @@ export const POST: APIRoute = async ({ request }) => {
         } else if (isPlacementStage(stage)) {
           await clearResponses(code, stage);
           session[stage] = { open: [], revealed: false, done: [] };
+          clearPlaced(session, stage);
         } else {
           return json({ error: 'Invalid stage' }, 400);
         }

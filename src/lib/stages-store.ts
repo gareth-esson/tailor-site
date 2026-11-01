@@ -45,6 +45,11 @@ export interface RoundState {
   done: string[];
 }
 
+export interface TimelineDraft {
+  order: string[];
+  out: string[];
+}
+
 export interface Session {
   code: string;
   hostToken: string;
@@ -55,19 +60,25 @@ export interface Session {
   /** Read-only key for the presenter screen. Absent on sessions created
    *  before the presenter screen existed; the host view adds it. */
   screenToken?: string;
-  /** Whether the presenter screen shows participants' names. Absent
-   *  means yes. */
+  /** Whether participants' names are shown to the group (presenter
+   *  screen and phones). Absent means no: answers are anonymous unless
+   *  the host turns names on. */
   showNames?: boolean;
   hideExplicit: boolean;
   step: Step;
   /** `averageShown`: the host has put the average timeline on the
-   *  presenter screen, after the group has compared everyone's. */
-  stage1: { open: boolean; revealed: boolean; averageShown?: boolean };
+   *  presenter screen, after the group has compared everyone's.
+   *  `draft`: the timeline as the host is rearranging it while the group
+   *  agrees it, so the presenter screen can follow along. */
+  stage1: { open: boolean; revealed: boolean; averageShown?: boolean; draft?: TimelineDraft };
   /** Agreed timeline after Stage 1 — stage-card ids in order. These
    *  become the columns for Stages 2 and 3. */
   timeline: string[];
   stage2: RoundState;
   stage3: RoundState;
+  /** Where the host has put a card after the vote: cardId → columnId.
+   *  A card without an entry sits in the column most people chose. */
+  placed?: Partial<Record<PlacementStage, Record<string, string>>>;
 }
 
 export interface Participant {
@@ -330,7 +341,7 @@ export async function createSession(hideExplicit: boolean): Promise<Session> {
       updatedAt: now,
       version: 1,
       screenToken: randomFrom(TOKEN_ALPHABET, 32),
-      showNames: true,
+      showNames: false,
       hideExplicit,
       step: 'lobby',
       stage1: { open: false, revealed: false },
@@ -478,11 +489,31 @@ export function validatePlacement(
   return { cardId, columnId };
 }
 
+/** The column a kept or revealed card sits in: the host's choice when
+ *  there is one and it is still a column, otherwise null (the vote
+ *  decides). */
+export function placedColumn(session: Session, stage: PlacementStage, cardId: string): string | null {
+  const col = session.placed?.[stage]?.[cardId];
+  return col && allowedColumns(session).has(col) ? col : null;
+}
+
+/** Forget the host's placements for these cards (all of a stage's when
+ *  `cardIds` is omitted), when the cards come off the board. */
+export function clearPlaced(session: Session, stage: PlacementStage, cardIds?: string[]): void {
+  const placed = session.placed?.[stage];
+  if (!placed) return;
+  if (!cardIds) {
+    delete session.placed![stage];
+    return;
+  }
+  for (const id of cardIds) delete placed[id];
+}
+
 /** A timeline the host sets after Stage 1: distinct visible stage-card
- *  ids, at least two of them. Cards left out are simply "not on the
- *  timeline". */
-export function validateTimeline(session: Session, raw: unknown): string[] | null {
-  if (!Array.isArray(raw) || raw.length < 2) return null;
+ *  ids, at least two of them (or `minLength`). Cards left out are simply
+ *  "not on the timeline". */
+export function validateTimeline(session: Session, raw: unknown, minLength = 2): string[] | null {
+  if (!Array.isArray(raw) || raw.length < minLength) return null;
   const visible = new Set(deckCards('stages', session.hideExplicit).map((c) => c.id));
   const seen = new Set<string>();
   for (const id of raw) {
@@ -490,6 +521,24 @@ export function validateTimeline(session: Session, raw: unknown): string[] | nul
     seen.add(id);
   }
   return raw as string[];
+}
+
+/** A half-agreed timeline: the order so far and the cards left off.
+ *  Either may be empty, but no card can be in both. */
+export function validateDraft(session: Session, rawOrder: unknown, rawOut: unknown): TimelineDraft | null {
+  const order = validateTimeline(session, rawOrder, 0);
+  const out = validateTimeline(session, rawOut, 0);
+  if (!order || !out || order.some((id) => out.includes(id))) return null;
+  return { order, out };
+}
+
+/** The draft for a timeline that has just been agreed: everything not
+ *  on it is left off. */
+export function draftFor(session: Session, timeline: string[]): TimelineDraft {
+  return {
+    order: timeline.slice(),
+    out: deckCards('stages', session.hideExplicit).map((c) => c.id).filter((id) => !timeline.includes(id)),
+  };
 }
 
 export { OUT_PILE_ID, NEVER_COLUMN_ID, STAGE_CARDS };

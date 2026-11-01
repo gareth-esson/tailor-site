@@ -7,7 +7,8 @@
  * session from the control desk (/host/). It has no controls and only
  * ever shows what the whole room is allowed to see: open cards stay
  * hidden until the reveal, the Stage 1 average waits until the host
- * shows it, and names become "Person 1" when the host turns them off.
+ * shows it, and people are "Person 1" and so on unless the host turns
+ * names on.
  *
  * The link carries a read-only key in its fragment (#k=…), separate
  * from the host token, so the screen can open on a second device.
@@ -30,6 +31,7 @@ import {
   joinUrl,
   miniEl,
   placementBoard,
+  qrCode,
   recapSlide,
   roundupEl,
   startPolling,
@@ -41,6 +43,10 @@ import {
 } from './shared';
 
 type PlacementStage = 'stage2' | 'stage3';
+
+/** Smallest the fitted content shrinks to; past this it would be
+ *  unreadable on a shared screen anyway, so it scrolls instead. */
+const MIN_FIT = 0.45;
 
 interface ScreenParticipant {
   /** Null when the host has turned names off. */
@@ -64,6 +70,8 @@ interface ScreenView {
   stage1: {
     submissions: Submission[];
     consensus: { order: string[]; out: string[]; submittedCount: number } | null;
+    /** The host's timeline while the group agrees it, once shown. */
+    draft: { order: string[]; out: string[] } | null;
   } | null;
   stage2: CardTally;
   stage3: CardTally;
@@ -154,7 +162,40 @@ export function initScreenPage(): void {
         main.append(...renderEnd());
         break;
     }
+    fitToWindow();
   }
+
+  // Nobody watching a shared screen can scroll it, so anything marked to
+  // fit (everyone's Stage 1 rows, the agreed timeline) shrinks until it
+  // ends above the bottom of the window.
+  function fitToWindow() {
+    const bottom = parseFloat(getComputedStyle(root!).paddingBottom) || 0;
+    for (const box of main.querySelectorAll<HTMLElement>('.stages-screen__fit')) {
+      const fits = (scale: number) => {
+        box.style.setProperty('--stages-fit', scale.toFixed(3));
+        return box.getBoundingClientRect().bottom + window.scrollY <= window.innerHeight - bottom;
+      };
+      if (fits(1)) continue;
+      // Shrinking also narrows it, so rows rewrap: search for the largest
+      // scale that fits rather than scaling by the overflow.
+      let lo = MIN_FIT;
+      let hi = 1;
+      for (let i = 0; i < 7; i++) {
+        const mid = (lo + hi) / 2;
+        if (fits(mid)) lo = mid;
+        else hi = mid;
+      }
+      fits(lo);
+    }
+  }
+  let resizeTimer: number | undefined;
+  window.addEventListener('resize', () => {
+    window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(fitToWindow, 150);
+  });
+  // The display font arriving after the first draw changes every line's
+  // width, so measure again once it has.
+  document.fonts.addEventListener('loadingdone', fitToWindow);
 
   // Where we are, and the code for anyone joining late.
   function topBar(): HTMLElement {
@@ -203,8 +244,13 @@ export function initScreenPage(): void {
           'What happens when in a relationship, and who gets to decide. Three rounds of cards, and a lot of disagreement.'),
         el('div', { class: 'stages-code-panel' },
           el('p', { class: 'stages-code-panel__label' }, 'Join on your phone or laptop with this code'),
-          el('p', { class: 'stages-code' }, s.code),
-          el('p', { class: 'stages-code-panel__url' }, joinUrl(s.code).replace(/^https?:\/\//, '')),
+          el('div', { class: 'stages-code-panel__join' },
+            el('div', {},
+              el('p', { class: 'stages-code' }, s.code),
+              el('p', { class: 'stages-code-panel__url' }, joinUrl(s.code).replace(/^https?:\/\//, '')),
+            ),
+            qrCode(joinUrl(s.code), 'QR code: scan to join'),
+          ),
         ),
       ),
       el('div', { class: 'stages-panel' },
@@ -234,23 +280,31 @@ export function initScreenPage(): void {
 
   // ── Stage 1 reveal: everyone's timelines, then the average ──
   function renderStage1Reveal(stage1: NonNullable<ScreenView['stage1']>): HTMLElement[] {
-    if (stage1.consensus) {
-      const cons = stage1.consensus;
-      const row = el('ol', { class: 'stages-screen__timeline', 'aria-label': 'The average timeline' });
-      cons.order.forEach((id) => {
+    // Once the facilitator starts rearranging, show her timeline as it
+    // changes; until then, the average it starts from.
+    const shown = stage1.draft ?? stage1.consensus;
+    if (shown) {
+      const editing = stage1.draft !== null;
+      const row = el('ol', { class: 'stages-screen__timeline', 'aria-label': editing ? 'The group’s timeline' : 'The average timeline' });
+      shown.order.forEach((id) => {
         const card = getCard(id);
         if (card) row.append(el('li', {}, cardEl(card, { static: true })));
       });
       return [
-        heading('The average timeline',
-          'Everyone’s timelines, averaged. It’s a starting point to agree one timeline for the next stage, not the right answer.'),
-        row,
-        cons.out.length
-          ? el('p', { class: 'stages-screen__left-off' }, 'Most people left off: ', ...cons.out.map((id) => miniEl(id, 'stages-mini--out')))
-          : null,
-      ].filter((x): x is HTMLElement => x !== null);
+        editing
+          ? heading('The group’s timeline',
+              'The order we agree here becomes the columns for the next two stages.')
+          : heading('The average timeline',
+              'Everyone’s timelines, averaged. It’s a starting point to agree one timeline for the next stage, not the right answer.'),
+        el('div', { class: 'stages-screen__fit' },
+          row,
+          shown.out.length
+            ? el('p', { class: 'stages-screen__left-off' }, editing ? 'Left off: ' : 'Most people left off: ', ...shown.out.map((id) => miniEl(id, 'stages-mini--out')))
+            : null,
+        ),
+      ];
     }
-    const rows = el('div', { class: 'stages-reveal stages-screen__reveal' });
+    const rows = el('div', { class: 'stages-reveal stages-screen__reveal stages-screen__fit' });
     for (const sub of stage1.submissions) {
       rows.append(
         el('div', { class: 'stages-reveal__row' },
@@ -318,6 +372,7 @@ export function initScreenPage(): void {
       round,
       tally,
       stage2Board: v.board.stage2,
+      placed: s.placed?.[stage],
     }));
     return out;
   }
