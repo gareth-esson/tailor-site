@@ -20,6 +20,7 @@ import {
   BASE_PATH,
   POLL_MS,
   apiGet,
+  apiPost,
   cardEl,
   cardLabel,
   clear,
@@ -30,6 +31,7 @@ import {
   getRecap,
   joinUrl,
   miniEl,
+  loadLocal,
   placementBoard,
   qrCode,
   recapSlide,
@@ -96,6 +98,12 @@ export function initScreenPage(): void {
 
   let view: ScreenView | null = null;
   let lastKey = '';
+  // Opened from the control desk, this browser holds the host token
+  // (the desk's own stored session, 'stages-host-v1'). Then clicking a
+  // kept card on the board picks it out, as on the desk; anywhere else
+  // the screen stays read-only.
+  const desk = loadLocal<{ code: string; hostToken: string }>('stages-host-v1');
+  const hostToken = desk && desk.code === code ? desk.hostToken : null;
 
   const poll = startPolling(async () => {
     try {
@@ -314,13 +322,15 @@ export function initScreenPage(): void {
               i > 0 ? el('span', { class: 'stages-reveal__arrow', 'aria-hidden': 'true' }, '→') : null,
               miniEl(id),
             ]),
-            ...sub.out.map((id) => miniEl(id, 'stages-mini--out')),
+            // The cards they left off are only counted: listing them all
+            // took more room than the timeline itself.
+            sub.out.length ? el('span', { class: 'stages-note' }, `${sub.out.length} left off`) : null,
           ),
         ),
       );
     }
     return [
-      heading('Everyone’s timelines', 'One row per person. Dashed cards are ones they left off the timeline.'),
+      heading('Everyone’s timelines', 'One row per person, in their order, with how many cards they left off.'),
       rows,
     ];
   }
@@ -373,6 +383,15 @@ export function initScreenPage(): void {
       tally,
       stage2Board: v.board.stage2,
       placed: s.placed?.[stage],
+      spotlight: s.spotlight?.stage === stage ? s.spotlight.cardId : null,
+      onPick: hostToken
+        ? (cardId) => {
+            const again = s.spotlight?.stage === stage && s.spotlight.cardId === cardId;
+            void apiPost('host', { code, hostToken, action: 'spotlight', stage, cardId: again ? null : cardId })
+              .then(() => poll.now())
+              .catch(() => undefined);
+          }
+        : undefined,
     }));
     return out;
   }

@@ -241,7 +241,9 @@ export interface CardTally {
  * revealed, every answer for the cards in play is shown. `tally` must
  * cover the kept cards and, when revealed, the open ones. `onRemove`
  * adds the control desk's "take off the board" button; `movable` marks
- * the cards the desk can drag to another column.
+ * the cards the desk can drag to another column. `spotlight` is a kept
+ * card shown again in every column people chose, with the rest of the
+ * board faded; `onPick` makes kept cards clickable to choose it.
  */
 export function placementBoard(opts: {
   stage: 'stage2' | 'stage3';
@@ -252,11 +254,33 @@ export function placementBoard(opts: {
   placed?: Record<string, string>;
   onRemove?: (cardId: string) => void;
   movable?: boolean;
+  spotlight?: string | null;
+  onPick?: (cardId: string) => void;
+  pickHint?: string;
 }): HTMLElement[] {
   const { stage, round, tally } = opts;
-  const board = el('div', { class: 'stages-board' });
+  const spotlight = opts.spotlight && round.done.includes(opts.spotlight) ? opts.spotlight : null;
+  const board = el('div', { class: `stages-board${spotlight ? ' stages-board--spotlight' : ''}` });
   const bodies = renderColumns(board, timelineColumns(opts.timeline), { fill: true });
   const movable = opts.movable ? ' stages-card--movable' : '';
+  // Kept cards become buttons when the viewer can pick one out.
+  const pickable = (node: HTMLElement) => {
+    if (!opts.onPick) return node;
+    const id = node.dataset.cardId!;
+    const label = getCard(id)?.label ?? id;
+    node.classList.add('stages-card--pickable');
+    node.setAttribute('role', 'button');
+    node.setAttribute('tabindex', '0');
+    node.setAttribute('aria-pressed', id === spotlight ? 'true' : 'false');
+    node.setAttribute('aria-label', id === spotlight ? `Hide where everyone put ${label}` : `Show where everyone put ${label}`);
+    node.addEventListener('click', () => opts.onPick!(id));
+    node.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      opts.onPick!(id);
+    });
+    return node;
+  };
   const unplaced: string[] = [];
   for (const id of round.done) {
     const t = tally[id];
@@ -271,13 +295,22 @@ export function placementBoard(opts: {
       continue;
     }
     const n = t?.counts[col] ?? 0;
-    body.append(cardEl(card, {
+    const lit = id === spotlight ? ' stages-card--spotlight' : '';
+    body.append(pickable(cardEl(card, {
       static: true,
       count: n || undefined,
-      extraClass: `stages-card--done${!chosen && m.columns.length > 1 ? ' stages-card--split' : ''}${movable}`,
+      extraClass: `stages-card--done${!chosen && m.columns.length > 1 ? ' stages-card--split' : ''}${movable}${lit}`,
       onRemove: opts.onRemove ? () => opts.onRemove!(id) : undefined,
       removeTitle: `Take “${card.label}” off the board`,
-    }));
+    })));
+    // Picked out: everyone's other answers come back, as at the reveal.
+    if (lit && t) {
+      for (const [other, count] of Object.entries(t.counts)) {
+        const otherBody = bodies.get(other);
+        if (other === col || !count || !otherBody) continue;
+        otherBody.append(pickable(cardEl(card, { static: true, count, extraClass: 'stages-card--minority stages-card--spotlight' })));
+      }
+    }
   }
   if (stage === 'stage3') {
     for (const [id, col] of Object.entries(opts.stage2Board)) {
@@ -311,6 +344,7 @@ export function placementBoard(opts: {
     }
   }
   updateColumnCounts(board);
+  const spotCard = spotlight ? getCard(spotlight) : null;
   const out: HTMLElement[] = [
     board,
     el('p', { class: 'stages-key' },
@@ -322,6 +356,12 @@ export function placementBoard(opts: {
     ),
   ];
   if (unplaced.length) out.push(el('p', { class: 'stages-note' }, `Nobody placed: ${unplaced.map(cardLabel).join(', ')}.`));
+  if (spotCard) {
+    out.unshift(el('p', { class: 'stages-spotlight-note', 'aria-live': 'polite' },
+      'Where everyone put ', el('strong', {}, `“${spotCard.label}”`),
+      opts.pickHint ? el('span', { class: 'stages-note' }, ` ${opts.pickHint}`) : null,
+    ));
+  }
   return out;
 }
 

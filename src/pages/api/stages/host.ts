@@ -41,6 +41,8 @@ import { errorResponse, json, readJson, storageUnavailable } from './_shared';
  *   reveal { stage }           show placements for the open cards
  *   placeCard { stage, cardId, columnId }  after the vote, put a card in a
  *                                 column; columnId null goes back to the vote
+ *   spotlight { stage, cardId }  show where everyone put a kept card
+ *                                 again; cardId null hides it
  *   closeRound { stage }       move open cards to "done"; board keeps them
  *   undoDone { stage, cardId } take a card back off the board
  *   resetStage { stage }       wipe a stage's cards and responses
@@ -162,6 +164,8 @@ export const POST: APIRoute = async ({ request }) => {
         session[stage].open = cardIds;
         session[stage].revealed = false;
         session.step = stage;
+        // New cards are the thing to look at now.
+        session.spotlight = null;
         break;
       }
 
@@ -170,6 +174,7 @@ export const POST: APIRoute = async ({ request }) => {
         if (!isPlacementStage(stage)) return json({ error: 'Invalid stage' }, 400);
         if (!session[stage].open.length) return json({ error: 'No cards are open' }, 409);
         session[stage].revealed = true;
+        session.spotlight = null;
         break;
       }
 
@@ -194,6 +199,20 @@ export const POST: APIRoute = async ({ request }) => {
         break;
       }
 
+      case 'spotlight': {
+        const stage = body.stage;
+        if (!isPlacementStage(stage)) return json({ error: 'Invalid stage' }, 400);
+        if (body.cardId === null) {
+          session.spotlight = null;
+          break;
+        }
+        if (typeof body.cardId !== 'string' || !session[stage].done.includes(body.cardId)) {
+          return json({ error: 'Card is not on the board' }, 400);
+        }
+        session.spotlight = { stage, cardId: body.cardId };
+        break;
+      }
+
       case 'closeRound': {
         const stage = body.stage;
         if (!isPlacementStage(stage)) return json({ error: 'Invalid stage' }, 400);
@@ -213,6 +232,7 @@ export const POST: APIRoute = async ({ request }) => {
         session[stage].done = session[stage].done.filter((id) => id !== cardId);
         await clearResponses(code, stage, [cardId]);
         clearPlaced(session, stage, [cardId]);
+        if (session.spotlight?.cardId === cardId) session.spotlight = null;
         break;
       }
 
@@ -225,6 +245,7 @@ export const POST: APIRoute = async ({ request }) => {
           await clearResponses(code, stage);
           session[stage] = { open: [], revealed: false, done: [] };
           clearPlaced(session, stage);
+          if (session.spotlight?.stage === stage) session.spotlight = null;
         } else {
           return json({ error: 'Invalid stage' }, 400);
         }
@@ -237,6 +258,7 @@ export const POST: APIRoute = async ({ request }) => {
           return json({ error: 'Invalid step' }, 400);
         }
         session.step = step as Step;
+        session.spotlight = null;
         break;
       }
 

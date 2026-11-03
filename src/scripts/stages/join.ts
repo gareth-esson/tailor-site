@@ -393,7 +393,7 @@ export function initJoinPage(): void {
       const v = view!;
       const wrap = el('div', { class: 'stages-stack' });
       wrap.append(header('Stage 1: everyone’s timelines', 'Look at the shared screen for the full picture. Here’s what each person sent.'));
-      const row = (sub: { name: string; order: string[]; out: string[] }, name: string, pinned = false) =>
+      const row = (sub: { name: string; order: string[]; out: string[] }, name: string) =>
         el('div', { class: 'stages-reveal__row' },
           el('span', { class: 'stages-reveal__name' }, name),
           el('div', { class: 'stages-reveal__cards' },
@@ -401,11 +401,9 @@ export function initJoinPage(): void {
               i > 0 ? el('span', { class: 'stages-reveal__arrow', 'aria-hidden': 'true' }, '→') : null,
               el('span', { class: 'stages-mini' }, cardLabel(id)),
             ]),
-            // The pinned copy keeps to the order, so it doesn't fill the
-            // phone screen; the left-off cards are just counted.
-            ...(pinned
-              ? [sub.out.length ? el('span', { class: 'stages-note' }, `${sub.out.length} left off`) : null]
-              : sub.out.map((id) => el('span', { class: 'stages-mini stages-mini--out' }, cardLabel(id)))),
+            // Rows keep to the order, so they don't fill the phone
+            // screen; the left-off cards are just counted.
+            sub.out.length ? el('span', { class: 'stages-note' }, `${sub.out.length} left off`) : null,
           ),
         );
       const subs = v.stage1Reveal?.submissions ?? [];
@@ -413,7 +411,7 @@ export function initJoinPage(): void {
       // you can compare without having to remember what you put.
       const mine = subs.find((s) => s.mine);
       if (mine) {
-        wrap.append(el('div', { class: 'stages-reveal stages-reveal--pinned' }, row(mine, 'You', true)));
+        wrap.append(el('div', { class: 'stages-reveal stages-reveal--pinned' }, row(mine, 'You')));
       }
       const rows = el('div', { class: 'stages-reveal' });
       for (const sub of subs) if (!sub.mine) rows.append(row(sub, sub.name));

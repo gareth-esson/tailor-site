@@ -37,6 +37,8 @@
   --stages-minority-bg: var(--btn-tint-bg);
   --stages-minority-text: var(--btn-tint-text);
   --stages-code-ls: 0.18em;
+  /* A kept card picked out to talk about: the rest of the board fades */
+  --stages-spotlight-fade: 0.3;
 
   /* One colour per deck. Cards are solid ("inverted") with light text;
      the -soft pair is for minority answers and tray chips. Solid teal is
@@ -518,6 +520,27 @@
   cursor: default;
   touch-action: auto;
 }
+/* Kept cards the facilitator can click to show everyone's answers */
+.stages-card--pickable {
+  cursor: pointer;
+}
+.stages-card--spotlight {
+  /* Read where it's used, so dark mode's heading colour applies. */
+  outline: var(--border-width-sm) solid var(--text-heading);
+  outline-offset: var(--focus-ring-offset);
+}
+.stages-board--spotlight .stages-card:not(.stages-card--spotlight) {
+  opacity: var(--stages-spotlight-fade);
+}
+.stages-spotlight-note {
+  font-size: var(--text-card-size-h4);
+  color: var(--text-heading);
+  margin: 0;
+}
+.stages-screen .stages-spotlight-note {
+  font-size: var(--text-card-size-h2);
+}
+
 /* Cards the control desk can drag to another column */
 .stages-card--movable {
   cursor: grab;

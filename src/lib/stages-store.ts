@@ -79,6 +79,9 @@ export interface Session {
   /** Where the host has put a card after the vote: cardId → columnId.
    *  A card without an entry sits in the column most people chose. */
   placed?: Partial<Record<PlacementStage, Record<string, string>>>;
+  /** A kept card the host has picked out to talk about: the board shows
+   *  where everyone put it again, as at its reveal. */
+  spotlight?: { stage: PlacementStage; cardId: string } | null;
 }
 
 export interface Participant {

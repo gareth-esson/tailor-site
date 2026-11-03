@@ -45,6 +45,8 @@
  *   - "Exclusive" added as a stage: dating only each other, often before
  *     calling it girlfriend or boyfriend. The group wanted it because one
  *     person can assume it while the other doesn't.
+ *
+ * Added on 3 November 2026 at Gareth's request: "Dating" and "Courting".
  */
 
 export type DeckId = 'stages' | 'activities' | 'fluids';
@@ -79,6 +81,8 @@ export const STAGE_CARDS: Card[] = [
   { id: 's-talking-stage', label: 'Talking stage', added: true },
   { id: 's-situationship', label: 'Situationship', added: true },
   { id: 's-exclusive',   label: 'Exclusive', added: true },
+  { id: 's-dating',      label: 'Dating', added: true },
+  { id: 's-courting',    label: 'Courting', added: true },
 ];
 
 /** Stage 2: things people do together. */

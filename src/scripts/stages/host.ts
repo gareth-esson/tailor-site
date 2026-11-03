@@ -207,6 +207,8 @@ export function initHostPage(): void {
     // A redraw mid-drag would drop the card being dragged; wait for the drop.
     let dragging = false;
     let redrawAfterDrag = false;
+    // A drop can also fire a click on the card; that click isn't a pick.
+    let droppedAt = 0;
 
     const status = el('p', { class: 'stages-toolbar__status', 'aria-live': 'polite' });
     const errorLine = el('p', { class: 'stages-note', role: 'alert' });
@@ -606,7 +608,8 @@ export function initHostPage(): void {
                 i > 0 ? el('span', { class: 'stages-reveal__arrow', 'aria-hidden': 'true' }, '→') : null,
                 el('span', { class: 'stages-mini' }, cardLabel(id)),
               ]),
-              ...sub.out.map((id) => el('span', { class: 'stages-mini stages-mini--out' }, cardLabel(id))),
+              // Left-off cards are counted, not listed, to keep rows short.
+              sub.out.length ? el('span', { class: 'stages-note' }, `${sub.out.length} left off`) : null,
             ),
           ),
         );
@@ -630,7 +633,7 @@ export function initHostPage(): void {
       wrap.append(
         el('div', { class: 'stages-panel' },
           el('h2', { class: 'stages-panel__title' }, `Stage 1: ${v.stage1.submissions.length} timeline${v.stage1.submissions.length === 1 ? '' : 's'}`),
-          el('p', { class: 'stages-panel__text' }, 'Each row is one person’s order. Dashed cards are ones they left off the timeline.'),
+          el('p', { class: 'stages-panel__text' }, 'Each row is one person’s order, with how many cards they left off. The average row shows the cards most people left off.'),
           rows,
           el('p', { class: 'stages-note' },
             averageShown
@@ -792,15 +795,27 @@ export function initHostPage(): void {
         placed,
         onRemove: (cardId) => void act('undoDone', { stage, cardId }),
         movable: true,
+        // Click a kept card to put everyone's answers for it back on the
+        // presenter screen while the group talks about it.
+        spotlight: s.spotlight?.stage === stage ? s.spotlight.cardId : null,
+        onPick: (cardId) => {
+          if (Date.now() - droppedAt < 400) return;
+          void act('spotlight', { stage, cardId: s.spotlight?.stage === stage && s.spotlight.cardId === cardId ? null : cardId });
+        },
+        pickHint: 'Click it again to hide.',
       });
       wrap.append(...boardEls);
+      if (round.done.length && !(s.spotlight?.stage === stage)) {
+        wrap.append(el('p', { class: 'stages-note' }, 'Click a kept card to show where everyone put it, here and on the presenter screen.'));
+      }
 
       // Drag a solid card to another column to put it there: a kept card
       // at any time, a card in play once it is revealed.
       const place = async (cardId: string, columnId: string | null) => {
         if (!(await act('placeCard', { stage, cardId, columnId }))) rerender();
       };
-      for (const body of boardEls[0].querySelectorAll<HTMLElement>('.stages-column__body')) {
+      const boardEl = boardEls.find((n) => n.classList.contains('stages-board'))!;
+      for (const body of boardEl.querySelectorAll<HTMLElement>('.stages-column__body')) {
         sortables.push(new Sortable(body, {
           group: `host-board-${stage}`,
           draggable: '.stages-card--movable',
@@ -820,6 +835,7 @@ export function initHostPage(): void {
           },
           onEnd: (evt) => {
             dragging = false;
+            droppedAt = Date.now();
             const cardId = evt.item.dataset.cardId;
             const columnId = evt.to.dataset.columnId;
             if (evt.to !== evt.from && cardId && columnId) {
