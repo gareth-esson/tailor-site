@@ -6,7 +6,11 @@ import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
   output: 'static',
-  adapter: vercel(),
+  // Cookieless page-view counts via /_vercel/insights. Unlike GA4 it
+  // runs without consent, so it also counts visitors who decline the
+  // cookie banner. Must also be switched on for the project in the
+  // Vercel dashboard, or the script 404s.
+  adapter: vercel({ webAnalytics: { enabled: true } }),
   site: 'https://www.tailor-rse.org.uk',
   // Canonicalise on trailing-slash URLs. Vercel already redirects
   // non-slash → slash at the edge (vercel.json: "trailingSlash": true),
