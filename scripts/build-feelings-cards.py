@@ -16,6 +16,9 @@ word is converted to outlines here, laid out with the font's own kerning.
 Colours are read from src/styles/tailor-site-v2.css rather than repeated
 here, so the cards cannot drift from the site's palette.
 
+It also writes feelings-cards-fronts.pdf and feelings-cards-back.pdf, the
+files to send a printer, through scripts/build-feelings-cards-pdf.mjs.
+
 Usage:
     python3 scripts/build-feelings-cards.py
 """
@@ -23,6 +26,7 @@ from __future__ import annotations
 
 import math
 import re
+import subprocess
 from pathlib import Path
 
 from fontTools.pens.svgPathPen import SVGPathPen
@@ -398,6 +402,9 @@ def main() -> None:
     names = ["back.svg"] + [f"fronts/{n}" for n, _ in files if n != "back.svg"]
     (OUT / "proof.html").write_text(proof(names))
     print(f"{len(files) - 1} fronts and 1 back -> {OUT.relative_to(ROOT)}")
+
+    # Printers ask for PDF, so make those from the SVGs just written.
+    subprocess.run(["node", "scripts/build-feelings-cards-pdf.mjs"], cwd=ROOT, check=True)
 
 
 if __name__ == "__main__":

@@ -4,12 +4,19 @@ Built by `scripts/build-feelings-cards.py`. Run `python3 scripts/build-feelings-
 
 ## For the printer
 
+Send these two files:
+
+- **`feelings-cards-fronts.pdf`:** 84 pages, one per card front
+- **`feelings-cards-back.pdf`:** 1 page, the back every card shares
+
+The same artwork is also here as SVG (`back.svg` and `fronts/`) for any printer that asks for it.
+
 - **Card size:** 85 × 55 mm (standard UK business card), landscape
-- **Artboard:** 91 × 61 mm, which includes 3 mm bleed on every edge
+- **Page size:** 91 × 61 mm, which includes 3 mm bleed on every edge
 - **Safe area:** nothing important sits closer than 5 mm to the trim edge
-- **Backs:** one design, `back.svg`, shared by every card
-- **Fronts:** 84 designs in `fronts/`, one copy of each
+- **Quantity:** one copy of each front, all with the same back
 - **Text:** converted to outlines, so no fonts are needed
+- **Images:** none; everything is vector, so it prints sharp at any size
 - **Transparency:** none
 - **Colour:** RGB. Ask for a proof: the yellow and the teal are the colours most likely to shift when converted to CMYK.
 
