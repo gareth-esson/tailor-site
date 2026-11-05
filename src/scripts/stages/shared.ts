@@ -362,7 +362,7 @@ export function placementBoard(opts: {
     board,
     el('p', { class: 'stages-key' },
       el('span', { class: 'stages-key__item' }, el('span', { class: 'stages-key__swatch', 'aria-hidden': 'true' }), 'Activities'),
-      stage === 'stage3' ? el('span', { class: 'stages-key__item' }, el('span', { class: 'stages-key__swatch stages-key__swatch--fluids', 'aria-hidden': 'true' }), 'Sharing fluids') : null,
+      stage === 'stage3' ? el('span', { class: 'stages-key__item' }, el('span', { class: 'stages-key__swatch stages-key__swatch--fluids', 'aria-hidden': 'true' }), 'Stage 3 cards') : null,
       el('span', { class: 'stages-key__item' }, opts.placed && Object.keys(opts.placed).length
         ? 'Solid = where it goes · pale = other answers · dashed = a tie'
         : 'Solid = where most people put it · pale = other answers · dashed = a tie'),
@@ -504,7 +504,9 @@ export function stepLabel(step: Step): string {
     case 'stage2': return 'Stage 2 · Activities';
     case 'recap2': return 'Stage 2 · Key points';
     case 'intro3': return 'Stage 3 · What to expect';
-    case 'stage3': return 'Stage 3 · Sharing fluids';
+    // The group sees this on the presenter screen, so it doesn't name the
+    // round: they find out it's about sharing fluids from the cards.
+    case 'stage3': return 'Stage 3';
     case 'recap3': return 'Stage 3 · Key points';
     case 'end': return 'Finished';
   }

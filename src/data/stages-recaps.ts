@@ -105,7 +105,7 @@ const INTRO_3: Slide = {
   stage: 'stage3',
   deck: 'fluids',
   eyebrow: 'Stage 3 · what we’re about to do',
-  title: 'Sharing fluids',
+  title: 'When would you be happy to do this?',
   key: [],
   points: [
     {

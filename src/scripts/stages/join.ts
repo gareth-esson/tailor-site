@@ -486,7 +486,7 @@ export function initJoinPage(): void {
       const s = v.session;
       const round = s[stage];
       const columns = timelineColumns(s.timeline);
-      const title = stage === 'stage2' ? 'Stage 2: when does this happen?' : 'Stage 3: sharing fluids';
+      const title = stage === 'stage2' ? 'Stage 2: when does this happen?' : 'Stage 3: when would you be happy to do this?';
 
       if (!round.open.length) {
         return el('div', { class: 'stages-stack' }, header(title), wait('Waiting for cards', 'The facilitator will send the next cards.'));

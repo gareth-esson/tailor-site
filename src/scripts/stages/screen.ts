@@ -348,7 +348,7 @@ export function initScreenPage(): void {
     const round = s[stage];
     const tally = v[stage];
     const out: HTMLElement[] = [
-      heading(stage === 'stage2' ? 'Stage 2: when does this happen?' : 'Stage 3: sharing fluids'),
+      heading(stage === 'stage2' ? 'Stage 2: when does this happen?' : 'Stage 3: when would you be happy to do this?'),
     ];
 
     if (round.open.length) {
