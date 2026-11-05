@@ -178,6 +178,9 @@ export const ACTIVITY_CARDS: Card[] = [
   // Added on 5 November 2026 at Gareth's request: not in the original doc.
   { id: 'a-oral-sex',        label: 'Have oral sex', added: true, explicit: true },
   { id: 'a-anal-sex',        label: 'Have anal sex', added: true, explicit: true },
+  // Added on 5 November 2026 at Gareth's request. Also a Stage 3 card
+  // (f-unprotected-sex); a separate id because the decks are separate.
+  { id: 'a-unprotected-sex', label: 'Have unprotected sex', added: true, explicit: true },
 ];
 
 /** Stage 3: sharing fluids. */
