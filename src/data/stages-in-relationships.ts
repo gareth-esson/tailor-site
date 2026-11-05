@@ -51,6 +51,11 @@
  * Added on 5 November 2026 at Gareth's request: "Have oral sex" and "Have
  * anal sex" (activities, explicit). The doc's explicit activity cards
  * stopped at "Have sex".
+ *
+ * Also 5 November 2026, at Gareth's request: "Play with penis" and "Play
+ * with vagina" merged into one card, "Play with their genitals"
+ * (`a-play-genitals`). Their ids, `a-play-penis` and `a-play-vagina`,
+ * are retired, not reused.
  */
 
 export type DeckId = 'stages' | 'activities' | 'fluids';
@@ -103,8 +108,7 @@ export const ACTIVITY_CARDS: Card[] = [
   { id: 'a-holiday',         label: 'Go on holiday together' },
   { id: 'a-cinema',          label: 'Go to the cinema' },
   { id: 'a-hug',             label: 'Hug' },
-  { id: 'a-play-penis',      label: 'Play with penis', explicit: true },
-  { id: 'a-play-vagina',     label: 'Play with vagina', explicit: true },
+  { id: 'a-play-genitals',   label: 'Play with their genitals', explicit: true, original: 'Play with penis / Play with vagina' },
   { id: 'a-nibble-ears',     label: 'Nibble ears' },
   { id: 'a-feel-bum',        label: 'Feel bum', explicit: true },
   { id: 'a-play-breasts',    label: 'Play with breasts', explicit: true },
