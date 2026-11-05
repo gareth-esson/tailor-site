@@ -99,6 +99,15 @@ export function initHostPage(): void {
 
   const params = new URLSearchParams(location.search);
   const urlCode = (params.get('code') ?? '').toUpperCase();
+  // A controls link from another device (#h=<host token>) makes this
+  // browser a second desk for the session. The token sits in the
+  // fragment so it never reaches the server's logs, and it comes off
+  // the address straight away so it isn't left in history or shared.
+  const handed = new URLSearchParams(location.hash.slice(1)).get('h') ?? '';
+  if (urlCode && /^[A-Za-z0-9]{32}$/.test(handed)) {
+    saveLocal(STORE_KEY, { code: urlCode, hostToken: handed } satisfies StoredHost);
+    history.replaceState(null, '', `${location.pathname}${location.search}`);
+  }
   const stored = loadLocal<StoredHost>(STORE_KEY);
 
   // ── Which session? ──
@@ -181,7 +190,7 @@ export function initHostPage(): void {
       el('div', { class: 'stages-panel stages-join-form' },
         el('h2', { class: 'stages-panel__title' }, 'This browser isn’t running that session'),
         el('p', { class: 'stages-panel__text' },
-          `Session ${code} was started in a different browser. The facilitator controls only live where the session was created.`),
+          `Session ${code} was started in a different browser. To run it from here, open the controls link from that browser: “Controls on another device” on its desk, as a QR code or a link to copy.`),
         el('div', { class: 'stages-actions' },
           other
             ? el('a', { class: 'btn btn--std btn--primary', href: `${BASE_PATH}/host/?code=${other.code}` }, `Go to your session ${other.code}`)
@@ -205,6 +214,8 @@ export function initHostPage(): void {
     // Local UI state that must survive re-renders.
     const picked: Record<PlacementStage, Set<string>> = { stage2: new Set(), stage3: new Set() };
     let editTimeline: { order: string[]; out: string[] } | null = null;
+    // Whether the QR code for opening the controls on another device is up.
+    let handover = false;
     // Timeline edits go to the presenter screen as they happen, a beat
     // after each drag. Saving waits for the last one to land, so a late
     // draft can't overwrite the save.
@@ -260,7 +271,9 @@ export function initHostPage(): void {
           if (err instanceof ApiError && (err.status === 404 || err.status === 403)) {
             removeLocal(STORE_KEY);
             stopped = true;
-            renderGone(err.message);
+            if (err.status === 403) {
+              renderGone('This browser doesn’t have the controls for that session. Open the controls link again from the desk that started it.', 'Can’t open these controls');
+            } else renderGone(err.message);
             return;
           }
           connectionText = 'Reconnecting…';
@@ -317,12 +330,12 @@ export function initHostPage(): void {
       }
     }
 
-    function renderGone(message: string) {
+    function renderGone(message: string, title = 'Session ended') {
       clear(toolbar);
       clear(main);
       main.append(
         el('div', { class: 'stages-panel stages-join-form' },
-          el('h2', { class: 'stages-panel__title' }, 'Session ended'),
+          el('h2', { class: 'stages-panel__title' }, title),
           el('p', { class: 'stages-panel__text' }, message),
           el('div', { class: 'stages-actions' },
             el('a', { class: 'btn btn--std btn--primary', href: `${BASE_PATH}/host/` }, 'Start a new session'),
@@ -386,6 +399,7 @@ export function initHostPage(): void {
 
       renderToolbar();
       clear(main);
+      if (handover) main.append(handoverPanel());
       const s = view.session;
       switch (s.step) {
         case 'lobby':
@@ -464,7 +478,46 @@ export function initHostPage(): void {
           status.textContent = ok ? 'Join link copied.' : joinUrl(s.code);
         }, { small: true }),
       );
-      toolbar.append(stepper, code, presenterControls(), el('div', { class: 'stages-toolbar__spacer' }), status);
+      toolbar.append(stepper, code, presenterControls(), deskControls(), el('div', { class: 'stages-toolbar__spacer' }), status);
+    }
+
+    // ── Controls on a second device, e.g. an iPad while a laptop presents ──
+    function deskUrl(): string {
+      return `${location.origin}${BASE_PATH}/host/?code=${auth.code}#h=${auth.hostToken}`;
+    }
+
+    function deskControls(): HTMLElement {
+      return el('div', { class: 'stages-toolbar__group' },
+        el('span', { class: 'stages-note' }, 'Controls on another device '),
+        btn(handover ? 'Hide QR code' : 'Show QR code', 'tint', () => {
+          handover = !handover;
+          rerender();
+        }, { small: true }),
+        btn('Copy link', 'text', async () => {
+          const ok = await copyText(deskUrl());
+          status.textContent = ok ? 'Controls link copied. Anyone with it can run the session, so send it only to yourself.' : 'Copy failed.';
+        }, { small: true }),
+      );
+    }
+
+    /** Shown at the top of the desk while the QR code is open. */
+    function handoverPanel(): HTMLElement {
+      return el('div', { class: 'stages-panel stages-handover' },
+        el('div', { class: 'stages-handover__text' },
+          el('h2', { class: 'stages-panel__title' }, 'Open these controls on another device'),
+          el('p', { class: 'stages-panel__text' },
+            'Scan this with the camera on your iPad or phone. That device gets the same controls as this one, and both keep working, so you can run the session there and present from here.'),
+          el('p', { class: 'stages-note' },
+            el('strong', {}, 'Don’t show this on a shared screen. '), 'Anyone who scans it can run the session.'),
+          el('div', { class: 'stages-actions' },
+            btn('Hide QR code', 'tint', () => {
+              handover = false;
+              rerender();
+            }, { small: true }),
+          ),
+        ),
+        qrCode(deskUrl(), 'QR code: scan to open the facilitator controls on another device'),
+      );
     }
 
     // ── Presenter screen: the clean view the group watches ──

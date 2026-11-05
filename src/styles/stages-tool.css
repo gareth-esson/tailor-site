@@ -1682,6 +1682,22 @@ body:has(> .stages-screen[data-theme="dark"]) {
   text-transform: none;
   vertical-align: middle;
 }
+/* Opening the desk on a second device: the text beside its QR code. */
+.stages-handover {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-global-lg);
+}
+.stages-handover__text {
+  flex: 1 1 20rem;
+  display: grid;
+  gap: var(--space-global-xs);
+}
+.stages-handover .stages-qr {
+  flex: 0 0 auto;
+}
+
 /* The facilitator's controls for a slide stay at the bottom of the
    window while she scrolls down to see what's coming. */
 .stages-slide-desk {
