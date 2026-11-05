@@ -47,6 +47,10 @@
  *     person can assume it while the other doesn't.
  *
  * Added on 3 November 2026 at Gareth's request: "Dating" and "Courting".
+ *
+ * Added on 5 November 2026 at Gareth's request: "Have oral sex" and "Have
+ * anal sex" (activities, explicit). The doc's explicit activity cards
+ * stopped at "Have sex".
  */
 
 export type DeckId = 'stages' | 'activities' | 'fluids';
@@ -167,6 +171,9 @@ export const ACTIVITY_CARDS: Card[] = [
   { id: 'a-family-group-chat', label: "Be in each other's family group chat", added: true },
   { id: 'a-send-nude',       label: 'Send a nude', added: true, explicit: true },
   { id: 'a-joint-account',   label: 'Have a joint bank account', added: true },
+  // Added on 5 November 2026 at Gareth's request: not in the original doc.
+  { id: 'a-oral-sex',        label: 'Have oral sex', added: true, explicit: true },
+  { id: 'a-anal-sex',        label: 'Have anal sex', added: true, explicit: true },
 ];
 
 /** Stage 3: sharing fluids. */
