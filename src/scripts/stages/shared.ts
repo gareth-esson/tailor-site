@@ -10,7 +10,20 @@
 
 import qrcode from 'qrcode-generator';
 import Sortable from 'sortablejs';
-import { CLOSING_MESSAGES, getRecap, isRecapId, type Recap, type RecapId } from '../../data/stages-recaps';
+import {
+  CLOSING_MESSAGES,
+  getRecap,
+  getSlide,
+  isIntroId,
+  isRecapId,
+  isSlideId,
+  slideBeats,
+  type IntroId,
+  type Recap,
+  type RecapId,
+  type Slide,
+  type SlideId,
+} from '../../data/stages-recaps';
 import {
   NEVER_COLUMN_ID,
   OUT_PILE_ID,
@@ -23,8 +36,8 @@ import {
 import type { Participant, RoundState, Session, Step } from '../../lib/stages-store';
 
 export { NEVER_COLUMN_ID, OUT_PILE_ID, STAGE_CARDS, deckCards, getCard, Sortable };
-export { CLOSING_MESSAGES, getRecap, isRecapId };
-export type { Recap, RecapId };
+export { CLOSING_MESSAGES, getRecap, getSlide, isIntroId, isRecapId, isSlideId, slideBeats };
+export type { IntroId, Recap, RecapId, Slide, SlideId };
 export type { Card, DeckId, Participant, RoundState, Session, Step };
 
 export type PublicSession = Omit<Session, 'hostToken' | 'screenToken'>;
@@ -484,10 +497,13 @@ export function startPolling(
 export function stepLabel(step: Step): string {
   switch (step) {
     case 'lobby': return 'Welcome';
+    case 'intro1': return 'Stage 1 · What to expect';
     case 'stage1': return 'Stage 1 · Timeline';
     case 'recap1': return 'Stage 1 · Key points';
+    case 'intro2': return 'Stage 2 · What to expect';
     case 'stage2': return 'Stage 2 · Activities';
     case 'recap2': return 'Stage 2 · Key points';
+    case 'intro3': return 'Stage 3 · What to expect';
     case 'stage3': return 'Stage 3 · Sharing fluids';
     case 'recap3': return 'Stage 3 · Key points';
     case 'end': return 'Finished';
@@ -593,28 +609,118 @@ export function roundupEl(summary: Summary): HTMLElement {
   return el('div', { class: 'stages-roundup' }, ...panels);
 }
 
-// ─── Section-break slides ───────────────────────────────────────────
+// ─── Slides: the intro before each stage and the recap after it ─────
+
+export interface SlideOptions {
+  /** How many points are showing. Omitted means all of them. */
+  shown?: number;
+  /** The facilitator's copy: points not yet shown are drawn faded with
+   *  "Coming up" instead of being hidden, so she can see what's next. */
+  preview?: boolean;
+}
 
 /**
- * A section-break screen. Rendered identically on the host's shared
- * screen and on every participant's phone; the CSS scales the type.
+ * An intro or recap slide, built up one point at a time. Rendered the
+ * same on the host's desk, the presenter screen and every phone; the CSS
+ * scales the type. Points not yet shown keep their space (hidden, not
+ * removed) so the slide doesn't jump as it builds, as on a presentation.
  */
-export function recapSlide(recap: Recap): HTMLElement {
-  const points = el('ol', { class: 'stages-slide__points' });
-  for (const p of recap.points) {
-    points.append(
-      el('li', { class: 'stages-slide__point' },
-        el('h3', { class: 'stages-slide__point-heading' }, p.heading),
-        el('p', { class: 'stages-slide__point-body' }, p.body),
-      ),
-    );
-  }
-  return el('section', { class: `stages-slide stages-slide--${recap.deck}`, 'aria-label': recap.title },
-    el('p', { class: 'stages-slide__eyebrow' }, recap.eyebrow),
-    el('h2', { class: 'stages-slide__title' }, recap.title),
-    points,
-    el('p', { class: 'stages-slide__closer' }, recap.closer),
+let lastArrival = '';
+
+export function slideEl(slide: Slide, opts: SlideOptions = {}): HTMLElement {
+  const total = slideBeats(slide);
+  const shown = Math.min(opts.shown ?? total, total);
+  // Only the point that has just been revealed fades in, and only once:
+  // a redraw for some other reason leaves it still.
+  const arrival = `${slide.id}:${shown}`;
+  const arriving = !opts.preview && opts.shown !== undefined && shown > 0 && arrival !== lastArrival ? shown - 1 : -1;
+  if (!opts.preview) lastArrival = arrival;
+  let beat = 0;
+  const state = (): { cls: string; label: string | null } => {
+    const i = beat++;
+    if (i < shown) return { cls: i === arriving ? ' is-shown is-arriving' : ' is-shown', label: null };
+    if (!opts.preview) return { cls: ' is-hidden', label: null };
+    return i === shown
+      ? { cls: ' is-upcoming is-next', label: 'Next click' }
+      : { cls: ' is-upcoming', label: 'Coming up' };
+  };
+  const attrs = (cls: string, base: string) => ({
+    class: base + cls,
+    'data-beat': String(beat - 1),
+    'aria-hidden': cls.includes('is-hidden') ? 'true' : undefined,
+  });
+  const upcoming = (label: string | null) => label ? el('span', { class: 'stages-slide__upcoming' }, label) : null;
+
+  const section = el('section', { class: `stages-slide stages-slide--${slide.deck} stages-slide--${slide.kind}`, 'aria-label': slide.title },
+    el('p', { class: 'stages-slide__eyebrow' }, slide.eyebrow),
+    el('h2', { class: 'stages-slide__title' }, slide.title),
   );
+
+  if (slide.key.length) {
+    const key = el('ol', { class: 'stages-slide__key' });
+    for (const p of slide.key) {
+      const st = state();
+      key.append(
+        el('li', attrs(st.cls, 'stages-slide__key-point'),
+          el('p', { class: 'stages-slide__key-label' }, 'Key message', upcoming(st.label)),
+          el('h3', { class: 'stages-slide__key-heading' }, p.heading),
+          el('p', { class: 'stages-slide__key-body' }, p.body),
+        ),
+      );
+    }
+    section.append(key);
+  }
+
+  if (slide.points.length) {
+    const firstPoint = beat;
+    const list = el('ol', { class: 'stages-slide__points' });
+    for (const p of slide.points) {
+      const st = state();
+      list.append(
+        el('li', attrs(st.cls, 'stages-slide__point'),
+          el('h3', { class: 'stages-slide__point-heading' }, p.heading, upcoming(st.label)),
+          el('p', { class: 'stages-slide__point-body' }, p.body),
+        ),
+      );
+    }
+    // On a recap, the supporting points sit under their own heading,
+    // which appears with the first of them.
+    if (slide.key.length) {
+      const headingShown = firstPoint < shown || opts.preview;
+      section.append(el('h3', {
+        class: `stages-slide__also${headingShown ? '' : ' is-hidden'}`,
+        'aria-hidden': headingShown ? undefined : 'true',
+      }, 'Also from this round'));
+    }
+    section.append(list);
+  }
+
+  if (slide.closer) {
+    const st = state();
+    section.append(el('p', attrs(st.cls, 'stages-slide__closer'), slide.closer, upcoming(st.label)));
+  }
+  return section;
+}
+
+/** The heading of the point the next click shows, or null when the
+ *  slide is complete. */
+export function nextBeatLabel(slide: Slide, shown: number): string | null {
+  const beats = [...slide.key.map((p) => p.heading), ...slide.points.map((p) => p.heading)];
+  if (slide.closer) beats.push('The closing line');
+  return shown < beats.length ? beats[shown] : null;
+}
+
+/** Bring the newest point into view on a screen someone can scroll. */
+export function scrollToLatestBeat(root: HTMLElement, shown: number): void {
+  if (shown <= 0) return;
+  const latest = root.querySelector<HTMLElement>(`[data-beat="${shown - 1}"]`);
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  latest?.scrollIntoView({ block: 'nearest', behavior: still ? 'auto' : 'smooth' });
+}
+
+/** The old name, kept for callers that show a whole recap at once. */
+export function recapSlide(recap: Recap): HTMLElement {
+  return slideEl(recap);
 }
 
 /** The three one-line takeaways, for the closing screen. */

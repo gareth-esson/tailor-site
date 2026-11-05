@@ -2,6 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { deckCards } from '../../../data/stages-in-relationships';
+import { getSlide, isSlideId, slideBeats, type SlideId } from '../../../data/stages-recaps';
 import {
   allowedColumns,
   clearPlaced,
@@ -14,6 +15,7 @@ import {
   removeParticipant,
   saveSession,
   draftFor,
+  STEPS,
   validateDraft,
   validateTimeline,
   type PlacementStage,
@@ -46,14 +48,22 @@ import { errorResponse, json, readJson, storageUnavailable } from './_shared';
  *   closeRound { stage }       move open cards to "done"; board keeps them
  *   undoDone { stage, cardId } take a card back off the board
  *   resetStage { stage }       wipe a stage's cards and responses
- *   setStep { step }           move between screens without changing data
+ *   setStep { step, slide? }   move between screens without changing data;
+ *                                 slide is how many points of an intro or
+ *                                 recap to show (default 0)
+ *   setSlide { slide }         reveal or hide points on the current slide
  *   removeParticipant { pid }
  *   end                        close the session for participants
  *   delete                     remove the session entirely
  */
 
 const PLACEMENT_STAGES: PlacementStage[] = ['stage2', 'stage3'];
-const STEPS: Step[] = ['lobby', 'stage1', 'recap1', 'stage2', 'recap2', 'stage3', 'recap3', 'end'];
+
+/** A slide position within range: 0 (title only) to every point shown. */
+function clampSlide(id: SlideId, hideExplicit: boolean, value: unknown): number {
+  const n = typeof value === 'number' && Number.isFinite(value) ? Math.round(value) : 0;
+  return Math.min(Math.max(n, 0), slideBeats(getSlide(id, hideExplicit)));
+}
 
 function isPlacementStage(v: unknown): v is PlacementStage {
   return typeof v === 'string' && (PLACEMENT_STAGES as string[]).includes(v);
@@ -82,6 +92,7 @@ export const POST: APIRoute = async ({ request }) => {
     if (!session) return json({ error: 'Session not found' }, 404);
     if (session.hostToken !== body.hostToken) return json({ error: 'Not authorised' }, 403);
 
+    const stepBefore = session.step;
     switch (action) {
       case 'setHideExplicit': {
         session.hideExplicit = body.hideExplicit === true;
@@ -259,6 +270,13 @@ export const POST: APIRoute = async ({ request }) => {
         }
         session.step = step as Step;
         session.spotlight = null;
+        session.slide = isSlideId(step) ? clampSlide(step, session.hideExplicit, body.slide) : 0;
+        break;
+      }
+
+      case 'setSlide': {
+        if (!isSlideId(session.step)) return json({ error: 'Not on a slide' }, 409);
+        session.slide = clampSlide(session.step, session.hideExplicit, body.slide);
         break;
       }
 
@@ -281,6 +299,10 @@ export const POST: APIRoute = async ({ request }) => {
       default:
         return json({ error: 'Unknown action' }, 400);
     }
+
+    // Any other way of arriving on a slide (openCards, end) starts it from
+    // the title. setStep has already set the position it wants.
+    if (session.step !== stepBefore && action !== 'setStep') session.slide = 0;
 
     await saveSession(session);
     return json({ session: publicSession(session) });

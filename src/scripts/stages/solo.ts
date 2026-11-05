@@ -13,9 +13,11 @@
 
 import {
   $,
-  getRecap,
-  isRecapId,
-  recapSlide,
+  getSlide,
+  isSlideId,
+  slideBeats,
+  slideEl,
+  type SlideId,
   NEVER_COLUMN_ID,
   OUT_PILE_ID,
   Sortable,
@@ -37,7 +39,10 @@ import {
 
 const STORE_KEY = 'stages-solo-v1';
 
+// No intro slides here: they describe the live session (cards arriving
+// on phones), not a group dragging cards on one screen.
 type SoloStep = 'stage1' | 'recap1' | 'stage2' | 'recap2' | 'stage3' | 'recap3';
+type SoloSlide = Extract<SoloStep, SlideId>;
 
 interface SoloState {
   step: SoloStep;
@@ -125,7 +130,7 @@ export function initSoloPage(): void {
 
   shuffleBtn.addEventListener('click', () => {
     // Nothing to shuffle on a section break.
-    if (isRecapId(state.step)) return;
+    if (isSlideId(state.step)) return;
     const pile = state[state.step];
     pile.deck = shuffle(pile.deck);
     save();
@@ -150,7 +155,7 @@ export function initSoloPage(): void {
 
   function renderStepper() {
     clear(stepper);
-    const onStep = isRecapId(state.step) ? getRecap(state.step).stage : state.step;
+    const onStep = isSlideId(state.step) ? getSlide(state.step).stage : state.step;
     for (const s of STEPS) {
       const item = el('button', {
         type: 'button',
@@ -168,31 +173,67 @@ export function initSoloPage(): void {
       toolbarStatus.textContent = 'Put at least two stage cards on the timeline first.';
       return;
     }
+    // Arriving on a slide shows its title; going back to one shows it whole.
+    if (isSlideId(step)) {
+      const order: SoloStep[] = ['stage1', 'recap1', 'stage2', 'recap2', 'stage3', 'recap3'];
+      const backwards = order.indexOf(step) < order.indexOf(state.step);
+      slideShown = backwards ? slideBeats(getSlide(step, state.hideExplicit)) : 0;
+    }
     state.step = step;
     save();
     render();
   }
 
-  // ─── Section break between stages ────────────────────────────────
-  function renderRecap(id: 'recap1' | 'recap2' | 'recap3') {
-    const recap = getRecap(id, state.hideExplicit);
-    const forward: Record<typeof id, { label: string; step: SoloStep }> = {
+  // ─── Key points after each stage ─────────────────────────────────
+  // Built up one point at a time, like a presentation. Not saved: a
+  // reload shows the slide whole.
+  let slideShown = Number.POSITIVE_INFINITY;
+
+  function renderSlide(id: SoloSlide) {
+    const slide = getSlide(id, state.hideExplicit);
+    const total = slideBeats(slide);
+    const shown = Math.min(slideShown, total);
+    const forward: Record<SoloSlide, { label: string; step: SoloStep }> = {
       recap1: { label: 'Continue to Stage 2: activities', step: 'stage2' },
       recap2: { label: 'Continue to Stage 3: sharing fluids', step: 'stage3' },
       recap3: { label: 'Back to the board', step: 'stage3' },
     };
+    const back: Partial<Record<SoloSlide, { label: string; step: SoloStep }>> = {
+      recap1: { label: 'Back to Stage 1', step: 'stage1' },
+      recap2: { label: 'Back to Stage 2', step: 'stage2' },
+    };
     const go = forward[id];
+    const backTo = back[id];
+    const actions = el('div', { class: 'stages-actions' });
+    if (shown < total) {
+      actions.append(
+        btn('Show the next point', 'primary', () => { slideShown = shown + 1; render(); }),
+        btn('Show the rest', 'tint', () => { slideShown = total; render(); }),
+      );
+    } else {
+      actions.append(btn(go.label, 'primary', () => goTo(go.step)));
+    }
+    if (shown > 0) actions.append(btn('Hide the last point', 'tint', () => { slideShown = shown - 1; render(); }));
+    if (backTo) actions.append(btn(backTo.label, 'text', () => goTo(backTo.step)));
     clear(stage);
-    stage.append(
-      el('div', { class: 'stages-stack' },
-        recapSlide(recap),
-        el('div', { class: 'stages-actions' },
-          btn(go.label, 'primary', () => goTo(go.step)),
-          id === 'recap3' ? null : btn(`Back to ${recap.stage === 'stage1' ? 'Stage 1' : 'Stage 2'}`, 'tint', () => goTo(recap.stage)),
-        ),
-      ),
-    );
+    stage.append(el('div', { class: 'stages-stack' }, slideEl(slide, { shown }), el('div', { class: 'stages-slide-desk' }, actions)));
   }
+
+  // A presentation clicker sends Page Down / Page Up (or the arrow keys).
+  document.addEventListener('keydown', (e) => {
+    if (!isSlideId(state.step) || e.altKey || e.ctrlKey || e.metaKey) return;
+    const target = e.target as HTMLElement | null;
+    if (target && (target.closest('input, textarea, select, [contenteditable]') || (e.key === ' ' && target.closest('button, a')))) return;
+    const total = slideBeats(getSlide(state.step, state.hideExplicit));
+    const shown = Math.min(slideShown, total);
+    if (['ArrowRight', 'PageDown', ' '].includes(e.key)) {
+      e.preventDefault();
+      if (shown < total) { slideShown = shown + 1; render(); }
+    } else if (['ArrowLeft', 'PageUp'].includes(e.key)) {
+      e.preventDefault();
+      if (shown > 0) { slideShown = shown - 1; render(); }
+    }
+  });
 
   // ─── Stage 1: build the timeline ─────────────────────────────────
   function renderStage1() {
@@ -394,7 +435,7 @@ export function initSoloPage(): void {
     toolbarStatus.textContent = '';
     renderStepper();
     if (state.step === 'stage1') renderStage1();
-    else if (isRecapId(state.step)) renderRecap(state.step);
+    else if (isSlideId(state.step)) renderSlide(state.step);
     else renderPlacement(state.step);
   }
 

@@ -28,13 +28,13 @@ import {
   deckCards,
   el,
   getCard,
-  getRecap,
   joinUrl,
   miniEl,
   loadLocal,
   placementBoard,
   qrCode,
-  recapSlide,
+  slideEl,
+  getSlide,
   roundupEl,
   startPolling,
   stepLabel,
@@ -161,11 +161,17 @@ export function initScreenPage(): void {
       case 'stage3':
         main.append(...renderPlacement(s.step));
         break;
+      case 'intro1':
+      case 'intro2':
+      case 'intro3':
       case 'recap1':
       case 'recap2':
-      case 'recap3':
-        main.append(recapSlide(getRecap(s.step, s.hideExplicit)));
+      case 'recap3': {
+        // The whole slide fits the window, so nothing moves as it builds.
+        const fit = el('div', { class: 'stages-screen__fit' }, slideEl(getSlide(s.step, s.hideExplicit), { shown: s.slide ?? 0 }));
+        main.append(fit);
         break;
+      }
       case 'end':
         main.append(...renderEnd());
         break;
@@ -273,8 +279,8 @@ export function initScreenPage(): void {
     const v = view!;
     const sent = v.participants.filter((p) => p.stage1Submitted).length;
     return [
-      heading('Stage 1: the timeline of a relationship',
-        'On your own device, put the cards in the order you think a relationship goes. You don’t have to use every card. There’s no right answer.'),
+      // What to do was on the intro slide, so the board gets the room.
+      heading('Stage 1: the timeline of a relationship'),
       el('div', { class: 'stages-panel' },
         el('p', { class: 'stages-screen__count' }, `${sent} of ${v.participants.length} have sent their timeline`),
         people((p) => p.stage1Submitted),
@@ -342,12 +348,7 @@ export function initScreenPage(): void {
     const round = s[stage];
     const tally = v[stage];
     const out: HTMLElement[] = [
-      heading(
-        stage === 'stage2' ? 'Stage 2: when does this happen?' : 'Stage 3: sharing fluids',
-        stage === 'stage2'
-          ? 'On your own device, put each card at the stage on our timeline where you think it happens, or in “Never”.'
-          : 'Same columns. Put each card where you’d be happy to do this, or in “Never”.',
-      ),
+      heading(stage === 'stage2' ? 'Stage 2: when does this happen?' : 'Stage 3: sharing fluids'),
     ];
 
     if (round.open.length) {

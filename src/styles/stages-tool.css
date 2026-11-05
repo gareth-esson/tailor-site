@@ -1586,6 +1586,150 @@ body:has(> .stages-screen[data-theme="dark"]) {
   max-width: var(--container-max-reading-wide);
 }
 
+/* Key messages: the main point of a recap, on a lighter card and in
+   larger type than the supporting points under "Also from this round". */
+.stages-slide__key {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-global-md);
+  width: 100%;
+  max-width: var(--container-max-reading-wide);
+}
+.stages-slide__key-point {
+  display: grid;
+  gap: var(--space-global-xs);
+  padding: var(--space-global-lg);
+  border-radius: var(--radius-lg);
+  /* Lighter than the tinted slide in both themes: the page white in
+     light mode, the raised surface in dark. */
+  background: var(--bg-page);
+  box-shadow: var(--shadow-xs);
+}
+.stages-page[data-theme="dark"] .stages-slide__key-point {
+  background: var(--bg-surface);
+}
+.stages-slide__key-label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-global-xs);
+  margin: 0;
+  font-size: var(--text-card-size-h6);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--section-eyebrow-ls);
+  text-transform: uppercase;
+  color: var(--stages-slide-ink);
+}
+.stages-slide__key-heading {
+  font-family: var(--font-tailor-heading-stack);
+  font-size: var(--text-display-size-h3);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--lh-heading-sub);
+  color: var(--text-heading);
+  margin: 0;
+}
+.stages-slide__key-body {
+  font-size: var(--text-display-size-body);
+  line-height: var(--lh-body);
+  color: var(--text-body);
+  margin: 0;
+}
+.stages-slide__also {
+  font-size: var(--text-card-size-h6);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--section-eyebrow-ls);
+  text-transform: uppercase;
+  color: var(--stages-slide-ink);
+  margin: var(--space-global-xs) 0 0;
+}
+
+/* Building a slide up one click at a time. The audience's copy keeps the
+   space of points still to come, so nothing jumps as they appear. */
+.stages-slide .is-hidden {
+  visibility: hidden;
+}
+.stages-slide [data-beat].is-arriving {
+  animation: stages-beat-in var(--transition-duration) var(--transition-easing);
+}
+@keyframes stages-beat-in {
+  from { opacity: 0; transform: translateY(0.4rem); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stages-slide [data-beat].is-arriving { animation: none; }
+}
+/* The facilitator's copy shows what's coming, faded, with the next
+   point marked. */
+.stages-slide .is-upcoming {
+  opacity: var(--stages-spotlight-fade);
+}
+.stages-slide .is-upcoming.is-next {
+  opacity: 0.6;
+}
+.stages-slide__upcoming {
+  display: inline-block;
+  margin-left: var(--space-global-xs);
+  padding: 0.2em 0.7em;
+  border-radius: var(--radius-pill);
+  background: var(--bg-surface-alt);
+  color: var(--text-heading);
+  font-family: var(--font-tailor-body-stack);
+  font-size: var(--text-card-size-h6);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: normal;
+  text-transform: none;
+  vertical-align: middle;
+}
+/* The facilitator's controls for a slide stay at the bottom of the
+   window while she scrolls down to see what's coming. */
+.stages-slide-desk {
+  position: sticky;
+  bottom: 0;
+  z-index: var(--z-sticky);
+  display: grid;
+  gap: var(--space-global-xs);
+  padding: var(--space-global-sm) 0;
+  background: var(--bg-page);
+  border-top: var(--border-width-xs) solid var(--border-subtle);
+}
+
+/* On a wide shared screen a recap uses the width: key messages on the
+   left, the supporting points on the right, so the slide fits the
+   window at a readable size instead of shrinking. */
+@media (min-width: 1024px) { /* --bp-lg */
+  .stages-screen .stages-slide--recap {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    column-gap: var(--space-global-xl);
+    row-gap: var(--space-global-md);
+    align-items: start;
+  }
+  .stages-screen .stages-slide--recap > .stages-slide__eyebrow {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+  .stages-screen .stages-slide--recap > .stages-slide__title,
+  .stages-screen .stages-slide--recap > .stages-slide__closer {
+    grid-column: 1 / -1;
+    max-width: none;
+  }
+  .stages-screen .stages-slide--recap > .stages-slide__key {
+    grid-column: 1;
+    grid-row: 3 / span 2;
+  }
+  .stages-screen .stages-slide--recap > .stages-slide__also {
+    grid-column: 2;
+    grid-row: 3;
+    margin: 0;
+  }
+  .stages-screen .stages-slide--recap > .stages-slide__points {
+    grid-column: 2;
+    grid-row: 4;
+  }
+}
+
 /* ── Closing takeaways ─────────────────────────────────────────────── */
 .stages-takeaways {
   list-style: none;

@@ -30,9 +30,24 @@ export const SESSION_TTL_SECONDS = 24 * 60 * 60;
 export const MAX_PARTICIPANTS = 60;
 export const MAX_NAME_LENGTH = 24;
 
-/** Screens the session can be on. The `recap*` steps are the section
- *  breaks shown after each stage — text only, no answers collected. */
-export type Step = 'lobby' | 'stage1' | 'recap1' | 'stage2' | 'recap2' | 'stage3' | 'recap3' | 'end';
+/** Screens the session can be on. The `intro*` steps say what the next
+ *  stage involves and the `recap*` steps are the section breaks after
+ *  each stage: text only, no answers collected. */
+export type Step =
+  | 'lobby'
+  | 'intro1' | 'stage1' | 'recap1'
+  | 'intro2' | 'stage2' | 'recap2'
+  | 'intro3' | 'stage3' | 'recap3'
+  | 'end';
+
+/** Every step, in running order. */
+export const STEPS: Step[] = [
+  'lobby',
+  'intro1', 'stage1', 'recap1',
+  'intro2', 'stage2', 'recap2',
+  'intro3', 'stage3', 'recap3',
+  'end',
+];
 export type PlacementStage = 'stage2' | 'stage3';
 
 export interface RoundState {
@@ -66,6 +81,10 @@ export interface Session {
   showNames?: boolean;
   hideExplicit: boolean;
   step: Step;
+  /** On an intro or recap slide, how many of its points the group can
+   *  see so far. The facilitator reveals them one click at a time.
+   *  Moving to another step puts it back to 0. */
+  slide?: number;
   /** `averageShown`: the host has put the average timeline on the
    *  presenter screen, after the group has compared everyone's.
    *  `draft`: the timeline as the host is rearranging it while the group

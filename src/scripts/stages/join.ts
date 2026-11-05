@@ -21,8 +21,10 @@ import {
   clear,
   closingMessagesEl,
   deckCards,
-  getRecap,
-  recapSlide,
+  slideEl,
+  getSlide,
+  isSlideId,
+  scrollToLatestBeat,
   el,
   loadLocal,
   miniEl,
@@ -213,6 +215,8 @@ export function initJoinPage(): void {
 
     /** Re-render only when the phase changes, so drags and taps aren't
      *  interrupted by polling. Reveal data re-renders as it changes. */
+    let lastSlide: { step: string; shown: number } = { step: '', shown: 0 };
+
     function render() {
       if (!view) return;
       const s = view.session;
@@ -226,6 +230,7 @@ export function initJoinPage(): void {
         view.stage1Reveal ?? null,
         stage ? view[`${stage}Reveal`] ?? null : null,
         s.hideExplicit,
+        s.slide ?? 0,
         view.board,
         view.summary ?? null,
       ]);
@@ -251,10 +256,13 @@ export function initJoinPage(): void {
         case 'stage3':
           main.append(renderPlacement(s.step));
           break;
+        case 'intro1':
+        case 'intro2':
+        case 'intro3':
         case 'recap1':
         case 'recap2':
         case 'recap3':
-          main.append(recapSlide(getRecap(s.step, s.hideExplicit)));
+          main.append(slideEl(getSlide(s.step, s.hideExplicit), { shown: s.slide ?? 0 }));
           break;
         case 'end':
           main.append(renderEnd());
@@ -268,6 +276,10 @@ export function initJoinPage(): void {
           btn('Leave', 'text', leave, { small: true }),
         ),
       );
+      // A new point on a slide may be below the fold on a phone.
+      const slide = isSlideId(s.step) ? s.slide ?? 0 : 0;
+      if (isSlideId(s.step) && s.step === lastSlide.step && slide > lastSlide.shown) scrollToLatestBeat(main, slide);
+      lastSlide = { step: s.step, shown: slide };
     }
 
     function wait(title: string, text: string): HTMLElement {
@@ -291,8 +303,9 @@ export function initJoinPage(): void {
       const trayIds = () => visible.filter((id) => !order.includes(id));
 
       const wrap = el('div', { class: 'stages-stack' });
+      // What the stage is for was on the intro slide; this is just how.
       wrap.append(header('Stage 1: build your timeline',
-        'Tap a card to add it to your timeline, starting from how a relationship begins. Use the arrows or drag to reorder. Leave out anything you think doesn’t belong on a timeline at all.'));
+        'Tap cards to add them, starting from how a relationship begins. Leave out any that don’t belong.'));
 
       const list = el('ol', { class: 'stages-sort', 'aria-label': 'Your timeline' });
       const tray = el('div', { class: 'stages-tray', role: 'group', 'aria-label': 'Cards to add' });
@@ -525,9 +538,9 @@ export function initJoinPage(): void {
       if (firstUnplaced >= 0 && !placed[open[cursor]] === false) cursor = firstUnplaced;
 
       const wrap = el('div', { class: 'stages-place' });
-      wrap.append(header(title, stage === 'stage2'
-        ? 'Tap the stage where you think this happens, or “Never”.'
-        : 'Tap the stage where you’d be happy to do this, or “Never”.'));
+      // The intro slide explained the round, so the question sits next to
+      // the card instead of a paragraph above it.
+      wrap.append(header(title));
 
       const progress = el('p', { class: 'stages-place__progress' });
       const cardBox = el('div', { class: 'stages-place__card', 'aria-live': 'polite' });
@@ -544,7 +557,7 @@ export function initJoinPage(): void {
         cardBox.textContent = cardLabel(id);
         question.textContent = placed[id]
           ? `You said: ${columns.find((c) => c.id === placed[id])?.label ?? placed[id]}. Tap it again to clear.`
-          : 'Where does this belong?';
+          : stage === 'stage2' ? 'Tap the stage where you think this happens, or “Never”.' : 'Tap the stage where you’d be happy to do this, or “Never”.';
         clear(options);
         // Cards already on the shared board, so people can see what
         // else sits at each stage. Stage 3 shows the activities too.

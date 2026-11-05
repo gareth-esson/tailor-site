@@ -30,15 +30,17 @@ import {
   majority,
   miniEl,
   closingMessagesEl,
-  getRecap,
-  isRecapId,
+  getSlide,
+  isSlideId,
+  nextBeatLabel,
   placementBoard,
   qrCode,
-  recapSlide,
+  slideBeats,
+  slideEl,
   screenUrl,
   removeLocal,
   roundupEl,
-  type RecapId,
+  type SlideId,
   type Summary,
   saveLocal,
   shuffle,
@@ -367,10 +369,13 @@ export function initHostPage(): void {
         case 'stage3':
           main.append(renderPlacement(s.step));
           break;
+        case 'intro1':
+        case 'intro2':
+        case 'intro3':
         case 'recap1':
         case 'recap2':
         case 'recap3':
-          main.append(renderRecap(s.step));
+          main.append(renderSlide(s.step));
           break;
         case 'end':
           main.append(renderEnd());
@@ -399,8 +404,8 @@ export function initHostPage(): void {
         { id: 'stage3', label: '3 · Sharing fluids', enabled: s.timeline.length >= 2 },
         { id: 'end', label: 'Roundup', enabled: true },
       ];
-      // A section break lights up the stage it belongs to.
-      const onStep = isRecapId(s.step) ? getRecap(s.step).stage : s.step;
+      // An intro or a section break lights up the stage it belongs to.
+      const onStep = isSlideId(s.step) ? getSlide(s.step).stage : s.step;
       const stepper = el('ol', { class: 'stages-stepper', 'aria-label': 'Stages' });
       for (const st of steps) {
         stepper.append(
@@ -412,8 +417,11 @@ export function initHostPage(): void {
               disabled: !st.enabled,
               title: st.enabled ? undefined : 'Agree a timeline in Stage 1 first',
               onClick: () => {
-                if (st.id === 'stage1' && !s.stage1.open && !s.stage1.revealed) void act('openStage1');
-                else void act('setStep', { step: st.id });
+                // A stage nobody has started yet opens on its intro.
+                if (st.id === 'stage1' && !s.stage1.open && !s.stage1.revealed) void act('setStep', { step: 'intro1' });
+                else if ((st.id === 'stage2' || st.id === 'stage3') && !s[st.id].open.length && !s[st.id].done.length) {
+                  void act('setStep', { step: st.id === 'stage2' ? 'intro2' : 'intro3' });
+                } else void act('setStep', { step: st.id });
               },
             }, st.label),
           ),
@@ -526,42 +534,110 @@ export function initHostPage(): void {
         el('div', { class: 'stages-panel' },
           el('h2', { class: 'stages-panel__title' }, 'When everyone’s in'),
           el('p', { class: 'stages-panel__text' },
-            'Stage 1 sends everyone the relationship-stage cards to put in order on their own device. When they’ve all sent theirs, you reveal the lot together.'),
+            'Next comes a slide explaining Stage 1, which you build up one point at a time. Then Stage 1 sends everyone the relationship-stage cards to put in order on their own device. When they’ve all sent theirs, you reveal the lot together.'),
           el('div', { class: 'stages-actions' },
-            btn('Start Stage 1', 'primary', () => void act('openStage1'), { disabled: view!.participants.length === 0 }),
+            btn('Introduce Stage 1', 'primary', () => void act('setStep', { step: 'intro1' })),
           ),
           el('label', { class: 'form-check' }, hide, ' Hide the explicit cards (younger or SEND groups)'),
         ),
       );
     }
 
-    // ── Section break between stages ──
-    function renderRecap(id: RecapId): HTMLElement {
+    // ── Slides: what to expect before a stage, key points after it ──
+    // Each click shows the next point on every screen. The desk shows the
+    // whole slide, with what's still to come faded, so the facilitator
+    // can see what she's about to put up.
+    function renderSlide(id: SlideId): HTMLElement {
       const s = view!.session;
-      const recap = getRecap(id, s.hideExplicit);
-      const next: Record<RecapId, { label: string; step: Step }> = {
-        recap1: { label: 'Continue to Stage 2: activities', step: 'stage2' },
-        recap2: { label: 'Continue to Stage 3: sharing fluids', step: 'stage3' },
-        recap3: { label: 'Finish and show the roundup', step: 'end' },
-      };
-      const forward = next[id];
-      const blocked = (forward.step === 'stage2' || forward.step === 'stage3') && s.timeline.length < 2;
+      const slide = getSlide(id, s.hideExplicit);
+      const total = slideBeats(slide);
+      const shown = Math.min(s.slide ?? 0, total);
+      const nextPoint = nextBeatLabel(slide, shown);
+      const forward = slideForward(id);
+      const needsTimeline = (forward.step === 'stage2' || forward.step === 'stage3' || forward.step === 'intro2' || forward.step === 'intro3')
+        && s.timeline.length < 2;
+      const nobodyIn = forward.step === 'stage1' && view!.participants.length === 0;
+      const blocked = needsTimeline || nobodyIn;
+      const back = slideBack(id);
+
+      const actions = el('div', { class: 'stages-actions' });
+      if (nextPoint) {
+        actions.append(btn('Show the next point', 'primary', () => void act('setSlide', { slide: shown + 1 })));
+        actions.append(btn('Show the rest', 'tint', () => void act('setSlide', { slide: total })));
+      } else {
+        actions.append(btn(forward.label, 'primary', () => void goForward(forward.step), {
+          disabled: blocked,
+          title: needsTimeline ? 'Agree a timeline in Stage 1 first' : nobodyIn ? 'Wait for someone to join' : undefined,
+        }));
+      }
+      if (shown > 0) actions.append(btn('Hide the last point', 'tint', () => void act('setSlide', { slide: shown - 1 })));
+      actions.append(btn(back.label, 'text', () => void act('setStep', back.slide ? { step: back.step, slide: 999 } : { step: back.step })));
+
+      const upNext = nextPoint
+        ? el('p', { class: 'stages-note stages-slide-next', 'aria-live': 'polite' },
+            el('strong', {}, 'Next click shows: '), nextPoint,
+            el('span', {}, ` (${shown} of ${total} showing). The right arrow, space bar or a presentation clicker also moves on.`))
+        : el('p', { class: 'stages-note stages-slide-next', 'aria-live': 'polite' },
+            el('strong', {}, 'Everything on this slide is showing. '), forward.note);
+
       return el('div', { class: 'stages-stack' },
-        recapSlide(recap),
-        el('div', { class: 'stages-actions' },
-          btn(forward.label, 'primary', () => {
-            if (forward.step === 'end') void act('end');
-            else void act('setStep', { step: forward.step });
-          }, { disabled: blocked, title: blocked ? 'Agree a timeline in Stage 1 first' : undefined }),
-          btn(`Back to ${stageName(recap.stage)}`, 'tint', () => void act('setStep', { step: recap.stage })),
-        ),
+        slideEl(slide, { shown, preview: true }),
+        el('div', { class: 'stages-slide-desk' }, upNext, actions),
       );
     }
 
-    function stageName(step: 'stage1' | 'stage2' | 'stage3'): string {
-      if (step === 'stage1') return 'Stage 1';
-      return step === 'stage2' ? 'Stage 2' : 'Stage 3';
+    /** Where the button at the end of a slide goes. */
+    function slideForward(id: SlideId): { label: string; step: Step; note: string } {
+      switch (id) {
+        case 'intro1': return { label: 'Start Stage 1', step: 'stage1', note: 'Next, everyone gets the stage cards on their own device.' };
+        case 'recap1': return { label: 'Introduce Stage 2', step: 'intro2', note: 'Next is the slide explaining Stage 2.' };
+        case 'intro2': return { label: 'Start Stage 2', step: 'stage2', note: 'Next you choose the first activity cards to send.' };
+        case 'recap2': return { label: 'Introduce Stage 3', step: 'intro3', note: 'Next is the slide explaining Stage 3.' };
+        case 'intro3': return { label: 'Start Stage 3', step: 'stage3', note: 'Next you choose the first sharing-fluids cards to send.' };
+        case 'recap3': return { label: 'Finish and show the roundup', step: 'end', note: 'Next is the roundup, which closes the session for participants.' };
+      }
     }
+
+    /** The step before a slide. Going back to a slide shows it complete. */
+    function slideBack(id: SlideId): { label: string; step: Step; slide: boolean } {
+      switch (id) {
+        case 'intro1': return { label: 'Back to the welcome screen', step: 'lobby', slide: false };
+        case 'recap1': return { label: 'Back to Stage 1', step: 'stage1', slide: false };
+        case 'intro2': return { label: 'Back to the Stage 1 key points', step: 'recap1', slide: true };
+        case 'recap2': return { label: 'Back to Stage 2', step: 'stage2', slide: false };
+        case 'intro3': return { label: 'Back to the Stage 2 key points', step: 'recap2', slide: true };
+        case 'recap3': return { label: 'Back to Stage 3', step: 'stage3', slide: false };
+      }
+    }
+
+    async function goForward(step: Step) {
+      const s = view!.session;
+      if (step === 'end') await act('end');
+      // Starting Stage 1 for the first time sends out the cards. If it's
+      // already running, just go back to it rather than clearing answers.
+      else if (step === 'stage1' && !s.stage1.open && !s.stage1.revealed) await act('openStage1');
+      else await act('setStep', { step });
+    }
+
+    // A presentation clicker sends Page Down / Page Up (or the arrow
+    // keys), so the desk moves through a slide's points the same way.
+    // It never leaves the slide: starting a stage stays a button press.
+    document.addEventListener('keydown', (e) => {
+      if (!view || !isSlideId(view.session.step) || busy) return;
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
+      const target = e.target as HTMLElement | null;
+      if (target && (target.closest('input, textarea, select, [contenteditable]') || (e.key === ' ' && target.closest('button, a')))) return;
+      const s = view.session;
+      const total = slideBeats(getSlide(s.step as SlideId, s.hideExplicit));
+      const shown = Math.min(s.slide ?? 0, total);
+      if (['ArrowRight', 'PageDown', ' '].includes(e.key)) {
+        e.preventDefault();
+        if (shown < total) void act('setSlide', { slide: shown + 1 });
+      } else if (['ArrowLeft', 'PageUp'].includes(e.key)) {
+        e.preventDefault();
+        if (shown > 0) void act('setSlide', { slide: shown - 1 });
+      }
+    });
 
     // ── Stage 1 live ──
     function renderStage1Live(): HTMLElement {
@@ -1067,7 +1143,10 @@ export function initHostPage(): void {
       if (stage === 'stage2') {
         nav.append(
           btn('Show the key points from Stage 2', navWeight, () => void act('setStep', { step: 'recap2' })),
-          btn('Skip to Stage 3', 'tint', () => void act('setStep', { step: 'stage3' })),
+          btn('Skip to Stage 3', 'tint', () => {
+            const started = view!.session.stage3.open.length || view!.session.stage3.done.length;
+            void act('setStep', { step: started ? 'stage3' : 'intro3' });
+          }),
         );
       } else {
         nav.append(
