@@ -36,6 +36,7 @@ import {
   placementBoard,
   qrCode,
   slideBeats,
+  stepLabel,
   slideEl,
   screenUrl,
   removeLocal,
@@ -101,12 +102,14 @@ export function initHostPage(): void {
   const stored = loadLocal<StoredHost>(STORE_KEY);
 
   // ── Which session? ──
-  if (!urlCode && stored) {
-    location.replace(`${BASE_PATH}/host/?code=${stored.code}`);
-    return;
-  }
+  // Arriving without a code means starting out, so offer a new session
+  // first. The one this browser remembers may be from an earlier
+  // workshop and part-way through, which would skip the welcome screen;
+  // it's offered underneath instead of being reopened automatically.
+  // A reload mid-session keeps ?code= in the address, so it resumes.
   if (!urlCode) {
     renderCreate();
+    if (stored) void offerStored(stored);
     return;
   }
   if (!stored || stored.code !== urlCode) {
@@ -142,6 +145,32 @@ export function initHostPage(): void {
         el('label', { class: 'form-check' }, hide, ' Hide the explicit cards (younger or SEND groups)'),
         el('div', { class: 'stages-actions' }, start),
         error,
+      ),
+    );
+  }
+
+  /** Under the create form: the session this browser last ran, if it
+   *  still exists, with a link back into it. */
+  async function offerStored(other: StoredHost) {
+    let view: HostView;
+    try {
+      view = await apiGet<HostView>('session', { code: other.code, host: other.hostToken });
+    } catch (err) {
+      // Expired (sessions last 24 hours) or no longer ours: forget it.
+      if (err instanceof ApiError && (err.status === 404 || err.status === 403)) removeLocal(STORE_KEY);
+      return;
+    }
+    const s = view.session;
+    const where = s.step === 'end' ? 'It has finished' : s.step === 'lobby' ? 'It’s on the welcome screen' : `It’s on ${stepLabel(s.step)}`;
+    const joined = `${view.participants.length} ${view.participants.length === 1 ? 'person' : 'people'} joined`;
+    main.append(
+      el('div', { class: 'stages-panel stages-join-form' },
+        el('h2', { class: 'stages-panel__title' }, `Your last session, ${other.code}, is still open`),
+        el('p', { class: 'stages-panel__text' },
+          `${where}, with ${joined}. Starting a new session above gives you a new code and a fresh welcome screen; the old one is deleted after 24 hours.`),
+        el('div', { class: 'stages-actions' },
+          el('a', { class: 'btn btn--std btn--tint', href: `${BASE_PATH}/host/?code=${other.code}` }, `Carry on with ${other.code}`),
+        ),
       ),
     );
   }
