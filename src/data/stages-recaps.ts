@@ -97,33 +97,27 @@ const INTRO_2: Slide = {
   ],
 };
 
-function intro3(hideExplicit: boolean): Slide {
-  return {
-    id: 'intro3',
-    kind: 'intro',
-    stage: 'stage3',
-    deck: 'fluids',
-    eyebrow: 'Stage 3 · what we’re about to do',
-    title: 'Sharing fluids',
-    key: [],
-    points: [
-      {
-        heading: 'Same columns, new cards',
-        body: hideExplicit
-          ? 'Every card in this round involves sharing a bodily fluid with someone, such as drinking from the same cup or using the same toothbrush.'
-          : 'Every card in this round involves sharing a bodily fluid with someone, from drinking from the same cup through to having sex.',
-      },
-      {
-        heading: 'Put each one where you’d be happy to do it',
-        body: 'Choose the stage of a relationship you’d want to be at before you’d do this with someone, or “Never”.',
-      },
-      {
-        heading: 'Then we see where everyone put them',
-        body: 'As before, the facilitator shows where the cards landed and we talk about them.',
-      },
-    ],
-  };
-}
+// No point saying what the cards are about: the group finds out as they
+// arrive, and the recap afterwards makes the point about sex.
+const INTRO_3: Slide = {
+  id: 'intro3',
+  kind: 'intro',
+  stage: 'stage3',
+  deck: 'fluids',
+  eyebrow: 'Stage 3 · what we’re about to do',
+  title: 'Sharing fluids',
+  key: [],
+  points: [
+    {
+      heading: 'Put each one where you’d be happy to do it',
+      body: 'Choose the stage of a relationship you’d want to be at before you’d do this with someone, or “Never”.',
+    },
+    {
+      heading: 'Then we see where everyone put them',
+      body: 'As before, the facilitator shows where the cards landed and we talk about them.',
+    },
+  ],
+};
 
 // ─── After each stage ───────────────────────────────────────────────
 
@@ -229,7 +223,7 @@ export function getSlide(id: SlideId, hideExplicit = false): Slide {
   switch (id) {
     case 'intro1': return INTRO_1;
     case 'intro2': return INTRO_2;
-    case 'intro3': return intro3(hideExplicit);
+    case 'intro3': return INTRO_3;
     case 'recap1': return RECAP_1;
     case 'recap2': return RECAP_2;
     case 'recap3': return recap3(hideExplicit);
