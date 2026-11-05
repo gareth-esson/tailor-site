@@ -174,7 +174,7 @@ const RECAP_2: Slide = {
       body: 'Decide what you want to happen and when, say it, and hold it. Going along with someone else’s timeline is easy to do without ever deciding to.',
     },
   ],
-  closer: 'Ask. Don’t assume.',
+  closer: 'If you want to know where you stand, talk to them about it.',
 };
 
 function recap3(hideExplicit: boolean): Slide {
@@ -256,7 +256,7 @@ export function isSlideId(value: unknown): value is SlideId {
 
 /** The one-line takeaway from each stage, for the closing screen. */
 export const CLOSING_MESSAGES: { deck: DeckId; text: string }[] = [
-  { deck: 'stages', text: 'Everyone’s timeline is different. Know the shape you want yours to take, and say it.' },
-  { deck: 'activities', text: 'What you’ve done together doesn’t tell you what stage you’re at. The only way to know is to ask.' },
+  { deck: 'stages', text: 'Everyone’s timeline is different. Work out what you want from a relationship, and talk about it with the other person.' },
+  { deck: 'activities', text: 'What you’ve done together doesn’t tell you what stage you’re at. The only way to know is to talk to them about it.' },
   { deck: 'fluids', text: 'Decide what stage you want to be at before you share fluids. Before, not during.' },
 ];
