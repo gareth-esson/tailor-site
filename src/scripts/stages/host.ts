@@ -592,7 +592,9 @@ export function initHostPage(): void {
       const running = el('ol', { class: 'stages-running-order' },
         el('li', {}, el('strong', {}, 'Put the stages in order.'), ' Everyone builds their own timeline, then we compare.'),
         el('li', {}, el('strong', {}, 'Decide when things happen.'), ' Activity cards go onto the timeline we agree, or into “Never”.'),
-        el('li', {}, el('strong', {}, 'Sharing fluids.'), ' The same columns again.'),
+        // The desk can be what the group sees, so this doesn't name the
+        // last round: they find out from its cards.
+        el('li', {}, el('strong', {}, 'One more round.'), ' New cards on the same columns.'),
       );
 
       return el('div', { class: 'stages-stack' },
