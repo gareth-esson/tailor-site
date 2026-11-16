@@ -38,6 +38,12 @@
   --fw-gap: 3px;          /* white line between segments */
   --fw-picked-ring: 7px;  /* outline round the chosen feeling */
 
+  /* The chosen word's largest size. Longer words are measured and shrunk
+     to fit on one line (see fitWord in the script); the slot they sit in
+     never changes height, so the card holds still while the spin runs. */
+  --fw-word-max: calc(var(--text-display-size-h1) * 1.8);
+  --fw-word-slot: calc(var(--fw-word-max) * var(--lh-display));
+
   --fw-hop: 40ms;         /* fade between lit segments; shorter than the fastest hop */
   --fw-pad: var(--space-global-md);
 
@@ -203,12 +209,10 @@
    on a pale tint of its family. Picked: the word on its family's full
    colour, as large as it will fit. */
 .fw-result {
-  container-type: inline-size;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: var(--space-global-xs);
-  min-height: calc(var(--text-display-size-h1) * 4);
   padding: var(--space-global-lg);
   border-radius: var(--radius-lg);
   background: var(--bg-surface);
@@ -236,11 +240,13 @@
 .fw-result[data-state="ready"] .fw-result__face { display: none; }
 
 .fw-result__word {
+  display: flex;
+  align-items: center;
+  height: var(--fw-word-slot);
   margin: 0;
   font-size: var(--text-display-size-h3);
   font-weight: var(--font-weight-bold);
   line-height: var(--lh-display);
-  overflow-wrap: anywhere;
 }
 
 .fw-result[data-state="rolling"] {
@@ -259,11 +265,12 @@
 
 .fw-result[data-state="picked"][data-dark-ink] { color: var(--fw-ink); }
 
-/* Fill the card's width: --fw-len is the word's length in characters,
-   and Lexend averages a little over half an em per character. */
+/* One line, always: --fw-word-fit is set by the script only when a word
+   is too wide for the card at full size. */
 .fw-result[data-state="rolling"] .fw-result__word,
 .fw-result[data-state="picked"] .fw-result__word {
-  font-size: min(calc(var(--text-display-size-h1) * 1.8), calc(100cqi / (var(--fw-len, 8) * 0.62)));
+  font-size: var(--fw-word-fit, var(--fw-word-max));
+  white-space: nowrap;
 }
 
 .fw-result[data-state="picked"] .fw-result__word {

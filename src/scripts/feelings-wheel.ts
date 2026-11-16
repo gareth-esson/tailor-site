@@ -146,11 +146,24 @@ export function initFeelingsWheel() {
   function showFeeling(f: Feeling, state: 'rolling' | 'picked') {
     result.dataset.state = state;
     result.style.setProperty('--fw', `var(--fw-${f.family})`);
-    result.style.setProperty('--fw-len', String(f.word.length));
     result.toggleAttribute('data-dark-ink', segments.get(f.id)?.hasAttribute('data-dark-ink') ?? false);
     resultFace.innerHTML = data.faces[f.family] ?? '';
     resultFamily.textContent = f.ring === 'family' ? 'Feeling family' : f.familyName;
     resultWord.textContent = f.word;
+    fitWord();
+  }
+
+  /** Shrink the word only if it would not fit on one line at full size.
+   *  Measured, not estimated: Lexend's letters vary too much in width for
+   *  a character count to predict it ("Annoyed" is wider than "Inspired"). */
+  function fitWord() {
+    resultWord.style.removeProperty('--fw-word-fit');
+    if (result.dataset.state === 'ready') return;
+    const room = resultWord.clientWidth;
+    const needed = resultWord.scrollWidth;
+    if (needed <= room) return;
+    const full = parseFloat(getComputedStyle(resultWord).fontSize);
+    resultWord.style.setProperty('--fw-word-fit', `${Math.floor((full * room * 0.98) / needed)}px`);
   }
 
   function showReady(message = 'Spin to pick a feeling') {
@@ -293,5 +306,6 @@ export function initFeelingsWheel() {
     }
   });
 
+  window.addEventListener('resize', fitWord);
   showLeft();
 }
