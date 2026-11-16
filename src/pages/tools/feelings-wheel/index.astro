@@ -1,0 +1,195 @@
+---
+/**
+ * Feelings wheel — a random feeling picker for acting games.
+ * /tools/feelings-wheel/
+ *
+ * Built to be put on a projector or shared screen: no site header or
+ * footer (ScreenLayout), noindex, and a spin that answers a presentation
+ * clicker as well as the button. The wheel is drawn here from
+ * src/data/feelings-wheel.json, the same file the printed cards come
+ * from, so the two cannot disagree. Logic: src/scripts/feelings-wheel.ts
+ */
+import ScreenLayout from '../../../layouts/ScreenLayout.astro';
+import wheel from '../../../data/feelings-wheel.json';
+import '../../../styles/feelings-wheel.css';
+
+type Family = (typeof wheel.families)[number];
+
+// ── Geometry, in viewBox units (the wheel is 1020 across) ──────────────
+const R_CENTRE = 85;
+const R_FAMILY = 225;
+const R_INNER = 365;
+const R_OUTER = 505;
+const FACE_R = 135; // radius of each family's face
+const FACE_D = 62;
+const NAME_R = 196; // radius of each family's name
+
+const rad = (deg: number) => (deg * Math.PI) / 180;
+const pt = (r: number, deg: number) =>
+  `${(r * Math.cos(rad(deg))).toFixed(2)} ${(r * Math.sin(rad(deg))).toFixed(2)}`;
+
+/** An annular sector from angle a0 to a1 (degrees, clockwise from east). */
+function sector(r0: number, r1: number, a0: number, a1: number) {
+  const large = a1 - a0 > 180 ? 1 : 0;
+  return `M${pt(r1, a0)}A${r1} ${r1} 0 ${large} 1 ${pt(r1, a1)}L${pt(r0, a1)}A${r0} ${r0} 0 ${large} 0 ${pt(r0, a0)}Z`;
+}
+
+/** Radial text that reads left to right on both halves of the wheel. */
+function radialText(r: number, deg: number) {
+  const a = ((deg % 360) + 360) % 360;
+  const flip = a > 90 && a < 270;
+  return `rotate(${(flip ? a + 180 : a).toFixed(2)}) translate(${flip ? -r : r} 0)`;
+}
+
+/** Tangential text, upright on both halves. */
+function tangentText(r: number, deg: number) {
+  const top = Math.sin(rad(deg)) < 0;
+  return `translate(${pt(r, deg)}) rotate(${(top ? deg + 90 : deg - 90).toFixed(2)})`;
+}
+
+function face(f: Family, cx: number, cy: number, d: number) {
+  return `<g class="fw-face" transform="translate(${(cx - d / 2).toFixed(2)} ${(cy - d / 2).toFixed(2)}) scale(${(d / 24).toFixed(4)})">`
+    + '<circle class="fw-face__rim" cx="12" cy="12" r="12"/>'
+    + '<circle class="fw-face__disc" cx="12" cy="12" r="9.4"/>'
+    + f.face.replaceAll('{c}', 'currentColor')
+    + '</g>';
+}
+
+interface Segment {
+  id: string;
+  word: string;
+  family: Family;
+  ring: 'family' | 'inner' | 'outer';
+  path: string;
+  label: string; // pre-rendered SVG for the label
+}
+
+const segments: Segment[] = [];
+wheel.families.forEach((f, i) => {
+  const centre = -90 + 60 * i;
+  const start = centre - 30;
+  const fx = FACE_R * Math.cos(rad(centre));
+  const fy = FACE_R * Math.sin(rad(centre));
+  segments.push({
+    id: f.key,
+    word: f.name,
+    family: f,
+    ring: 'family',
+    path: sector(R_CENTRE, R_FAMILY, start, start + 60),
+    label: face(f, fx, fy, FACE_D)
+      + `<text class="fw-seg__name" transform="${tangentText(NAME_R, centre)}">${f.name}</text>`,
+  });
+  (['inner', 'outer'] as const).forEach((ring) => {
+    const [r0, r1] = ring === 'inner' ? [R_FAMILY, R_INNER] : [R_INNER, R_OUTER];
+    f[ring].forEach((word, j) => {
+      const a0 = start + 10 * j;
+      segments.push({
+        id: `${f.key}-${ring}-${j}`,
+        word,
+        family: f,
+        ring,
+        path: sector(r0, r1, a0, a0 + 10),
+        label: `<text class="fw-seg__word" transform="${radialText((r0 + r1) / 2, a0 + 5)}">${word}</text>`,
+      });
+    });
+  });
+});
+
+// One tool token per family, pointing at the colour token the data names.
+const familyVars = wheel.families
+  .map((f) => `--fw-${f.key}: var(--${f.colour});`)
+  .join(' ');
+
+const levels = [
+  { key: 'family', label: 'Six families', count: 6 },
+  { key: 'inner', label: 'Easier words', count: 36 },
+  { key: 'outer', label: 'Harder words', count: 36 },
+  { key: 'all', label: 'All words', count: segments.length },
+];
+
+// The data the script needs, without the drawing.
+const words = segments.map((s) => ({ id: s.id, word: s.word, ring: s.ring, family: s.family.key, familyName: s.family.name }));
+const faces = Object.fromEntries(wheel.families.map((f) => [f.key, face(f, 12, 12, 24)]));
+---
+
+<ScreenLayout title="Feelings wheel">
+  <main class="fw-page" id="fw" style={familyVars} data-level="family">
+    <div class="fw-stage">
+      <svg class="fw-wheel" id="fw-wheel" viewBox="-510 -510 1020 1020" role="img" aria-labelledby="fw-wheel-title">
+        <title id="fw-wheel-title">Feelings wheel: six families of feelings, each with an inner and an outer ring of words</title>
+        {segments.map((s) => (
+          <g
+            class={`fw-seg fw-seg--${s.ring}`}
+            data-id={s.id}
+            data-ring={s.ring}
+            style={`--fw: var(--fw-${s.family.key})`}
+            data-dark-ink={s.family.key === 'peaceful' ? '' : undefined}
+          >
+            <path class="fw-seg__shape" d={s.path} />
+            <Fragment set:html={s.label} />
+          </g>
+        ))}
+        <circle class="fw-hub" r={R_CENTRE - 6} />
+        <text class="fw-hub__text">I feel…</text>
+      </svg>
+    </div>
+
+    <aside class="fw-panel">
+      <header class="fw-panel__head">
+        <img class="fw-panel__logo" src="/assets/tailor-logo-lockup-dark.svg" alt="Tailor RSE" />
+        <h1 class="fw-panel__title">Feelings wheel</h1>
+      </header>
+
+      <div class="fw-levels" role="radiogroup" aria-label="Which feelings">
+        {levels.map((l, i) => (
+          <button
+            type="button"
+            class={`chip fw-level${i === 0 ? ' is-active' : ''}`}
+            role="radio"
+            aria-checked={i === 0 ? 'true' : 'false'}
+            data-level={l.key}
+          >
+            {l.label} <span class="chip__count">{l.count}</span>
+          </button>
+        ))}
+      </div>
+
+      <div class="fw-result" id="fw-result" data-state="ready">
+        <p class="fw-result__family" id="fw-result-family">
+          <svg class="fw-result__face" id="fw-result-face" viewBox="0 0 24 24" aria-hidden="true"></svg>
+          <span id="fw-result-family-name"></span>
+        </p>
+        <p class="fw-result__word" id="fw-result-word">Spin to pick a feeling</p>
+      </div>
+      <p class="sr-only" id="fw-announce" aria-live="polite"></p>
+
+      <button type="button" class="btn btn--std btn--primary fw-spin" id="fw-spin">Spin</button>
+      <p class="fw-hint">Space, Enter or a presentation clicker also spins.</p>
+
+      <div class="fw-options">
+        <label class="form-check">
+          <input type="checkbox" id="fw-no-repeat" checked />
+          No repeats
+        </label>
+        <span class="fw-left" id="fw-left"></span>
+        <button type="button" class="btn btn--sm btn--text" id="fw-reset">Start again</button>
+      </div>
+
+      <div class="fw-options">
+        <button type="button" class="btn btn--sm btn--tint" id="fw-sound" aria-pressed="true">Sound on</button>
+        <button type="button" class="btn btn--sm btn--tint" id="fw-fullscreen">Full screen</button>
+      </div>
+    </aside>
+
+    <noscript>
+      <p class="fw-noscript">The spin needs JavaScript. The wheel still works as a picture to talk around.</p>
+    </noscript>
+  </main>
+
+  <script type="application/json" id="fw-data" set:html={JSON.stringify({ words, faces })} />
+</ScreenLayout>
+
+<script>
+  import { initFeelingsWheel } from '../../../scripts/feelings-wheel';
+  initFeelingsWheel();
+</script>

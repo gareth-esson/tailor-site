@@ -1,0 +1,334 @@
+/* ====================================================================
+   Feelings wheel — random feeling picker
+   --------------------------------------------------------------------
+   Project-specific components for /tools/feelings-wheel/. Tailor layer.
+   Every value references a token from tailor-site-v2.css (see
+   CLAUDE-CODE-OPERATING-RULES.md §7).
+
+   Families:
+     .fw-page / .fw-stage / .fw-panel   page shell
+     .fw-wheel / .fw-seg / .fw-face     the wheel and its segments
+     .fw-levels / .fw-result / .fw-spin the controls and the reveal
+
+   Each family's colour arrives as --fw-<key> on .fw-page, set from
+   src/data/feelings-wheel.json, and each segment reads it as --fw.
+   ==================================================================== */
+
+.fw-page {
+  /* White, which the ring tints mix into, as on the printed cards */
+  --fw-paper: var(--text-heading-on-dark);
+  --fw-ink: var(--text-heading);
+  /* The wheel's rings as tints of the family colour */
+  --fw-tint-inner: 42%;
+  --fw-tint-outer: 18%;
+  /* Darker family shade for labels and face features */
+  --fw-deep-mix: 55%;
+  /* Lit and chosen feelings: the family colour deepened just enough that
+     white text clears AA on every family (5:1 or better; Peaceful keeps
+     dark ink). The plain colours give white text only 3.3 to 4.3:1. */
+  --fw-lit-mix: 70%;
+  /* Out-of-play rings and feelings already drawn */
+  --fw-dim: 0.4;
+  --fw-used: 0.22;
+
+  /* Sizes inside the wheel are in its own drawing units (1020 across) */
+  --fw-word-size: 17px;
+  --fw-name-size: 30px;
+  --fw-hub-size: 28px;
+  --fw-gap: 3px;          /* white line between segments */
+  --fw-picked-ring: 7px;  /* outline round the chosen feeling */
+
+  --fw-hop: 40ms;         /* fade between lit segments; shorter than the fastest hop */
+  --fw-pad: var(--space-global-md);
+
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: auto minmax(18rem, 30rem);
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-global-xl);
+  padding: var(--fw-pad);
+  background: var(--bg-page);
+  color: var(--text-body);
+}
+
+/* ── The wheel ───────────────────────────────────────────────────── */
+
+.fw-stage {
+  display: grid;
+  place-items: center;
+}
+
+.fw-wheel {
+  display: block;
+  width: min(calc(100dvh - 2 * var(--fw-pad)), 60vw);
+  height: auto;
+  aspect-ratio: 1;
+  overflow: visible;
+}
+
+.fw-seg__shape {
+  stroke: var(--fw-paper);
+  stroke-width: var(--fw-gap);
+  stroke-linejoin: round;
+  transition: fill var(--fw-hop) linear;
+}
+
+.fw-seg--family .fw-seg__shape { fill: var(--fw); }
+.fw-seg--inner .fw-seg__shape  { fill: color-mix(in srgb, var(--fw) var(--fw-tint-inner), var(--fw-paper)); }
+.fw-seg--outer .fw-seg__shape  { fill: color-mix(in srgb, var(--fw) var(--fw-tint-outer), var(--fw-paper)); }
+
+.fw-seg__word,
+.fw-seg__name,
+.fw-hub__text {
+  font-family: var(--font-tailor-heading-stack);
+  text-anchor: middle;
+  dominant-baseline: central;
+  transition: fill var(--fw-hop) linear;
+}
+
+.fw-seg__word {
+  font-size: var(--fw-word-size);
+  font-weight: var(--font-weight-semibold);
+  fill: var(--fw-ink);
+}
+
+.fw-seg__name {
+  font-size: var(--fw-name-size);
+  font-weight: var(--font-weight-bold);
+  fill: var(--text-heading-on-dark);
+}
+
+.fw-seg[data-dark-ink] .fw-seg__name { fill: var(--fw-ink); }
+
+/* The family's button face: a pale rim, a white disc, features in the
+   family's darker shade, as on the family cards. */
+.fw-face { color: color-mix(in srgb, var(--fw) var(--fw-deep-mix), var(--fw-ink)); }
+.fw-face__rim  { fill: color-mix(in srgb, var(--fw-paper) 45%, var(--fw)); }
+.fw-face__disc { fill: var(--fw-paper); }
+
+.fw-hub { fill: var(--fw-paper); }
+
+.fw-hub__text {
+  font-size: var(--fw-hub-size);
+  font-weight: var(--font-weight-semibold);
+  fill: var(--fw-ink);
+}
+
+/* Rings that are not in play step back, so the room sees which words
+   the spin can land on. */
+.fw-page[data-level="family"] .fw-seg:not([data-ring="family"]),
+.fw-page[data-level="inner"] .fw-seg:not([data-ring="inner"]),
+.fw-page[data-level="outer"] .fw-seg:not([data-ring="outer"]) {
+  opacity: var(--fw-dim);
+}
+
+.fw-seg.is-used { opacity: var(--fw-used); }
+
+/* Lit while the spin hops, and the one it stops on: the segment takes
+   its family's deepened colour. Family segments invert to white instead,
+   since they are full colour already. */
+.fw-seg--inner.is-lit .fw-seg__shape,
+.fw-seg--outer.is-lit .fw-seg__shape { fill: color-mix(in srgb, var(--fw) var(--fw-lit-mix), var(--fw-ink)); }
+
+.fw-seg--inner.is-lit .fw-seg__word,
+.fw-seg--outer.is-lit .fw-seg__word { fill: var(--text-heading-on-dark); }
+
+.fw-seg[data-dark-ink].is-lit .fw-seg__word { fill: var(--fw-ink); }
+
+.fw-seg--family.is-lit .fw-seg__shape { fill: var(--fw-paper); }
+.fw-seg--family.is-lit .fw-seg__name  { fill: color-mix(in srgb, var(--fw) var(--fw-deep-mix), var(--fw-ink)); }
+
+.fw-seg.is-lit { opacity: 1; }
+
+.fw-seg.is-picked .fw-seg__shape {
+  stroke: var(--fw-ink);
+  stroke-width: var(--fw-picked-ring);
+}
+
+.fw-seg.is-picked {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: fw-pop 0.5s var(--transition-easing) both;
+}
+
+@keyframes fw-pop {
+  0%   { transform: scale(1); }
+  55%  { transform: scale(1.12); }
+  100% { transform: scale(1.06); }
+}
+
+/* ── The panel ───────────────────────────────────────────────────── */
+
+.fw-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-global-md);
+  min-width: 0;
+}
+
+.fw-panel__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-global-xs);
+}
+
+.fw-panel__logo {
+  display: block;
+  align-self: flex-start;
+  height: var(--space-global-lg);
+  width: auto;
+}
+
+.fw-panel__title {
+  margin: 0;
+  font-size: var(--text-display-size-h2);
+  line-height: var(--lh-heading);
+  color: var(--text-heading);
+}
+
+.fw-levels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-global-xs);
+}
+
+.fw-level:focus-visible,
+.fw-spin:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* The reveal. Ready: a quiet prompt. Rolling: the word under the light,
+   on a pale tint of its family. Picked: the word on its family's full
+   colour, as large as it will fit. */
+.fw-result {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-global-xs);
+  min-height: calc(var(--text-display-size-h1) * 4);
+  padding: var(--space-global-lg);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  color: var(--text-body-muted);
+}
+
+.fw-result__family {
+  display: flex;
+  align-items: center;
+  gap: var(--space-global-xs);
+  min-height: var(--space-global-lg);
+  margin: 0;
+  font-size: var(--text-card-size-h4);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--text-util-signpost-ls);
+  text-transform: uppercase;
+}
+
+.fw-result__face {
+  width: var(--space-global-lg);
+  height: var(--space-global-lg);
+  flex: none;
+}
+
+.fw-result[data-state="ready"] .fw-result__face { display: none; }
+
+.fw-result__word {
+  margin: 0;
+  font-size: var(--text-display-size-h3);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--lh-display);
+  overflow-wrap: anywhere;
+}
+
+.fw-result[data-state="rolling"] {
+  background: color-mix(in srgb, var(--fw) var(--fw-tint-outer), var(--fw-paper));
+  color: var(--fw-ink);
+}
+
+/* Only the landing fades in. While rolling the card changes on every hop,
+   faster than any fade could finish, so a fade there just muddies it. */
+.fw-result[data-state="picked"] {
+  background: color-mix(in srgb, var(--fw) var(--fw-lit-mix), var(--fw-ink));
+  color: var(--text-heading-on-dark);
+  transition: background var(--transition-duration) var(--transition-easing),
+              color var(--transition-duration) var(--transition-easing);
+}
+
+.fw-result[data-state="picked"][data-dark-ink] { color: var(--fw-ink); }
+
+/* Fill the card's width: --fw-len is the word's length in characters,
+   and Lexend averages a little over half an em per character. */
+.fw-result[data-state="rolling"] .fw-result__word,
+.fw-result[data-state="picked"] .fw-result__word {
+  font-size: min(calc(var(--text-display-size-h1) * 1.8), calc(100cqi / (var(--fw-len, 8) * 0.62)));
+}
+
+.fw-result[data-state="picked"] .fw-result__word {
+  animation: fw-reveal 0.45s var(--transition-easing) both;
+}
+
+@keyframes fw-reveal {
+  0%   { transform: scale(0.85); opacity: 0.4; }
+  60%  { transform: scale(1.04); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+.fw-spin {
+  --btn-font-size: var(--text-display-size-h4);
+  width: 100%;
+}
+
+.fw-hint {
+  margin: calc(var(--space-global-sm) * -0.5) 0 0;
+  font-size: var(--text-card-size-body);
+  color: var(--text-body-muted);
+}
+
+.fw-options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-global-sm);
+}
+
+.fw-left {
+  font-size: var(--text-card-size-body);
+  color: var(--text-body-muted);
+}
+
+.fw-noscript {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--text-body-muted);
+}
+
+/* ── Narrow screens: wheel above, controls below ─────────────────── */
+
+@media (max-width: 900px) { /* between --bp-md and --bp-lg */
+  .fw-page {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: var(--space-global-lg);
+  }
+
+  .fw-wheel {
+    width: min(100%, 80dvh);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fw-seg__shape,
+  .fw-seg__word,
+  .fw-seg__name,
+  .fw-result {
+    transition: none;
+  }
+
+  .fw-seg.is-picked,
+  .fw-result[data-state="picked"] .fw-result__word {
+    animation: none;
+  }
+}

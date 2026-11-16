@@ -24,6 +24,7 @@ Usage:
 """
 from __future__ import annotations
 
+import json
 import math
 import re
 import subprocess
@@ -60,27 +61,11 @@ WALL_PITCH = 7.6
 WALL_CLEAR = 4  # space kept round the logo block
 
 # ── Content ───────────────────────────────────────────────────────────
-# In the wheel's clockwise order from the top, which the back repeats.
-FAMILIES = [
-    ("happy", "Happy", "brand-primary",
-     ["Content", "Cheerful", "Proud", "Confident", "Silly", "Energetic"],
-     ["Excited", "Enthusiastic", "Eager", "Hopeful", "Optimistic", "Elation"]),
-    ("surprise", "Surprise", "cat-identity",
-     ["Startled", "Confused", "Shocked", "Overwhelmed", "Speechless", "Curious"],
-     ["Amazed", "Moved", "Awe-struck", "Crushed", "Stunned", "Bewildered"]),
-    ("peaceful", "Peaceful", "ota-cat-law",
-     ["Calm", "Loving", "Affectionate", "Trusting", "Relaxed", "Thoughtful"],
-     ["Caring", "Thankful", "Accepted", "Valued", "Inspired", "Passionate"]),
-    ("sad", "Sad", "cat-relationships",
-     ["Hurt", "Disappointed", "Guilty", "Lonely", "Tired", "Bored"],
-     ["Miserable", "Depressed", "Hopeless", "Rejected", "Inferior", "Insignificant"]),
-    ("anger", "Anger", "cat-sexual-health",
-     ["Mad", "Offended", "Jealous", "Irritated", "Frustrated", "Annoyed"],
-     ["Hostile", "Enraged", "Agitated", "Furious", "Hateful", "Disgusted"]),
-    ("fear", "Fear", "cat-puberty",
-     ["Shy", "Nervous", "Worried", "Anxious", "Regret", "Excluded"],
-     ["Insecure", "Embarrassed", "Scared", "Frightened", "Terrified", "Panic"]),
-]
+# Words, colours and faces live in one file shared with the game at
+# /tools/feelings-wheel/, in the wheel's clockwise order from the top,
+# which the back repeats.
+_DATA = json.loads((ROOT / "src" / "data" / "feelings-wheel.json").read_text())["families"]
+FAMILIES = [(f["key"], f["name"], f["colour"], f["inner"], f["outer"]) for f in _DATA]
 
 # White text does not read on yellow, so Peaceful's solid card takes ink.
 DARK_ON_SOLID = {"peaceful"}
@@ -177,34 +162,9 @@ class Face:
 
 # ── Icons ─────────────────────────────────────────────────────────────
 # Each family is a Tailor button (the logo's two-tone disc) with a face:
-# the buttonholes are the eyes. Drawn in a 24-unit box centred on 12,12.
-# {c} is the feature colour.
-_S = 'fill="none" stroke="{c}" stroke-linecap="round" stroke-linejoin="round"'
-
-
-def _eyes(y: float, r: float = 1.3) -> str:
-    return (f'<circle cx="8.9" cy="{y}" r="{r}" fill="{{c}}"/>'
-            f'<circle cx="15.1" cy="{y}" r="{r}" fill="{{c}}"/>')
-
-
-FACES = {
-    "happy": _eyes(10.3)
-    + f'<path {_S} stroke-width="1.5" d="M8.2 13.6Q12 17.8 15.8 13.6"/>',
-    "surprise": _eyes(10.7)
-    + f'<path {_S} stroke-width="1.1" d="M7.3 7.6Q8.9 6.3 10.5 7.6M13.5 7.6Q15.1 6.3 16.7 7.6"/>'
-    + f'<circle {_S} stroke-width="1.4" cx="12" cy="15.5" r="1.9"/>',
-    "peaceful": f'<path {_S} stroke-width="1.3" d="M7.4 10.6Q8.9 12.3 10.4 10.6M13.6 10.6Q15.1 12.3 16.6 10.6"/>'
-    + f'<path {_S} stroke-width="1.4" d="M9.6 14.6Q12 16.5 14.4 14.6"/>',
-    "sad": _eyes(10.8)
-    + f'<path {_S} stroke-width="1.1" d="M7.3 8.5L10.3 7.3M16.7 8.5L13.7 7.3"/>'
-    + f'<path {_S} stroke-width="1.5" d="M8.8 16.4Q12 13.2 15.2 16.4"/>',
-    "anger": _eyes(11)
-    + f'<path {_S} stroke-width="1.3" d="M7.2 7.4L10.5 8.9M16.8 7.4L13.5 8.9"/>'
-    + f'<path {_S} stroke-width="1.5" d="M9.2 15.8Q12 14.3 14.8 15.8"/>',
-    "fear": _eyes(10.8, 1.6)
-    + f'<path {_S} stroke-width="1.1" d="M7.3 8.2L10.3 6.9M16.7 8.2L13.7 6.9"/>'
-    + f'<path {_S} stroke-width="1.2" d="M8.4 15.6Q9.3 14.6 10.2 15.6T12 15.6T13.8 15.6T15.6 15.6"/>',
-}
+# the buttonholes are the eyes. The faces come from the shared data file,
+# drawn in a 24-unit box centred on 12,12; {c} is the feature colour.
+FACES = {f["key"]: f["face"] for f in _DATA}
 
 
 def icon(key: str, cx: float, cy: float, d: float, rim: str, disc: str, features: str) -> str:
